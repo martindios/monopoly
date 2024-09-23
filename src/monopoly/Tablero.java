@@ -4,6 +4,8 @@ import partida.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import static monopoly.Valor.*;
+
 
 public class Tablero {
     //Atributos.
@@ -29,6 +31,19 @@ public class Tablero {
     
     //Método para insertar las casillas del lado norte.
     private void insertarLadoNorte() {
+        ArrayList<Casilla> ladoNorte = new ArrayList<>();
+        ladoNorte.add(new Casilla("Parking", "Especiales", 1, new Jugador()));
+        ladoNorte.add(new Casilla("Solar12", "Solar", 2, 100, new Jugador()));
+        ladoNorte.add(new Casilla("Suerte", "Suerte", 3,  new Jugador()));
+        ladoNorte.add(new Casilla("Solar13", "Solar", 4, 100,  new Jugador()));
+        ladoNorte.add(new Casilla("Solar14", "Solar", 5, 100,  new Jugador()));
+        ladoNorte.add(new Casilla("Trans3", "Transporte", 6, 100,  new Jugador()));
+        ladoNorte.add(new Casilla("Solar15", "Solar", 7, 100,  new Jugador()));
+        ladoNorte.add(new Casilla("Solar16", "Solar", 8, 100,  new Jugador()));
+        ladoNorte.add(new Casilla("Serv2", "Servicios", 9, 100,  new Jugador()));
+        ladoNorte.add(new Casilla("Solar17", "Solar", 10, 100,  new Jugador()));
+        ladoNorte.add(new Casilla("IrCarcel", "Especiales", 10, new Jugador()));
+
     }
 
     //Método para insertar las casillas del lado sur.
@@ -49,23 +64,26 @@ public class Tablero {
         String tablero = """
                  ______ ______ ______ ______ ______ ______ ______ ______ ______ ______ ______
                 |%s|%s|%s|%s|%s|%s|%s|%s|%s|%s|%s|
-                |%s|                                                                                                                                                        |%s|
-                |%s|                                                                                                                                                        |%s|
-                |%s|                                                                                                                                                        |%s|
-                |%s|                                                                                                                                                        |%s|
-                |%s|                                                                                                                                                        |%s|
-                |%s|                                                                                                                                                        |%s|
-                |%s|                                                                                                                                                        |%s|
-                |%s|                                                                                                                                                        |%s|
-                |%s|                                                                                                                                                        |%s|
+                |%s|                                                                       |%s|
+                |%s|                                                                       |%s|
+                |%s|                                                                       |%s|
+                |%s|                                                                       |%s|
+                |%s|                                                                       |%s|
+                |%s|                                                                       |%s|
+                |%s|                                                                       |%s|
+                |%s|                                                                       |%s|
+                |%s|                                                                       |%s|
                 |%s|%s|%s|%s|%s|%s|%s|%s|%s|%s|%s|
-                """.formatted("Solar5 ", "Solar5 ","Solar5 ","Solar5 ","Solar5 ","Solar5 ","Solar5 ","Solar5 ","Solar5 ","Solar5 ",
-                "Solar5 ", "Solar5 ","Solar5 ","Solar5 ","Solar5 ","Solar5 ","Solar5 ","Solar5 ","Solar5 ","Solar5 ",
-                "Solar5 ", "Solar5 ","Solar5 ","Solar5 ","Solar5 ","Solar5 ","Solar5 ","Solar5 ","Solar5 ","Solar5 ",
-                "Solar5 ", "Solar5 ","Solar5 ","Solar5 ","Solar5 ","Solar5 ","Solar5 ","Solar5 ","Solar5 ","Solar5 "
-                );
+                """.formatted(YELLOW + "1 " + RESET, "2 ", "3 ", "4 ", "5 ", "6 ", "7 ", "8 ", "9 ", "10 ",
+                "11 ", "12 ", "13 ", "13 ", "15 ", "16 ", "17 ", "18 ", "19 ", "20 ",
+                "21 ", "22 ", "23 ", "24 ", "25 ", "26 ", "27 ", "28 ", "29 ", "30 ",
+                "31 ", "32 ", "33 ", "34 ", "35 ", "36 ", "37 ", "38 ", "39 ", "40 ");
         System.out.println(tablero);
         return tablero;
+    }
+
+    public String representarTablero() {
+        return null; //
     }
     
     //Método usado para buscar la casilla con el nombre pasado como argumento:
