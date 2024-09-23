@@ -39,4 +39,27 @@ public class Avatar {
      */
     private void generarId(ArrayList<Avatar> avCreados) {
     }
+
+    /*
+    GETTERS
+     */
+
+    //getter para devolver el id de un jugador
+    public String getId() {
+        return id;
+    }
+
+    //getter para devolver el tipo de avatar de un jugador
+    public String getTipo() {
+        return tipo;
+    }
+
+    //getter para devolver un jugador
+    public Jugador getJugador() {
+        return jugador;
+    }
+
+    public Casilla getLugar() {
+        return lugar;
+    }
 }

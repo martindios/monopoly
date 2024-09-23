@@ -40,4 +40,22 @@ class Grupo {
     public boolean esDuenhoGrupo(Jugador jugador) {
     }
 
+    /*
+    GETTERS
+     */
+
+    //getter para devolver los miembros que pertenecen a un grupo
+    public ArrayList<Casilla> getMiembros() {
+        return miembros;
+    }
+
+    //getter para devolver el color correspondiente a un grupo
+    public String getColorGrupo() {
+        return colorGrupo;
+    }
+
+    //getter para devolver el número de casillas que pertenecen a un grupo
+    public int getNumCasillas() {
+        return numCasillas;
+    }
 }

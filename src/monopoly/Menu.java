@@ -3,6 +3,8 @@ package monopoly;
 import java.util.ArrayList;
 import partida.*;
 
+//En esta clase no se necesitan getters, setters ya que solo llama a métodos de otras clases
+
 public class Menu {
 
     //Atributos
