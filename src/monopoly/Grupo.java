@@ -19,12 +19,19 @@ class Grupo {
     * Requiere como parámetros las dos casillas miembro y el color del grupo.
      */
     public Grupo(Casilla cas1, Casilla cas2, String colorGrupo) {
+        this.cas1 = cas1;
+        this.cas2 = cas2;
+        this.colorGrupo = colorGrupo;
     }
 
     /*Constructor para cuando el grupo está formado por TRES CASILLAS:
     * Requiere como parámetros las tres casillas miembro y el color del grupo.
      */
     public Grupo(Casilla cas1, Casilla cas2, Casilla cas3, String colorGrupo) {
+        this.cas1 = cas1;
+        this.cas2 = cas2;
+        this.cas3 = cas3;
+        this.colorGrupo = colorGrupo;
     }
 
     /* Método que añade una casilla al array de casillas miembro de un grupo.

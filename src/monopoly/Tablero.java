@@ -13,6 +13,7 @@ public class Tablero {
 
     //Constructor: únicamente le pasamos el jugador banca (que se creará desde el menú).
     public Tablero(Jugador banca) {
+        this.banca = banca;
     }
 
     
