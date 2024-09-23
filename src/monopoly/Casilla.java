@@ -18,8 +18,9 @@ public class Casilla {
     private ArrayList<Avatar> avatares; //Avatares que están situados en la casilla.
 
     //Constructores:
+    //Parámetros vacíos
     public Casilla() {
-    }//Parámetros vacíos
+    }
 
     /*Constructor para casillas tipo Solar, Servicios o Transporte:
     * Parámetros: nombre casilla, tipo (debe ser solar, serv. o transporte), posición en el tablero, valor y dueño.
