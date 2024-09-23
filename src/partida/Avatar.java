@@ -54,11 +54,12 @@ public class Avatar {
         return tipo;
     }
 
-    //getter para devolver un jugador
+    //getter para devolver el jugador asociado al avatar
     public Jugador getJugador() {
         return jugador;
     }
 
+    //getters para devolver el lugar en el que se encuentra el avatar
     public Casilla getLugar() {
         return lugar;
     }
