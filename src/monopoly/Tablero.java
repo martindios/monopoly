@@ -15,52 +15,169 @@ public class Tablero {
 
     //Constructor: únicamente le pasamos el jugador banca (que se creará desde el menú).
     public Tablero(Jugador banca) {
+        this.banca = banca;
+        this.posiciones = new ArrayList<>(4);
+        this.generarCasillas();
     }
 
+    //TEMPORAL, BORRARLO
     public Tablero() {
+        this.posiciones = new ArrayList<>(4);
+        this.generarCasillas();
     }
 
 
     //Método para crear todas las casillas del tablero. Formado a su vez por cuatro métodos (1/lado).
     private void generarCasillas() {
+
         this.insertarLadoSur();
         this.insertarLadoOeste();
         this.insertarLadoNorte();
         this.insertarLadoEste();
     }
+
+    //Método para insertar las casillas del lado sur.
+    private void insertarLadoSur() {
+        ArrayList<Casilla> ladoSur = new ArrayList<>();
+        ladoSur.add(new Casilla("Salida", "Especiales", 1, banca));
+        ladoSur.add(new Casilla("Solar1", "Solar", 2, 1, banca));
+        ladoSur.add(new Casilla("Caja", "Solar", 3, 1, banca));
+        ladoSur.add(new Casilla("Solar2", "Solar", 4, 1, banca));
+        ladoSur.add(new Casilla("Imp1", "Impuestos", 5, 1, banca));
+        ladoSur.add(new Casilla("Trans1", "Transporte", 6, 1, banca));
+        ladoSur.add(new Casilla("Solar3", "Solar", 7, 1, banca));
+        ladoSur.add(new Casilla("Suerte", "Solar", 8, 1, banca));
+        ladoSur.add(new Casilla("Solar4", "Solar", 9, 1, banca));
+        ladoSur.add(new Casilla("Solar5", "Solar", 10, 1, banca));
+
+        posiciones.add(ladoSur);
+    }
+
+
+
+    //Método que inserta casillas del lado oeste.
+    private void insertarLadoOeste() {
+        ArrayList<Casilla> ladoOeste = new ArrayList<>();
+        ladoOeste.add(new Casilla("Cárcel", "Especiales", 11, 1, banca));
+        ladoOeste.add(new Casilla("Solar6", "Solar", 12, banca));
+        ladoOeste.add(new Casilla("Serv1", "Servicios", 13, banca));
+        ladoOeste.add(new Casilla("Solar7", "Solar", 14, banca));
+        ladoOeste.add(new Casilla("Solar8", "Solar", 15, banca));
+        ladoOeste.add(new Casilla("Trans2", "Transporte", 16, banca));
+        ladoOeste.add(new Casilla("Solar9", "Solar", 17, banca));
+        ladoOeste.add(new Casilla("Caja", "Solar", 2, 18, banca));
+        ladoOeste.add(new Casilla("Solar10", "Solar", 19, banca));
+        ladoOeste.add(new Casilla("Solar11", "Solar", 20, banca));
+
+        posiciones.add(ladoOeste);
+    }
     
     //Método para insertar las casillas del lado norte.
     private void insertarLadoNorte() {
         ArrayList<Casilla> ladoNorte = new ArrayList<>();
-        ladoNorte.add(new Casilla("Parking", "Especiales", 1, new Jugador()));
-        ladoNorte.add(new Casilla("Solar12", "Solar", 2, 100, new Jugador()));
-        ladoNorte.add(new Casilla("Suerte", "Suerte", 3,  new Jugador()));
-        ladoNorte.add(new Casilla("Solar13", "Solar", 4, 100,  new Jugador()));
-        ladoNorte.add(new Casilla("Solar14", "Solar", 5, 100,  new Jugador()));
-        ladoNorte.add(new Casilla("Trans3", "Transporte", 6, 100,  new Jugador()));
-        ladoNorte.add(new Casilla("Solar15", "Solar", 7, 100,  new Jugador()));
-        ladoNorte.add(new Casilla("Solar16", "Solar", 8, 100,  new Jugador()));
-        ladoNorte.add(new Casilla("Serv2", "Servicios", 9, 100,  new Jugador()));
-        ladoNorte.add(new Casilla("Solar17", "Solar", 10, 100,  new Jugador()));
-        ladoNorte.add(new Casilla("IrCarcel", "Especiales", 10, new Jugador()));
+        ladoNorte.add(new Casilla("Parking", "Especiales", 20, banca));
+        ladoNorte.add(new Casilla("Solar12", "Solar", 21, 100, banca));
+        ladoNorte.add(new Casilla("Suerte", "Suerte", 22, banca));
+        ladoNorte.add(new Casilla("Solar13", "Solar", 23, 100, banca));
+        ladoNorte.add(new Casilla("Solar14", "Solar", 24, 100, banca));
+        ladoNorte.add(new Casilla("Trans3", "Transporte", 25, 100, banca));
+        ladoNorte.add(new Casilla("Solar15", "Solar", 26, 100, banca));
+        ladoNorte.add(new Casilla("Solar16", "Solar", 27, 100, banca));
+        ladoNorte.add(new Casilla("Serv2", "Servicios", 28, 100, banca));
+        ladoNorte.add(new Casilla("Solar17", "Solar", 29, 100, banca));
 
-    }
-
-    //Método para insertar las casillas del lado sur.
-    private void insertarLadoSur() {
-    }
-
-    //Método que inserta casillas del lado oeste.
-    private void insertarLadoOeste() {
+        posiciones.add(ladoNorte);
     }
 
     //Método que inserta las casillas del lado este.
     private void insertarLadoEste() {
+        ArrayList<Casilla> ladoEste = new ArrayList<>();
+        ladoEste.add(new Casilla("IrCarcel", "Especiales", 30, banca));
+        ladoEste.add(new Casilla("Solar18", "Solar", 31, 100, banca));
+        ladoEste.add(new Casilla("Solar19", "Solar", 32, 100, banca));
+        ladoEste.add(new Casilla("Caja", "Solar", 33, 100, banca));
+        ladoEste.add(new Casilla("Solar20", "Solar", 34, 100, banca));
+        ladoEste.add(new Casilla("Trans4", "Transporte", 35, 100, banca));
+        ladoEste.add(new Casilla("Suerte", "Solar", 36, 100, banca));
+        ladoEste.add(new Casilla("Solar21", "Solar", 37, 100, banca));
+        ladoEste.add(new Casilla("Imp2", "Impuestos", 38, 100, banca));
+        ladoEste.add(new Casilla("Solar22", "Solar", 39, 100, banca));
+
+        posiciones.add(ladoEste);
     }
 
     //Para imprimir el tablero, modificamos el método toString().
     @Override
     public String toString() {
+
+        String tablero = """
+                     ______ ______ ______ ______ ______ ______ ______ ______ ______ ______ ______
+                    |%s|%s|%s|%s|%s|%s|%s|%s|%s|%s|%s|
+                    |%s|                                                                       |%s|
+                    |%s|                                                                       |%s|
+                    |%s|                                                                       |%s|
+                    |%s|                                                                       |%s|
+                    |%s|                                                                       |%s|
+                    |%s|                                                                       |%s|
+                    |%s|                                                                       |%s|
+                    |%s|                                                                       |%s|
+                    |%s|                                                                       |%s|
+                    |%s|%s|%s|%s|%s|%s|%s|%s|%s|%s|%s|
+                    """.formatted(
+                            //Norte
+                posiciones.get(2).get(0).getNombre(),
+                posiciones.get(2).get(1).getNombre(),
+                posiciones.get(2).get(2).getNombre(),
+                posiciones.get(2).get(3).getNombre(),
+                posiciones.get(2).get(4).getNombre(),
+                posiciones.get(2).get(5).getNombre(),
+                posiciones.get(2).get(6).getNombre(),
+                posiciones.get(2).get(7).getNombre(),
+                posiciones.get(2).get(8).getNombre(),
+                posiciones.get(2).get(9).getNombre(),
+
+                //Este y oeste simultáneo
+                posiciones.get(3).get(0).getNombre(),
+                posiciones.get(1).get(9).getNombre(),
+                posiciones.get(3).get(1).getNombre(),
+                posiciones.get(1).get(8).getNombre(),
+                posiciones.get(3).get(2).getNombre(),
+                posiciones.get(1).get(7).getNombre(),
+                posiciones.get(3).get(3).getNombre(),
+                posiciones.get(1).get(6).getNombre(),
+                posiciones.get(3).get(4).getNombre(),
+                posiciones.get(1).get(5).getNombre(),
+                posiciones.get(3).get(5).getNombre(),
+                posiciones.get(1).get(4).getNombre(),
+                posiciones.get(3).get(6).getNombre(),
+                posiciones.get(1).get(3).getNombre(),
+                posiciones.get(3).get(7).getNombre(),
+                posiciones.get(1).get(2).getNombre(),
+                posiciones.get(3).get(8).getNombre(),
+                posiciones.get(1).get(1).getNombre(),
+                posiciones.get(3).get(9).getNombre(),
+                posiciones.get(1).get(0).getNombre(),
+
+                //Sur
+                posiciones.get(0).get(9).getNombre(),
+                posiciones.get(0).get(8).getNombre(),
+                posiciones.get(0).get(7).getNombre(),
+                posiciones.get(0).get(6).getNombre(),
+                posiciones.get(0).get(5).getNombre(),
+                posiciones.get(0).get(4).getNombre(),
+                posiciones.get(0).get(3).getNombre(),
+                posiciones.get(0).get(2).getNombre(),
+                posiciones.get(0).get(1).getNombre(),
+                posiciones.get(0).get(0).getNombre()
+
+        );
+
+        // Formatear el tablero con las casillas
+        return tablero;
+    }
+
+
+        /*
         String tablero = """
                  ______ ______ ______ ______ ______ ______ ______ ______ ______ ______ ______
                 |%s|%s|%s|%s|%s|%s|%s|%s|%s|%s|%s|
@@ -80,7 +197,8 @@ public class Tablero {
                 "31 ", "32 ", "33 ", "34 ", "35 ", "36 ", "37 ", "38 ", "39 ", "40 ");
         System.out.println(tablero);
         return tablero;
-    }
+
+         */
 
     public String representarTablero() {
         return null; //

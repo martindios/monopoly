@@ -7,7 +7,7 @@ public class MonopolyETSE {
         //martin-branch
 
         Tablero tablero = new Tablero();
-        tablero.toString();
+        System.out.println(tablero.toString());
     }
     
 }
