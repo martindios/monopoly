@@ -4,6 +4,8 @@ import partida.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import static monopoly.Valor.*;
+
 
 public class Tablero {
     //Atributos.
@@ -109,10 +111,10 @@ public class Tablero {
     public String toString() {
 
         String tablero = """
-                     %s
+                    %s
                     │%10s│%10s│%10s│%10s│%10s│%10s│%10s│%10s│%10s│%10s│%10s│
                     │%10s│%10s│%10s│%10s│%10s│%10s│%10s│%10s│%10s│%10s│%10s│
-                     %s
+                    %s
                     │%10s│                                                                                                  │%10s│
                     │%10s│                                                                                                  │%10s│
                     %s                                                                                                  %s
@@ -144,7 +146,7 @@ public class Tablero {
                     │%10s│%10s│%10s│%10s│%10s│%10s│%10s│%10s│%10s│%10s│%10s│
                     %s
                     """.formatted(
-                "\u2500".repeat(120),
+                "─".repeat(122),
                 //Norte (con la última casilla el inicio del este)
                 posiciones.get(2).get(0).getNombre(),
                 posiciones.get(2).get(1).getNombre(),
@@ -172,7 +174,7 @@ public class Tablero {
 
                 "&J",
 
-                "\u2500".repeat(120),
+                "─".repeat(122),
 
                 //Este y oeste simultáneo
 
@@ -182,8 +184,8 @@ public class Tablero {
                 "&J",
                 "&J",
 
-                "\u2500".repeat(12),
-                "\u2500".repeat(12),
+                "─".repeat(12),
+                "─".repeat(12),
 
                 posiciones.get(1).get(8).getNombre(),
                 posiciones.get(3).get(2).getNombre(),
@@ -191,8 +193,8 @@ public class Tablero {
                 "&J",
                 "&J",
 
-                "\u2500".repeat(12),
-                "\u2500".repeat(12),
+                "─".repeat(12),
+                "─".repeat(12),
 
                 posiciones.get(1).get(7).getNombre(),
                 posiciones.get(3).get(3).getNombre(),
@@ -200,8 +202,8 @@ public class Tablero {
                 "&J",
                 "&J",
 
-                "\u2500".repeat(12),
-                "\u2500".repeat(12),
+                "─".repeat(12),
+                "─".repeat(12),
 
                 posiciones.get(1).get(6).getNombre(),
                 posiciones.get(3).get(4).getNombre(),
@@ -209,8 +211,8 @@ public class Tablero {
                 "&J",
                 "&J",
 
-                "\u2500".repeat(12),
-                "\u2500".repeat(12),
+                "─".repeat(12),
+                "─".repeat(12),
 
                 posiciones.get(1).get(5).getNombre(),
                 posiciones.get(3).get(5).getNombre(),
@@ -218,8 +220,8 @@ public class Tablero {
                 "&J",
                 "&J",
 
-                "\u2500".repeat(12),
-                "\u2500".repeat(12),
+                "─".repeat(12),
+                "─".repeat(12),
 
                 posiciones.get(1).get(4).getNombre(),
                 posiciones.get(3).get(6).getNombre(),
@@ -227,8 +229,8 @@ public class Tablero {
                 "&J",
                 "&J",
 
-                "\u2500".repeat(12),
-                "\u2500".repeat(12),
+                "─".repeat(12),
+                "─".repeat(12),
 
                 posiciones.get(1).get(3).getNombre(),
                 posiciones.get(3).get(7).getNombre(),
@@ -236,8 +238,8 @@ public class Tablero {
                 "&J",
                 "&J",
 
-                "\u2500".repeat(12),
-                "\u2500".repeat(12),
+                "─".repeat(12),
+                "─".repeat(12),
 
                 posiciones.get(1).get(2).getNombre(),
                 posiciones.get(3).get(8).getNombre(),
@@ -245,8 +247,8 @@ public class Tablero {
                 "&J",
                 "&J",
 
-                "\u2500".repeat(12),
-                "\u2500".repeat(12),
+                "─".repeat(12),
+                "─".repeat(12),
 
                 posiciones.get(1).get(1).getNombre(),
                 posiciones.get(3).get(9).getNombre(),
@@ -256,7 +258,7 @@ public class Tablero {
 
                 //Sur (con la primera casilla inicio oeste)
 
-                "\u2500".repeat(120),
+                "─".repeat(122),
 
                 posiciones.get(1).get(0).getNombre(),
 
@@ -283,36 +285,13 @@ public class Tablero {
                 "&J",
                 "&J",
 
-                "\u2500".repeat(120)
+                "─".repeat(122)
 
         );
 
         // Formatear el tablero con las casillas
         return tablero;
     }
-
-        /*
-        String tablero = """
-                 ______ ______ ______ ______ ______ ______ ______ ______ ______ ______ ______
-                |%s|%s|%s|%s|%s|%s|%s|%s|%s|%s|%s|
-                |%s|                                                                       |%s|
-                |%s|                                                                       |%s|
-                |%s|                                                                       |%s|
-                |%s|                                                                       |%s|
-                |%s|                                                                       |%s|
-                |%s|                                                                       |%s|
-                |%s|                                                                       |%s|
-                |%s|                                                                       |%s|
-                |%s|                                                                       |%s|
-                |%s|%s|%s|%s|%s|%s|%s|%s|%s|%s|%s|
-                """.formatted(YELLOW + "1 " + RESET, "2 ", "3 ", "4 ", "5 ", "6 ", "7 ", "8 ", "9 ", "10 ",
-                "11 ", "12 ", "13 ", "13 ", "15 ", "16 ", "17 ", "18 ", "19 ", "20 ",
-                "21 ", "22 ", "23 ", "24 ", "25 ", "26 ", "27 ", "28 ", "29 ", "30 ",
-                "31 ", "32 ", "33 ", "34 ", "35 ", "36 ", "37 ", "38 ", "39 ", "40 ");
-        System.out.println(tablero);
-        return tablero;
-
-         */
 
     public String representarTablero() {
         return null; //
