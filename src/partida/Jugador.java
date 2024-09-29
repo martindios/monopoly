@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 import monopoly.*;
 
-//
+
 public class Jugador {
 
     //Atributos:
@@ -29,7 +29,7 @@ public class Jugador {
     public Jugador(String nombre, String tipoAvatar, Casilla inicio, ArrayList<Avatar> avCreados) {
         this.nombre = nombre;
         //Como temos que crear aquí o avatar, usamos o constructor del con args: Tipo do avatar, Xogador que o ten, Casilla de inicio e o array de avatares para nn repetilo
-        this.avatar = new Avatar(tipoAvatar, this.nombre, inicio, avCreados);
+        this.avatar = new Avatar(tipoAvatar, this, inicio, avCreados);
         // Añadimos o avatar á lista de avatares creados
         avCreados.add(this.avatar);
         this.fortuna = 1500; //Fortuna inicial de ejemplo, dsp cambiamolo

@@ -4,7 +4,7 @@ import partida.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-//
+
 public class Tablero {
     //Atributos.
     private ArrayList<ArrayList<Casilla>> posiciones; //Posiciones del tablero: se define como un arraylist de arraylists de casillas (uno por cada lado del tablero).
@@ -131,10 +131,12 @@ public class Tablero {
     //Para imprimir el tablero, modificamos el método toString().
     @Override
     public String toString() {
+        return null;
     }
     
     //Método usado para buscar la casilla con el nombre pasado como argumento:
     public Casilla encontrar_casilla(String nombre){
+        return null;
     }
 
 
@@ -142,11 +144,7 @@ public class Tablero {
 
 
     //Getters temporales para el código de tablero
-    public String getNombre() {
-        return nombre;
-    }
-    public Grupo getGrupo() {
-        return grupo;
-    }
-    public Grupo
+
+
+
 }

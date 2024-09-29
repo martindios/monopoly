@@ -3,7 +3,7 @@ package monopoly;
 import partida.*;
 import java.util.ArrayList;
 
-//
+
 class Grupo {
 
     //Atributos
@@ -49,6 +49,7 @@ class Grupo {
     * Valor devuelto: true si es dueño de todas las casillas del grupo, false en otro caso.
      */
     public boolean esDuenhoGrupo(Jugador jugador) {
+        return false;
     }
 
 
@@ -56,7 +57,7 @@ class Grupo {
 
     //Getter temporal
     public String getColorGrupo() {
-        return color;
+        return colorGrupo;
     }
 
 }

@@ -4,7 +4,7 @@ import monopoly.*;
 
 import java.util.ArrayList;
 
-//
+
 public class Avatar {
 
     //Atributos
@@ -27,8 +27,8 @@ public class Avatar {
         this.tipo = tipo;
         this.jugador = jugador;
         this.lugar = lugar;
-        //Generamos o id do avatar co metodo, pasándolle o array de avatares xa creados, para asi dsp coller o seu id e non repetilos
-        this.id = generarId(avCreados);
+        //Generamos o id do avatar co metodo e asígnase dentro deste, pasándolle o array de avatares xa creados, para asi dsp coller o seu id e non repetilos
+        generarId(avCreados);
     }
 
     //A continuación, tenemos otros métodos útiles para el desarrollo del juego.
