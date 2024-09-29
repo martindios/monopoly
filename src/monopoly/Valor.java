@@ -1,6 +1,6 @@
 package monopoly;
 
-
+//
 public class Valor {
     //Se incluyen una serie de constantes útiles para no repetir valores.
     public static final float FORTUNA_BANCA = 500000; // Cantidad que tiene inicialmente la Banca
