@@ -28,9 +28,16 @@ public class Jugador {
      */
     public Jugador(String nombre, String tipoAvatar, Casilla inicio, ArrayList<Avatar> avCreados) {
         this.nombre = nombre;
-        this.tipoAvatar = tipoAvatar;
-        this.inicio = inicio;
-
+        //Como temos que crear aquí o avatar, usamos o constructor del con args: Tipo do avatar, Xogador que o ten, Casilla de inicio e o array de avatares para nn repetilo
+        this.avatar = new Avatar(tipoAvatar, this.nombre, inicio, avCreados);
+        // Añadimos o avatar á lista de avatares creados
+        avCreados.add(this.avatar);
+        this.fortuna = 1500; //Fortuna inicial de ejemplo, dsp cambiamolo
+        this.gastos = 0;
+        this.enCarcel = false;
+        this.tiradasCarcel = 0;
+        this.vueltas = 0;
+        this.propiedades = new ArrayList<>();
     }
 
     //Otros métodos:
