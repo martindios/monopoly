@@ -2,6 +2,7 @@ package monopoly;
 
 import partida.*;
 import java.util.ArrayList;
+import java.util.Objects;
 
 
 public class Casilla {
@@ -34,6 +35,16 @@ public class Casilla {
         this.valor = valor;
         this.posicion = posicion;
         this.duenho = duenho;
+        if (Objects.equals(this.tipo, "Solar")){
+            guardarCasillaGrupo();
+        }
+    }
+
+    //mover de sitio
+    private void guardarCasillaGrupo() {
+        if (posicion == 2 || posicion == 4) {
+            grupo = new Grupo();
+        }
     }
 
     /*Constructor utilizado para inicializar las casillas de tipo IMPUESTOS.
@@ -62,9 +73,12 @@ public class Casilla {
         this.duenho = duenho;
     }
 
-    //Getter temporal para el código de tablero
+    //Getters temporales para el código de tablero
     public String getNombre() {
         return nombre;
+    }
+    public Grupo getGrupo() {
+        return grupo;
     }
 
     //Método utilizado para añadir un avatar al array de avatares en casilla.

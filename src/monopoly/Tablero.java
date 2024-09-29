@@ -17,12 +17,14 @@ public class Tablero {
     public Tablero(Jugador banca) {
         this.banca = banca;
         this.posiciones = new ArrayList<>(4);
+        this.grupos = new HashMap<String, Grupo>(8);
         this.generarCasillas();
     }
 
-    //TEMPORAL, BORRARLO
+    //TEMPORAL, borrarlo pero lo de dentro está bien
     public Tablero() {
         this.posiciones = new ArrayList<>(4);
+        this.grupos = new HashMap<String, Grupo>(8);
         this.generarCasillas();
     }
 
@@ -40,15 +42,26 @@ public class Tablero {
     private void insertarLadoSur() {
         ArrayList<Casilla> ladoSur = new ArrayList<>();
         ladoSur.add(new Casilla("Salida", "Especiales", 1, banca));
-        ladoSur.add(new Casilla("Solar1", "Solar", 2, 1, banca));
-        ladoSur.add(new Casilla("Caja", "Solar", 3, 1, banca));
-        ladoSur.add(new Casilla("Solar2", "Solar", 4, 1, banca));
-        ladoSur.add(new Casilla("Imp1", "Impuestos", 5, 1, banca));
-        ladoSur.add(new Casilla("Trans1", "Transporte", 6, 1, banca));
-        ladoSur.add(new Casilla("Solar3", "Solar", 7, 1, banca));
-        ladoSur.add(new Casilla("Suerte", "Solar", 8, 1, banca));
-        ladoSur.add(new Casilla("Solar4", "Solar", 9, 1, banca));
-        ladoSur.add(new Casilla("Solar5", "Solar", 10, 1, banca));
+        Casilla solar1 = new Casilla("Solar1", "Solar", 2, 2, banca);
+        ladoSur.add(solar1);
+        ladoSur.add(new Casilla("Caja", "Solar", 3, 3, banca));
+        Casilla solar2 = new Casilla("Solar2", "Solar", 4, 4, banca);
+        ladoSur.add(solar2);
+        ladoSur.add(new Casilla("Imp1", "Impuestos", 5, 5, banca));
+        ladoSur.add(new Casilla("Trans1", "Transporte", 6, 6, banca));
+        Casilla solar3 = new Casilla("Solar3", "Solar", 7, 7, banca);
+        ladoSur.add(solar3);
+        ladoSur.add(new Casilla("Suerte", "Solar", 8, 8, banca));
+        Casilla solar4 = new Casilla("Solar4", "Solar", 9, 9, banca);
+        ladoSur.add(solar4);
+        Casilla solar5 = new Casilla("Solar5", "Solar", 10, 10, banca);
+        ladoSur.add(solar5);
+
+        Grupo grupo1 = new Grupo(solar1, solar2, BLUE);
+        Grupo grupo2 = new Grupo(solar3, solar4, solar5, GREEN);
+
+        grupos.put(grupo1.getColorGrupo(), grupo1);
+        grupos.put(grupo2.getColorGrupo(), grupo2);
 
         posiciones.add(ladoSur);
     }
@@ -58,16 +71,28 @@ public class Tablero {
     //Método que inserta casillas del lado oeste.
     private void insertarLadoOeste() {
         ArrayList<Casilla> ladoOeste = new ArrayList<>();
-        ladoOeste.add(new Casilla("Cárcel", "Especiales", 11, 1, banca));
-        ladoOeste.add(new Casilla("Solar6", "Solar", 12, banca));
+        ladoOeste.add(new Casilla("Cárcel", "Especiales", 1, 11, banca));
+        Casilla solar6 = new Casilla("Solar6", "Solar", 6, 12, banca);
+        ladoOeste.add(solar6);
         ladoOeste.add(new Casilla("Serv1", "Servicios", 13, banca));
-        ladoOeste.add(new Casilla("Solar7", "Solar", 14, banca));
-        ladoOeste.add(new Casilla("Solar8", "Solar", 15, banca));
+        Casilla solar7 =  new Casilla("Solar7", "Solar", 7, 14, banca);
+        ladoOeste.add(solar7);
+        Casilla solar8 = new Casilla("Solar8", "Solar", 8, 15, banca);
+        ladoOeste.add(solar8);
         ladoOeste.add(new Casilla("Trans2", "Transporte", 16, banca));
-        ladoOeste.add(new Casilla("Solar9", "Solar", 17, banca));
+        Casilla solar9 = new Casilla("Solar9", "Solar", 9, 17, banca);
+        ladoOeste.add(solar9);
         ladoOeste.add(new Casilla("Caja", "Solar", 2, 18, banca));
-        ladoOeste.add(new Casilla("Solar10", "Solar", 19, banca));
-        ladoOeste.add(new Casilla("Solar11", "Solar", 20, banca));
+        Casilla solar10 = new Casilla("Solar10", "Solar", 10, 19, banca);
+        ladoOeste.add(solar10);
+        Casilla solar11 = new Casilla("Solar11", "Solar", 11, 20, banca);
+        ladoOeste.add(solar11);
+
+        Grupo grupo3 = new Grupo(solar6, solar7, solar8, PURPLE);
+        Grupo grupo4 = new Grupo(solar9, solar10, solar11, CYAN);
+
+        grupos.put(grupo3.getColorGrupo(), grupo3);
+        grupos.put(grupo4.getColorGrupo(), grupo4);
 
         posiciones.add(ladoOeste);
     }
@@ -75,16 +100,28 @@ public class Tablero {
     //Método para insertar las casillas del lado norte.
     private void insertarLadoNorte() {
         ArrayList<Casilla> ladoNorte = new ArrayList<>();
-        ladoNorte.add(new Casilla("Parking", "Especiales", 20, banca));
-        ladoNorte.add(new Casilla("Solar12", "Solar", 21, 100, banca));
-        ladoNorte.add(new Casilla("Suerte", "Suerte", 22, banca));
-        ladoNorte.add(new Casilla("Solar13", "Solar", 23, 100, banca));
-        ladoNorte.add(new Casilla("Solar14", "Solar", 24, 100, banca));
-        ladoNorte.add(new Casilla("Trans3", "Transporte", 25, 100, banca));
-        ladoNorte.add(new Casilla("Solar15", "Solar", 26, 100, banca));
-        ladoNorte.add(new Casilla("Solar16", "Solar", 27, 100, banca));
-        ladoNorte.add(new Casilla("Serv2", "Servicios", 28, 100, banca));
-        ladoNorte.add(new Casilla("Solar17", "Solar", 29, 100, banca));
+        ladoNorte.add(new Casilla("Parking", "Especiales", 21, banca));
+        Casilla solar12 = new Casilla("Solar12", "Solar", 12, 22, banca);
+        ladoNorte.add(solar12);
+        ladoNorte.add(new Casilla("Suerte", "Suerte", 23, banca));
+        Casilla solar13 = new Casilla("Solar13", "Solar", 13, 24, banca);
+        ladoNorte.add(solar13);
+        Casilla solar14 = new Casilla("Solar14", "Solar", 14, 25, banca);
+        ladoNorte.add(solar14);
+        ladoNorte.add(new Casilla("Trans3", "Transporte", 25, 26, banca));
+        Casilla solar15 = new Casilla("Solar15", "Solar", 15, 27, banca);
+        ladoNorte.add(solar15);
+        Casilla solar16 = new Casilla("Solar16", "Solar", 16, 28, banca);
+        ladoNorte.add(solar16);
+        ladoNorte.add(new Casilla("Serv2", "Servicios", 28, 29, banca));
+        Casilla solar17 = new Casilla("Solar17", "Solar", 17, 30, banca);
+        ladoNorte.add(solar17);
+
+        Grupo grupo5 = new Grupo(solar12, solar13, solar14, YELLOW);
+        Grupo grupo6 = new Grupo(solar15, solar16, solar17, RED);
+
+        grupos.put(grupo5.getColorGrupo(), grupo5);
+        grupos.put(grupo6.getColorGrupo(), grupo6);
 
         posiciones.add(ladoNorte);
     }
@@ -92,16 +129,27 @@ public class Tablero {
     //Método que inserta las casillas del lado este.
     private void insertarLadoEste() {
         ArrayList<Casilla> ladoEste = new ArrayList<>();
-        ladoEste.add(new Casilla("IrCarcel", "Especiales", 30, banca));
-        ladoEste.add(new Casilla("Solar18", "Solar", 31, 100, banca));
-        ladoEste.add(new Casilla("Solar19", "Solar", 32, 100, banca));
-        ladoEste.add(new Casilla("Caja", "Solar", 33, 100, banca));
-        ladoEste.add(new Casilla("Solar20", "Solar", 34, 100, banca));
-        ladoEste.add(new Casilla("Trans4", "Transporte", 35, 100, banca));
-        ladoEste.add(new Casilla("Suerte", "Solar", 36, 100, banca));
-        ladoEste.add(new Casilla("Solar21", "Solar", 37, 100, banca));
-        ladoEste.add(new Casilla("Imp2", "Impuestos", 38, 100, banca));
-        ladoEste.add(new Casilla("Solar22", "Solar", 39, 100, banca));
+        ladoEste.add(new Casilla("IrCarcel", "Especiales", 31, banca));
+        Casilla solar18 = new Casilla("Solar18", "Solar", 18, 32, banca);
+        ladoEste.add(solar18);
+        Casilla solar19 = new Casilla("Solar19", "Solar", 19, 33, banca);
+        ladoEste.add(solar19);
+        ladoEste.add(new Casilla("Caja", "Solar", 33, 34, banca));
+        Casilla solar20 = new Casilla("Solar20", "Solar", 20, 35, banca);
+        ladoEste.add(solar20);
+        ladoEste.add(new Casilla("Trans4", "Transporte", 35, 36, banca));
+        ladoEste.add(new Casilla("Suerte", "Solar", 36, 37, banca));
+        Casilla solar21 = new Casilla("Solar21", "Solar", 21, 38, banca);
+        ladoEste.add(solar21);
+        ladoEste.add(new Casilla("Imp2", "Impuestos", 38, 39, banca));
+        Casilla solar22 = new Casilla("Solar22", "Solar", 22, 40, banca);
+        ladoEste.add(solar22);
+
+        Grupo grupo7 = new Grupo(solar18, solar19, solar20, BLACK);
+        Grupo grupo8 = new Grupo(solar21, solar22, IRed);
+
+        grupos.put(grupo7.getColorGrupo(), grupo7);
+        grupos.put(grupo8.getColorGrupo(), grupo8);
 
         posiciones.add(ladoEste);
     }
@@ -148,7 +196,7 @@ public class Tablero {
                     """.formatted(
                 "─".repeat(122),
                 //Norte (con la última casilla el inicio del este)
-                posiciones.get(2).get(0).getNombre(),
+                posiciones.get(2).get(0).getGrupo().getColorGrupo() + posiciones.get(2).get(0).getNombre() + RESET,
                 posiciones.get(2).get(1).getNombre(),
                 posiciones.get(2).get(2).getNombre(),
                 posiciones.get(2).get(3).getNombre(),
@@ -292,15 +340,12 @@ public class Tablero {
         // Formatear el tablero con las casillas
         return tablero;
     }
-
-    public String representarTablero() {
-        return null; //
-    }
     
     //Método usado para buscar la casilla con el nombre pasado como argumento:
     public Casilla encontrar_casilla(String nombre){
         return null; //
     }
+
 }
 
 /*
