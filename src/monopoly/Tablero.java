@@ -27,6 +27,7 @@ public class Tablero {
         this.grupos = new HashMap<String, Grupo>(8);
         this.generarCasillas();
     }
+  
     //Método para crear todas las casillas del tablero. Formado a su vez por cuatro métodos (1/lado).
     private void generarCasillas() {
 
@@ -328,5 +329,14 @@ public class Tablero {
     //Método usado para buscar la casilla con el nombre pasado como argumento:
     public Casilla encontrar_casilla(String nombre){
         return null; //
+    }
+
+    public String describirCasilla(String nombre) {
+        for (Casilla casilla : posiciones) {
+            if (casilla.getNombre().equalsIgnoreCase(nombre)) {
+                return Casillas.get(casilla.getPosicion()).describirCasilla();
+            }
+        }
+        return nombre;
     }
 }

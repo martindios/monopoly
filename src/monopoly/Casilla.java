@@ -2,6 +2,7 @@ package monopoly;
 
 import partida.*;
 import java.util.ArrayList;
+import java.lang.String;
 import java.util.Objects;
 
 
@@ -145,6 +146,58 @@ public class Casilla {
         return null;
     }
 
+    /*
+    GETTERS
+    */
+
+    //getter para devolver el nombre de la casilla
+    public String getNombre() {
+        return nombre;
+    }
+
+    //getter para devolver el tipo de la casilla
+    public String getTipo() {
+        return tipo;
+    }
+
+    //getter para devolver el valor de la casilla
+    public float getValor() {
+        return valor;
+    }
+
+    //getter para devolver la posición de la casilla
+    public int getPosicion() {
+        return posicion;
+    }
+
+    //getter para devolver el dueño de la casilla
+    public Jugador getDuenho() {
+        return duenho;
+    }
+
+    //getter para devolver el grupo de la casilla
+    public Grupo getGrupo() {
+        return grupo;
+    }
+
+    //getter para devolver la cantidad que hay que pagar al caer en la casilla
+    public float getImpuesto() {
+        return impuesto;
+    }
+
+    //getter para devolver el valor otorgado por hipotecar una casilla
+    public float getHipoteca() {
+        return hipoteca;
+    }
+
+    //getter para devolver la lista de los avatares en la casilla
+    public ArrayList<Avatar> getAvatares() {
+        return avatares;
+    }
+
+    /*
+    SETTERS
+    */
     /**
      * Metodo para clasificar solares
 

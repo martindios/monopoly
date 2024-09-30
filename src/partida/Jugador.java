@@ -17,6 +17,8 @@ public class Jugador {
     private int vueltas; //Cuenta las vueltas dadas al tablero.
     private ArrayList<Casilla> propiedades; //Propiedades que posee el jugador.
 
+    private ArrayList<String> edificios; //Propiedades que posee el jugador.
+
     //Constructor vacío. Se usará para crear la banca.
     public Jugador() {
     }
@@ -64,4 +66,57 @@ public class Jugador {
     public void encarcelar(ArrayList<ArrayList<Casilla>> pos) {
     }
 
+    public String getNombre() {
+        return nombre;
+    }
+
+    private String listaPropiedades() {
+        String listaPropiedades = "";
+        if (!propiedades.isEmpty()) {
+            listaPropiedades = listaPropiedades + "[" + propiedades.get(0);
+
+            for(int i = 1; i < propiedades.size(); ++i) {
+                listaPropiedades = listaPropiedades + ", " + propiedades.get(i);
+            }
+
+            listaPropiedades = listaPropiedades + "]";
+        }
+        else {
+            listaPropiedades = "[]";
+        }
+        return listaPropiedades;
+    }
+
+    private String listaHipotecas() {
+        String listaHipotecas = "";
+        if (!hipotecas.isEmpty()) {
+            listaHipotecas = listaHipotecas + "[" + hipotecas.get(0);
+
+            for(int i = 1; i < hipotecas.size(); ++i) {
+                listaHipotecas = listaHipotecas + ", " + hipotecas.get(i);
+            }
+
+            listaHipotecas = listaHipotecas + "]";
+        }
+        else {
+            listaHipotecas = "[]";
+        }
+        return listaHipotecas;
+    }
+
+    public String info() {
+        String listaPropiedades = listaPropiedades();
+        String listaHipotecas = listaHipotecas();
+
+        String info = """
+                {
+                Nombre: %s
+                Avatar: %s
+                Fortuna: %f
+                Propiedades: %s
+                Hipotecas: %s
+                Edificios: %s
+                }""".formatted(nombre, avatar, fortuna, listaPropiedades, listaHipotecas, edificios);
+        return info;
+    }
 }
