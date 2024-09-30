@@ -44,13 +44,6 @@ class Grupo {
         this.miembros.add(cas3);
     }
 
-    //Getters temporales para el tablero
-    public String getColorGrupo() {
-        return colorGrupo;
-    }
-    public ArrayList<Casilla> getMiembros() {
-        return miembros;
-    }
 
     /* Método que añade una casilla al array de casillas miembro de un grupo.
     * Parámetro: casilla que se quiere añadir.
@@ -68,11 +61,6 @@ class Grupo {
 
 
 
-
-    //Getter temporal
-    public String getColorGrupo() {
-        return colorGrupo;
-    }
 
     /*
     GETTERS
