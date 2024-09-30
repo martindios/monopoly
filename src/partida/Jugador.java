@@ -17,6 +17,8 @@ public class Jugador {
     private int vueltas; //Cuenta las vueltas dadas al tablero.
     private ArrayList<Casilla> propiedades; //Propiedades que posee el jugador.
 
+    private ArrayList<String> hipotecas;
+
     private ArrayList<String> edificios; //Propiedades que posee el jugador.
 
     //Constructor vacío. Se usará para crear la banca.

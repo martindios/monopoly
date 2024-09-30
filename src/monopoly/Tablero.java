@@ -181,7 +181,7 @@ public class Tablero {
                     """.formatted(
                 "─".repeat(122),
                 //Norte (con la última casilla el inicio del este)
-                posiciones.get(2).get(0).getGrupo().getColorGrupo() + posiciones.get(2).get(0).getNombre() + RESET,
+                posiciones.get(2).get(0).getNombre(),
                 posiciones.get(2).get(1).getNombre(),
                 posiciones.get(2).get(2).getNombre(),
                 posiciones.get(2).get(3).getNombre(),
@@ -331,12 +331,15 @@ public class Tablero {
         return null; //
     }
 
+    /**
     public String describirCasilla(String nombre) {
-        for (Casilla casilla : posiciones) {
+        for (ArrayList<Casilla> casilla : posiciones) {
             if (casilla.getNombre().equalsIgnoreCase(nombre)) {
-                return Casillas.get(casilla.getPosicion()).describirCasilla();
+                //return Casilla.get(casilla.getPosicion()).describirCasilla();
+                return null;
             }
         }
         return nombre;
     }
+     **/
 }

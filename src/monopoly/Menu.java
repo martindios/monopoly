@@ -90,7 +90,7 @@ public class Menu {
             case 4:
                 System.out.println("Introduce el nombre de la casilla:");
                 String nombreCasilla = scanner.nextLine();
-                descCasilla(nombreCasilla);
+                //descCasilla(nombreCasilla);
                 break;
             case 5:
                 lanzarDados();
@@ -177,7 +177,7 @@ public class Menu {
         String casilla = scanner.nextLine();
         //Comprobar si la casilla es correcta
 
-        System.out.println(tablero.describirCasilla(casilla));
+        //System.out.println(tablero.describirCasilla(casilla));
     }
 
     //Método que ejecuta todas las acciones relacionadas con el comando 'lanzar dados'.
