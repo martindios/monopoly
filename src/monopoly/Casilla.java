@@ -2,6 +2,8 @@ package monopoly;
 
 import partida.*;
 import java.util.ArrayList;
+import java.lang.String;
+
 
 
 public class Casilla {

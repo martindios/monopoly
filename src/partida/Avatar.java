@@ -63,4 +63,14 @@ public class Avatar {
     public Casilla getLugar() {
         return lugar;
     }
+    public String infoAvatar() {
+        String toString = """
+                {
+                Id: %s
+                Tipo: %s
+                Casilla: %s
+                Jugador: %s
+                }""".formatted(id, tipo, lugar, jugador);
+        return toString;
+    }
 }
