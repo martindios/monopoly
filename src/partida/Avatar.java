@@ -3,6 +3,8 @@ package partida;
 import monopoly.*;
 
 import java.util.ArrayList;
+import java.util.Random;
+
 
 
 public class Avatar {
@@ -45,6 +47,14 @@ public class Avatar {
     * - Un arraylist de los avatares ya creados, con el objetivo de evitar que se generen dos ID iguales.
      */
     private void generarId(ArrayList<Avatar> avCreados) {
+        Random random = new Random();
+        int numeroAleatorio = random.nextInt(26) + 65;  // Genera un número entre 65 y 90
+        char idCreado = (char) numeroAleatorio;  // Convierte el número a su carácter correspondiente en mayúsculas
+        for(Avatar avatar : avCreados){
+            //if(idCreado == avatar.getId()){
+
+            //}
+        }
     }
 
     /*

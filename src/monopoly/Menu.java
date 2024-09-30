@@ -222,4 +222,11 @@ public class Menu {
     private void acabarTurno() {
     }
 
+    private void DarAltaJugador(String nombre, String tipoAvatar){
+        Casilla SALIDA = new Casilla("SALIDA", "SALIDA", 0);
+        Jugador jugador = new Jugador(nombre, tipoAvatar, SALIDA , avatares);
+
+
+    }
+
 }
