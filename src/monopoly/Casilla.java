@@ -2,6 +2,7 @@ package monopoly;
 
 import partida.*;
 import java.util.ArrayList;
+import java.util.Objects;
 
 
 public class Casilla {
@@ -25,6 +26,7 @@ public class Casilla {
     /*Constructor para casillas tipo Solar, Servicios o Transporte:
     * Parámetros: nombre casilla, tipo (debe ser solar, serv. o transporte), posición en el tablero, valor y dueño.
      */
+
     //Aquí falta o grupo, que sinceramente, nin puta idea de como facelo, pq mo imagino como algo circular
     //Generamos o tablero, que genera as casillas e dsp genera os grupos metendo as casillas, pero se se generan antes as casillas
     //Como coño inicializo un grupo se nin existen. O que se me ocurre é generar as casillas sin grupos, generar dsp os grupos e dsp crear un
@@ -49,6 +51,7 @@ public class Casilla {
         this.hipoteca = valor*0.5f;
         avatares = new ArrayList<Avatar>();
     }
+    
 
     /*Constructor utilizado para inicializar las casillas de tipo IMPUESTOS.
     * Parámetros: nombre, posición en el tablero, impuesto establecido y dueño.
@@ -73,6 +76,9 @@ public class Casilla {
     /*Constructor utilizado para crear las otras casillas (Suerte, Caja de comunidad y Especiales[carcel, parking, salida, IrCarcel]):
     * Parámetros: nombre, tipo de la casilla (será uno de los que queda), posición en el tablero y dueño.
      */
+    //public Casilla(String nombre, String tipo, int posicion, Jugador duenho) {
+    //}
+    //temporal
     public Casilla(String nombre, String tipo, int posicion, Jugador duenho) {
         this.nombre = nombre;
         this.tipo = tipo;
@@ -134,6 +140,7 @@ public class Casilla {
     /* Método para mostrar información de una casilla en venta.
      * Valor devuelto: texto con esa información.
      */
+
     public String casaEnVenta() {
         return null;
     }

@@ -9,5 +9,4 @@ public class Dado {
     public int hacerTirada() {
         return 0;
     }
-
 }

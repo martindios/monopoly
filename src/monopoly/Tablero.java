@@ -4,6 +4,8 @@ import partida.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import static monopoly.Valor.*;
+
 
 public class Tablero {
     //Atributos.
@@ -13,19 +15,26 @@ public class Tablero {
 
     //Constructor: únicamente le pasamos el jugador banca (que se creará desde el menú).
     public Tablero(Jugador banca) {
-        this.posiciones = new ArrayList<>();
-        this.grupos = new HashMap<>();
         this.banca = banca;
+        this.posiciones = new ArrayList<>(4);
+        this.grupos = new HashMap<String, Grupo>(8);
+        this.generarCasillas();
     }
 
+    //TEMPORAL, borrarlo pero lo de dentro está bien
+    public Tablero() {
+        this.posiciones = new ArrayList<>(4);
+        this.grupos = new HashMap<String, Grupo>(8);
+        this.generarCasillas();
+    }
     //Método para crear todas las casillas del tablero. Formado a su vez por cuatro métodos (1/lado).
     private void generarCasillas() {
+
         this.insertarLadoSur();
         this.insertarLadoOeste();
         this.insertarLadoNorte();
         this.insertarLadoEste();
     }
-
     //Método para insertar las casillas del lado norte.
     private void insertarLadoNorte() {
         ArrayList<Casilla> ladoNorte = new ArrayList<>();
@@ -76,6 +85,8 @@ public class Tablero {
         grupos.put(grupo2.getColorGrupo(), grupo2);
         posiciones.add(ladoSur);
     }
+
+
 
     //Método que inserta casillas del lado oeste.
     private void insertarLadoOeste() {
@@ -131,20 +142,191 @@ public class Tablero {
     //Para imprimir el tablero, modificamos el método toString().
     @Override
     public String toString() {
-        return null;
+        String tablero = """
+                    %s
+                    │%10s│%10s│%10s│%10s│%10s│%10s│%10s│%10s│%10s│%10s│%10s│
+                    │%10s│%10s│%10s│%10s│%10s│%10s│%10s│%10s│%10s│%10s│%10s│
+                    %s
+                    │%10s│                                                                                                  │%10s│
+                    │%10s│                                                                                                  │%10s│
+                    %s                                                                                                  %s
+                    │%10s│                                                                                                  │%10s│
+                    │%10s│                                                                                                  │%10s│
+                    %s                                                                                                  %s
+                    │%10s│                                                                                                  │%10s│
+                    │%10s│                                                                                                  │%10s│
+                    %s                                                                                                  %s
+                    │%10s│                                                                                                  │%10s│
+                    │%10s│                                                                                                  │%10s│
+                    %s                                                                                                  %s
+                    │%10s│                                                                                                  │%10s│
+                    │%10s│                                                                                                  │%10s│
+                    %s                                                                                                  %s
+                    │%10s│                                                                                                  │%10s│
+                    │%10s│                                                                                                  │%10s│
+                    %s                                                                                                  %s
+                    │%10s│                                                                                                  │%10s│
+                    │%10s│                                                                                                  │%10s│
+                    %s                                                                                                  %s
+                    │%10s│                                                                                                  │%10s│
+                    │%10s│                                                                                                  │%10s│
+                    %s                                                                                                  %s
+                    │%10s│                                                                                                  │%10s│
+                    │%10s│                                                                                                  │%10s│
+                    %s
+                    │%10s│%10s│%10s│%10s│%10s│%10s│%10s│%10s│%10s│%10s│%10s│
+                    │%10s│%10s│%10s│%10s│%10s│%10s│%10s│%10s│%10s│%10s│%10s│
+                    %s
+                    """.formatted(
+                "─".repeat(122),
+                //Norte (con la última casilla el inicio del este)
+                posiciones.get(2).get(0).getGrupo().getColorGrupo() + posiciones.get(2).get(0).getNombre() + RESET,
+                posiciones.get(2).get(1).getNombre(),
+                posiciones.get(2).get(2).getNombre(),
+                posiciones.get(2).get(3).getNombre(),
+                posiciones.get(2).get(4).getNombre(),
+                posiciones.get(2).get(5).getNombre(),
+                posiciones.get(2).get(6).getNombre(),
+                posiciones.get(2).get(7).getNombre(),
+                posiciones.get(2).get(8).getNombre(),
+                posiciones.get(2).get(9).getNombre(),
+
+                posiciones.get(3).get(0).getNombre(),
+
+                "&J",
+                "&J",
+                "&J",
+                "&J",
+                "&J",
+                "&J",
+                "&J",
+                "&J",
+                "&J",
+                "&J",
+
+                "&J",
+
+                "─".repeat(122),
+
+                //Este y oeste simultáneo
+
+                posiciones.get(1).get(9).getNombre(),
+                posiciones.get(3).get(1).getNombre(),
+
+                "&J",
+                "&J",
+
+                "─".repeat(12),
+                "─".repeat(12),
+
+                posiciones.get(1).get(8).getNombre(),
+                posiciones.get(3).get(2).getNombre(),
+
+                "&J",
+                "&J",
+
+                "─".repeat(12),
+                "─".repeat(12),
+
+                posiciones.get(1).get(7).getNombre(),
+                posiciones.get(3).get(3).getNombre(),
+
+                "&J",
+                "&J",
+
+                "─".repeat(12),
+                "─".repeat(12),
+
+                posiciones.get(1).get(6).getNombre(),
+                posiciones.get(3).get(4).getNombre(),
+
+                "&J",
+                "&J",
+
+                "─".repeat(12),
+                "─".repeat(12),
+
+                posiciones.get(1).get(5).getNombre(),
+                posiciones.get(3).get(5).getNombre(),
+
+                "&J",
+                "&J",
+
+                "─".repeat(12),
+                "─".repeat(12),
+
+                posiciones.get(1).get(4).getNombre(),
+                posiciones.get(3).get(6).getNombre(),
+
+                "&J",
+                "&J",
+
+                "─".repeat(12),
+                "─".repeat(12),
+
+                posiciones.get(1).get(3).getNombre(),
+                posiciones.get(3).get(7).getNombre(),
+
+                "&J",
+                "&J",
+
+                "─".repeat(12),
+                "─".repeat(12),
+
+                posiciones.get(1).get(2).getNombre(),
+                posiciones.get(3).get(8).getNombre(),
+
+                "&J",
+                "&J",
+
+                "─".repeat(12),
+                "─".repeat(12),
+
+                posiciones.get(1).get(1).getNombre(),
+                posiciones.get(3).get(9).getNombre(),
+
+                "&J",
+                "&J",
+
+                //Sur (con la primera casilla inicio oeste)
+
+                "─".repeat(122),
+
+                posiciones.get(1).get(0).getNombre(),
+
+                posiciones.get(0).get(9).getNombre(),
+                posiciones.get(0).get(8).getNombre(),
+                posiciones.get(0).get(7).getNombre(),
+                posiciones.get(0).get(6).getNombre(),
+                posiciones.get(0).get(5).getNombre(),
+                posiciones.get(0).get(4).getNombre(),
+                posiciones.get(0).get(3).getNombre(),
+                posiciones.get(0).get(2).getNombre(),
+                posiciones.get(0).get(1).getNombre(),
+                posiciones.get(0).get(0).getNombre(),
+
+                "&J",
+                "&J",
+                "&J",
+                "&J",
+                "&J",
+                "&J",
+                "&J",
+                "&J",
+                "&J",
+                "&J",
+                "&J",
+
+                "─".repeat(122)
+
+        );
+
+        // Formatear el tablero con las casillas
+        return tablero;
     }
     
     //Método usado para buscar la casilla con el nombre pasado como argumento:
     public Casilla encontrar_casilla(String nombre){
-        return null;
+        return null; //
     }
-
-
-
-
-
-    //Getters temporales para el código de tablero
-
-
-
 }
