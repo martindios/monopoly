@@ -45,9 +45,10 @@ public class Menu {
         Scanner scanner = new Scanner(System.in);
 
         while (opcion != 0) {
-            mostrarMenu();  // Mostramos o menu antes das accions
-            opcion = scanner.nextInt();  // Leemos o input
-            ejecutarOpcion(opcion);      // Ejecutamos
+            System.out.println("\n==== MONOPOLY ====");
+            System.out.println("Pulsa cualquier tecla para iniciar la partida");
+            scanner.nextLine();
+            iniciarPartida();
         }
     }
 
@@ -127,12 +128,46 @@ public class Menu {
 
     // Método para inciar una partida: crea los jugadores y avatares.
     private void iniciarPartida() {
+        System.out.println("Iniciando partida");
+        System.out.println("Introduce el comando: ");
+        String comando = scanner.nextLine();
+        analizarComando(comando);
+
     }
     
     /*Método que interpreta el comando introducido y toma la accion correspondiente.
     * Parámetro: cadena de caracteres (el comando).
     */
     private void analizarComando(String comando) {
+        String[] palabrasArray = comando.split(" ");
+        if (palabrasArray.length > 0) {
+            switch (palabrasArray[0]) {
+                case "listar":
+                    System.out.println("Listando jugadores");
+                    break;
+                case "crear":
+                    System.out.println("Creando jugador");
+                    break;
+                case "jugador":
+                    System.out.println("Tiene el turno X jugador");
+                    break;
+                case "lanzar":
+                    System.out.println("Lanzando dados");
+                    break;
+                case "acabar":
+                    System.out.println("Acabando turno");
+                    break;
+                case "salir":
+                    System.out.println("Salir de la cárcel");
+                case "describir":
+                    System.out.println("Describe la casilla");
+                case "comprar":
+                    System.out.println("Comprar la casilla");
+                case "ver":
+                    System.out.println("ver tablero");
+            }
+        }
+
     }
 
     /*Método que realiza las acciones asociadas al comando 'describir jugador'.
