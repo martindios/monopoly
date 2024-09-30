@@ -22,11 +22,11 @@ class Grupo {
     //}
     //temporal
     public Grupo(Casilla cas1, Casilla cas2, String colorGrupo) {
+        this.numCasillas = 2;
+        this.colorGrupo = colorGrupo;
         this.miembros = new ArrayList<Casilla>();
         this.miembros.add(cas1);
         this.miembros.add(cas2);
-        this.colorGrupo = colorGrupo;
-        this.numCasillas = 2;
     }
 
     /*Constructor para cuando el grupo está formado por TRES CASILLAS:
@@ -36,12 +36,12 @@ class Grupo {
     //}
     //temporal
     public Grupo(Casilla cas1, Casilla cas2, Casilla cas3, String colorGrupo) {
+        this.numCasillas = 3;
+        this.colorGrupo = colorGrupo;
         this.miembros = new ArrayList<Casilla>();
         this.miembros.add(cas1);
         this.miembros.add(cas2);
         this.miembros.add(cas3);
-        this.colorGrupo = colorGrupo;
-        this.numCasillas = 3;
     }
 
     //Getters temporales para el tablero
@@ -63,7 +63,15 @@ class Grupo {
     * Valor devuelto: true si es dueño de todas las casillas del grupo, false en otro caso.
      */
     public boolean esDuenhoGrupo(Jugador jugador) {
-        return false; //
+        return false;
+    }
+
+
+
+
+    //Getter temporal
+    public String getColorGrupo() {
+        return colorGrupo;
     }
 
 }
