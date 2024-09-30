@@ -19,6 +19,7 @@ public class Casilla {
     private float hipoteca; //Valor otorgado por hipotecar una casilla
     private ArrayList<Avatar> avatares; //Avatares que están situados en la casilla.
 
+
     //Constructores:
     //Parámetros vacíos
     public Casilla() {
@@ -99,6 +100,32 @@ public class Casilla {
         //Hipoteca tmp ten nada
         this.avatares = new ArrayList<Avatar>();
     }
+
+    //SETTERS
+    public void setValor(float valor) {
+        if(valor < 0) this.valor = 0;
+        else this.valor = valor;
+    }
+
+    public void setDuenho(Jugador duenho) {
+        this.duenho = duenho;
+    }
+
+    //Setter de Impuesto. Cnd s edifica, o alquiler do solar aumenta
+    public void setImpuesto(float impuesto) {
+        if(impuesto < 0) this.impuesto = 0;
+        else this.impuesto = impuesto;
+    }
+
+    public void setHipoteca(float hipoteca) {
+        if(hipoteca < 0) this.hipoteca = 0;
+        else this.hipoteca = hipoteca;
+    }
+
+    public void setAvatares(ArrayList<Avatar> avatares) {
+        this.avatares = avatares;
+    }
+
 
     //Método utilizado para añadir un avatar al array de avatares en casilla.
     public void anhadirAvatar(Avatar av) {

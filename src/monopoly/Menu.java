@@ -36,10 +36,10 @@ public class Menu {
         this.banca = new Jugador();
         this.tablero = new Tablero(banca);
 
-        ejecutarMenu();
+        //ejecutarMenu();
     }
 
-    // Metodo que mostra o menu
+    /* Metodo que mostra o menu
     private void ejecutarMenu() {
         int opcion = -1;
         Scanner scanner = new Scanner(System.in);
@@ -122,8 +122,12 @@ public class Menu {
                 System.out.println("Opción no válida. Por favor, elige una opción válida.");
                 break;
         }
-    }
+    } */
 
+    //SETTERS
+    public void setTurno(int turno) {
+        this.turno = turno;
+    }
 
     // Método para inciar una partida: crea los jugadores y avatares.
     private void iniciarPartida() {
