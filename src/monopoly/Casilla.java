@@ -2,6 +2,7 @@ package monopoly;
 
 import partida.*;
 import java.util.ArrayList;
+import java.util.Objects;
 
 
 public class Casilla {
@@ -24,19 +25,60 @@ public class Casilla {
     /*Constructor para casillas tipo Solar, Servicios o Transporte:
     * Parámetros: nombre casilla, tipo (debe ser solar, serv. o transporte), posición en el tablero, valor y dueño.
      */
-    public Casilla(String nombre, String tipo, int posicion, float valor, Jugador duenho) {
+
+    //public Casilla(String nombre, String tipo, int posicion, float valor, Jugador duenho) {
+    //}
+    //temporal
+    public Casilla(String nombre, String tipo, float valor, int posicion, Jugador duenho) {
+        this.nombre = nombre;
+        this.tipo = tipo;
+        this.valor = valor;
+        this.posicion = posicion;
+        this.duenho = duenho;
+        if (Objects.equals(this.tipo, "Solar")){
+            guardarCasillaGrupo();
+        }
+    }
+
+    //mover de sitio
+    private void guardarCasillaGrupo() {
+        if (posicion == 2 || posicion == 4) {
+            grupo = new Grupo();
+        }
     }
 
     /*Constructor utilizado para inicializar las casillas de tipo IMPUESTOS.
     * Parámetros: nombre, posición en el tablero, impuesto establecido y dueño.
      */
+    //public Casilla(String nombre, int posicion, float impuesto, Jugador duenho) {
+    //}
+    //temporal
     public Casilla(String nombre, int posicion, float impuesto, Jugador duenho) {
+        this.nombre = nombre;
+        this.posicion = posicion;
+        this.impuesto = impuesto;
+        this.duenho = duenho;
     }
 
     /*Constructor utilizado para crear las otras casillas (Suerte, Caja de comunidad y Especiales):
     * Parámetros: nombre, tipo de la casilla (será uno de los que queda), posición en el tablero y dueño.
      */
+    //public Casilla(String nombre, String tipo, int posicion, Jugador duenho) {
+    //}
+    //temporal
     public Casilla(String nombre, String tipo, int posicion, Jugador duenho) {
+        this.nombre = nombre;
+        this.tipo = tipo;
+        this.posicion = posicion;
+        this.duenho = duenho;
+    }
+
+    //Getters temporales para el código de tablero
+    public String getNombre() {
+        return nombre;
+    }
+    public Grupo getGrupo() {
+        return grupo;
     }
 
     //Método utilizado para añadir un avatar al array de avatares en casilla.
@@ -54,6 +96,7 @@ public class Casilla {
     * Valor devuelto: true en caso de ser solvente (es decir, de cumplir las deudas), y false
     * en caso de no cumplirlas.*/
     public boolean evaluarCasilla(Jugador actual, Jugador banca, int tirada) {
+        return false; //
     }
 
     /*Método usado para comprar una casilla determinada. Parámetros:
@@ -72,12 +115,14 @@ public class Casilla {
     /*Método para mostrar información sobre una casilla.
     * Devuelve una cadena con información específica de cada tipo de casilla.*/
     public String infoCasilla() {
+        return null; //
     }
 
     /* Método para mostrar información de una casilla en venta.
      * Valor devuelto: texto con esa información.
      */
     public String casEnVenta() {
+        return null; //
     }
 
 }

@@ -4,7 +4,11 @@ public class MonopolyETSE {
 
     public static void main(String[] args) {
         new Menu();
-        System.out.println("puta");
+
+
+        Tablero tablero = new Tablero();
+        System.out.println(tablero.toString());
+
     }
     
 }
