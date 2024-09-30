@@ -44,6 +44,8 @@ public class Jugador {
         this.propiedades = new ArrayList<>();
     }
 
+
+
     //Otros métodos:
     //Método para añadir una propiedad al jugador. Como parámetro, la casilla a añadir.
     public void anhadirPropiedad(Casilla casilla) {
