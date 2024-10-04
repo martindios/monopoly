@@ -92,6 +92,10 @@ public class Jugador {
         return nombre;
     }
 
+    public int getTiradasCarcel() {
+        return tiradasCarcel;
+    }
+
     private String listaPropiedades() {
         String listaPropiedades = "";
         if (!propiedades.isEmpty()) {

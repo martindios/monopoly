@@ -58,7 +58,6 @@ public class Casilla {
     /*Constructor utilizado para inicializar las casillas de tipo IMPUESTOS.
     * Parámetros: nombre, posición en el tablero, impuesto establecido y dueño.
      */
-    //DUDA: En atribs que nn teñen moito sentido, como aquí valor ou hipoteca, non os inicializamos? Inicializanse a 0? a null?
     public Casilla(String nombre, int posicion, float impuesto, Jugador duenho) {
         this.nombre = nombre;
         this.tipo = "IMPUESTOS";
@@ -161,8 +160,79 @@ public class Casilla {
 
     /*Método para mostrar información sobre una casilla.
     * Devuelve una cadena con información específica de cada tipo de casilla.*/
-    public String infoCasilla() {
-        return null;
+    public String infoCasilla(Casilla casilla) {
+        String descripcion = "Descripción de la casilla: " + casilla.getNombre() + ". Posición " + casilla.getPosicion() + ".";
+        System.out.println(descripcion);
+        if(casilla.tipo.equals("SOLAR")) {
+            StringBuilder solar  =new StringBuilder();
+            solar.append("Tipo: ").append(casilla.tipo.toLowerCase() + ",\n");
+            solar.append("grupo: ").append(casilla.grupo + ",\n");
+            solar.append("propietario: ").append(casilla.duenho + ",\n");
+            solar.append("valor: ").append(casilla.valor + ",\n");
+            solar.append("alquiler: ").append(casilla.impuesto + ",\n");
+            solar.append("Hipoteca: ").append(casilla.hipoteca + ",\n");
+            solar.append("valor hotel: ").append(casilla.valor*0.6 + ",\n");
+            solar.append("valor casa: ").append(casilla.valor*0.6 + ",\n");
+            solar.append("valor piscina: ").append(casilla.valor*0.4 + ",\n");
+            solar.append("pista de deporte: ").append(casilla.valor*1.25 + ",\n");
+            solar.append("alquiler una casa: ").append(casilla.impuesto*5 + ",\n");
+            solar.append("alquiler dos casas: ").append(casilla.impuesto*15 + ",\n");
+            solar.append("alquiler tres casas: ").append(casilla.impuesto*35 + ",\n");
+            solar.append("alquiler cuatro casas: ").append(casilla.impuesto*50 + ",\n");
+            solar.append("alquiler hotel: ").append(casilla.impuesto*70 + ",\n");
+            solar.append("alquiler piscina: ").append(casilla.impuesto*25 + ",\n");
+            solar.append("alquiler pista de deporte: ").append(casilla.impuesto*25 + ",\n");
+            return solar.toString();
+        }
+        else if(casilla.tipo.equals("SERVICIOS")) {
+            StringBuilder servicios = new StringBuilder();
+            servicios.append("Tipo: ").append(casilla.tipo.toLowerCase() + ",\n");
+            servicios.append("dueño: ").append(casilla.duenho + ",\n");
+            servicios.append("valor: ").append(casilla.valor + ",\n");
+            servicios.append("hipoteca: ").append(casilla.hipoteca + ",\n");
+            return servicios.toString();
+        }
+        else if(casilla.tipo.equals("TRANSPORTE")) {
+            StringBuilder transporte = new StringBuilder();
+            transporte.append("Tipo: ").append(casilla.tipo.toLowerCase() + ",\n");
+            transporte.append("dueño: ").append(casilla.duenho + ",\n");
+            transporte.append("valor: ").append(casilla.valor + ",\n");
+            transporte.append("hipoteca: ").append(casilla.impuesto + ",\n");
+            return transporte.toString();
+        }
+        else if(casilla.tipo.equals("IMPUESTOS")) {
+            StringBuilder impuestos = new StringBuilder();
+            impuestos.append("Tipo: ").append(casilla.tipo.toLowerCase() + ",\n");
+            impuestos.append("impuesto: ").append(casilla.impuesto + ",\n");
+            return impuestos.toString();
+        }
+        else if(casilla.tipo.equals("PARKING")) {
+            StringBuilder parking = new StringBuilder();
+            parking.append("Tipo: ").append(casilla.tipo.toLowerCase() + ",\n");
+            parking.append("bote: ").append(casilla.valor + ",\n");
+            parking.append("jugadores: [");
+            for(Avatar avatar : casilla.getAvatares()) {
+                parking.append(avatar.getJugador().getNombre()).append(", ");
+            }
+            if(casilla.getAvatares().size() > 0) {
+                parking.setLength(parking.length() - 2);
+            }
+            parking.append("]\n");
+            return parking.toString();
+        } else if(casilla.tipo.equals("CARCEL")) {
+            StringBuilder carcel = new StringBuilder();
+            carcel.append("Tipo: ").append(casilla.tipo.toLowerCase() + ",\n");
+            carcel.append("salir: ").append(casilla.valor + ",\n");
+            carcel.append("jugadores: ");
+            for(Avatar avatar : casilla.getAvatares()) {
+                carcel.append("[").append(avatar.getJugador().getNombre())
+                        .append(", ").append(avatar.getJugador().getTiradasCarcel()).append("] ");
+            }
+            return carcel.toString();
+        }
+        else {
+            return "Casilla sin necesidad de descripción";
+        }
     }
 
     /* Método para mostrar información de una casilla en venta.
@@ -222,21 +292,5 @@ public class Casilla {
         return avatares;
     }
 
-    /*
-    SETTERS
-    */
-    /**
-     * Metodo para clasificar solares
 
-    public String ClasificarSolar (int posicion) {
-        if(posicion == 2 || posicion == 4) return "BLUE";
-        else if(posicion == 7 || posicion == 9 || posicion == 10) return "GREEN";
-        else if(posicion == 12 || posicion == 14 || posicion == 15) return "PURPLE";
-        else if(posicion == 17 || posicion == 19 || posicion == 20) return "CYAN";
-        else if(posicion == 22 || posicion == 24 || posicion == 25) return "YELLOW";
-        else if(posicion == 27 || posicion == 28 || posicion == 30) return "RED";
-        else if(posicion == 32 || posicion == 33 || posicion == 35) return "BLACK";
-        else if(posicion == 38 || posicion == 40) return "IRED";
-        else return null;
-    }*/
 }

@@ -175,13 +175,26 @@ public class Menu {
     /* Método que realiza las acciones asociadas al comando 'describir nombre_casilla'.
     * Parámetros: nombre de la casilla a describir.
     */
-    public void descCasilla(){
-        System.out.println("Introduce el nombre de la casilla a describir:");
-        System.out.print("->");
-        String casilla = scanner.nextLine();
-        //Comprobar si la casilla es correcta
+    public void descCasilla(String NombreCasilla) {
+        ArrayList<ArrayList<Casilla>> casillas = tablero.getPosiciones();
+        boolean casillaEncontrada = false; // auxiliar
 
-        //System.out.println(tablero.describirCasilla(casilla));
+        for (ArrayList<Casilla> fila : casillas) {
+            for (Casilla casilla : fila) {
+                if (NombreCasilla.equalsIgnoreCase(casilla.getNombre())) {
+                    System.out.println(casilla.infoCasilla(casilla)); // Llamar al metodo
+                    casillaEncontrada = true;
+                    break; // Salir do bucle interno ao encontrar a casilla
+                }
+            }
+            if (casillaEncontrada) {
+                break; // Salir do bucle externo
+            }
+        }
+        // Se nn se encontra a casilla imprímese por pantalla
+        if (!casillaEncontrada) {
+            System.out.println("La casilla solicitada no existe.");
+        }
     }
 
     //Método que ejecuta todas las acciones relacionadas con el comando 'lanzar dados'.
