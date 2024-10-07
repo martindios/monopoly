@@ -36,7 +36,7 @@ public class Menu {
         this.banca = new Jugador();
         this.tablero = new Tablero(banca);
 
-        ejecutarMenu();
+        //ejecutarMenu();
     }
 
     // Metodo que mostra o menu
@@ -132,7 +132,83 @@ public class Menu {
     /*Método que interpreta el comando introducido y toma la accion correspondiente.
     * Parámetro: cadena de caracteres (el comando).
     */
-    private void analizarComando(String comando) {
+    public void analizarComando(String comando) {
+        String[] palabrasArray = comando.split(" ");
+        if (palabrasArray.length > 0) {
+            switch (palabrasArray[0]) {
+
+                case "listar": //listar jugador //listar avatar // listar enventa
+                    switch (palabrasArray[1]){
+                        case "jugadores":
+                            listarJugadores();
+                        case "avatares":
+                            listarAvatares();
+                        case "enventa":
+                            listarVenta();
+                        default:
+                            System.out.println("Comando no válido");
+                            break;
+                    }
+                    break;
+
+                case "crear":
+                    switch (palabrasArray[1]){
+                        case "jugador":
+                            darAltaJugador(palabrasArray[2], palabrasArray[3]);
+                        default:
+                            System.out.println("Comando no válido");
+                            break;
+                    }
+                    break;
+
+                case "jugador":
+                    System.out.println("Tiene el turno: " + jugadores.get(turno));
+                    break;
+
+                case "lanzar":
+                    lanzarDados();
+                    break;
+
+                case "acabar":
+                    acabarTurno();
+                    break;
+
+                case "salir":
+                    salirCarcel();
+                    break;
+
+                case "describir":
+                    switch (palabrasArray[1]){
+                        case "jugador":
+                            descJugador(palabrasArray);
+                            break;
+                        case "avatar":
+                            descAvatar(palabrasArray[2]);
+                        default:
+                            descCasilla(palabrasArray[1]);
+                            break;
+                    }
+                    break;
+
+                case "comprar":
+                    comprar(palabrasArray[1]);
+                    break;
+
+                case "ver":
+                    switch (palabrasArray[1]){
+                        case "tablero":
+                            System.out.println(tablero.toString());
+                            break;
+                        default:
+                            System.out.println("Comando no válido");
+                            break;
+                    }
+
+                default:
+                    System.out.println("Comando no válido");
+                    break;
+            }
+        }
     }
 
     /*Método que realiza las acciones asociadas al comando 'describir jugador'.
@@ -171,10 +247,10 @@ public class Menu {
     /* Método que realiza las acciones asociadas al comando 'describir nombre_casilla'.
     * Parámetros: nombre de la casilla a describir.
     */
-    public void descCasilla(){
-        System.out.println("Introduce el nombre de la casilla a describir:");
+    public void descCasilla(String casilla){
+        /*System.out.println("Introduce el nombre de la casilla a describir:");
         System.out.print("->");
-        String casilla = scanner.nextLine();
+        String casilla = scanner.nextLine();*/
         //Comprobar si la casilla es correcta
 
         //System.out.println(tablero.describirCasilla(casilla));
@@ -222,15 +298,19 @@ public class Menu {
     private void acabarTurno() {
     }
 
-    private void DarAltaJugador(String nombre, String tipoAvatar){
+    private void darAltaJugador(String nombre, String tipoAvatar){
 
-        Casilla casillaInicio = tablero.encontrar_casilla("Salida");
+        Casilla casillaInicio = tablero.encontrar_casilla("Salida"); //Se busca la casilla correspondiente a la salida
+
+        //Se crea el jugador y se añade al array que contiene a todos los participantes de la partida
         Jugador jugadorCreado = new Jugador(nombre, tipoAvatar, casillaInicio, avatares);
         jugadores.add(jugadorCreado);
-        System.out.println("{" +
-                "nombre: " + jugadorCreado.getNombre() +
-                "avatar: " + jugadorCreado.getAvatar().getId() +
-                "}");
+
+        //Se muestra por pantalla la información del jugador creado
+        System.out.println("{");
+        System.out.println("nombre: " + jugadorCreado.getNombre() + ",");
+        System.out.println("avatar: " + jugadorCreado.getAvatar().getId());
+        System.out.println("}");
 
     }
 

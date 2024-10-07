@@ -9,6 +9,11 @@ public class MonopolyETSE {
 
         Tablero tablero = new Tablero();
         System.out.println(tablero.toString());
+        /*System.out.print("$>");
+        Scanner scanner = new Scanner(System.in);
+        String comando = scanner.nextLine();
+        Menu menu = new Menu();
+        menu.analizarComando(comando);*/
 
     }
     
