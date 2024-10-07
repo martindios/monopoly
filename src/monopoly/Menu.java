@@ -225,7 +225,7 @@ public class Menu {
     * Parámetro: comando introducido
      */
     private void descJugador(String[] partes) {
-        System.out.println("Indica el nombre del jugador.");
+        /*System.out.println("Indica el nombre del jugador.");
         System.out.print("->");
         String nombre = scanner.nextLine();
         //Comprobar jugador
@@ -236,7 +236,7 @@ public class Menu {
                 return;
             }
         }
-        System.out.println("Error. El jugador no existe.");
+        System.out.println("Error. El jugador no existe.");*/
     }
 
     /*Método que realiza las acciones asociadas al comando 'describir avatar'.
@@ -317,7 +317,7 @@ public class Menu {
         System.out.println("Jugadores:");
         String toString = "";
         for (Jugador jugador : jugadores) {
-            toString += jugador.info();
+            //toString += jugador.info();
         }
         System.out.println(toString);
     }
