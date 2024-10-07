@@ -102,10 +102,16 @@ public class Casilla {
         this.avatares = new ArrayList<Avatar>();
     }
 
+
+
     //SETTERS
     public void setValor(float valor) {
         if(valor < 0) this.valor = 0;
         else this.valor = valor;
+    }
+  
+      public void setGrupo(Grupo grupo) {
+        this.grupo = grupo;
     }
 
     public void setDuenho(Jugador duenho) {
@@ -126,7 +132,6 @@ public class Casilla {
     public void setAvatares(ArrayList<Avatar> avatares) {
         this.avatares = avatares;
     }
-
 
     //Método utilizado para añadir un avatar al array de avatares en casilla.
     public void anhadirAvatar(Avatar av) {
