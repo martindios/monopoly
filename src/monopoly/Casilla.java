@@ -1,6 +1,8 @@
 package monopoly;
 
 import partida.*;
+
+import java.sql.SQLOutput;
 import java.util.ArrayList;
 import java.lang.String;
 import java.util.Objects;
@@ -149,6 +151,19 @@ public class Casilla {
     * - Jugador que solicita la compra de la casilla.
     * - Banca del monopoly (es el dueño de las casillas no compradas aún).*/
     public void comprarCasilla(Jugador solicitante, Jugador banca) {
+        if(this.duenho != banca) {
+            System.out.println("La casilla ya pertenece a un jugador.");
+            return;
+        }
+        if(solicitante.getFortuna() < this.valor) {
+            System.out.println("El jugador no tiene suficiente saldo para comprar la casilla.");
+            return;
+        }
+        System.out.println("El jugador ha comprado la casilla.");
+        solicitante.setFortuna(solicitante.getFortuna() - this.valor);
+        this.setDuenho(solicitante);
+        solicitante.setGastos(solicitante.getGastos() + this.valor);
+        solicitante.anhadirPropiedad(this);
     }
 
     /*Método para añadir valor a una casilla. Utilidad:
@@ -160,71 +175,72 @@ public class Casilla {
 
     /*Método para mostrar información sobre una casilla.
     * Devuelve una cadena con información específica de cada tipo de casilla.*/
-    public String infoCasilla(Casilla casilla) {
-        String descripcion = "Descripción de la casilla: " + casilla.getNombre() + ". Posición " + casilla.getPosicion() + ".";
+    //?
+    public String infoCasilla() {
+        String descripcion = "Descripción de la casilla: " + this.getNombre() + ". Posición " + this.getPosicion() + ".";
         System.out.println(descripcion);
-        if(casilla.tipo.equals("SOLAR")) {
+        if(this.tipo.equals("SOLAR")) {
             StringBuilder solar  =new StringBuilder();
-            solar.append("Tipo: ").append(casilla.tipo.toLowerCase() + ",\n");
-            solar.append("grupo: ").append(casilla.grupo + ",\n");
-            solar.append("propietario: ").append(casilla.duenho + ",\n");
-            solar.append("valor: ").append(casilla.valor + ",\n");
-            solar.append("alquiler: ").append(casilla.impuesto + ",\n");
-            solar.append("Hipoteca: ").append(casilla.hipoteca + ",\n");
-            solar.append("valor hotel: ").append(casilla.valor*0.6 + ",\n");
-            solar.append("valor casa: ").append(casilla.valor*0.6 + ",\n");
-            solar.append("valor piscina: ").append(casilla.valor*0.4 + ",\n");
-            solar.append("pista de deporte: ").append(casilla.valor*1.25 + ",\n");
-            solar.append("alquiler una casa: ").append(casilla.impuesto*5 + ",\n");
-            solar.append("alquiler dos casas: ").append(casilla.impuesto*15 + ",\n");
-            solar.append("alquiler tres casas: ").append(casilla.impuesto*35 + ",\n");
-            solar.append("alquiler cuatro casas: ").append(casilla.impuesto*50 + ",\n");
-            solar.append("alquiler hotel: ").append(casilla.impuesto*70 + ",\n");
-            solar.append("alquiler piscina: ").append(casilla.impuesto*25 + ",\n");
-            solar.append("alquiler pista de deporte: ").append(casilla.impuesto*25 + ",\n");
+            solar.append("Tipo: ").append(this.tipo.toLowerCase() + ",\n");
+            solar.append("grupo: ").append(this.grupo + ",\n");
+            solar.append("propietario: ").append(this.duenho + ",\n");
+            solar.append("valor: ").append(this.valor + ",\n");
+            solar.append("alquiler: ").append(this.impuesto + ",\n");
+            solar.append("Hipoteca: ").append(this.hipoteca + ",\n");
+            solar.append("valor hotel: ").append(this.valor*0.6 + ",\n");
+            solar.append("valor casa: ").append(this.valor*0.6 + ",\n");
+            solar.append("valor piscina: ").append(this.valor*0.4 + ",\n");
+            solar.append("pista de deporte: ").append(this.valor*1.25 + ",\n");
+            solar.append("alquiler una casa: ").append(this.impuesto*5 + ",\n");
+            solar.append("alquiler dos casas: ").append(this.impuesto*15 + ",\n");
+            solar.append("alquiler tres casas: ").append(this.impuesto*35 + ",\n");
+            solar.append("alquiler cuatro casas: ").append(this.impuesto*50 + ",\n");
+            solar.append("alquiler hotel: ").append(this.impuesto*70 + ",\n");
+            solar.append("alquiler piscina: ").append(this.impuesto*25 + ",\n");
+            solar.append("alquiler pista de deporte: ").append(this.impuesto*25 + ",\n");
             return solar.toString();
         }
-        else if(casilla.tipo.equals("SERVICIOS")) {
+        else if(this.tipo.equals("SERVICIOS")) {
             StringBuilder servicios = new StringBuilder();
-            servicios.append("Tipo: ").append(casilla.tipo.toLowerCase() + ",\n");
-            servicios.append("dueño: ").append(casilla.duenho + ",\n");
-            servicios.append("valor: ").append(casilla.valor + ",\n");
-            servicios.append("hipoteca: ").append(casilla.hipoteca + ",\n");
+            servicios.append("Tipo: ").append(this.tipo.toLowerCase() + ",\n");
+            servicios.append("dueño: ").append(this.duenho + ",\n");
+            servicios.append("valor: ").append(this.valor + ",\n");
+            servicios.append("hipoteca: ").append(this.hipoteca + ",\n");
             return servicios.toString();
         }
-        else if(casilla.tipo.equals("TRANSPORTE")) {
+        else if(this.tipo.equals("TRANSPORTE")) {
             StringBuilder transporte = new StringBuilder();
-            transporte.append("Tipo: ").append(casilla.tipo.toLowerCase() + ",\n");
-            transporte.append("dueño: ").append(casilla.duenho + ",\n");
-            transporte.append("valor: ").append(casilla.valor + ",\n");
-            transporte.append("hipoteca: ").append(casilla.impuesto + ",\n");
+            transporte.append("Tipo: ").append(this.tipo.toLowerCase() + ",\n");
+            transporte.append("dueño: ").append(this.duenho + ",\n");
+            transporte.append("valor: ").append(this.valor + ",\n");
+            transporte.append("hipoteca: ").append(this.impuesto + ",\n");
             return transporte.toString();
         }
-        else if(casilla.tipo.equals("IMPUESTOS")) {
+        else if(this.tipo.equals("IMPUESTOS")) {
             StringBuilder impuestos = new StringBuilder();
-            impuestos.append("Tipo: ").append(casilla.tipo.toLowerCase() + ",\n");
-            impuestos.append("impuesto: ").append(casilla.impuesto + ",\n");
+            impuestos.append("Tipo: ").append(this.tipo.toLowerCase() + ",\n");
+            impuestos.append("impuesto: ").append(this.impuesto + ",\n");
             return impuestos.toString();
         }
-        else if(casilla.tipo.equals("PARKING")) {
+        else if(this.tipo.equals("PARKING")) {
             StringBuilder parking = new StringBuilder();
-            parking.append("Tipo: ").append(casilla.tipo.toLowerCase() + ",\n");
-            parking.append("bote: ").append(casilla.valor + ",\n");
+            parking.append("Tipo: ").append(this.tipo.toLowerCase() + ",\n");
+            parking.append("bote: ").append(this.valor + ",\n");
             parking.append("jugadores: [");
-            for(Avatar avatar : casilla.getAvatares()) {
+            for(Avatar avatar : this.getAvatares()) {
                 parking.append(avatar.getJugador().getNombre()).append(", ");
             }
-            if(casilla.getAvatares().size() > 0) {
+            if(this.getAvatares().size() > 0) {
                 parking.setLength(parking.length() - 2);
             }
             parking.append("]\n");
             return parking.toString();
-        } else if(casilla.tipo.equals("CARCEL")) {
+        } else if(this.tipo.equals("CARCEL")) {
             StringBuilder carcel = new StringBuilder();
-            carcel.append("Tipo: ").append(casilla.tipo.toLowerCase() + ",\n");
-            carcel.append("salir: ").append(casilla.valor + ",\n");
+            carcel.append("Tipo: ").append(this.tipo.toLowerCase() + ",\n");
+            carcel.append("salir: ").append(this.valor + ",\n");
             carcel.append("jugadores: ");
-            for(Avatar avatar : casilla.getAvatares()) {
+            for(Avatar avatar : this.getAvatares()) {
                 carcel.append("[").append(avatar.getJugador().getNombre())
                         .append(", ").append(avatar.getJugador().getTiradasCarcel()).append("] ");
             }

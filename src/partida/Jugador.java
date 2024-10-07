@@ -67,6 +67,7 @@ public class Jugador {
     //Otros métodos:
     //Método para añadir una propiedad al jugador. Como parámetro, la casilla a añadir.
     public void anhadirPropiedad(Casilla casilla) {
+        propiedades.add(casilla);
     }
 
     //Método para eliminar una propiedad del arraylist de propiedades de jugador.
@@ -94,6 +95,14 @@ public class Jugador {
 
     public int getTiradasCarcel() {
         return tiradasCarcel;
+    }
+
+    public float getFortuna() {
+        return fortuna;
+    }
+
+    public float getGastos() {
+        return gastos;
     }
 
     private String listaPropiedades() {

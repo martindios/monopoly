@@ -182,7 +182,7 @@ public class Menu {
         for (ArrayList<Casilla> fila : casillas) {
             for (Casilla casilla : fila) {
                 if (NombreCasilla.equalsIgnoreCase(casilla.getNombre())) {
-                    System.out.println(casilla.infoCasilla(casilla)); // Llamar al metodo
+                    System.out.println(casilla.infoCasilla()); // Llamar al metodo
                     casillaEncontrada = true;
                     break; // Salir do bucle interno ao encontrar a casilla
                 }
@@ -205,6 +205,20 @@ public class Menu {
     * Parámetro: cadena de caracteres con el nombre de la casilla.
      */
     private void comprar(String nombre) {
+        boolean CasillaEncontrada = false;
+        ArrayList<ArrayList<Casilla>> casillas = tablero.getPosiciones();
+        Jugador comprador = jugadores.get(turno);
+        for(ArrayList<Casilla> fila : casillas) {
+            for(Casilla casilla : fila) {
+                if(casilla.getNombre().equalsIgnoreCase(nombre)) {
+                    CasillaEncontrada = true;
+                    casilla.comprarCasilla(comprador, banca);
+                }
+            }
+        }
+        if(!CasillaEncontrada) {
+            System.out.println("La casilla deseada no existe.");
+        }
     }
 
     //Método que ejecuta todas las acciones relacionadas con el comando 'salir carcel'. 
