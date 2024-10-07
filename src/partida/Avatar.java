@@ -19,9 +19,7 @@ public class Avatar {
     public Avatar() {
     }
 
-    public Avatar(ArrayList<Avatar> avCreados) {
-        this.generarId(avCreados);
-    }
+
     /*Constructor principal. Requiere éstos parámetros:
     * Tipo del avatar, jugador al que pertenece, lugar en el que estará ubicado, y un arraylist con los
     * avatares creados (usado para crear un ID distinto del de los demás avatares).
@@ -61,6 +59,7 @@ public class Avatar {
                 generarId(avCreados);
             }
         }
+        setId(idCreado);
     }
 
     /*
@@ -95,5 +94,13 @@ public class Avatar {
                 Jugador: %s
                 }""".formatted(id, tipo, lugar, jugador);
         return toString;
+    }
+
+    /*
+    SETTERS
+     */
+
+    public void setId(String id) {
+        this.id = id;
     }
 }

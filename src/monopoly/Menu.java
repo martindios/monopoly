@@ -223,11 +223,14 @@ public class Menu {
     }
 
     private void DarAltaJugador(String nombre, String tipoAvatar){
-        //Jugador jugador = new Jugador(nombre, tipoAvatar);
-        Avatar avatar = new Avatar(avatares);
-        //avatar.
-        //jugadores.add(jugador);
 
+        Casilla casillaInicio = tablero.encontrar_casilla("Salida");
+        Jugador jugadorCreado = new Jugador(nombre, tipoAvatar, casillaInicio, avatares);
+        jugadores.add(jugadorCreado);
+        System.out.println("{" +
+                "nombre: " + jugadorCreado.getNombre() +
+                "avatar: " + jugadorCreado.getAvatar().getId() +
+                "}");
 
     }
 
