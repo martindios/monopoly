@@ -95,6 +95,7 @@ public class Jugador {
 
     public Avatar getAvatar() {
         return avatar;
+    }
 
     public int getTiradasCarcel() {
         return tiradasCarcel;
