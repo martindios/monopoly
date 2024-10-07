@@ -1,6 +1,8 @@
 package monopoly;
 
 import partida.*;
+
+import java.sql.SQLOutput;
 import java.util.ArrayList;
 import java.lang.String;
 import java.util.Objects;
@@ -18,6 +20,7 @@ public class Casilla {
     private float impuesto; //Cantidad a pagar por caer en la casilla: el alquiler en solares/servicios/transportes o impuestos.
     private float hipoteca; //Valor otorgado por hipotecar una casilla
     private ArrayList<Avatar> avatares; //Avatares que están situados en la casilla.
+
 
     //Constructores:
     //Parámetros vacíos
@@ -57,7 +60,6 @@ public class Casilla {
     /*Constructor utilizado para inicializar las casillas de tipo IMPUESTOS.
     * Parámetros: nombre, posición en el tablero, impuesto establecido y dueño.
      */
-    //DUDA: En atribs que nn teñen moito sentido, como aquí valor ou hipoteca, non os inicializamos? Inicializanse a 0? a null?
     public Casilla(String nombre, int posicion, float impuesto, Jugador duenho) {
         this.nombre = nombre;
         this.tipo = "IMPUESTOS";
@@ -100,8 +102,35 @@ public class Casilla {
         this.avatares = new ArrayList<Avatar>();
     }
 
-    public void setGrupo(Grupo grupo) {
+
+
+    //SETTERS
+    public void setValor(float valor) {
+        if(valor < 0) this.valor = 0;
+        else this.valor = valor;
+    }
+  
+      public void setGrupo(Grupo grupo) {
         this.grupo = grupo;
+    }
+
+    public void setDuenho(Jugador duenho) {
+        this.duenho = duenho;
+    }
+
+    //Setter de Impuesto. Cnd s edifica, o alquiler do solar aumenta
+    public void setImpuesto(float impuesto) {
+        if(impuesto < 0) this.impuesto = 0;
+        else this.impuesto = impuesto;
+    }
+
+    public void setHipoteca(float hipoteca) {
+        if(hipoteca < 0) this.hipoteca = 0;
+        else this.hipoteca = hipoteca;
+    }
+
+    public void setAvatares(ArrayList<Avatar> avatares) {
+        this.avatares = avatares;
     }
 
     //Método utilizado para añadir un avatar al array de avatares en casilla.
@@ -127,6 +156,19 @@ public class Casilla {
     * - Jugador que solicita la compra de la casilla.
     * - Banca del monopoly (es el dueño de las casillas no compradas aún).*/
     public void comprarCasilla(Jugador solicitante, Jugador banca) {
+        if(this.duenho != banca) {
+            System.out.println("La casilla ya pertenece a un jugador.");
+            return;
+        }
+        if(solicitante.getFortuna() < this.valor) {
+            System.out.println("El jugador no tiene suficiente saldo para comprar la casilla.");
+            return;
+        }
+        System.out.println("El jugador ha comprado la casilla.");
+        solicitante.setFortuna(solicitante.getFortuna() - this.valor);
+        this.setDuenho(solicitante);
+        solicitante.setGastos(solicitante.getGastos() + this.valor);
+        solicitante.anhadirPropiedad(this);
     }
 
     /*Método para añadir valor a una casilla. Utilidad:
@@ -138,8 +180,80 @@ public class Casilla {
 
     /*Método para mostrar información sobre una casilla.
     * Devuelve una cadena con información específica de cada tipo de casilla.*/
+    //?
     public String infoCasilla() {
-        return null;
+        String descripcion = "Descripción de la casilla: " + this.getNombre() + ". Posición " + this.getPosicion() + ".";
+        System.out.println(descripcion);
+        if(this.tipo.equals("SOLAR")) {
+            StringBuilder solar  =new StringBuilder();
+            solar.append("Tipo: ").append(this.tipo.toLowerCase() + ",\n");
+            solar.append("grupo: ").append(this.grupo + ",\n");
+            solar.append("propietario: ").append(this.duenho + ",\n");
+            solar.append("valor: ").append(this.valor + ",\n");
+            solar.append("alquiler: ").append(this.impuesto + ",\n");
+            solar.append("Hipoteca: ").append(this.hipoteca + ",\n");
+            solar.append("valor hotel: ").append(this.valor*0.6 + ",\n");
+            solar.append("valor casa: ").append(this.valor*0.6 + ",\n");
+            solar.append("valor piscina: ").append(this.valor*0.4 + ",\n");
+            solar.append("pista de deporte: ").append(this.valor*1.25 + ",\n");
+            solar.append("alquiler una casa: ").append(this.impuesto*5 + ",\n");
+            solar.append("alquiler dos casas: ").append(this.impuesto*15 + ",\n");
+            solar.append("alquiler tres casas: ").append(this.impuesto*35 + ",\n");
+            solar.append("alquiler cuatro casas: ").append(this.impuesto*50 + ",\n");
+            solar.append("alquiler hotel: ").append(this.impuesto*70 + ",\n");
+            solar.append("alquiler piscina: ").append(this.impuesto*25 + ",\n");
+            solar.append("alquiler pista de deporte: ").append(this.impuesto*25 + ",\n");
+            return solar.toString();
+        }
+        else if(this.tipo.equals("SERVICIOS")) {
+            StringBuilder servicios = new StringBuilder();
+            servicios.append("Tipo: ").append(this.tipo.toLowerCase() + ",\n");
+            servicios.append("dueño: ").append(this.duenho + ",\n");
+            servicios.append("valor: ").append(this.valor + ",\n");
+            servicios.append("hipoteca: ").append(this.hipoteca + ",\n");
+            return servicios.toString();
+        }
+        else if(this.tipo.equals("TRANSPORTE")) {
+            StringBuilder transporte = new StringBuilder();
+            transporte.append("Tipo: ").append(this.tipo.toLowerCase() + ",\n");
+            transporte.append("dueño: ").append(this.duenho + ",\n");
+            transporte.append("valor: ").append(this.valor + ",\n");
+            transporte.append("hipoteca: ").append(this.impuesto + ",\n");
+            return transporte.toString();
+        }
+        else if(this.tipo.equals("IMPUESTOS")) {
+            StringBuilder impuestos = new StringBuilder();
+            impuestos.append("Tipo: ").append(this.tipo.toLowerCase() + ",\n");
+            impuestos.append("impuesto: ").append(this.impuesto + ",\n");
+            return impuestos.toString();
+        }
+        else if(this.tipo.equals("PARKING")) {
+            StringBuilder parking = new StringBuilder();
+            parking.append("Tipo: ").append(this.tipo.toLowerCase() + ",\n");
+            parking.append("bote: ").append(this.valor + ",\n");
+            parking.append("jugadores: [");
+            for(Avatar avatar : this.getAvatares()) {
+                parking.append(avatar.getJugador().getNombre()).append(", ");
+            }
+            if(this.getAvatares().size() > 0) {
+                parking.setLength(parking.length() - 2);
+            }
+            parking.append("]\n");
+            return parking.toString();
+        } else if(this.tipo.equals("CARCEL")) {
+            StringBuilder carcel = new StringBuilder();
+            carcel.append("Tipo: ").append(this.tipo.toLowerCase() + ",\n");
+            carcel.append("salir: ").append(this.valor + ",\n");
+            carcel.append("jugadores: ");
+            for(Avatar avatar : this.getAvatares()) {
+                carcel.append("[").append(avatar.getJugador().getNombre())
+                        .append(", ").append(avatar.getJugador().getTiradasCarcel()).append("] ");
+            }
+            return carcel.toString();
+        }
+        else {
+            return "Casilla sin necesidad de descripción";
+        }
     }
 
     /* Método para mostrar información de una casilla en venta.
@@ -199,21 +313,5 @@ public class Casilla {
         return avatares;
     }
 
-    /*
-    SETTERS
-    */
-    /**
-     * Metodo para clasificar solares
 
-    public String ClasificarSolar (int posicion) {
-        if(posicion == 2 || posicion == 4) return "BLUE";
-        else if(posicion == 7 || posicion == 9 || posicion == 10) return "GREEN";
-        else if(posicion == 12 || posicion == 14 || posicion == 15) return "PURPLE";
-        else if(posicion == 17 || posicion == 19 || posicion == 20) return "CYAN";
-        else if(posicion == 22 || posicion == 24 || posicion == 25) return "YELLOW";
-        else if(posicion == 27 || posicion == 28 || posicion == 30) return "RED";
-        else if(posicion == 32 || posicion == 33 || posicion == 35) return "BLACK";
-        else if(posicion == 38 || posicion == 40) return "IRED";
-        else return null;
-    }*/
 }

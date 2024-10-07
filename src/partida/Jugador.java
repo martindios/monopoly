@@ -44,9 +44,30 @@ public class Jugador {
         this.propiedades = new ArrayList<>();
     }
 
+    //SETTER
+    public void setFortuna(float fortuna) {
+        if(fortuna < 0) {
+            this.fortuna = 0;
+        }
+        else {
+            this.fortuna = fortuna;
+        }
+    }
+
+    public void setGastos(float gastos) {
+        if(gastos < 0) {
+            this.gastos = 0;
+        }
+        else {
+            this.gastos = gastos;
+        }
+    }
+
+
     //Otros métodos:
     //Método para añadir una propiedad al jugador. Como parámetro, la casilla a añadir.
     public void anhadirPropiedad(Casilla casilla) {
+        propiedades.add(casilla);
     }
 
     //Método para eliminar una propiedad del arraylist de propiedades de jugador.
@@ -70,6 +91,18 @@ public class Jugador {
 
     public String getNombre() {
         return nombre;
+    }
+
+    public int getTiradasCarcel() {
+        return tiradasCarcel;
+    }
+
+    public float getFortuna() {
+        return fortuna;
+    }
+
+    public float getGastos() {
+        return gastos;
     }
 
     private String listaPropiedades() {

@@ -357,7 +357,13 @@ public class Tablero {
         // Formatear el tablero con las casillas
         return tablero;
     }
-    
+
+    //GETTERS
+    //Getter hecho para auxiliar a descCasilla, para verificar la existencia de la casilla
+    public ArrayList<ArrayList<Casilla>> getPosiciones() {
+        return posiciones;
+    }
+
     //Método usado para buscar la casilla con el nombre pasado como argumento:
     public Casilla encontrar_casilla(String nombre){
         return null; //
