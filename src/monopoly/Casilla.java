@@ -55,7 +55,14 @@ public class Casilla {
         this.hipoteca = valor*0.5f;
         avatares = new ArrayList<Avatar>();
     }
-    
+
+    public Casilla(String nombre, String tipo, int posicion) {
+        this.nombre = nombre;
+        this.tipo = tipo;
+        this.posicion = posicion;
+
+    }
+
 
     /*Constructor utilizado para inicializar las casillas de tipo IMPUESTOS.
     * Parámetros: nombre, posición en el tablero, impuesto establecido y dueño.

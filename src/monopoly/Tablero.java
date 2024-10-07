@@ -366,20 +366,21 @@ public class Tablero {
 
     //Método usado para buscar la casilla con el nombre pasado como argumento:
     public Casilla encontrar_casilla(String nombre){
-        return null; //
-    }
-
-    /**
-    public String describirCasilla(String nombre) {
-        for (ArrayList<Casilla> casilla : posiciones) {
-            if (casilla.getNombre().equalsIgnoreCase(nombre)) {
-                //return Casilla.get(casilla.getPosicion()).describirCasilla();
-                return null;
+        //return null;
+        // Recorremos cada lado del tablero
+        for (ArrayList<Casilla> lado : posiciones) {
+            // Recorremos cada Casilla dentro de cada lado
+            for (Casilla casilla : lado) {
+                // Si el nombre de la casilla coincide con el nombre buscado, retornamos la casilla
+                if (casilla.getNombre().equals(nombre)) {
+                    return casilla;
+                }
             }
         }
-        return nombre;
+        // Si no encontramos la casilla, devolvemos null
+        return null;
     }
-     **/
+
 
     private String pintarCasilla(Casilla casilla) {
         if (casilla.getGrupo() != null) {
