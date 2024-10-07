@@ -55,8 +55,16 @@ public class Tablero {
         ladoNorte.add(new Casilla("Serv2", "Servicios", 28, 29, banca));
         Casilla solar17 = new Casilla("Solar17", "Solar", 17, 30, banca);
         ladoNorte.add(solar17);
-        Grupo grupo5 = new Grupo(solar12, solar13, solar14, "YELLOW");
-        Grupo grupo6 = new Grupo(solar15, solar16, solar17, "RED");
+        Grupo grupo5 = new Grupo(solar12, solar13, solar14, YELLOW);
+        Grupo grupo6 = new Grupo(solar15, solar16, solar17, RED);
+
+        solar12.setGrupo(grupo5);
+        solar13.setGrupo(grupo5);
+        solar14.setGrupo(grupo5);
+        solar15.setGrupo(grupo6);
+        solar16.setGrupo(grupo6);
+        solar17.setGrupo(grupo6);
+
         grupos.put(grupo5.getColorGrupo(), grupo5);
         grupos.put(grupo6.getColorGrupo(), grupo6);
         posiciones.add(ladoNorte);
@@ -80,8 +88,15 @@ public class Tablero {
         ladoSur.add(solar4);
         Casilla solar5 = new Casilla("Solar5", "Solar", 10, 10, banca);
         ladoSur.add(solar5);
-        Grupo grupo1 = new Grupo(solar1, solar2, "BLUE");
-        Grupo grupo2 = new Grupo(solar3, solar4, solar5, "GREEN");
+        Grupo grupo1 = new Grupo(solar1, solar2, BLUE);
+        Grupo grupo2 = new Grupo(solar3, solar4, solar5, GREEN);
+
+        solar1.setGrupo(grupo1);
+        solar2.setGrupo(grupo1);
+        solar3.setGrupo(grupo2);
+        solar4.setGrupo(grupo2);
+        solar5.setGrupo(grupo2);
+
         grupos.put(grupo1.getColorGrupo(), grupo1);
         grupos.put(grupo2.getColorGrupo(), grupo2);
         posiciones.add(ladoSur);
@@ -108,8 +123,16 @@ public class Tablero {
         ladoOeste.add(solar10);
         Casilla solar11 = new Casilla("Solar11", "Solar", 11, 20, banca);
         ladoOeste.add(solar11);
-        Grupo grupo3 = new Grupo(solar6, solar7, solar8, "PURPLE");
-        Grupo grupo4 = new Grupo(solar9, solar10, solar11, "CYAN");
+        Grupo grupo3 = new Grupo(solar6, solar7, solar8, PURPLE);
+        Grupo grupo4 = new Grupo(solar9, solar10, solar11, CYAN);
+
+        solar6.setGrupo(grupo3);
+        solar7.setGrupo(grupo3);
+        solar8.setGrupo(grupo3);
+        solar9.setGrupo(grupo4);
+        solar10.setGrupo(grupo4);
+        solar11.setGrupo(grupo4);
+
         grupos.put(grupo3.getColorGrupo(), grupo3);
         grupos.put(grupo4.getColorGrupo(), grupo4);
         posiciones.add(ladoOeste);
@@ -133,8 +156,15 @@ public class Tablero {
         ladoEste.add(new Casilla("Imp2", "Impuestos", 38, 39, banca));
         Casilla solar22 = new Casilla("Solar22", "Solar", 22, 40, banca);
         ladoEste.add(solar22);
-        Grupo grupo7 = new Grupo(solar18, solar19, solar20, "BLACK");
-        Grupo grupo8 = new Grupo(solar21, solar22, "IRED");
+        Grupo grupo7 = new Grupo(solar18, solar19, solar20, WHITE);
+        Grupo grupo8 = new Grupo(solar21, solar22, BLACK);
+
+        solar18.setGrupo(grupo7);
+        solar19.setGrupo(grupo7);
+        solar20.setGrupo(grupo7);
+        solar21.setGrupo(grupo8);
+        solar22.setGrupo(grupo8);
+
         grupos.put(grupo7.getColorGrupo(), grupo7);
         grupos.put(grupo8.getColorGrupo(), grupo8);
         posiciones.add(ladoEste);
@@ -145,54 +175,55 @@ public class Tablero {
     public String toString() {
         String tablero = """
                     %s
-                    │%10s│%10s│%10s│%10s│%10s│%10s│%10s│%10s│%10s│%10s│%10s│
+                    │%10s│%19s│%10s│%19s│%19s│%10s│%19s│%19s│%10s│%19s│%10s│
                     │%10s│%10s│%10s│%10s│%10s│%10s│%10s│%10s│%10s│%10s│%10s│
                     %s
+                    │%19s│                                                                                                  │%19s│
                     │%10s│                                                                                                  │%10s│
+                    %s                                                                                                  %s
+                    │%19s│                                                                                                  │%19s│
                     │%10s│                                                                                                  │%10s│
                     %s                                                                                                  %s
                     │%10s│                                                                                                  │%10s│
                     │%10s│                                                                                                  │%10s│
                     %s                                                                                                  %s
-                    │%10s│                                                                                                  │%10s│
-                    │%10s│                                                                                                  │%10s│
-                    %s                                                                                                  %s
-                    │%10s│                                                                                                  │%10s│
+                    │%19s│                                                                                                  │%19s│
                     │%10s│                                                                                                  │%10s│
                     %s                                                                                                  %s
                     │%10s│                                                                                                  │%10s│
                     │%10s│                                                                                                  │%10s│
                     %s                                                                                                  %s
+                    │%19s│                                                                                                  │%10s│
                     │%10s│                                                                                                  │%10s│
+                    %s                                                                                                  %s
+                    │%19s│                                                                                                  │%19s│
                     │%10s│                                                                                                  │%10s│
                     %s                                                                                                  %s
                     │%10s│                                                                                                  │%10s│
                     │%10s│                                                                                                  │%10s│
                     %s                                                                                                  %s
-                    │%10s│                                                                                                  │%10s│
-                    │%10s│                                                                                                  │%10s│
-                    %s                                                                                                  %s
-                    │%10s│                                                                                                  │%10s│
+                    │%19s│                                                                                                  │%19s│
                     │%10s│                                                                                                  │%10s│
                     %s
-                    │%10s│%10s│%10s│%10s│%10s│%10s│%10s│%10s│%10s│%10s│%10s│
+                    │%10s│%19s│%19s│%10s│%19s│%10s│%10s│%19s│%10s│%19s│%10s│
                     │%10s│%10s│%10s│%10s│%10s│%10s│%10s│%10s│%10s│%10s│%10s│
                     %s
                     """.formatted(
                 "─".repeat(122),
                 //Norte (con la última casilla el inicio del este)
-                posiciones.get(2).get(0).getNombre(),
-                posiciones.get(2).get(1).getNombre(),
-                posiciones.get(2).get(2).getNombre(),
-                posiciones.get(2).get(3).getNombre(),
-                posiciones.get(2).get(4).getNombre(),
-                posiciones.get(2).get(5).getNombre(),
-                posiciones.get(2).get(6).getNombre(),
-                posiciones.get(2).get(7).getNombre(),
-                posiciones.get(2).get(8).getNombre(),
-                posiciones.get(2).get(9).getNombre(),
+                pintarCasilla(posiciones.get(2).get(0)),
+                //posiciones.get(2).get(1).getGrupo().getColorGrupo() + posiciones.get(2).get(1).getNombre() + RESET,
+                pintarCasilla(posiciones.get(2).get(1)),
+                pintarCasilla(posiciones.get(2).get(2)),
+                pintarCasilla(posiciones.get(2).get(3)),
+                pintarCasilla(posiciones.get(2).get(4)),
+                pintarCasilla(posiciones.get(2).get(5)),
+                pintarCasilla(posiciones.get(2).get(6)),
+                pintarCasilla(posiciones.get(2).get(7)),
+                pintarCasilla(posiciones.get(2).get(8)),
+                pintarCasilla(posiciones.get(2).get(9)),
 
-                posiciones.get(3).get(0).getNombre(),
+                pintarCasilla(posiciones.get(3).get(0)),
 
                 "&J",
                 "&J",
@@ -211,8 +242,8 @@ public class Tablero {
 
                 //Este y oeste simultáneo
 
-                posiciones.get(1).get(9).getNombre(),
-                posiciones.get(3).get(1).getNombre(),
+                pintarCasilla(posiciones.get(1).get(9)),
+                pintarCasilla(posiciones.get(3).get(1)),
 
                 "&J",
                 "&J",
@@ -220,8 +251,8 @@ public class Tablero {
                 "─".repeat(12),
                 "─".repeat(12),
 
-                posiciones.get(1).get(8).getNombre(),
-                posiciones.get(3).get(2).getNombre(),
+                pintarCasilla(posiciones.get(1).get(8)),
+                pintarCasilla(posiciones.get(3).get(2)),
 
                 "&J",
                 "&J",
@@ -229,8 +260,8 @@ public class Tablero {
                 "─".repeat(12),
                 "─".repeat(12),
 
-                posiciones.get(1).get(7).getNombre(),
-                posiciones.get(3).get(3).getNombre(),
+                pintarCasilla(posiciones.get(1).get(7)),
+                pintarCasilla(posiciones.get(3).get(3)),
 
                 "&J",
                 "&J",
@@ -238,8 +269,8 @@ public class Tablero {
                 "─".repeat(12),
                 "─".repeat(12),
 
-                posiciones.get(1).get(6).getNombre(),
-                posiciones.get(3).get(4).getNombre(),
+                pintarCasilla(posiciones.get(1).get(6)),
+                pintarCasilla(posiciones.get(3).get(4)),
 
                 "&J",
                 "&J",
@@ -247,8 +278,8 @@ public class Tablero {
                 "─".repeat(12),
                 "─".repeat(12),
 
-                posiciones.get(1).get(5).getNombre(),
-                posiciones.get(3).get(5).getNombre(),
+                pintarCasilla(posiciones.get(1).get(5)),
+                pintarCasilla(posiciones.get(3).get(5)),
 
                 "&J",
                 "&J",
@@ -256,8 +287,8 @@ public class Tablero {
                 "─".repeat(12),
                 "─".repeat(12),
 
-                posiciones.get(1).get(4).getNombre(),
-                posiciones.get(3).get(6).getNombre(),
+                pintarCasilla(posiciones.get(1).get(4)),
+                pintarCasilla(posiciones.get(3).get(6)),
 
                 "&J",
                 "&J",
@@ -265,8 +296,8 @@ public class Tablero {
                 "─".repeat(12),
                 "─".repeat(12),
 
-                posiciones.get(1).get(3).getNombre(),
-                posiciones.get(3).get(7).getNombre(),
+                pintarCasilla(posiciones.get(1).get(3)),
+                pintarCasilla(posiciones.get(3).get(7)),
 
                 "&J",
                 "&J",
@@ -274,8 +305,8 @@ public class Tablero {
                 "─".repeat(12),
                 "─".repeat(12),
 
-                posiciones.get(1).get(2).getNombre(),
-                posiciones.get(3).get(8).getNombre(),
+                pintarCasilla(posiciones.get(1).get(2)),
+                pintarCasilla(posiciones.get(3).get(8)),
 
                 "&J",
                 "&J",
@@ -283,8 +314,8 @@ public class Tablero {
                 "─".repeat(12),
                 "─".repeat(12),
 
-                posiciones.get(1).get(1).getNombre(),
-                posiciones.get(3).get(9).getNombre(),
+                pintarCasilla(posiciones.get(1).get(1)),
+                pintarCasilla(posiciones.get(3).get(9)),
 
                 "&J",
                 "&J",
@@ -293,18 +324,18 @@ public class Tablero {
 
                 "─".repeat(122),
 
-                posiciones.get(1).get(0).getNombre(),
+                pintarCasilla(posiciones.get(1).get(0)),
 
-                posiciones.get(0).get(9).getNombre(),
-                posiciones.get(0).get(8).getNombre(),
-                posiciones.get(0).get(7).getNombre(),
-                posiciones.get(0).get(6).getNombre(),
-                posiciones.get(0).get(5).getNombre(),
-                posiciones.get(0).get(4).getNombre(),
-                posiciones.get(0).get(3).getNombre(),
-                posiciones.get(0).get(2).getNombre(),
-                posiciones.get(0).get(1).getNombre(),
-                posiciones.get(0).get(0).getNombre(),
+                pintarCasilla(posiciones.get(0).get(9)),
+                pintarCasilla(posiciones.get(0).get(8)),
+                pintarCasilla(posiciones.get(0).get(7)),
+                pintarCasilla(posiciones.get(0).get(6)),
+                pintarCasilla(posiciones.get(0).get(5)),
+                pintarCasilla(posiciones.get(0).get(4)),
+                pintarCasilla(posiciones.get(0).get(3)),
+                pintarCasilla(posiciones.get(0).get(2)),
+                pintarCasilla(posiciones.get(0).get(1)),
+                pintarCasilla(posiciones.get(0).get(0)),
 
                 "&J",
                 "&J",
@@ -342,4 +373,13 @@ public class Tablero {
         return nombre;
     }
      **/
+
+    private String pintarCasilla(Casilla casilla) {
+        if (casilla.getGrupo() != null) {
+            return (casilla.getGrupo().getColorGrupo() + casilla.getNombre() + RESET);
+        } else {
+            return casilla.getNombre();
+        }
+    }
+
 }

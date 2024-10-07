@@ -100,6 +100,10 @@ public class Casilla {
         this.avatares = new ArrayList<Avatar>();
     }
 
+    public void setGrupo(Grupo grupo) {
+        this.grupo = grupo;
+    }
+
     //Método utilizado para añadir un avatar al array de avatares en casilla.
     public void anhadirAvatar(Avatar av) {
 
