@@ -10,6 +10,5 @@ public class Dado {
         Random random = new Random();
         valor = random.nextInt(6) + 1;
         return valor;
-
     }
 }

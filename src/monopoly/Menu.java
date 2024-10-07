@@ -39,15 +39,16 @@ public class Menu {
         //ejecutarMenu();
     }
 
-    // Metodo que mostra o menu
+    /* Metodo que mostra o menu
     private void ejecutarMenu() {
         int opcion = -1;
         Scanner scanner = new Scanner(System.in);
 
         while (opcion != 0) {
-            mostrarMenu();  // Mostramos o menu antes das accions
-            opcion = scanner.nextInt();  // Leemos o input
-            ejecutarOpcion(opcion);      // Ejecutamos
+            System.out.println("\n==== MONOPOLY ====");
+            System.out.println("Pulsa cualquier tecla para iniciar la partida");
+            scanner.nextLine();
+            iniciarPartida();
         }
     }
 
@@ -122,11 +123,20 @@ public class Menu {
                 System.out.println("Opción no válida. Por favor, elige una opción válida.");
                 break;
         }
-    }
+    } */
 
+    //SETTERS
+    public void setTurno(int turno) {
+        this.turno = turno;
+    }
 
     // Método para inciar una partida: crea los jugadores y avatares.
     private void iniciarPartida() {
+        System.out.println("Iniciando partida");
+        System.out.println("Introduce el comando: ");
+        String comando = scanner.nextLine();
+        analizarComando(comando);
+
     }
     
     /*Método que interpreta el comando introducido y toma la accion correspondiente.
@@ -247,13 +257,27 @@ public class Menu {
     /* Método que realiza las acciones asociadas al comando 'describir nombre_casilla'.
     * Parámetros: nombre de la casilla a describir.
     */
-    public void descCasilla(String casilla){
-        /*System.out.println("Introduce el nombre de la casilla a describir:");
-        System.out.print("->");
-        String casilla = scanner.nextLine();*/
-        //Comprobar si la casilla es correcta
 
-        //System.out.println(tablero.describirCasilla(casilla));
+    public void descCasilla(String NombreCasilla) {
+        ArrayList<ArrayList<Casilla>> casillas = tablero.getPosiciones();
+        boolean casillaEncontrada = false; // auxiliar
+
+        for (ArrayList<Casilla> fila : casillas) {
+            for (Casilla casilla : fila) {
+                if (NombreCasilla.equalsIgnoreCase(casilla.getNombre())) {
+                    System.out.println(casilla.infoCasilla()); // Llamar al metodo
+                    casillaEncontrada = true;
+                    break; // Salir do bucle interno ao encontrar a casilla
+                }
+            }
+            if (casillaEncontrada) {
+                break; // Salir do bucle externo
+            }
+        }
+        // Se nn se encontra a casilla imprímese por pantalla
+        if (!casillaEncontrada) {
+            System.out.println("La casilla solicitada no existe.");
+        }
     }
 
     //Método que ejecuta todas las acciones relacionadas con el comando 'lanzar dados'.
@@ -264,6 +288,20 @@ public class Menu {
     * Parámetro: cadena de caracteres con el nombre de la casilla.
      */
     private void comprar(String nombre) {
+        boolean CasillaEncontrada = false;
+        ArrayList<ArrayList<Casilla>> casillas = tablero.getPosiciones();
+        Jugador comprador = jugadores.get(turno);
+        for(ArrayList<Casilla> fila : casillas) {
+            for(Casilla casilla : fila) {
+                if(casilla.getNombre().equalsIgnoreCase(nombre)) {
+                    CasillaEncontrada = true;
+                    casilla.comprarCasilla(comprador, banca);
+                }
+            }
+        }
+        if(!CasillaEncontrada) {
+            System.out.println("La casilla deseada no existe.");
+        }
     }
 
     //Método que ejecuta todas las acciones relacionadas con el comando 'salir carcel'. 
