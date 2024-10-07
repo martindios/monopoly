@@ -225,18 +225,18 @@ public class Tablero {
 
                 pintarCasilla(posiciones.get(3).get(0)),
 
-                "&J",
-                "&J",
-                "&J",
-                "&J",
-                "&J",
-                "&J",
-                "&J",
-                "&J",
-                "&J",
-                "&J",
+                imprimirAvatares(posiciones.get(2).get(0)),
+                imprimirAvatares(posiciones.get(2).get(1)),
+                imprimirAvatares(posiciones.get(2).get(2)),
+                imprimirAvatares(posiciones.get(2).get(3)),
+                imprimirAvatares(posiciones.get(2).get(4)),
+                imprimirAvatares(posiciones.get(2).get(5)),
+                imprimirAvatares(posiciones.get(2).get(6)),
+                imprimirAvatares(posiciones.get(2).get(7)),
+                imprimirAvatares(posiciones.get(2).get(8)),
+                imprimirAvatares(posiciones.get(2).get(9)),
 
-                "&J",
+                imprimirAvatares(posiciones.get(3).get(0)),
 
                 "─".repeat(122),
 
@@ -245,8 +245,8 @@ public class Tablero {
                 pintarCasilla(posiciones.get(1).get(9)),
                 pintarCasilla(posiciones.get(3).get(1)),
 
-                "&J",
-                "&J",
+                imprimirAvatares(posiciones.get(1).get(9)),
+                imprimirAvatares(posiciones.get(3).get(1)),
 
                 "─".repeat(12),
                 "─".repeat(12),
@@ -254,8 +254,8 @@ public class Tablero {
                 pintarCasilla(posiciones.get(1).get(8)),
                 pintarCasilla(posiciones.get(3).get(2)),
 
-                "&J",
-                "&J",
+                imprimirAvatares(posiciones.get(1).get(8)),
+                imprimirAvatares(posiciones.get(3).get(2)),
 
                 "─".repeat(12),
                 "─".repeat(12),
@@ -263,8 +263,8 @@ public class Tablero {
                 pintarCasilla(posiciones.get(1).get(7)),
                 pintarCasilla(posiciones.get(3).get(3)),
 
-                "&J",
-                "&J",
+                imprimirAvatares(posiciones.get(1).get(7)),
+                imprimirAvatares(posiciones.get(3).get(3)),
 
                 "─".repeat(12),
                 "─".repeat(12),
@@ -272,8 +272,8 @@ public class Tablero {
                 pintarCasilla(posiciones.get(1).get(6)),
                 pintarCasilla(posiciones.get(3).get(4)),
 
-                "&J",
-                "&J",
+                imprimirAvatares(posiciones.get(1).get(6)),
+                imprimirAvatares(posiciones.get(3).get(4)),
 
                 "─".repeat(12),
                 "─".repeat(12),
@@ -281,8 +281,8 @@ public class Tablero {
                 pintarCasilla(posiciones.get(1).get(5)),
                 pintarCasilla(posiciones.get(3).get(5)),
 
-                "&J",
-                "&J",
+                imprimirAvatares(posiciones.get(1).get(5)),
+                imprimirAvatares(posiciones.get(3).get(5)),
 
                 "─".repeat(12),
                 "─".repeat(12),
@@ -290,8 +290,8 @@ public class Tablero {
                 pintarCasilla(posiciones.get(1).get(4)),
                 pintarCasilla(posiciones.get(3).get(6)),
 
-                "&J",
-                "&J",
+                imprimirAvatares(posiciones.get(1).get(4)),
+                imprimirAvatares(posiciones.get(3).get(6)),
 
                 "─".repeat(12),
                 "─".repeat(12),
@@ -299,8 +299,8 @@ public class Tablero {
                 pintarCasilla(posiciones.get(1).get(3)),
                 pintarCasilla(posiciones.get(3).get(7)),
 
-                "&J",
-                "&J",
+                imprimirAvatares(posiciones.get(1).get(3)),
+                imprimirAvatares(posiciones.get(3).get(7)),
 
                 "─".repeat(12),
                 "─".repeat(12),
@@ -308,8 +308,8 @@ public class Tablero {
                 pintarCasilla(posiciones.get(1).get(2)),
                 pintarCasilla(posiciones.get(3).get(8)),
 
-                "&J",
-                "&J",
+                imprimirAvatares(posiciones.get(1).get(2)),
+                imprimirAvatares(posiciones.get(3).get(8)),
 
                 "─".repeat(12),
                 "─".repeat(12),
@@ -317,8 +317,8 @@ public class Tablero {
                 pintarCasilla(posiciones.get(1).get(1)),
                 pintarCasilla(posiciones.get(3).get(9)),
 
-                "&J",
-                "&J",
+                imprimirAvatares(posiciones.get(1).get(1)),
+                imprimirAvatares(posiciones.get(3).get(9)),
 
                 //Sur (con la primera casilla inicio oeste)
 
@@ -337,17 +337,18 @@ public class Tablero {
                 pintarCasilla(posiciones.get(0).get(1)),
                 pintarCasilla(posiciones.get(0).get(0)),
 
-                "&J",
-                "&J",
-                "&J",
-                "&J",
-                "&J",
-                "&J",
-                "&J",
-                "&J",
-                "&J",
-                "&J",
-                "&J",
+                imprimirAvatares(posiciones.get(1).get(0)),
+
+                imprimirAvatares(posiciones.get(0).get(9)),
+                imprimirAvatares(posiciones.get(0).get(8)),
+                imprimirAvatares(posiciones.get(0).get(7)),
+                imprimirAvatares(posiciones.get(0).get(6)),
+                imprimirAvatares(posiciones.get(0).get(5)),
+                imprimirAvatares(posiciones.get(0).get(4)),
+                imprimirAvatares(posiciones.get(0).get(3)),
+                imprimirAvatares(posiciones.get(0).get(2)),
+                imprimirAvatares(posiciones.get(0).get(1)),
+                imprimirAvatares(posiciones.get(0).get(0)),
 
                 "─".repeat(122)
 
@@ -380,6 +381,17 @@ public class Tablero {
         } else {
             return casilla.getNombre();
         }
+    }
+
+    private String imprimirAvatares(Casilla casilla) {
+        ArrayList<Avatar> avatares = casilla.getAvatares();
+        StringBuilder sb = new StringBuilder();
+        for (Avatar avatar : avatares) {
+            sb.append("&");
+            sb.append(avatar.getId());
+            sb.append(" ");
+        }
+        return sb.toString();
     }
 
 }
