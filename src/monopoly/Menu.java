@@ -1,5 +1,6 @@
 package monopoly;
 
+import java.awt.desktop.AppReopenedEvent;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -223,6 +224,97 @@ public class Menu {
 
     //Método que ejecuta todas las acciones relacionadas con el comando 'salir carcel'. 
     private void salirCarcel() {
+        Jugador JugActual = jugadores.get(turno);
+        boolean TiradasCarcel = JugActual.getTiradasCarcel() < 3;
+        float fianza = 0;
+        ArrayList<ArrayList<Casilla>> casillas = tablero.getPosiciones();
+        for(ArrayList<Casilla> fila : casillas) {
+            for(Casilla casilla : fila) {
+                if(casilla.getNombre().equalsIgnoreCase("Cárcel")) {
+                    fianza = casilla.getImpuesto();
+                    break;
+                }
+            }
+        }
+        boolean Presupuesto = JugActual.getFortuna() >= fianza;
+        if(TiradasCarcel && Presupuesto) {
+            System.out.println("El jugador puede tirar los dados o pagar la fianza (1/2)");
+            int respuesta;
+            do {
+                 respuesta = scanner.nextInt();
+                 if(respuesta == 1 || respuesta == 2) {
+                     break;
+                 }
+                 else {
+                     System.out.println("Valor no válido. Pruebe de nuevo");
+                 }
+            }while(respuesta != 0 && respuesta != 1);
+            if(respuesta == 1) {
+                System.out.println("El jugador decide lanzar los dados");
+                int valor1 = dado1.hacerTirada();
+                int valor2 = dado2.hacerTirada();
+                tirado = true;
+                lanzamientos++;
+                if (valor1 == valor2) {
+                    System.out.println("Dado 1: " + valor1);
+                    System.out.println("Dado 2: " + valor2);
+                    System.out.println("Dobles! El jugador avanza " + (valor1 + valor2) + " casillas. Tiene derecho a usar su turno y luego tirar de nuevo.");
+                    JugActual.setEnCarcel(false);
+                    tirado = false;
+                    JugActual.setTiradasCarcel(0);
+                }
+                else {
+                    System.out.println("Dado 1: " + valor1);
+                    System.out.println("Dado 2: " + valor2);
+                    System.out.println("No han salido dobles... E jugador pierde el turno");
+                    JugActual.setTiradasCarcel(JugActual.getTiradasCarcel() + 1);
+                    acabarTurno();
+                }
+            }
+            else if(respuesta == 2) {
+                System.out.println("El jugador paga la fianza. Tiene derecho a usar su turno");
+                JugActual.setEnCarcel(false);
+                JugActual.setTiradasCarcel(0);
+                JugActual.setFortuna(JugActual.getFortuna() - fianza);
+                JugActual.setGastos(JugActual.getGastos() + fianza);
+            }
+        }
+        else if(TiradasCarcel && !Presupuesto) {
+            System.out.println("El jugador solo puede tirar los dados.");
+            int valor1 = dado1.hacerTirada();
+            int valor2 = dado2.hacerTirada();
+            tirado = true;
+            lanzamientos++;
+            if (valor1 == valor2) {
+                System.out.println("Dado 1: " + valor1);
+                System.out.println("Dado 2: " + valor2);
+                System.out.println("Dobles! El jugador avanza " + (valor1 + valor2) + " casillas. Tiene derecho a usar su turno y luego tirar de nuevo.");
+                JugActual.setEnCarcel(false);
+                tirado = false;
+                JugActual.setTiradasCarcel(0);
+            }
+            else {
+                System.out.println("Dado 1: " + valor1);
+                System.out.println("Dado 2: " + valor2);
+                System.out.println("No han salido dobles... E jugador pierde el turno");
+                JugActual.setTiradasCarcel(JugActual.getTiradasCarcel() + 1);
+                acabarTurno();
+            }
+        }
+        else if(!TiradasCarcel && Presupuesto) {
+            System.out.println("El jugador solo puede pagar la fianza");
+            System.out.println("El jugador paga la fianza. Tiene derecho a usar su turno.");
+            JugActual.setEnCarcel(false);
+            JugActual.setTiradasCarcel(0);
+            JugActual.setFortuna(JugActual.getFortuna() - fianza);
+            JugActual.setGastos(JugActual.getGastos() + fianza);
+        }
+        else {
+            System.out.println("El jugador no puede tirar los dados ni tiene saldo suficiente para pagar la fianza.");
+            System.out.println("El jugador se declara en bancarrota");
+            //Dsp, unha vez poidamos hipotecar, supoño que poderemos poñer algo do estilo de que se pode hipotecar para pagar
+            //Tmb teremos que añadir a movida das cartas de suerte
+        }
     }
 
     // Método que realiza las acciones asociadas al comando 'listar enventa'.
@@ -251,6 +343,14 @@ public class Menu {
 
     // Método que realiza las acciones asociadas al comando 'acabar turno'.
     private void acabarTurno() {
+        //Tiradas carcel xa axustadas na funcion SaliCarcel
+        turno++;
+        lanzamientos = 0;
+        tirado = false;
+        Jugador jugador = jugadores.get(turno);
+        System.out.println("El turno le pertenece al jugador " + jugador.getNombre() + ". Con avatar " + jugador.getAvatar() + ".");
     }
+
+
 
 }

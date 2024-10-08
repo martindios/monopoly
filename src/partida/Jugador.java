@@ -63,6 +63,14 @@ public class Jugador {
         }
     }
 
+    public void setEnCarcel(boolean enCarcel) {
+        this.enCarcel = enCarcel;
+    }
+
+    public void setTiradasCarcel(int tiradasCarcel) {
+        this.tiradasCarcel = tiradasCarcel;
+    }
+
 
     //Otros métodos:
     //Método para añadir una propiedad al jugador. Como parámetro, la casilla a añadir.
@@ -103,6 +111,11 @@ public class Jugador {
 
     public float getGastos() {
         return gastos;
+    }
+
+    //Para cando queremos mostrar por pantalla o avatar do xogador
+    public Avatar getAvatar() {
+        return avatar;
     }
 
     private String listaPropiedades() {
