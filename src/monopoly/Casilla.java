@@ -43,8 +43,6 @@ public class Casilla {
         this.valor = valor;
         if(tipo.equals("SOLAR")) {
             this.impuesto = valor*0.1f;
-            //String Color = ClasificarSolar(posicion);
-            //this.grupo =
         }
         else if(tipo.equals("SERVICIOS")) {
             this.impuesto = Valor.SUMA_VUELTA * 0.75f;
@@ -96,7 +94,7 @@ public class Casilla {
         //As casillas suerte están relacionadas con pagos/cobros, pero no guion1 non pon nada, entonces entenco que de momento deso nada
         //As casillas de comunidad tmp din moito, solo que principalmente consisten en movimientos entre casillas
         if(nombre.equals("CARCEL")) {
-            this.valor = Valor.SUMA_VUELTA * 0.25f;
+            this.impuesto = Valor.SUMA_VUELTA * 0.25f;
         }
         else if(nombre.equals("PARKING")) {
             this.valor = 0; //O valor do parking ven sendo o bote que recibe o xogador que cae na casilla. Entonces, empeza en 0 de valor.
@@ -138,6 +136,10 @@ public class Casilla {
 
     public void setAvatares(ArrayList<Avatar> avatares) {
         this.avatares = avatares;
+    }
+
+    public void setGrupo(Grupo grupo) {
+        this.grupo = grupo;
     }
 
     //Método utilizado para añadir un avatar al array de avatares en casilla.
@@ -250,7 +252,7 @@ public class Casilla {
         } else if(this.tipo.equals("CARCEL")) {
             StringBuilder carcel = new StringBuilder();
             carcel.append("Tipo: ").append(this.tipo.toLowerCase() + ",\n");
-            carcel.append("salir: ").append(this.valor + ",\n");
+            carcel.append("salir: ").append(this.impuesto + ",\n");
             carcel.append("jugadores: ");
             for(Avatar avatar : this.getAvatares()) {
                 carcel.append("[").append(avatar.getJugador().getNombre())
