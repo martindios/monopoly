@@ -102,7 +102,7 @@ public class Jugador {
 
     public Avatar getAvatar() {
         return avatar;
-
+    }
     public int getTiradasCarcel() {
         return tiradasCarcel;
     }
@@ -113,11 +113,6 @@ public class Jugador {
 
     public float getGastos() {
         return gastos;
-    }
-
-    //Para cando queremos mostrar por pantalla o avatar do xogador
-    public Avatar getAvatar() {
-        return avatar;
     }
 
     private String listaPropiedades() {
