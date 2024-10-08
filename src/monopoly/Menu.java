@@ -46,9 +46,10 @@ public class Menu {
         Scanner scanner = new Scanner(System.in);
 
         while (opcion != 0) {
-            mostrarMenu();  // Mostramos o menu antes das accions
-            opcion = scanner.nextInt();  // Leemos o input
-            ejecutarOpcion(opcion);      // Ejecutamos
+            System.out.println("\n==== MONOPOLY ====");
+            System.out.println("Pulsa cualquier tecla para iniciar la partida");
+            scanner.nextLine();
+            iniciarPartida();
         }
     }
 
@@ -132,12 +133,93 @@ public class Menu {
 
     // Método para inciar una partida: crea los jugadores y avatares.
     private void iniciarPartida() {
+        System.out.println("Iniciando partida");
+        System.out.println("Introduce el comando: ");
+        String comando = scanner.nextLine();
+        analizarComando(comando);
+
     }
     
     /*Método que interpreta el comando introducido y toma la accion correspondiente.
     * Parámetro: cadena de caracteres (el comando).
     */
-    private void analizarComando(String comando) {
+    public void analizarComando(String comando) {
+        String[] palabrasArray = comando.split(" ");
+        if (palabrasArray.length > 0) {
+            switch (palabrasArray[0]) {
+
+                case "listar": //listar jugador //listar avatar // listar enventa
+                    switch (palabrasArray[1]){
+                        case "jugadores":
+                            listarJugadores();
+                        case "avatares":
+                            listarAvatares();
+                        case "enventa":
+                            listarVenta();
+                        default:
+                            System.out.println("Comando no válido");
+                            break;
+                    }
+                    break;
+
+                case "crear":
+                    switch (palabrasArray[1]){
+                        case "jugador":
+                            darAltaJugador(palabrasArray[2], palabrasArray[3]);
+                        default:
+                            System.out.println("Comando no válido");
+                            break;
+                    }
+                    break;
+
+                case "jugador":
+                    System.out.println("Tiene el turno: " + jugadores.get(turno));
+                    break;
+
+                case "lanzar":
+                    lanzarDados();
+                    break;
+
+                case "acabar":
+                    acabarTurno();
+                    break;
+
+                case "salir":
+                    salirCarcel();
+                    break;
+
+                case "describir":
+                    switch (palabrasArray[1]){
+                        case "jugador":
+                            descJugador(palabrasArray);
+                            break;
+                        case "avatar":
+                            descAvatar(palabrasArray[2]);
+                        default:
+                            descCasilla(palabrasArray[1]);
+                            break;
+                    }
+                    break;
+
+                case "comprar":
+                    comprar(palabrasArray[1]);
+                    break;
+
+                case "ver":
+                    switch (palabrasArray[1]){
+                        case "tablero":
+                            System.out.println(tablero.toString());
+                            break;
+                        default:
+                            System.out.println("Comando no válido");
+                            break;
+                    }
+
+                default:
+                    System.out.println("Comando no válido");
+                    break;
+            }
+        }
     }
 
     /*Método que realiza las acciones asociadas al comando 'describir jugador'.
@@ -176,6 +258,7 @@ public class Menu {
     /* Método que realiza las acciones asociadas al comando 'describir nombre_casilla'.
     * Parámetros: nombre de la casilla a describir.
     */
+
     public void descCasilla(String NombreCasilla) {
         ArrayList<ArrayList<Casilla>> casillas = tablero.getPosiciones();
         boolean casillaEncontrada = false; // auxiliar
@@ -351,6 +434,21 @@ public class Menu {
         System.out.println("El turno le pertenece al jugador " + jugador.getNombre() + ". Con avatar " + jugador.getAvatar() + ".");
     }
 
+    private void darAltaJugador(String nombre, String tipoAvatar){
+
+        Casilla casillaInicio = tablero.encontrar_casilla("Salida"); //Se busca la casilla correspondiente a la salida
+
+        //Se crea el jugador y se añade al array que contiene a todos los participantes de la partida
+        Jugador jugadorCreado = new Jugador(nombre, tipoAvatar, casillaInicio, avatares);
+        jugadores.add(jugadorCreado);
+
+        //Se muestra por pantalla la información del jugador creado
+        System.out.println("{");
+        System.out.println("nombre: " + jugadorCreado.getNombre() + ",");
+        System.out.println("avatar: " + jugadorCreado.getAvatar().getId());
+        System.out.println("}");
+
+    }
 
 
 }

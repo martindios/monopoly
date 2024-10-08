@@ -33,16 +33,17 @@ public class Jugador {
     public Jugador(String nombre, String tipoAvatar, Casilla inicio, ArrayList<Avatar> avCreados) {
         this.nombre = nombre;
         //Como temos que crear aquí o avatar, usamos o constructor del con args: Tipo do avatar, Xogador que o ten, Casilla de inicio e o array de avatares para nn repetilo
-        this.avatar = new Avatar(tipoAvatar, this, inicio, avCreados);
-        // Añadimos o avatar á lista de avatares creados
-        avCreados.add(this.avatar);
         this.fortuna = 1500; //Fortuna inicial de ejemplo, dsp cambiamolo
         this.gastos = 0;
         this.enCarcel = false;
         this.tiradasCarcel = 0;
         this.vueltas = 0;
         this.propiedades = new ArrayList<>();
+        this.avatar = new Avatar(tipoAvatar, this, inicio, avCreados);
+        // Añadimos o avatar á lista de avatares creados
+        avCreados.add(this.avatar);
     }
+
 
     //SETTER
     public void setFortuna(float fortuna) {
@@ -62,7 +63,6 @@ public class Jugador {
             this.gastos = gastos;
         }
     }
-
     public void setEnCarcel(boolean enCarcel) {
         this.enCarcel = enCarcel;
     }
@@ -70,7 +70,6 @@ public class Jugador {
     public void setTiradasCarcel(int tiradasCarcel) {
         this.tiradasCarcel = tiradasCarcel;
     }
-
 
     //Otros métodos:
     //Método para añadir una propiedad al jugador. Como parámetro, la casilla a añadir.
@@ -100,6 +99,9 @@ public class Jugador {
     public String getNombre() {
         return nombre;
     }
+
+    public Avatar getAvatar() {
+        return avatar;
 
     public int getTiradasCarcel() {
         return tiradasCarcel;

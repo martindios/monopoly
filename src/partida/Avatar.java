@@ -3,6 +3,8 @@ package partida;
 import monopoly.*;
 
 import java.util.ArrayList;
+import java.util.Random;
+
 
 
 public class Avatar {
@@ -16,6 +18,7 @@ public class Avatar {
     //Constructor vacío
     public Avatar() {
     }
+
 
     /*Constructor principal. Requiere éstos parámetros:
     * Tipo del avatar, jugador al que pertenece, lugar en el que estará ubicado, y un arraylist con los
@@ -53,6 +56,18 @@ public class Avatar {
     * - Un arraylist de los avatares ya creados, con el objetivo de evitar que se generen dos ID iguales.
      */
     private void generarId(ArrayList<Avatar> avCreados) {
+
+        Random random = new Random();
+        int numeroAleatorio = random.nextInt(26) + 65;  // Genera un número entre 65 y 90
+        String idCreado = String.valueOf((char) numeroAleatorio);;  // Convierte el número a su valor de String correspondiente
+
+        //Recorre la lista de avatares para comprobar si el id ya existe. Si existe, se llama recursivamente a la función para que cree uno nuevo
+        for(Avatar avatar : avCreados){
+            if(idCreado.equalsIgnoreCase(avatar.getId())){
+                generarId(avCreados);
+            }
+        }
+        setId(idCreado);
     }
 
     /*
@@ -87,5 +102,13 @@ public class Avatar {
                 Jugador: %s
                 }""".formatted(id, tipo, lugar, jugador);
         return toString;
+    }
+
+    /*
+    SETTERS
+     */
+
+    public void setId(String id) {
+        this.id = id;
     }
 }
