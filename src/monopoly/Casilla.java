@@ -114,10 +114,6 @@ public class Casilla {
         if(valor < 0) this.valor = 0;
         else this.valor = valor;
     }
-  
-      public void setGrupo(Grupo grupo) {
-        this.grupo = grupo;
-    }
 
     public void setDuenho(Jugador duenho) {
         this.duenho = duenho;
