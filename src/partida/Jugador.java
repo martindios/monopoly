@@ -151,7 +151,7 @@ public class Jugador {
 
     public String info() {
         String listaPropiedades = listaPropiedades();
-        String listaHipotecas = listaHipotecas();
+        //String listaHipotecas = listaHipotecas();
 
         String info = """
                 {
@@ -159,9 +159,8 @@ public class Jugador {
                 Avatar: %s
                 Fortuna: %f
                 Propiedades: %s
-                Hipotecas: %s
                 Edificios: %s
-                }""".formatted(nombre, avatar, fortuna, listaPropiedades, listaHipotecas, edificios);
+                }""".formatted(nombre, getAvatar().getId(), fortuna, listaPropiedades, edificios);
         return info;
     }
 }
