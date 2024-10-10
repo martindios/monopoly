@@ -23,6 +23,7 @@ public class Jugador {
 
     //Constructor vacío. Se usará para crear la banca.
     public Jugador() {
+        this.nombre = "banca";
     }
 
     /*Constructor principal. Requiere parámetros:

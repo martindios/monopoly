@@ -41,13 +41,13 @@ public class Casilla {
         this.posicion = posicion;
         this.duenho = duenho;
         this.valor = valor;
-        if(tipo.equals("SOLAR")) {
+        if(tipo.equals("Solar")) {
             this.impuesto = valor*0.1f;
         }
-        else if(tipo.equals("SERVICIOS")) {
+        else if(tipo.equals("Servicios")) {
             this.impuesto = Valor.SUMA_VUELTA * 0.75f;
         }
-        else if(tipo.equals("TRANSPORTE")) {
+        else if(tipo.equals("Transporte")) {
             this.impuesto = Valor.SUMA_VUELTA;
         }
         this.hipoteca = valor*0.5f;
@@ -189,11 +189,11 @@ public class Casilla {
     public String infoCasilla() {
         String descripcion = "Descripción de la casilla: " + this.getNombre() + ". Posición " + this.getPosicion() + ".";
         System.out.println(descripcion);
-        if(this.tipo.equals("SOLAR")) {
+        if(this.tipo.equals("Solar")) {
             StringBuilder solar  =new StringBuilder();
             solar.append("Tipo: ").append(this.tipo.toLowerCase() + ",\n");
-            solar.append("grupo: ").append(this.grupo + ",\n");
-            solar.append("propietario: ").append(this.duenho + ",\n");
+            solar.append("grupo: ").append(this.grupo.getNombreGrupo() + ",\n");
+            solar.append("propietario: ").append(this.duenho.getNombre() + ",\n");
             solar.append("valor: ").append(this.valor + ",\n");
             solar.append("alquiler: ").append(this.impuesto + ",\n");
             solar.append("Hipoteca: ").append(this.hipoteca + ",\n");
@@ -210,29 +210,29 @@ public class Casilla {
             solar.append("alquiler pista de deporte: ").append(this.impuesto*25 + ",\n");
             return solar.toString();
         }
-        else if(this.tipo.equals("SERVICIOS")) {
+        else if(this.tipo.equals("Servicios")) {
             StringBuilder servicios = new StringBuilder();
             servicios.append("Tipo: ").append(this.tipo.toLowerCase() + ",\n");
-            servicios.append("dueño: ").append(this.duenho + ",\n");
+            servicios.append("dueño: ").append(duenho.getNombre() + ",\n");
             servicios.append("valor: ").append(this.valor + ",\n");
             servicios.append("hipoteca: ").append(this.hipoteca + ",\n");
             return servicios.toString();
         }
-        else if(this.tipo.equals("TRANSPORTE")) {
+        else if(this.tipo.equals("Transporte")) {
             StringBuilder transporte = new StringBuilder();
             transporte.append("Tipo: ").append(this.tipo.toLowerCase() + ",\n");
-            transporte.append("dueño: ").append(this.duenho + ",\n");
+            transporte.append("dueño: ").append(duenho.getNombre() + ",\n");
             transporte.append("valor: ").append(this.valor + ",\n");
             transporte.append("hipoteca: ").append(this.impuesto + ",\n");
             return transporte.toString();
         }
-        else if(this.tipo.equals("IMPUESTOS")) {
+        else if(this.tipo.equals("Impuestos")) {
             StringBuilder impuestos = new StringBuilder();
             impuestos.append("Tipo: ").append(this.tipo.toLowerCase() + ",\n");
             impuestos.append("impuesto: ").append(this.impuesto + ",\n");
             return impuestos.toString();
         }
-        else if(this.tipo.equals("PARKING")) {
+        else if(this.tipo.equals("Parking")) {
             StringBuilder parking = new StringBuilder();
             parking.append("Tipo: ").append(this.tipo.toLowerCase() + ",\n");
             parking.append("bote: ").append(this.valor + ",\n");
@@ -240,12 +240,13 @@ public class Casilla {
             for(Avatar avatar : this.getAvatares()) {
                 parking.append(avatar.getJugador().getNombre()).append(", ");
             }
+            //HERMANO MOU QUE COÑO ES ESTO
             if(this.getAvatares().size() > 0) {
                 parking.setLength(parking.length() - 2);
             }
             parking.append("]\n");
             return parking.toString();
-        } else if(this.tipo.equals("CARCEL")) {
+        } else if(this.tipo.equals("Carcel")) {
             StringBuilder carcel = new StringBuilder();
             carcel.append("Tipo: ").append(this.tipo.toLowerCase() + ",\n");
             carcel.append("salir: ").append(this.impuesto + ",\n");

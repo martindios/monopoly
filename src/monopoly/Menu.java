@@ -1,6 +1,7 @@
 package monopoly;
 
 import java.awt.desktop.AppReopenedEvent;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Scanner;
@@ -397,6 +398,15 @@ public class Menu {
 
     // Método que realiza las acciones asociadas al comando 'listar enventa'.
     private void listarVenta() {
+        for (ArrayList<Casilla> casillas : tablero.getPosiciones()) {
+            for (Casilla casilla : casillas) {
+                if (casilla.getTipo().equals("Solar") || casilla.getTipo().equals("Transporte") || casilla.getTipo().equals("Servicios")) {
+                    if (casilla.getDuenho() == banca) {
+                        //hay que listar las casillas con una función auxiliar
+                    }
+                }
+            }
+        }
     }
 
     // Método que realiza las acciones asociadas al comando 'listar jugadores'.

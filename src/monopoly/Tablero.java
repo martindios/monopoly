@@ -55,8 +55,8 @@ public class Tablero {
         ladoNorte.add(new Casilla("Serv2", "Servicios", 28, 29, banca));
         Casilla solar17 = new Casilla("Solar17", "Solar", 17, 30, banca);
         ladoNorte.add(solar17);
-        Grupo grupo5 = new Grupo(solar12, solar13, solar14, YELLOW);
-        Grupo grupo6 = new Grupo(solar15, solar16, solar17, RED);
+        Grupo grupo5 = new Grupo(solar12, solar13, solar14, YELLOW, "Yellow");
+        Grupo grupo6 = new Grupo(solar15, solar16, solar17, RED, "Red");
 
         solar12.setGrupo(grupo5);
         solar13.setGrupo(grupo5);
@@ -88,8 +88,8 @@ public class Tablero {
         ladoSur.add(solar4);
         Casilla solar5 = new Casilla("Solar5", "Solar", 10, 10, banca);
         ladoSur.add(solar5);
-        Grupo grupo1 = new Grupo(solar1, solar2, BLUE);
-        Grupo grupo2 = new Grupo(solar3, solar4, solar5, GREEN);
+        Grupo grupo1 = new Grupo(solar1, solar2, BLUE, "Blue");
+        Grupo grupo2 = new Grupo(solar3, solar4, solar5, GREEN, "Green");
 
         solar1.setGrupo(grupo1);
         solar2.setGrupo(grupo1);
@@ -123,8 +123,8 @@ public class Tablero {
         ladoOeste.add(solar10);
         Casilla solar11 = new Casilla("Solar11", "Solar", 11, 20, banca);
         ladoOeste.add(solar11);
-        Grupo grupo3 = new Grupo(solar6, solar7, solar8, PURPLE);
-        Grupo grupo4 = new Grupo(solar9, solar10, solar11, CYAN);
+        Grupo grupo3 = new Grupo(solar6, solar7, solar8, PURPLE, "Purple");
+        Grupo grupo4 = new Grupo(solar9, solar10, solar11, CYAN, "Cyan");
 
         solar6.setGrupo(grupo3);
         solar7.setGrupo(grupo3);
@@ -156,8 +156,8 @@ public class Tablero {
         ladoEste.add(new Casilla("Imp2", "Impuestos", 38, 39, banca));
         Casilla solar22 = new Casilla("Solar22", "Solar", 22, 40, banca);
         ladoEste.add(solar22);
-        Grupo grupo7 = new Grupo(solar18, solar19, solar20, WHITE);
-        Grupo grupo8 = new Grupo(solar21, solar22, BLACK);
+        Grupo grupo7 = new Grupo(solar18, solar19, solar20, WHITE, "White");
+        Grupo grupo8 = new Grupo(solar21, solar22, BLACK, "Black");
 
         solar18.setGrupo(grupo7);
         solar19.setGrupo(grupo7);

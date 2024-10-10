@@ -9,6 +9,7 @@ class Grupo {
     //Atributos
     private ArrayList<Casilla> miembros; //Casillas miembros del grupo.
     private String colorGrupo; //Color del grupo
+    private String nombreGrupo; //Nombre del grupo
     private int numCasillas; //Número de casillas del grupo.
 
     //Constructor vacío.
@@ -21,9 +22,10 @@ class Grupo {
     //public Grupo(Casilla cas1, Casilla cas2, String colorGrupo) {
     //}
     //temporal
-    public Grupo(Casilla cas1, Casilla cas2, String colorGrupo) {
+    public Grupo(Casilla cas1, Casilla cas2, String colorGrupo, String nombreGrupo) {
         this.numCasillas = 2;
         this.colorGrupo = colorGrupo;
+        this.nombreGrupo = nombreGrupo;
         this.miembros = new ArrayList<Casilla>();
         this.miembros.add(cas1);
         this.miembros.add(cas2);
@@ -35,9 +37,10 @@ class Grupo {
     //public Grupo(Casilla cas1, Casilla cas2, Casilla cas3, String colorGrupo) {
     //}
     //temporal
-    public Grupo(Casilla cas1, Casilla cas2, Casilla cas3, String colorGrupo) {
+    public Grupo(Casilla cas1, Casilla cas2, Casilla cas3, String colorGrupo, String nombreGrupo) {
         this.numCasillas = 3;
         this.colorGrupo = colorGrupo;
+        this.nombreGrupo = nombreGrupo;
         this.miembros = new ArrayList<Casilla>();
         this.miembros.add(cas1);
         this.miembros.add(cas2);
@@ -80,5 +83,9 @@ class Grupo {
     //getter para devolver el número de casillas que pertenecen a un grupo
     public int getNumCasillas() {
         return numCasillas;
+    }
+
+    public String getNombreGrupo() {
+        return nombreGrupo;
     }
 }
