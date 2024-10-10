@@ -39,6 +39,8 @@ public class Jugador {
         this.tiradasCarcel = 0;
         this.vueltas = 0;
         this.propiedades = new ArrayList<>();
+        this.hipotecas = new ArrayList<>();
+        this.edificios = new ArrayList<>();
         this.avatar = new Avatar(tipoAvatar, this, inicio, avCreados);
         // Añadimos o avatar á lista de avatares creados
         avCreados.add(this.avatar);
@@ -127,7 +129,7 @@ public class Jugador {
             listaPropiedades = listaPropiedades + "]";
         }
         else {
-            listaPropiedades = "[]";
+            listaPropiedades = "-";
         }
         return listaPropiedades;
     }
@@ -144,24 +146,42 @@ public class Jugador {
             listaHipotecas = listaHipotecas + "]";
         }
         else {
-            listaHipotecas = "[]";
+            listaHipotecas = "-";
         }
         return listaHipotecas;
+    }
+
+    private String listaEdificios() {
+        String listaEdificios = "";
+        if (!edificios.isEmpty()) {
+            listaEdificios = listaEdificios + "[" + edificios.getFirst();
+
+            for(int i = 1; i < edificios.size(); ++i) {
+                listaEdificios = listaEdificios + ", " + edificios.get(i);
+            }
+
+            listaEdificios = listaEdificios + "]";
+        }
+        else {
+            listaEdificios = "-";
+        }
+        return listaEdificios;
     }
 
     public String info() {
         String listaPropiedades = listaPropiedades();
         String listaHipotecas = listaHipotecas();
+        String listaEdificios = listaEdificios();
 
         String info = """
                 {
-                Nombre: %s
-                Avatar: %s
-                Fortuna: %f
-                Propiedades: %s
-                Hipotecas: %s
-                Edificios: %s
-                }""".formatted(nombre, avatar, fortuna, listaPropiedades, listaHipotecas, edificios);
+                    Nombre: %s,
+                    Avatar: %s,
+                    Fortuna: %.2f,
+                    Propiedades: %s
+                    Hipotecas: %s
+                    Edificios: %s
+                }""".formatted(nombre, getAvatar().getId(), fortuna, listaPropiedades, listaHipotecas, listaEdificios);
         return info;
     }
 }

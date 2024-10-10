@@ -6,15 +6,7 @@ import java.util.Scanner;
 public class MonopolyETSE {
 
     public static void main(String[] args) {
-
-        Tablero tablero = new Tablero();
-        System.out.println(tablero.toString());
-        /*System.out.print("$>");
-        Scanner scanner = new Scanner(System.in);
-        String comando = scanner.nextLine();
-        Menu menu = new Menu();
-        menu.analizarComando(comando);*/
-
+        new Menu();
     }
     
 }
