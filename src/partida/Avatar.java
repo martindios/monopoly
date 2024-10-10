@@ -32,6 +32,7 @@ public class Avatar {
         this.lugar = lugar;
         //Generamos o id do avatar co metodo e asígnase dentro deste, pasándolle o array de avatares xa creados, para asi dsp coller o seu id e non repetilos
         generarId(avCreados);
+        lugar.anhadirAvatar(this);
     }
 
     //SETTERS
@@ -94,14 +95,13 @@ public class Avatar {
         return lugar;
     }
     public String infoAvatar() {
-        String toString = """
+        return """
                 {
-                Id: %s
-                Tipo: %s
-                Casilla: %s
-                Jugador: %s
-                }""".formatted(id, tipo, lugar, jugador);
-        return toString;
+                    Id: %s,
+                    Tipo: %s,
+                    Casilla: %s,
+                    Jugador: %s
+                }""".formatted(id, tipo, lugar.getNombre(), jugador.getNombre());
     }
 
     /*

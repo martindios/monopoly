@@ -4,6 +4,7 @@ import java.awt.desktop.AppReopenedEvent;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Scanner;
+import java.util.InputMismatchException;
 
 import partida.*;
 
@@ -40,7 +41,7 @@ public class Menu {
         this.banca = new Jugador();
         this.tablero = new Tablero(banca);
 
-        iniciarPartida();
+        preIniciarPartida();
     }
 
     //SETTERS
@@ -48,8 +49,7 @@ public class Menu {
         this.turno = turno;
     }
 
-    // Método para inciar una partida: crea los jugadores y avatares.
-    private void iniciarPartida() {
+    private void preIniciarPartida() {
         System.out.println("*************************************************************************************");
 
         System.out.print(".___  ___.   ______   .__   __.   ______   .______     ______    __      ____    ____ \n" +
@@ -62,19 +62,68 @@ public class Menu {
         System.out.println("Iniciando partida...");
         while (maxJugadores < 2 || maxJugadores > 6) {
             System.out.print("¿Cuántos jugadores van a ser? [2-6] ");
-            maxJugadores = scanner.nextInt();
+            try {
+                maxJugadores = scanner.nextInt();
+                if (maxJugadores < 2 || maxJugadores > 6) {
+                    System.out.println("Introduzca un número dentro del rango");
+                }
+            } catch (InputMismatchException e) {
+                System.out.println("Entrada inválida, introduzca un número");
+                scanner.next();
+            }
+
         }
 
-        scanner.nextLine(); //limpiar el buffer
+        crearJugadores();
+
+        iniciarPartida();
+    }
+
+    // Método para inciar una partida: crea los jugadores y avatares.
+    private void iniciarPartida() {
+
         while(true) {
             System.out.print("Introduce el comando: ");
             String comando = scanner.nextLine();
             analizarComando(comando);
         }
-
-
+        //HAY QUE HACER UN SCANNER CLOSE AQUI CUANDO ACABE EL MENÚ, ANTES DE SALIR, AUN NO SE PUEDE PORQUE ESTA EL WHILE TRUE
     }
-    
+
+
+    private void crearJugadores() {
+        scanner.nextLine();
+        //Comprobación para que no se exceda el número de jugadores establecido
+        while (jugadoresActuales < maxJugadores) {
+            System.out.print("Introduce el comando: ");
+            String comando = scanner.nextLine();
+            String[] palabrasArray = comando.split(" ");
+            if (palabrasArray.length > 0) {
+                if (palabrasArray[0].equals("crear")) {
+                    if (palabrasArray.length == 4) {
+                        //Comprobación de que el jugador no está repetido
+                        if (!esJugadorRepetido(palabrasArray[2])) {
+                            //Comprobación de que el tipoAvatar es correcto
+                            if (esAvatarDisponible(palabrasArray[3])) {
+                                darAltaJugador(palabrasArray[2], palabrasArray[3]);
+                                jugadoresActuales++;
+                            } else {
+                                System.out.println("El avatar introducido no está disponible [Coche, Esfinge, Sombrero, Pelota]");
+                            }
+                        } else {
+                            System.out.println("Jugador ya existente");
+                        }
+                    } else {
+                        System.out.println("El formato correcto es: crear jugador nombre tipoAvatar");
+                    }
+                } else {
+                    System.out.println("Debe primero crear los jugadores para poder jugar");
+                }
+            }
+        }
+    }
+
+
     /*Método que interpreta el comando introducido y toma la accion correspondiente.
     * Parámetro: cadena de caracteres (el comando).
     */
@@ -82,42 +131,23 @@ public class Menu {
         String[] palabrasArray = comando.split(" ");
         if (palabrasArray.length > 0) {
             switch (palabrasArray[0]) {
-
+                case "crear":
+                    System.out.print("Todos los jugadores están registrados");
+                    break;
                 case "listar": //listar jugador //listar avatar // listar enventa
                     switch (palabrasArray[1]){
                         case "jugadores":
                             listarJugadores();
+                            break;
                         case "avatares":
                             listarAvatares();
+                            break;
                         case "enventa":
                             listarVenta();
+                            break;
                         default:
                             System.out.println("Comando no válido");
                             break;
-                    }
-                    break;
-
-                case "crear":
-                    if (palabrasArray.length == 4) {
-                        //Comprobación para que no se exceda el número de jugadores establecido
-                        if (jugadoresActuales < maxJugadores) {
-                            //Comprobación de que el jugador no está repetido
-                            if(!esJugadorRepetido(palabrasArray[2])) {
-                                //Comprobación de que el tipoAvatar es correcto
-                                if(esAvatarDisponible(palabrasArray[3])) {
-                                    darAltaJugador(palabrasArray[2], palabrasArray[3]);
-                                    jugadoresActuales++;
-                                } else {
-                                    System.out.println("El avatar introducido no está disponible [Coche, Esfinge, Sombrero, Pelota]");
-                                }
-                            } else {
-                                System.out.println("Jugador ya existente");
-                            }
-                        } else {
-                            System.out.println("Todos los jugadores están registrados");
-                        }
-                    } else {
-                        System.out.println("El formato correcto es: crear jugador nombre tipoAvatar");
                     }
                     break;
 
@@ -156,14 +186,12 @@ public class Menu {
                     break;
 
                 case "ver":
-                    switch (palabrasArray[1]){
-                        case "tablero":
-                            System.out.println(tablero.toString());
-                            break;
-                        default:
-                            System.out.println("Comando no válido");
-                            break;
+                    if (palabrasArray[1].equals("tablero")) {
+                        System.out.println(tablero.toString());
+                    } else {
+                        System.out.println("Comando no válido");
                     }
+                    break;
 
                 default:
                     System.out.println("Comando no válido");
@@ -377,6 +405,11 @@ public class Menu {
         StringBuilder str = new StringBuilder();
         for (Jugador jugador : jugadores) {
             str.append(jugador.info());
+            if (!jugador.equals(jugadores.getLast())) {
+                str.append(",\n");
+            } else {
+                str.append("\n");
+            }
         }
         System.out.println(str);
     }
@@ -384,11 +417,16 @@ public class Menu {
     // Método que realiza las acciones asociadas al comando 'listar avatares'.
     private void listarAvatares() {
         System.out.println("Avatares:");
-        String toString = "";
+        StringBuilder str = new StringBuilder();
         for (Avatar avatar : avatares) {
-            toString += avatar.infoAvatar();
+            str.append(avatar.infoAvatar());
+            if (!avatar.equals(avatares.getLast())) {
+                str.append(",\n");
+            } else {
+                str.append("\n");
+            }
         }
-        System.out.println(toString);
+        System.out.println(str);
     }
 
     // Método que realiza las acciones asociadas al comando 'acabar turno'.
@@ -412,8 +450,8 @@ public class Menu {
 
         //Se muestra por pantalla la información del jugador creado
         System.out.println("{");
-        System.out.println("nombre: " + jugadorCreado.getNombre() + ",");
-        System.out.println("avatar: " + jugadorCreado.getAvatar().getId());
+        System.out.println("    nombre: " + jugadorCreado.getNombre() + ",");
+        System.out.println("    avatar: " + jugadorCreado.getAvatar().getId());
         System.out.println("}");
 
     }
