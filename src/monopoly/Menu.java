@@ -170,13 +170,16 @@ public class Menu {
                 case "describir":
                     switch (palabrasArray[1]){
                         case "jugador":
-                            descJugador(palabrasArray);
+                            descJugador(palabrasArray[2]);
                             break;
                         case "avatar":
                             descAvatar(palabrasArray[2]);
                             break;
+                        case "casilla":
+                            descCasilla(palabrasArray[2]);
+                            break;
                         default:
-                            descCasilla(palabrasArray[1]);
+                            System.out.println("Comando no válido");
                             break;
                     }
                     break;
@@ -220,12 +223,8 @@ public class Menu {
     /*Método que realiza las acciones asociadas al comando 'describir jugador'.
     * Parámetro: comando introducido
      */
-    private void descJugador(String[] partes) {
-        System.out.println("Indica el nombre del jugador.");
-        System.out.print("->");
-        String nombre = scanner.nextLine();
+    private void descJugador(String nombre) {
         //Comprobar jugador
-
         for (Jugador jugador : jugadores) {
             if (jugador.getNombre().equalsIgnoreCase(nombre)) { //getter de getNombre de jugador
                 System.out.println(jugador.info());
@@ -239,7 +238,6 @@ public class Menu {
     * Parámetro: id del avatar a describir.
     */
     private void descAvatar(String ID) {
-
         //Comprueba que el ID que se pide describir es uno existente
         for (Avatar avatar : avatares) {
             if (avatar.getId().equalsIgnoreCase(ID)) {
