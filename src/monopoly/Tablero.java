@@ -107,7 +107,7 @@ public class Tablero {
     //Método que inserta casillas del lado oeste.
     private void insertarLadoOeste() {
         ArrayList<Casilla> ladoOeste = new ArrayList<>();
-        ladoOeste.add(new Casilla("Cárcel", "Especiales", 1, 11, banca));
+        ladoOeste.add(new Casilla("Carcel", "Especiales", 1, 11, banca));
         Casilla solar6 = new Casilla("Solar6", "Solar", 6, 12, banca);
         ladoOeste.add(solar6);
         ladoOeste.add(new Casilla("Serv1", "Servicios", 13, banca));
