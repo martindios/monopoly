@@ -2,7 +2,9 @@ package monopoly;
 
 import java.awt.desktop.AppReopenedEvent;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Scanner;
+import java.util.InputMismatchException;
 
 import partida.*;
 
@@ -11,6 +13,8 @@ import java.util.Scanner;
 public class Menu {
 
     static Scanner scanner = new Scanner(System.in); //scanner para leer lo que se pone por teclado
+    int maxJugadores = 0;
+    int jugadoresActuales = 0; //Variable auxiliar para limitar el número de jugadores
 
 
     //Atributos
@@ -37,109 +41,89 @@ public class Menu {
         this.banca = new Jugador();
         this.tablero = new Tablero(banca);
 
-        //ejecutarMenu();
+        preIniciarPartida();
     }
-
-    /* Metodo que mostra o menu
-    private void ejecutarMenu() {
-        int opcion = -1;
-        Scanner scanner = new Scanner(System.in);
-
-        while (opcion != 0) {
-            System.out.println("\n==== MONOPOLY ====");
-            System.out.println("Pulsa cualquier tecla para iniciar la partida");
-            scanner.nextLine();
-            iniciarPartida();
-        }
-    }
-
-    // Método que mostra o mnú
-    private void mostrarMenu() {
-        System.out.println("\n==== MENÚ PRINCIPAL ====");
-        System.out.println("1. Iniciar Partida");
-        System.out.println("2. Describir Jugador");
-        System.out.println("3. Describir Avatar");
-        System.out.println("4. Describir Casilla");
-        System.out.println("5. Lanzar Dados");
-        System.out.println("6. Comprar Casilla");
-        System.out.println("7. Salir de la Cárcel");
-        System.out.println("8. Listar Propiedades en Venta");
-        System.out.println("9. Listar Jugadores");
-        System.out.println("10. Listar Avatares");
-        System.out.println("11. Acabar Turno");
-        System.out.println("0. Salir del Juego");
-    }
-
-    // Metodo que ten as opcions do xogador
-    //Debemos modificar esto (creo) xa que a opcion de iniciar a partida non se debería mostrar en pantalla, debería ser algo auto
-    private void ejecutarOpcion(int opcion) {
-        Scanner scanner = new Scanner(System.in);
-
-        switch (opcion) {
-            case 1:
-                iniciarPartida();
-                break;
-            case 2:
-                System.out.println("Introduce el nombre del jugador:");
-                String nombreJugador = scanner.nextLine();
-                descJugador(new String[]{nombreJugador});
-                break;
-            case 3:
-                System.out.println("Introduce el ID del avatar:");
-                String idAvatar = scanner.nextLine();
-                descAvatar(idAvatar);
-                break;
-            case 4:
-                System.out.println("Introduce el nombre de la casilla:");
-                String nombreCasilla = scanner.nextLine();
-                //descCasilla(nombreCasilla);
-                break;
-            case 5:
-                lanzarDados();
-                break;
-            case 6:
-                System.out.println("Introduce el nombre de la casilla a comprar:");
-                String nombreCompra = scanner.nextLine();
-                comprar(nombreCompra);
-                break;
-            case 7:
-                salirCarcel();
-                break;
-            case 8:
-                listarVenta();
-                break;
-            case 9:
-                listarJugadores();
-                break;
-            case 10:
-                listarAvatares();
-                break;
-            case 11:
-                acabarTurno();
-                break;
-            case 0:
-                System.out.println("¡Gracias por jugar!");
-                break;
-            default:
-                System.out.println("Opción no válida. Por favor, elige una opción válida.");
-                break;
-        }
-    } */
 
     //SETTERS
     public void setTurno(int turno) {
         this.turno = turno;
     }
 
+    private void preIniciarPartida() {
+        System.out.println("*************************************************************************************");
+
+        System.out.print(".___  ___.   ______   .__   __.   ______   .______     ______    __      ____    ____ \n" +
+                "|   \\/   |  /  __  \\  |  \\ |  |  /  __  \\  |   _  \\   /  __  \\  |  |     \\   \\  /   / \n" +
+                "|  \\  /  | |  |  |  | |   \\|  | |  |  |  | |  |_)  | |  |  |  | |  |      \\   \\/   /  \n" +
+                "|  |\\/|  | |  |  |  | |  . `  | |  |  |  | |   ___/  |  |  |  | |  |       \\_    _/   \n" +
+                "|  |  |  | |  `--'  | |  |\\   | |  `--'  | |  |      |  `--'  | |  `----.    |  |     \n" +
+                "|__|  |__|  \\______/  |__| \\__|  \\______/  | _|       \\______/  |_______|    |__|     \n");
+        System.out.println("*************************************************************************************");
+        System.out.println("Iniciando partida...");
+        while (maxJugadores < 2 || maxJugadores > 6) {
+            System.out.print("¿Cuántos jugadores van a ser? [2-6] ");
+            try {
+                maxJugadores = scanner.nextInt();
+                if (maxJugadores < 2 || maxJugadores > 6) {
+                    System.out.println("Introduzca un número dentro del rango");
+                }
+            } catch (InputMismatchException e) {
+                System.out.println("Entrada inválida, introduzca un número");
+                scanner.next();
+            }
+
+        }
+
+        crearJugadores();
+
+        iniciarPartida();
+    }
+
     // Método para inciar una partida: crea los jugadores y avatares.
     private void iniciarPartida() {
-        System.out.println("Iniciando partida");
-        System.out.println("Introduce el comando: ");
-        String comando = scanner.nextLine();
-        analizarComando(comando);
 
+        while(true) {
+            System.out.print("Introduce el comando: ");
+            String comando = scanner.nextLine();
+            analizarComando(comando);
+        }
+        //HAY QUE HACER UN SCANNER CLOSE AQUI CUANDO ACABE EL MENÚ, ANTES DE SALIR, AUN NO SE PUEDE PORQUE ESTA EL WHILE TRUE
     }
-    
+
+
+    private void crearJugadores() {
+        scanner.nextLine();
+        //Comprobación para que no se exceda el número de jugadores establecido
+        while (jugadoresActuales < maxJugadores) {
+            System.out.print("Introduce el comando: ");
+            String comando = scanner.nextLine();
+            String[] palabrasArray = comando.split(" ");
+            if (palabrasArray.length > 0) {
+                if (palabrasArray[0].equals("crear")) {
+                    if (palabrasArray.length == 4) {
+                        //Comprobación de que el jugador no está repetido
+                        if (!esJugadorRepetido(palabrasArray[2])) {
+                            //Comprobación de que el tipoAvatar es correcto
+                            if (esAvatarDisponible(palabrasArray[3])) {
+                                darAltaJugador(palabrasArray[2], palabrasArray[3]);
+                                jugadoresActuales++;
+                            } else {
+                                System.out.println("El avatar introducido no está disponible [Coche, Esfinge, Sombrero, Pelota]");
+                            }
+                        } else {
+                            System.out.println("Jugador ya existente");
+                        }
+                    } else {
+                        System.out.println("El formato correcto es: crear jugador nombre tipoAvatar");
+                    }
+                } else {
+                    System.out.println("Debe primero crear los jugadores para poder jugar");
+                }
+            }
+        }
+    }
+
+
     /*Método que interpreta el comando introducido y toma la accion correspondiente.
     * Parámetro: cadena de caracteres (el comando).
     */
@@ -147,25 +131,20 @@ public class Menu {
         String[] palabrasArray = comando.split(" ");
         if (palabrasArray.length > 0) {
             switch (palabrasArray[0]) {
-
+                case "crear":
+                    System.out.print("Todos los jugadores están registrados");
+                    break;
                 case "listar": //listar jugador //listar avatar // listar enventa
                     switch (palabrasArray[1]){
                         case "jugadores":
                             listarJugadores();
+                            break;
                         case "avatares":
                             listarAvatares();
+                            break;
                         case "enventa":
                             listarVenta();
-                        default:
-                            System.out.println("Comando no válido");
                             break;
-                    }
-                    break;
-
-                case "crear":
-                    switch (palabrasArray[1]){
-                        case "jugador":
-                            darAltaJugador(palabrasArray[2], palabrasArray[3]);
                         default:
                             System.out.println("Comando no válido");
                             break;
@@ -195,6 +174,7 @@ public class Menu {
                             break;
                         case "avatar":
                             descAvatar(palabrasArray[2]);
+                            break;
                         default:
                             descCasilla(palabrasArray[1]);
                             break;
@@ -206,20 +186,35 @@ public class Menu {
                     break;
 
                 case "ver":
-                    switch (palabrasArray[1]){
-                        case "tablero":
-                            System.out.println(tablero.toString());
-                            break;
-                        default:
-                            System.out.println("Comando no válido");
-                            break;
+                    if (palabrasArray[1].equals("tablero")) {
+                        System.out.println(tablero.toString());
+                    } else {
+                        System.out.println("Comando no válido");
                     }
+                    break;
 
                 default:
                     System.out.println("Comando no válido");
                     break;
             }
         }
+    }
+
+    //Método privado para saber si el nombre es repetido o no
+    private boolean esJugadorRepetido(String nombre) {
+        if (jugadores.isEmpty()) {
+            return false;
+        } else {
+            for (Jugador jugador : jugadores) {
+                return jugador.getNombre().equals(nombre);
+            }
+        }
+        return true;
+    }
+
+    private boolean esAvatarDisponible(String tipoAvatar) {
+        ArrayList<String> tipoAvatarArray = new ArrayList<>(Arrays.asList("Coche", "Esfinge", "Sombrero", "Pelota"));
+        return tipoAvatarArray.contains(tipoAvatar);
     }
 
     /*Método que realiza las acciones asociadas al comando 'describir jugador'.
@@ -407,21 +402,31 @@ public class Menu {
     // Método que realiza las acciones asociadas al comando 'listar jugadores'.
     private void listarJugadores() {
         System.out.println("Jugadores:");
-        String toString = "";
+        StringBuilder str = new StringBuilder();
         for (Jugador jugador : jugadores) {
-            toString += jugador.info();
+            str.append(jugador.info());
+            if (!jugador.equals(jugadores.getLast())) {
+                str.append(",\n");
+            } else {
+                str.append("\n");
+            }
         }
-        System.out.println(toString);
+        System.out.println(str);
     }
 
     // Método que realiza las acciones asociadas al comando 'listar avatares'.
     private void listarAvatares() {
         System.out.println("Avatares:");
-        String toString = "";
+        StringBuilder str = new StringBuilder();
         for (Avatar avatar : avatares) {
-            toString += avatar.infoAvatar();
+            str.append(avatar.infoAvatar());
+            if (!avatar.equals(avatares.getLast())) {
+                str.append(",\n");
+            } else {
+                str.append("\n");
+            }
         }
-        System.out.println(toString);
+        System.out.println(str);
     }
 
     // Método que realiza las acciones asociadas al comando 'acabar turno'.
@@ -438,14 +443,15 @@ public class Menu {
 
         Casilla casillaInicio = tablero.encontrar_casilla("Salida"); //Se busca la casilla correspondiente a la salida
 
+
         //Se crea el jugador y se añade al array que contiene a todos los participantes de la partida
         Jugador jugadorCreado = new Jugador(nombre, tipoAvatar, casillaInicio, avatares);
         jugadores.add(jugadorCreado);
 
         //Se muestra por pantalla la información del jugador creado
         System.out.println("{");
-        System.out.println("nombre: " + jugadorCreado.getNombre() + ",");
-        System.out.println("avatar: " + jugadorCreado.getAvatar().getId());
+        System.out.println("    nombre: " + jugadorCreado.getNombre() + ",");
+        System.out.println("    avatar: " + jugadorCreado.getAvatar().getId());
         System.out.println("}");
 
     }
