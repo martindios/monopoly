@@ -3,10 +3,8 @@ package partida;
 import java.util.ArrayList;
 
 import monopoly.*;
-
 import static monopoly.Valor.FORTUNA_BANCA;
 import static monopoly.Valor.FORTUNA_INICIAL;
-
 
 public class Jugador {
 
@@ -89,7 +87,7 @@ public class Jugador {
     }
 
     //Método para eliminar una propiedad del arraylist de propiedades de jugador.
-    public void eliminarPropiedad(Casilla casilla) {
+    public void eliminarPropiedad(Casilla casilla) { propiedades.remove(casilla);
     }
 
     //Método para añadir fortuna a un jugador
@@ -115,7 +113,7 @@ public class Jugador {
         casillaOld.eliminarAvatar(av);
         for(ArrayList<Casilla> casillas : pos) {
             for(Casilla casilla : casillas) {
-                if(casilla.getNombre().equalsIgnoreCase("Carcel")) {
+                if(casilla.getNombre().equalsIgnoreCase("Cárcel")) {
                     casilla.anhadirAvatar(av);
                     System.out.println("El jugador ha sido encarcelado");
                 }

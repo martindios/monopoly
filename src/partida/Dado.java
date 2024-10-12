@@ -4,7 +4,7 @@ import java.util.Random;
 public class Dado {
     //El dado solo tiene un atributo en nuestro caso: su valor.
     private int valor;
-    private Random random = new Random();
+    private final Random random = new Random();
 
 
 

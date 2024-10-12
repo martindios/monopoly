@@ -203,8 +203,9 @@ public class Casilla {
             return;
         }
         System.out.println("El jugador ha comprado la casilla.");
-        solicitante.setFortuna(solicitante.getFortuna() - this.valor);
-        solicitante.setGastos(solicitante.getGastos() + this.valor);
+        solicitante.sumarFortuna(-this.valor);
+        solicitante.sumarGastos(this.valor);
+        banca.sumarFortuna(this.valor);
         this.setDuenho(solicitante);
         solicitante.anhadirPropiedad(this);
     }
@@ -266,7 +267,7 @@ public class Casilla {
                 return impuestos.toString();
 
             case "Especiales":
-                if (Objects.equals(this.nombre, "Carcel")) {
+                if (Objects.equals(this.nombre, "Cárcel")) {
                     StringBuilder carcel = new StringBuilder();
                     carcel.append("Tipo: ").append(this.tipo.toLowerCase() + ",\n");
                     carcel.append("salir: ").append(this.impuesto + ",\n");
@@ -303,20 +304,21 @@ public class Casilla {
      * Valor devuelto: texto con esa información.
      */
     public String casEnVenta() {
+        String resultado;
         switch (this.tipo) {
             case "Solar":
-
+                resultado = this.infoSolar();
                 break;
             case "Transporte":
-
+                resultado = this.infoTransServ();
                 break;
             case "Servicios":
-
+                resultado = infoTransServ();
                 break;
             default:
-                System.out.println("Casilla no en venta.");
+                resultado = "Casilla no en venta.";
         }
-        return null;
+        return resultado;
     }
 
     /*
@@ -371,10 +373,19 @@ public class Casilla {
     private String infoSolar() {
         return """
                 {
+                    Nombre: %s,
                     Tipo: %s,
                     grupo: %s,
-                    valor: %f.
-                }""".formatted(tipo, grupo.getColorGrupo(), valor);
+                    valor: %.2f.
+                }""".formatted(nombre, tipo, grupo.getNombreGrupo(), valor);
+    }
+    private String infoTransServ() {
+        return """
+                {
+                    Nombre: %s
+                    Tipo: %s,
+                    valor: %.2f.
+                }""".formatted(nombre, tipo, valor);
     }
 
 }
