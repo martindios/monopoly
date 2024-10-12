@@ -13,4 +13,10 @@ public class Dado {
         this.valor = this.random.nextInt(6) + 1;
         return valor;
     }
+
+    public int getValor() {
+        return valor;
+    }
 }
+
+

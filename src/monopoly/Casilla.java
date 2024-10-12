@@ -41,13 +41,13 @@ public class Casilla {
         this.posicion = posicion;
         this.duenho = duenho;
         this.valor = valor;
-        if(tipo.equals("SOLAR")) {
+        if(tipo.equals("Solar")) {
             this.impuesto = valor*0.1f;
         }
-        else if(tipo.equals("SERVICIOS")) {
+        else if(tipo.equals("Servicios")) {
             this.impuesto = Valor.SUMA_VUELTA * 0.75f;
         }
-        else if(tipo.equals("TRANSPORTE")) {
+        else if(tipo.equals("Transporte")) {
             this.impuesto = Valor.SUMA_VUELTA;
         }
         this.hipoteca = valor*0.5f;
@@ -67,7 +67,7 @@ public class Casilla {
      */
     public Casilla(String nombre, int posicion, float impuesto, Jugador duenho) {
         this.nombre = nombre;
-        this.tipo = "IMPUESTOS";
+        this.tipo = "Impuestos";
         //valor non ten, non se poden comprar
         this.posicion = posicion;
         this.duenho = duenho; //Será a banca, hai q poñerllo cnd se crea
@@ -93,10 +93,10 @@ public class Casilla {
         //Salida e IrCarcel non teñen valor, pero Parking o valor é o bote e en Carcel (entendo) que é o precio para salir dela. Ademais, este 25% págase á BANCA
         //As casillas suerte están relacionadas con pagos/cobros, pero no guion1 non pon nada, entonces entenco que de momento deso nada
         //As casillas de comunidad tmp din moito, solo que principalmente consisten en movimientos entre casillas
-        if(nombre.equals("CARCEL")) {
+        if(nombre.equals("Carcel")) {
             this.impuesto = Valor.SUMA_VUELTA * 0.25f;
         }
-        else if(nombre.equals("PARKING")) {
+        else if(nombre.equals("Parking")) {
             this.valor = 0; //O valor do parking ven sendo o bote que recibe o xogador que cae na casilla. Entonces, empeza en 0 de valor.
         }
         this.posicion = posicion;
@@ -130,21 +130,24 @@ public class Casilla {
         else this.hipoteca = hipoteca;
     }
 
-    public void setAvatares(ArrayList<Avatar> avatares) {
-        this.avatares = avatares;
-    }
-
     public void setGrupo(Grupo grupo) {
         this.grupo = grupo;
     }
 
+    public void setAvatares(ArrayList<Avatar> avatares) {
+        this.avatares = avatares;
+    }
+
     //Método utilizado para añadir un avatar al array de avatares en casilla.
     public void anhadirAvatar(Avatar av) {
+        av.setLugar(this);
         avatares.add(av);
     }
 
     //Método utilizado para eliminar un avatar del array de avatares en casilla.
     public void eliminarAvatar(Avatar av) {
+        ArrayList<Avatar> avatares = this.getAvatares();
+        avatares.remove(av);
     }
 
     /*Método para evaluar qué hacer en una casilla concreta. Parámetros:
@@ -154,6 +157,9 @@ public class Casilla {
     * Valor devuelto: true en caso de ser solvente (es decir, de cumplir las deudas), y false
     * en caso de no cumplirlas.*/
     public boolean evaluarCasilla(Jugador actual, Jugador banca, int tirada) {
+        if(this.tipo.equals("Solar")) {
+
+        }
         return false;
     }
 
@@ -161,6 +167,10 @@ public class Casilla {
     * - Jugador que solicita la compra de la casilla.
     * - Banca del monopoly (es el dueño de las casillas no compradas aún).*/
     public void comprarCasilla(Jugador solicitante, Jugador banca) {
+        if(this.posicion != solicitante.getAvatar().getLugar().getPosicion()) {
+            System.out.println("No estás situado en la casilla deseada.");
+            return;
+        }
         if(this.duenho != banca) {
             System.out.println("La casilla ya pertenece a un jugador.");
             return;
@@ -181,6 +191,7 @@ public class Casilla {
     * - Sumar valor a las casillas de solar al no comprarlas tras cuatro vueltas de todos los jugadores.
     * Este método toma como argumento la cantidad a añadir del valor de la casilla.*/
     public void sumarValor(float suma) {
+
     }
 
     /*Método para mostrar información sobre una casilla.
@@ -189,7 +200,7 @@ public class Casilla {
     public String infoCasilla() {
         String descripcion = "Descripción de la casilla: " + this.getNombre() + ". Posición " + this.getPosicion() + ".";
         System.out.println(descripcion);
-        if(this.tipo.equals("SOLAR")) {
+        if(this.tipo.equals("Solar")) {
             StringBuilder solar  =new StringBuilder();
             solar.append("Tipo: ").append(this.tipo.toLowerCase() + ",\n");
             solar.append("grupo: ").append(this.grupo + ",\n");
@@ -210,7 +221,7 @@ public class Casilla {
             solar.append("alquiler pista de deporte: ").append(this.impuesto*25 + ",\n");
             return solar.toString();
         }
-        else if(this.tipo.equals("SERVICIOS")) {
+        else if(this.tipo.equals("Servicios")) {
             StringBuilder servicios = new StringBuilder();
             servicios.append("Tipo: ").append(this.tipo.toLowerCase() + ",\n");
             servicios.append("dueño: ").append(this.duenho + ",\n");
@@ -218,7 +229,7 @@ public class Casilla {
             servicios.append("hipoteca: ").append(this.hipoteca + ",\n");
             return servicios.toString();
         }
-        else if(this.tipo.equals("TRANSPORTE")) {
+        else if(this.tipo.equals("Transporte")) {
             StringBuilder transporte = new StringBuilder();
             transporte.append("Tipo: ").append(this.tipo.toLowerCase() + ",\n");
             transporte.append("dueño: ").append(this.duenho + ",\n");
@@ -226,13 +237,13 @@ public class Casilla {
             transporte.append("hipoteca: ").append(this.impuesto + ",\n");
             return transporte.toString();
         }
-        else if(this.tipo.equals("IMPUESTOS")) {
+        else if(this.tipo.equals("Impuestos")) {
             StringBuilder impuestos = new StringBuilder();
             impuestos.append("Tipo: ").append(this.tipo.toLowerCase() + ",\n");
             impuestos.append("impuesto: ").append(this.impuesto + ",\n");
             return impuestos.toString();
         }
-        else if(this.tipo.equals("PARKING")) {
+        else if(this.tipo.equals("Parking")) {
             StringBuilder parking = new StringBuilder();
             parking.append("Tipo: ").append(this.tipo.toLowerCase() + ",\n");
             parking.append("bote: ").append(this.valor + ",\n");
@@ -245,7 +256,7 @@ public class Casilla {
             }
             parking.append("]\n");
             return parking.toString();
-        } else if(this.tipo.equals("CARCEL")) {
+        } else if(this.tipo.equals("Carcel")) {
             StringBuilder carcel = new StringBuilder();
             carcel.append("Tipo: ").append(this.tipo.toLowerCase() + ",\n");
             carcel.append("salir: ").append(this.impuesto + ",\n");

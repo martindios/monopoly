@@ -50,6 +50,19 @@ public class Avatar {
     * EN ESTA VERSIÓN SUPONEMOS QUE valorTirada siemrpe es positivo.
      */
     public void moverAvatar(ArrayList<ArrayList<Casilla>> casillas, int valorTirada) {
+        Casilla casillaOld = this.lugar;
+        casillaOld.eliminarAvatar(this);
+        int max = 40;
+        int posicionNueva = (valorTirada + lugar.getPosicion())%max;
+        for (ArrayList<Casilla> fila : casillas) {
+            for (Casilla casilla : fila) {
+                if (casilla.getPosicion() == posicionNueva) {
+                    casilla.anhadirAvatar(this);
+                    System.out.println("El avatar se mueve a la casilla " + casilla.getNombre() + ". Posición: " + casilla.getPosicion());
+                    return;
+                }
+            }
+        }
     }
 
     /*Método que permite generar un ID para un avatar. Sólo lo usamos en esta clase (por ello es privado).
