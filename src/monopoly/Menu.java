@@ -1,6 +1,7 @@
 package monopoly;
 
 import java.awt.desktop.AppReopenedEvent;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Scanner;
@@ -43,6 +44,44 @@ public class Menu {
 
         preIniciarPartida();
     }
+
+
+    /*"""
+                    %s
+                    │%10s│%19s│%10s│%19s│%19s│%10s│%19s│%19s│%10s│%19s│%10s│
+                    │%10s│%10s│%10s│%10s│%10s│%10s│%10s│%10s│%10s│%10s│%10s│
+                    %s
+                    │%19s│                                                                                                  │%19s│
+                    │%10s│                                                                                                  │%10s│
+                    %s                                                                                                  %s
+                    │%19s│                                                                                                  │%19s│
+                    │%10s│                                                                                                  │%10s│
+                    %s                                                                                                  %s
+                    │%10s│                                                                                                  │%10s│
+                    │%10s│                                                                                                  │%10s│
+                    %s                                                                                                  %s
+                    │%19s│      .___  ___.   ______   .__   __.   ______   .______     ______    __      ____    ____       │%19s│
+                    │%10s│      |   \\/   |  /  __  \\  |  \\ |  |  /  __  \\  |   _  \\   /  __  \\  |  |     \\   \\  /   /       │%10s│
+                    %s     |  \\  /  | |  |  |  | |   \\|  | |  |  |  | |  |_)  | |  |  |  | |  |      \\   \\/   /    %s
+                    │%10s│      |  |\\/|  | |  |  |  | |  . `  | |  |  |  | |   ___/  |  |  |  | |  |       \\_    _/         │%10s│
+                    │%10s│      |  |  |  | |  `--'  | |  |\\   | |  `--'  | |  |      |  `--'  | |  `----.    |  |           │%10s│
+                    %s          |__|  |__|  \\______/  |__| \\__|  \\______/  | _|       \\______/  |_______|    |__|       %s
+                    │%19s│                                                                                                  │%10s│
+                    │%10s│                                                                                                  │%10s│
+                    %s                                                                                                  %s
+                    │%19s│                                                                                                  │%19s│
+                    │%10s│                                                                                                  │%10s│
+                    %s                                                                                                  %s
+                    │%10s│                                                                                                  │%10s│
+                    │%10s│                                                                                                  │%10s│
+                    %s                                                                                                  %s
+                    │%19s│                                                                                                  │%19s│
+                    │%10s│                                                                                                  │%10s│
+                    %s
+                    │%10s│%19s│%19s│%10s│%19s│%10s│%10s│%19s│%10s│%19s│%10s│
+                    │%10s│%10s│%10s│%10s│%10s│%10s│%10s│%10s│%10s│%10s│%10s│
+                    %s
+                    """*/
 
     //SETTERS
     public void setTurno(int turno) {
@@ -377,6 +416,15 @@ public class Menu {
 
     // Método que realiza las acciones asociadas al comando 'listar enventa'.
     private void listarVenta() {
+        for (ArrayList<Casilla> casillas : tablero.getPosiciones()) {
+            for (Casilla casilla : casillas) {
+                if (casilla.getTipo().equals("Solar") || casilla.getTipo().equals("Transporte") || casilla.getTipo().equals("Servicios")) {
+                    if (casilla.getDuenho() == banca) {
+                        //hay que listar las casillas con una función auxiliar
+                    }
+                }
+            }
+        }
     }
 
     // Método que realiza las acciones asociadas al comando 'listar jugadores'.
