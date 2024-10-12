@@ -25,8 +25,8 @@ class Grupo {
         this.numCasillas = 2;
         this.colorGrupo = colorGrupo;
         this.miembros = new ArrayList<Casilla>();
-        this.miembros.add(cas1);
-        this.miembros.add(cas2);
+        anhadirCasilla(cas1);
+        anhadirCasilla(cas2);
     }
 
     /*Constructor para cuando el grupo está formado por TRES CASILLAS:
@@ -39,9 +39,9 @@ class Grupo {
         this.numCasillas = 3;
         this.colorGrupo = colorGrupo;
         this.miembros = new ArrayList<Casilla>();
-        this.miembros.add(cas1);
-        this.miembros.add(cas2);
-        this.miembros.add(cas3);
+        anhadirCasilla(cas1);
+        anhadirCasilla(cas2);
+        anhadirCasilla(cas3);
     }
 
 
@@ -50,9 +50,10 @@ class Grupo {
     * Parámetro: casilla que se quiere añadir.
      */
     public void anhadirCasilla(Casilla miembro) {
-        this.miembros.add(miembro);
-        this.numCasillas = miembros.size();
-        miembro.setGrupo(this);
+        if(!this.miembros.contains(miembro)) {
+            this.miembros.add(miembro);
+            miembro.setGrupo(this);
+        }
     }
 
     /*Método que comprueba si el jugador pasado tiene en su haber todas las casillas del grupo:
@@ -71,9 +72,6 @@ class Grupo {
         }
         return false;
     }
-
-
-
 
     /*
     GETTERS

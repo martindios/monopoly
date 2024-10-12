@@ -30,7 +30,6 @@ public class Tablero {
   
     //Método para crear todas las casillas del tablero. Formado a su vez por cuatro métodos (1/lado).
     private void generarCasillas() {
-
         this.insertarLadoSur();
         this.insertarLadoOeste();
         this.insertarLadoNorte();
@@ -58,12 +57,7 @@ public class Tablero {
         Grupo grupo5 = new Grupo(solar12, solar13, solar14, YELLOW);
         Grupo grupo6 = new Grupo(solar15, solar16, solar17, RED);
 
-        solar12.setGrupo(grupo5);
-        solar13.setGrupo(grupo5);
-        solar14.setGrupo(grupo5);
-        solar15.setGrupo(grupo6);
-        solar16.setGrupo(grupo6);
-        solar17.setGrupo(grupo6);
+
 
         grupos.put(grupo5.getColorGrupo(), grupo5);
         grupos.put(grupo6.getColorGrupo(), grupo6);
@@ -91,11 +85,7 @@ public class Tablero {
         Grupo grupo1 = new Grupo(solar1, solar2, BLUE);
         Grupo grupo2 = new Grupo(solar3, solar4, solar5, GREEN);
 
-        solar1.setGrupo(grupo1);
-        solar2.setGrupo(grupo1);
-        solar3.setGrupo(grupo2);
-        solar4.setGrupo(grupo2);
-        solar5.setGrupo(grupo2);
+
 
         grupos.put(grupo1.getColorGrupo(), grupo1);
         grupos.put(grupo2.getColorGrupo(), grupo2);
@@ -126,12 +116,7 @@ public class Tablero {
         Grupo grupo3 = new Grupo(solar6, solar7, solar8, PURPLE);
         Grupo grupo4 = new Grupo(solar9, solar10, solar11, CYAN);
 
-        solar6.setGrupo(grupo3);
-        solar7.setGrupo(grupo3);
-        solar8.setGrupo(grupo3);
-        solar9.setGrupo(grupo4);
-        solar10.setGrupo(grupo4);
-        solar11.setGrupo(grupo4);
+
 
         grupos.put(grupo3.getColorGrupo(), grupo3);
         grupos.put(grupo4.getColorGrupo(), grupo4);
@@ -159,11 +144,7 @@ public class Tablero {
         Grupo grupo7 = new Grupo(solar18, solar19, solar20, WHITE);
         Grupo grupo8 = new Grupo(solar21, solar22, BLACK);
 
-        solar18.setGrupo(grupo7);
-        solar19.setGrupo(grupo7);
-        solar20.setGrupo(grupo7);
-        solar21.setGrupo(grupo8);
-        solar22.setGrupo(grupo8);
+
 
         grupos.put(grupo7.getColorGrupo(), grupo7);
         grupos.put(grupo8.getColorGrupo(), grupo8);

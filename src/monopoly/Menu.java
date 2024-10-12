@@ -271,6 +271,9 @@ public class Menu {
             tirado = true;
             System.out.println("Dado 1: " + dado1.getValor());
             System.out.println("Dado 2: " + dado2.getValor());
+            if(dado1.getValor() == dado2.getValor()) {
+                tirado = false;
+            }
             Avatar avatar = avatares.get(turno);
             avatar.moverAvatar(tablero.getPosiciones(), (dado1.getValor() + dado2.getValor()));
         }
@@ -409,6 +412,10 @@ public class Menu {
     // Método que realiza las acciones asociadas al comando 'acabar turno'.
     private void acabarTurno() {
         //Tiradas carcel xa axustadas na funcion SaliCarcel
+        if(tirado == false) {
+            System.out.println("No puedes acabar turno sin haber lanzado los dados.");
+            return;
+        }
         Jugador anterior = jugadores.get(turno);
         System.out.println("El jugador " + anterior.getNombre() + ", con avatar " + anterior.getAvatar().getId() + ", acaba su turno.");
         turno = (turno+1)%(jugadores.size());
