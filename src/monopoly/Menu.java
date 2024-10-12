@@ -214,6 +214,7 @@ public class Menu {
                     break;
 
                 case "acabar":
+                    System.out.println(infoTrasTurno(jugadores.get(turno)));
                     acabarTurno();
                     break;
 
@@ -256,6 +257,9 @@ public class Menu {
                     }
                     break;
 
+                case "moveraux":
+                    MoverAux(palabrasArray[1]);
+                    break;
                 default:
                     System.out.println("Comando no válido");
                     break;
@@ -371,75 +375,85 @@ public class Menu {
         Casilla carcel = tablero.encontrar_casilla("Cárcel");
         fianza = carcel.getImpuesto();
         boolean Presupuesto = JugActual.getFortuna() >= fianza;
-        if(TiradasCarcel && Presupuesto) {
+
+        if (JugActual.getAvatar().getLugar() != carcel) {
+            System.out.println("El jugador no está en la cárcel. No puede usar el comando.");
+            return;
+        }
+
+        if (TiradasCarcel && Presupuesto) {
             System.out.println("El jugador puede tirar los dados o pagar la fianza (1/2)");
             int respuesta;
             do {
-                 respuesta = scanner.nextInt();
-                 if(respuesta == 1 || respuesta == 2) {
-                     break;
-                 }
-                 else {
-                     System.out.println("Valor no válido. Pruebe de nuevo");
-                 }
-            }while(respuesta != 0 && respuesta != 1);
-            if(respuesta == 1) {
+                try {
+                    respuesta = scanner.nextInt();
+                    if (respuesta == 1 || respuesta == 2) {
+                        break;
+                    } else {
+                        System.out.println("Valor no válido. Pruebe de nuevo");
+                    }
+                } catch (InputMismatchException e) {
+                    System.out.println("Entrada no válida. Por favor ingrese un número.");
+                    scanner.next();
+                }
+            }while(true);
+            if (respuesta == 1) {
                 System.out.println("El jugador decide lanzar los dados");
                 lanzarDados();
                 if (dado1.getValor() == dado2.getValor()) {
-                    System.out.println("Dobles! El jugador avanza " + (dado1.getValor() + dado2.getValor()) + " casillas. Tiene derecho a usar su turno y luego tirar de nuevo.");
+                    System.out.println("Dobles! El jugador avanza " + (dado1.getValor() + dado2.getValor()) + " casillas.");
                     JugActual.setEnCarcel(false);
-                    tirado = false;
                     JugActual.setTiradasCarcel(0);
-                }
-                else {
-                    System.out.println("No han salido dobles... E jugador pierde el turno");
+                    tirado = false;
+                } else {
+                    System.out.println("No han salido dobles... El jugador pierde el turno");
                     JugActual.setTiradasCarcel(JugActual.getTiradasCarcel() + 1);
                     acabarTurno();
                 }
-            }
-            else if(respuesta == 2) {
+            } else {
                 System.out.println("El jugador paga la fianza. Tiene derecho a usar su turno");
                 JugActual.setEnCarcel(false);
                 JugActual.setTiradasCarcel(0);
                 JugActual.sumarFortuna(-fianza);
                 JugActual.sumarGastos(fianza);
                 banca.sumarFortuna(fianza);
+                tirado = false;
             }
         }
-        else if(TiradasCarcel && !Presupuesto) {
+        // Caso 2: Solo puede tirar los dados
+        else if (TiradasCarcel) {
             System.out.println("El jugador solo puede tirar los dados.");
             lanzarDados();
             if (dado1.getValor() == dado2.getValor()) {
-                System.out.println("Dobles! El jugador avanza " + (dado1.getValor() + dado2.getValor()) + " casillas. Tiene derecho a usar su turno y luego tirar de nuevo.");
+                System.out.println("Dobles! El jugador avanza " + (dado1.getValor() + dado2.getValor()) + " casillas.");
                 JugActual.setEnCarcel(false);
-                tirado = false;
                 JugActual.setTiradasCarcel(0);
-            }
-            else {
+                tirado = false;
+            } else {
                 System.out.println("No han salido dobles... El jugador pierde el turno");
                 JugActual.setTiradasCarcel(JugActual.getTiradasCarcel() + 1);
                 acabarTurno();
             }
         }
-        else if(!TiradasCarcel && Presupuesto) {
+        // Caso 3: Solo puede pagar la fianza
+        else if (Presupuesto) {
             System.out.println("El jugador solo puede pagar la fianza");
-            System.out.println("El jugador paga la fianza. Tiene derecho a usar su turno.");
             JugActual.setEnCarcel(false);
             JugActual.setTiradasCarcel(0);
             JugActual.sumarFortuna(-fianza);
             JugActual.sumarGastos(fianza);
             banca.sumarFortuna(fianza);
+            tirado = false;
         }
+        // Caso 4: No puede tirar los dados ni pagar la fianza (bancarrota)
         else {
             System.out.println("El jugador no puede tirar los dados ni tiene saldo suficiente para pagar la fianza.");
             System.out.println("El jugador se declara en bancarrota");
             solvente = false;
             System.exit(0);
-            //Dsp, unha vez poidamos hipotecar, supoño que poderemos poñer algo do estilo de que se pode hipotecar para pagar
-            //Tmb teremos que añadir a movida das cartas de suerte
         }
     }
+
 
     // Método que realiza las acciones asociadas al comando 'listar enventa'.
     private void listarVenta() {
@@ -512,5 +526,32 @@ public class Menu {
 
     }
 
+    private String infoTrasTurno(Jugador jugador) {
+        ArrayList<Casilla> props = jugador.getPropiedades();
+        System.out.println("El estado financiero de " + jugador.getNombre() + " es:");
+        StringBuilder propiedades = new StringBuilder();
+        for (Casilla casilla : props) {
+            propiedades.append(casilla.getNombre()).append(", "); // Suponiendo que casilla tiene un metodo getNombre()
+        }
+        // Eliminar la última coma y espacio si hay propiedades
+        if (!props.isEmpty()) {
+            propiedades.setLength(propiedades.length() - 2);
+        } else {
+            propiedades.append("Sin propiedades");
+        }
+        return """
+            Fortuna: %.2f
+            Gastos: %.2f
+            Propiedades: %s
+            \n
+            """.formatted(jugador.getFortuna(), jugador.getGastos(), propiedades.toString());
+    }
+
+    private void MoverAux(String pos) {
+        Jugador jugador = jugadores.get(turno);
+        Avatar av = jugador.getAvatar();
+        int posicion = Integer.parseInt(pos);
+        av.moverAvatar(tablero.getPosiciones(), posicion);
+    }
 
 }
