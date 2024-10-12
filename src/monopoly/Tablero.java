@@ -40,23 +40,23 @@ public class Tablero {
     private void insertarLadoNorte() {
         ArrayList<Casilla> ladoNorte = new ArrayList<>();
         ladoNorte.add(new Casilla("Parking", "Especiales", 21, banca));
-        Casilla solar12 = new Casilla("Solar12", "Solar", 12, 22, banca);
+        Casilla solar12 = new Casilla("Solar12", "Solar", 12, 1142440, banca);
         ladoNorte.add(solar12);
         ladoNorte.add(new Casilla("Suerte", "Suerte", 23, banca));
-        Casilla solar13 = new Casilla("Solar13", "Solar", 13, 24, banca);
+        Casilla solar13 = new Casilla("Solar13", "Solar", 24, 1142440, banca);
         ladoNorte.add(solar13);
-        Casilla solar14 = new Casilla("Solar14", "Solar", 14, 25, banca);
+        Casilla solar14 = new Casilla("Solar14", "Solar", 25, 1142440, banca);
         ladoNorte.add(solar14);
-        ladoNorte.add(new Casilla("Trans3", "Transporte", 25, 26, banca));
-        Casilla solar15 = new Casilla("Solar15", "Solar", 15, 27, banca);
+        ladoNorte.add(new Casilla("Trans3", "Transporte", 26, SUMA_VUELTA, banca));
+        Casilla solar15 = new Casilla("Solar15", "Solar", 27, 1485172, banca);
         ladoNorte.add(solar15);
-        Casilla solar16 = new Casilla("Solar16", "Solar", 16, 28, banca);
+        Casilla solar16 = new Casilla("Solar16", "Solar", 28, 1485172, banca);
         ladoNorte.add(solar16);
-        ladoNorte.add(new Casilla("Serv2", "Servicios", 28, 29, banca));
-        Casilla solar17 = new Casilla("Solar17", "Solar", 17, 30, banca);
+        ladoNorte.add(new Casilla("Serv2", "Servicios", 29, 0.75f*SUMA_VUELTA, banca));
+        Casilla solar17 = new Casilla("Solar17", "Solar", 30, 1485172, banca);
         ladoNorte.add(solar17);
-        Grupo grupo5 = new Grupo(solar12, solar13, solar14, YELLOW, "Yellow");
-        Grupo grupo6 = new Grupo(solar15, solar16, solar17, RED, "Red");
+        Grupo grupo5 = new Grupo(solar12, solar13, solar14, RED, "Red");
+        Grupo grupo6 = new Grupo(solar15, solar16, solar17, BLACK, "Black");
 
         solar12.setGrupo(grupo5);
         solar13.setGrupo(grupo5);
@@ -74,22 +74,22 @@ public class Tablero {
     private void insertarLadoSur() {
         ArrayList<Casilla> ladoSur = new ArrayList<>();
         ladoSur.add(new Casilla("Salida", "Especiales", 1, banca));
-        Casilla solar1 = new Casilla("Solar1", "Solar", 2, 2, banca);
+        Casilla solar1 = new Casilla("Solar1", "Solar", 2, 600000, banca);
         ladoSur.add(solar1);
         ladoSur.add(new Casilla("Caja", "Solar", 3, 3, banca));
-        Casilla solar2 = new Casilla("Solar2", "Solar", 4, 4, banca);
+        Casilla solar2 = new Casilla("Solar2", "Solar", 4, 600000, banca);
         ladoSur.add(solar2);
-        ladoSur.add(new Casilla("Imp1", "Impuestos", 5, 5, banca));
-        ladoSur.add(new Casilla("Trans1", "Transporte", 6, 6, banca));
-        Casilla solar3 = new Casilla("Solar3", "Solar", 7, 7, banca);
+        ladoSur.add(new Casilla("Imp1", 5, 0.5f*SUMA_VUELTA, banca));
+        ladoSur.add(new Casilla("Trans1", "Transporte", 6, SUMA_VUELTA, banca));
+        Casilla solar3 = new Casilla("Solar3", "Solar", 7, 520000, banca);
         ladoSur.add(solar3);
         ladoSur.add(new Casilla("Suerte", "Solar", 8, 8, banca));
-        Casilla solar4 = new Casilla("Solar4", "Solar", 9, 9, banca);
+        Casilla solar4 = new Casilla("Solar4", "Solar", 9, 520000, banca);
         ladoSur.add(solar4);
-        Casilla solar5 = new Casilla("Solar5", "Solar", 10, 10, banca);
+        Casilla solar5 = new Casilla("Solar5", "Solar", 10, 520000, banca);
         ladoSur.add(solar5);
-        Grupo grupo1 = new Grupo(solar1, solar2, BLUE, "Blue");
-        Grupo grupo2 = new Grupo(solar3, solar4, solar5, GREEN, "Green");
+        Grupo grupo1 = new Grupo(solar1, solar2, WHITE, "White");
+        Grupo grupo2 = new Grupo(solar3, solar4, solar5, BLUE, "Blue");
 
         solar1.setGrupo(grupo1);
         solar2.setGrupo(grupo1);
@@ -107,24 +107,24 @@ public class Tablero {
     //Método que inserta casillas del lado oeste.
     private void insertarLadoOeste() {
         ArrayList<Casilla> ladoOeste = new ArrayList<>();
-        ladoOeste.add(new Casilla("Cárcel", "Especiales", 1, 11, banca));
-        Casilla solar6 = new Casilla("Solar6", "Solar", 6, 12, banca);
+        ladoOeste.add(new Casilla("Cárcel", "Especiales", 11, 11, banca));
+        Casilla solar6 = new Casilla("Solar6", "Solar", 12, 676000, banca);
         ladoOeste.add(solar6);
-        ladoOeste.add(new Casilla("Serv1", "Servicios", 13, banca));
-        Casilla solar7 =  new Casilla("Solar7", "Solar", 7, 14, banca);
+        ladoOeste.add(new Casilla("Serv1", "Servicios", 13, 0.75f*SUMA_VUELTA, banca));
+        Casilla solar7 =  new Casilla("Solar7", "Solar", 14, 676000, banca);
         ladoOeste.add(solar7);
-        Casilla solar8 = new Casilla("Solar8", "Solar", 8, 15, banca);
+        Casilla solar8 = new Casilla("Solar8", "Solar", 15, 676000, banca);
         ladoOeste.add(solar8);
-        ladoOeste.add(new Casilla("Trans2", "Transporte", 16, banca));
-        Casilla solar9 = new Casilla("Solar9", "Solar", 9, 17, banca);
+        ladoOeste.add(new Casilla("Trans2", "Transporte", 16, SUMA_VUELTA, banca));
+        Casilla solar9 = new Casilla("Solar9", "Solar", 17, 878800, banca);
         ladoOeste.add(solar9);
-        ladoOeste.add(new Casilla("Caja", "Solar", 2, 18, banca));
-        Casilla solar10 = new Casilla("Solar10", "Solar", 10, 19, banca);
+        ladoOeste.add(new Casilla("Caja", "Solar", 18, 18, banca));
+        Casilla solar10 = new Casilla("Solar10", "Solar", 19, 878800, banca);
         ladoOeste.add(solar10);
-        Casilla solar11 = new Casilla("Solar11", "Solar", 11, 20, banca);
+        Casilla solar11 = new Casilla("Solar11", "Solar", 20, 878800, banca);
         ladoOeste.add(solar11);
         Grupo grupo3 = new Grupo(solar6, solar7, solar8, PURPLE, "Purple");
-        Grupo grupo4 = new Grupo(solar9, solar10, solar11, CYAN, "Cyan");
+        Grupo grupo4 = new Grupo(solar9, solar10, solar11, YELLOW, "Yellow");
 
         solar6.setGrupo(grupo3);
         solar7.setGrupo(grupo3);
@@ -142,22 +142,22 @@ public class Tablero {
     private void insertarLadoEste() {
         ArrayList<Casilla> ladoEste = new ArrayList<>();
         ladoEste.add(new Casilla("IrCarcel", "Especiales", 31, banca));
-        Casilla solar18 = new Casilla("Solar18", "Solar", 18, 32, banca);
+        Casilla solar18 = new Casilla("Solar18", "Solar", 18, 1930723.6f, banca);
         ladoEste.add(solar18);
-        Casilla solar19 = new Casilla("Solar19", "Solar", 19, 33, banca);
+        Casilla solar19 = new Casilla("Solar19", "Solar", 19, 1930723.6f, banca);
         ladoEste.add(solar19);
         ladoEste.add(new Casilla("Caja", "Solar", 33, 34, banca));
-        Casilla solar20 = new Casilla("Solar20", "Solar", 20, 35, banca);
+        Casilla solar20 = new Casilla("Solar20", "Solar", 20, 1930723.6f, banca);
         ladoEste.add(solar20);
-        ladoEste.add(new Casilla("Trans4", "Transporte", 35, 36, banca));
+        ladoEste.add(new Casilla("Trans4", "Transporte", 35, SUMA_VUELTA, banca));
         ladoEste.add(new Casilla("Suerte", "Solar", 36, 37, banca));
-        Casilla solar21 = new Casilla("Solar21", "Solar", 21, 38, banca);
+        Casilla solar21 = new Casilla("Solar21", "Solar", 21, 3764911.02f, banca);
         ladoEste.add(solar21);
-        ladoEste.add(new Casilla("Imp2", "Impuestos", 38, 39, banca));
-        Casilla solar22 = new Casilla("Solar22", "Solar", 22, 40, banca);
+        ladoEste.add(new Casilla("Imp2", 38, SUMA_VUELTA, banca));
+        Casilla solar22 = new Casilla("Solar22", "Solar", 22, 3764911.02f, banca);
         ladoEste.add(solar22);
-        Grupo grupo7 = new Grupo(solar18, solar19, solar20, WHITE, "White");
-        Grupo grupo8 = new Grupo(solar21, solar22, BLACK, "Black");
+        Grupo grupo7 = new Grupo(solar18, solar19, solar20, GREEN, "Green");
+        Grupo grupo8 = new Grupo(solar21, solar22, BLUE, "Blue");
 
         solar18.setGrupo(grupo7);
         solar19.setGrupo(grupo7);
@@ -187,12 +187,12 @@ public class Tablero {
                     │%10s│                                                                                                  │%10s│
                     │%10s│                                                                                                  │%10s│
                     %s                                                                                                  %s
-                    │%19s│                                                                                                  │%19s│
-                    │%10s│                                                                                                  │%10s│
-                    %s                                                                                                  %s
-                    │%10s│                                                                                                  │%10s│
-                    │%10s│                                                                                                  │%10s│
-                    %s                                                                                                  %s
+                    │%19s│      .___  ___.   ______   .__   __.   ______   .______     ______    __      ____    ____       │%19s│
+                    │%10s│      |   \\/   |  /  __  \\  |  \\ |  |  /  __  \\  |   _  \\   /  __  \\  |  |     \\   \\  /   /       │%10s│
+                    %s      |  \\  /  | |  |  |  | |   \\|  | |  |  |  | |  |_)  | |  |  |  | |  |      \\   \\/   /        %s
+                    │%10s│      |  |\\/|  | |  |  |  | |  . `  | |  |  |  | |   ___/  |  |  |  | |  |       \\_    _/         │%10s│
+                    │%10s│      |  |  |  | |  `--'  | |  |\\   | |  `--'  | |  |      |  `--'  | |  `----.    |  |           │%10s│
+                    %s      |__|  |__|  \\______/  |__| \\__|  \\______/  | _|       \\______/  |_______|    |__|           %s
                     │%19s│                                                                                                  │%10s│
                     │%10s│                                                                                                  │%10s│
                     %s                                                                                                  %s
