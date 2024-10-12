@@ -20,13 +20,6 @@ public class Tablero {
         this.grupos = new HashMap<String, Grupo>(8);
         this.generarCasillas();
     }
-
-    //TEMPORAL, borrarlo pero lo de dentro está bien
-    public Tablero() {
-        this.posiciones = new ArrayList<>(4);
-        this.grupos = new HashMap<String, Grupo>(8);
-        this.generarCasillas();
-    }
   
     //Método para crear todas las casillas del tablero. Formado a su vez por cuatro métodos (1/lado).
     private void generarCasillas() {

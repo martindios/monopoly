@@ -60,7 +60,6 @@ public class Casilla {
         this.nombre = nombre;
         this.tipo = tipo;
         this.posicion = posicion;
-
     }
 
 
@@ -203,12 +202,28 @@ public class Casilla {
             return;
         }
         System.out.println("El jugador ha comprado la casilla.");
+        switch (this.getTipo()) {
+            case "Transporte":
+                solicitante.setNumTransportes(solicitante.getNumTransportes() + 1);
+                break;
+            case "Servicios":
+                solicitante.setNumServicios(solicitante.getNumServicios() + 1);
+                break;
+        }
         solicitante.sumarFortuna(-this.valor);
         solicitante.sumarGastos(this.valor);
         banca.sumarFortuna(this.valor);
         this.setDuenho(solicitante);
         solicitante.anhadirPropiedad(this);
     }
+
+
+
+
+
+
+
+
 
     /*Método para añadir valor a una casilla. Utilidad:
     * - Sumar valor a la casilla de parking.
@@ -217,6 +232,14 @@ public class Casilla {
     public void sumarValor(float suma) {
 
     }
+
+
+
+
+
+
+
+
 
     /*Método para mostrar información sobre una casilla.
     * Devuelve una cadena con información específica de cada tipo de casilla.*/
