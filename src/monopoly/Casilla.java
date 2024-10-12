@@ -159,30 +159,29 @@ public class Casilla {
     * Valor devuelto: true en caso de ser solvente (es decir, de cumplir las deudas), y false
     * en caso de no cumplirlas.*/
     public boolean evaluarCasilla(Jugador actual, Jugador banca, int tirada) {
-        Casilla casillaActual = actual.getAvatar().getLugar();
-        switch (casillaActual.getTipo()) {
+        switch (this.getTipo()) {
             case "Solar": case "Servicios":
-                if (casillaActual.getDuenho().equals(banca) || casillaActual.getDuenho().equals(actual)) {
+                if (this.getDuenho().equals(banca) || this.getDuenho().equals(actual)) {
                     return true;
                 } else {
-                    return (actual.getFortuna() > casillaActual.getImpuesto());
+                    return (actual.getFortuna() > this.getImpuesto());
                 }
             case "Especiales":
-                if (casillaActual.getNombre().equals("Cárcel")) {
-                    return (actual.getFortuna() > casillaActual.getImpuesto());
+                if (this.getNombre().equals("Cárcel")) {
+                    return (actual.getFortuna() > this.getImpuesto());
                 } else {
                     return true;
                 }
             case "Transporte":
-                switch (casillaActual.getDuenho().getNumTransportes()) {
+                switch (this.getDuenho().getNumTransportes()) {
                     case 1:
-                        return actual.getFortuna() > casillaActual.getImpuesto() * 0.25f;
+                        return actual.getFortuna() > this.getImpuesto() * 0.25f;
                     case 2:
-                        return actual.getFortuna() > casillaActual.getImpuesto() * 0.5f;
+                        return actual.getFortuna() > this.getImpuesto() * 0.5f;
                     case 3:
-                        return actual.getFortuna() > casillaActual.getImpuesto() * 0.75f;
+                        return actual.getFortuna() > this.getImpuesto() * 0.75f;
                     case 4:
-                        return actual.getFortuna() > casillaActual.getImpuesto();
+                        return actual.getFortuna() > this.getImpuesto();
                 }
             default:
                 return true;

@@ -193,7 +193,7 @@ public class Menu {
 
                 case "lanzar":
                     lanzarDados();
-
+                    solvente = jugadores.get(turno).getAvatar().getLugar().evaluarCasilla(jugadores.get(turno), banca, dado1.getValor() + dado2.getValor());
                     break;
 
                 case "acabar":
