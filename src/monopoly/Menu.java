@@ -194,7 +194,14 @@ public class Menu {
 
                 case "lanzar":
                     lanzarDados();
-                    Casilla casillaActual = jugadores.get(turno).getAvatar().getLugar();
+                    Jugador jugadorActual = jugadores.get(turno);
+                    Casilla casillaActual = jugadorActual.getAvatar().getLugar();
+                    //Comprobar si cae en IrCarcel
+                    if (casillaActual.getNombre().equals("IrCarcel")) {
+                        casillaActual.eliminarAvatar(jugadorActual.getAvatar());
+                        tablero.encontrar_casilla("Cárcel").anhadirAvatar(jugadorActual.getAvatar());
+                        jugadorActual.setEnCarcel(true);
+                    }
                     solvente = casillaActual.evaluarCasilla(jugadores.get(turno), banca, dado1.getValor() + dado2.getValor());
                     if (!solvente) {
                         finalizarPartida = true;
