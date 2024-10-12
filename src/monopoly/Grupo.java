@@ -27,8 +27,8 @@ class Grupo {
         this.colorGrupo = colorGrupo;
         this.nombreGrupo = nombreGrupo;
         this.miembros = new ArrayList<Casilla>();
-        this.miembros.add(cas1);
-        this.miembros.add(cas2);
+        anhadirCasilla(cas1);
+        anhadirCasilla(cas2);
     }
 
     /*Constructor para cuando el grupo está formado por TRES CASILLAS:
@@ -42,9 +42,9 @@ class Grupo {
         this.colorGrupo = colorGrupo;
         this.nombreGrupo = nombreGrupo;
         this.miembros = new ArrayList<Casilla>();
-        this.miembros.add(cas1);
-        this.miembros.add(cas2);
-        this.miembros.add(cas3);
+        anhadirCasilla(cas1);
+        anhadirCasilla(cas2);
+        anhadirCasilla(cas3);
     }
 
 
@@ -53,6 +53,10 @@ class Grupo {
     * Parámetro: casilla que se quiere añadir.
      */
     public void anhadirCasilla(Casilla miembro) {
+        if(!this.miembros.contains(miembro)) {
+            this.miembros.add(miembro);
+            miembro.setGrupo(this);
+        }
     }
 
     /*Método que comprueba si el jugador pasado tiene en su haber todas las casillas del grupo:
@@ -60,11 +64,17 @@ class Grupo {
     * Valor devuelto: true si es dueño de todas las casillas del grupo, false en otro caso.
      */
     public boolean esDuenhoGrupo(Jugador jugador) {
+        int contador = 0;
+        for(Casilla casilla : this.miembros) {
+            if(casilla.getDuenho() == jugador) {
+                contador++;
+            }
+        }
+        if(contador == this.numCasillas) {
+            return true;
+        }
         return false;
     }
-
-
-
 
     /*
     GETTERS

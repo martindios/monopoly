@@ -171,7 +171,7 @@ public class Menu {
         if (palabrasArray.length > 0) {
             switch (palabrasArray[0]) {
                 case "crear":
-                    System.out.print("Todos los jugadores están registrados");
+                    System.out.println("Todos los jugadores están registrados");
                     break;
                 case "listar": //listar jugador //listar avatar // listar enventa
                     switch (palabrasArray[1]){
@@ -191,7 +191,7 @@ public class Menu {
                     break;
 
                 case "jugador":
-                    System.out.println("Tiene el turno: " + jugadores.get(turno));
+                    System.out.println("Tiene el turno: " + (jugadores.get(turno)).getNombre());
                     break;
 
                 case "lanzar":
@@ -202,20 +202,23 @@ public class Menu {
                     acabarTurno();
                     break;
 
-                case "salir":
+                case "salir carcel":
                     salirCarcel();
                     break;
 
                 case "describir":
                     switch (palabrasArray[1]){
                         case "jugador":
-                            descJugador(palabrasArray);
+                            descJugador(palabrasArray[2]);
                             break;
                         case "avatar":
                             descAvatar(palabrasArray[2]);
                             break;
+                        case "casilla":
+                            descCasilla(palabrasArray[2]);
+                            break;
                         default:
-                            descCasilla(palabrasArray[1]);
+                            System.out.println("Comando no válido");
                             break;
                     }
                     break;
@@ -259,12 +262,8 @@ public class Menu {
     /*Método que realiza las acciones asociadas al comando 'describir jugador'.
     * Parámetro: comando introducido
      */
-    private void descJugador(String[] partes) {
-        System.out.println("Indica el nombre del jugador.");
-        System.out.print("->");
-        String nombre = scanner.nextLine();
+    private void descJugador(String nombre) {
         //Comprobar jugador
-
         for (Jugador jugador : jugadores) {
             if (jugador.getNombre().equalsIgnoreCase(nombre)) { //getter de getNombre de jugador
                 System.out.println(jugador.info());
@@ -278,7 +277,6 @@ public class Menu {
     * Parámetro: id del avatar a describir.
     */
     private void descAvatar(String ID) {
-
         //Comprueba que el ID que se pide describir es uno existente
         for (Avatar avatar : avatares) {
             if (avatar.getId().equalsIgnoreCase(ID)) {
@@ -294,49 +292,50 @@ public class Menu {
     */
 
     public void descCasilla(String NombreCasilla) {
-        ArrayList<ArrayList<Casilla>> casillas = tablero.getPosiciones();
-        boolean casillaEncontrada = false; // auxiliar
-
-        for (ArrayList<Casilla> fila : casillas) {
-            for (Casilla casilla : fila) {
-                if (NombreCasilla.equalsIgnoreCase(casilla.getNombre())) {
-                    System.out.println(casilla.infoCasilla()); // Llamar al metodo
-                    casillaEncontrada = true;
-                    break; // Salir do bucle interno ao encontrar a casilla
-                }
-            }
-            if (casillaEncontrada) {
-                break; // Salir do bucle externo
-            }
+        Casilla casillaBuscada = tablero.encontrar_casilla(NombreCasilla);
+        if(casillaBuscada == null) {
+            System.out.println("La casilla no existe.");
         }
-        // Se nn se encontra a casilla imprímese por pantalla
-        if (!casillaEncontrada) {
-            System.out.println("La casilla solicitada no existe.");
+        else {
+            casillaBuscada.infoCasilla();
         }
     }
 
     //Método que ejecuta todas las acciones relacionadas con el comando 'lanzar dados'.
     private void lanzarDados() {
+        if(lanzamientos == 0) {
+            dado1.hacerTirada();
+            dado2.hacerTirada();
+            lanzamientos++;
+            tirado = true;
+            System.out.println("Dado 1: " + dado1.getValor());
+            System.out.println("Dado 2: " + dado2.getValor());
+            if(dado1.getValor() == dado2.getValor()) {
+                tirado = false;
+            }
+            Avatar avatar = avatares.get(turno);
+            avatar.moverAvatar(tablero.getPosiciones(), (dado1.getValor() + dado2.getValor()));
+        }
+        else {
+            System.out.println("Ya has lanzado el dado en este turno.");
+        }
     }
 
     /*Método que ejecuta todas las acciones realizadas con el comando 'comprar nombre_casilla'.
     * Parámetro: cadena de caracteres con el nombre de la casilla.
      */
     private void comprar(String nombre) {
-        boolean CasillaEncontrada = false;
-        ArrayList<ArrayList<Casilla>> casillas = tablero.getPosiciones();
         Jugador comprador = jugadores.get(turno);
-        for(ArrayList<Casilla> fila : casillas) {
-            for(Casilla casilla : fila) {
-                if(casilla.getNombre().equalsIgnoreCase(nombre)) {
-                    CasillaEncontrada = true;
-                    casilla.comprarCasilla(comprador, banca);
-                }
-            }
-        }
-        if(!CasillaEncontrada) {
+        Casilla casillaDeseada = tablero.encontrar_casilla(nombre);
+        if(casillaDeseada == null) {
             System.out.println("La casilla deseada no existe.");
+            return;
         }
+        if(comprador.getFortuna() < casillaDeseada.getValor()) {
+            System.out.println("El jugador no tiene dinero suficiente para comprar la casilla.");
+            return;
+        }
+        casillaDeseada.comprarCasilla(comprador, banca);
     }
 
     //Método que ejecuta todas las acciones relacionadas con el comando 'salir carcel'. 
@@ -344,15 +343,8 @@ public class Menu {
         Jugador JugActual = jugadores.get(turno);
         boolean TiradasCarcel = JugActual.getTiradasCarcel() < 3;
         float fianza = 0;
-        ArrayList<ArrayList<Casilla>> casillas = tablero.getPosiciones();
-        for(ArrayList<Casilla> fila : casillas) {
-            for(Casilla casilla : fila) {
-                if(casilla.getNombre().equalsIgnoreCase("Cárcel")) {
-                    fianza = casilla.getImpuesto();
-                    break;
-                }
-            }
-        }
+        Casilla carcel = tablero.encontrar_casilla("Cárcel");
+        fianza = carcel.getImpuesto();
         boolean Presupuesto = JugActual.getFortuna() >= fianza;
         if(TiradasCarcel && Presupuesto) {
             System.out.println("El jugador puede tirar los dados o pagar la fianza (1/2)");
@@ -368,21 +360,14 @@ public class Menu {
             }while(respuesta != 0 && respuesta != 1);
             if(respuesta == 1) {
                 System.out.println("El jugador decide lanzar los dados");
-                int valor1 = dado1.hacerTirada();
-                int valor2 = dado2.hacerTirada();
-                tirado = true;
-                lanzamientos++;
-                if (valor1 == valor2) {
-                    System.out.println("Dado 1: " + valor1);
-                    System.out.println("Dado 2: " + valor2);
-                    System.out.println("Dobles! El jugador avanza " + (valor1 + valor2) + " casillas. Tiene derecho a usar su turno y luego tirar de nuevo.");
+                lanzarDados();
+                if (dado1.getValor() == dado2.getValor()) {
+                    System.out.println("Dobles! El jugador avanza " + (dado1.getValor() + dado2.getValor()) + " casillas. Tiene derecho a usar su turno y luego tirar de nuevo.");
                     JugActual.setEnCarcel(false);
                     tirado = false;
                     JugActual.setTiradasCarcel(0);
                 }
                 else {
-                    System.out.println("Dado 1: " + valor1);
-                    System.out.println("Dado 2: " + valor2);
                     System.out.println("No han salido dobles... E jugador pierde el turno");
                     JugActual.setTiradasCarcel(JugActual.getTiradasCarcel() + 1);
                     acabarTurno();
@@ -392,28 +377,21 @@ public class Menu {
                 System.out.println("El jugador paga la fianza. Tiene derecho a usar su turno");
                 JugActual.setEnCarcel(false);
                 JugActual.setTiradasCarcel(0);
-                JugActual.setFortuna(JugActual.getFortuna() - fianza);
-                JugActual.setGastos(JugActual.getGastos() + fianza);
+                JugActual.sumarFortuna(-fianza);
+                JugActual.sumarGastos(fianza);
             }
         }
         else if(TiradasCarcel && !Presupuesto) {
             System.out.println("El jugador solo puede tirar los dados.");
-            int valor1 = dado1.hacerTirada();
-            int valor2 = dado2.hacerTirada();
-            tirado = true;
-            lanzamientos++;
-            if (valor1 == valor2) {
-                System.out.println("Dado 1: " + valor1);
-                System.out.println("Dado 2: " + valor2);
-                System.out.println("Dobles! El jugador avanza " + (valor1 + valor2) + " casillas. Tiene derecho a usar su turno y luego tirar de nuevo.");
+            lanzarDados();
+            if (dado1.getValor() == dado2.getValor()) {
+                System.out.println("Dobles! El jugador avanza " + (dado1.getValor() + dado2.getValor()) + " casillas. Tiene derecho a usar su turno y luego tirar de nuevo.");
                 JugActual.setEnCarcel(false);
                 tirado = false;
                 JugActual.setTiradasCarcel(0);
             }
             else {
-                System.out.println("Dado 1: " + valor1);
-                System.out.println("Dado 2: " + valor2);
-                System.out.println("No han salido dobles... E jugador pierde el turno");
+                System.out.println("No han salido dobles... El jugador pierde el turno");
                 JugActual.setTiradasCarcel(JugActual.getTiradasCarcel() + 1);
                 acabarTurno();
             }
@@ -423,12 +401,14 @@ public class Menu {
             System.out.println("El jugador paga la fianza. Tiene derecho a usar su turno.");
             JugActual.setEnCarcel(false);
             JugActual.setTiradasCarcel(0);
-            JugActual.setFortuna(JugActual.getFortuna() - fianza);
-            JugActual.setGastos(JugActual.getGastos() + fianza);
+            JugActual.sumarFortuna(-fianza);
+            JugActual.sumarGastos(fianza);
         }
         else {
             System.out.println("El jugador no puede tirar los dados ni tiene saldo suficiente para pagar la fianza.");
             System.out.println("El jugador se declara en bancarrota");
+            solvente = false;
+            System.exit(0);
             //Dsp, unha vez poidamos hipotecar, supoño que poderemos poñer algo do estilo de que se pode hipotecar para pagar
             //Tmb teremos que añadir a movida das cartas de suerte
         }
@@ -480,11 +460,18 @@ public class Menu {
     // Método que realiza las acciones asociadas al comando 'acabar turno'.
     private void acabarTurno() {
         //Tiradas carcel xa axustadas na funcion SaliCarcel
-        turno++;
+        if(tirado == false) {
+            System.out.println("No puedes acabar turno sin haber lanzado los dados.");
+            return;
+        }
+        Jugador anterior = jugadores.get(turno);
+        System.out.println("El jugador " + anterior.getNombre() + ", con avatar " + anterior.getAvatar().getId() + ", acaba su turno.");
+        turno = (turno+1)%(jugadores.size());
         lanzamientos = 0;
         tirado = false;
+        solvente = true;
         Jugador jugador = jugadores.get(turno);
-        System.out.println("El turno le pertenece al jugador " + jugador.getNombre() + ". Con avatar " + jugador.getAvatar() + ".");
+        System.out.println("El turno le pertenece al jugador " + jugador.getNombre() + ". Con avatar " + jugador.getAvatar().getId() + ".");
     }
 
     private void darAltaJugador(String nombre, String tipoAvatar){

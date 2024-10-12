@@ -130,21 +130,24 @@ public class Casilla {
         else this.hipoteca = hipoteca;
     }
 
-    public void setAvatares(ArrayList<Avatar> avatares) {
-        this.avatares = avatares;
-    }
-
     public void setGrupo(Grupo grupo) {
         this.grupo = grupo;
     }
 
+    public void setAvatares(ArrayList<Avatar> avatares) {
+        this.avatares = avatares;
+    }
+
     //Método utilizado para añadir un avatar al array de avatares en casilla.
     public void anhadirAvatar(Avatar av) {
+        av.setLugar(this);
         avatares.add(av);
     }
 
     //Método utilizado para eliminar un avatar del array de avatares en casilla.
     public void eliminarAvatar(Avatar av) {
+        ArrayList<Avatar> avatares = this.getAvatares();
+        avatares.remove(av);
     }
 
     /*Método para evaluar qué hacer en una casilla concreta. Parámetros:
@@ -154,6 +157,9 @@ public class Casilla {
     * Valor devuelto: true en caso de ser solvente (es decir, de cumplir las deudas), y false
     * en caso de no cumplirlas.*/
     public boolean evaluarCasilla(Jugador actual, Jugador banca, int tirada) {
+        if(this.tipo.equals("Solar")) {
+
+        }
         return false;
     }
 
@@ -161,6 +167,10 @@ public class Casilla {
     * - Jugador que solicita la compra de la casilla.
     * - Banca del monopoly (es el dueño de las casillas no compradas aún).*/
     public void comprarCasilla(Jugador solicitante, Jugador banca) {
+        if(this.posicion != solicitante.getAvatar().getLugar().getPosicion()) {
+            System.out.println("No estás situado en la casilla deseada.");
+            return;
+        }
         if(this.duenho != banca) {
             System.out.println("La casilla ya pertenece a un jugador.");
             return;
@@ -181,6 +191,7 @@ public class Casilla {
     * - Sumar valor a las casillas de solar al no comprarlas tras cuatro vueltas de todos los jugadores.
     * Este método toma como argumento la cantidad a añadir del valor de la casilla.*/
     public void sumarValor(float suma) {
+
     }
 
     /*Método para mostrar información sobre una casilla.

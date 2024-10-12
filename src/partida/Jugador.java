@@ -16,9 +16,7 @@ public class Jugador {
     private int tiradasCarcel; //Cuando está en la carcel, contará las tiradas sin éxito que ha hecho allí para intentar salir (se usa para limitar el numero de intentos).
     private int vueltas; //Cuenta las vueltas dadas al tablero.
     private ArrayList<Casilla> propiedades; //Propiedades que posee el jugador.
-
     private ArrayList<String> hipotecas;
-
     private ArrayList<String> edificios; //Propiedades que posee el jugador.
 
     //Constructor vacío. Se usará para crear la banca.
@@ -74,6 +72,8 @@ public class Jugador {
         this.tiradasCarcel = tiradasCarcel;
     }
 
+
+
     //Otros métodos:
     //Método para añadir una propiedad al jugador. Como parámetro, la casilla a añadir.
     public void anhadirPropiedad(Casilla casilla) {
@@ -87,16 +87,32 @@ public class Jugador {
     //Método para añadir fortuna a un jugador
     //Como parámetro se pide el valor a añadir. Si hay que restar fortuna, se pasaría un valor negativo.
     public void sumarFortuna(float valor) {
+        this.fortuna += valor;
     }
 
     //Método para sumar gastos a un jugador.
     //Parámetro: valor a añadir a los gastos del jugador (será el precio de un solar, impuestos pagados...).
     public void sumarGastos(float valor) {
+        this.gastos += valor;
     }
 
     /*Método para establecer al jugador en la cárcel. 
     * Se requiere disponer de las casillas del tablero para ello (por eso se pasan como parámetro).*/
     public void encarcelar(ArrayList<ArrayList<Casilla>> pos) {
+        this.enCarcel = true;
+        this.tiradasCarcel = 0;
+        this.vueltas -= 1;
+        Avatar av = this.avatar;
+        Casilla casillaOld = av.getLugar();
+        casillaOld.eliminarAvatar(av);
+        for(ArrayList<Casilla> casillas : pos) {
+            for(Casilla casilla : casillas) {
+                if(casilla.getNombre().equalsIgnoreCase("Carcel")) {
+                    casilla.anhadirAvatar(av);
+                    System.out.println("El jugador ha sido encarcelado");
+                }
+            }
+        }
     }
 
     public String getNombre() {
@@ -118,13 +134,17 @@ public class Jugador {
         return gastos;
     }
 
+    public ArrayList<Casilla> getPropiedades() {
+        return propiedades;
+    }
+
     private String listaPropiedades() {
         String listaPropiedades = "";
         if (!propiedades.isEmpty()) {
-            listaPropiedades = listaPropiedades + "[" + propiedades.get(0);
+            listaPropiedades = listaPropiedades + "[" + (propiedades.get(0)).getNombre();
 
             for(int i = 1; i < propiedades.size(); ++i) {
-                listaPropiedades = listaPropiedades + ", " + propiedades.get(i);
+                listaPropiedades = listaPropiedades + ", " + (propiedades.get(i)).getNombre();
             }
 
             listaPropiedades = listaPropiedades + "]";
@@ -138,7 +158,7 @@ public class Jugador {
     private String listaHipotecas() {
         String listaHipotecas = "";
         if (!hipotecas.isEmpty()) {
-            listaHipotecas = listaHipotecas + "[" + hipotecas.get(0);
+            listaHipotecas = listaHipotecas + "[" + (hipotecas.get(0));
 
             for(int i = 1; i < hipotecas.size(); ++i) {
                 listaHipotecas = listaHipotecas + ", " + hipotecas.get(i);
