@@ -47,7 +47,7 @@ public class Casilla {
             this.impuesto = valor*0.1f;
         }
         else if(tipo.equals("Servicios")) {
-            this.impuesto = SUMA_VUELTA * 0.75f;
+            this.impuesto = SUMA_VUELTA / 200;
         }
         else if(tipo.equals("Transporte")) {
             this.impuesto = SUMA_VUELTA;
@@ -158,35 +158,109 @@ public class Casilla {
     * Valor devuelto: true en caso de ser solvente (es decir, de cumplir las deudas), y false
     * en caso de no cumplirlas.*/
     public boolean evaluarCasilla(Jugador actual, Jugador banca, int tirada) {
-        switch (this.getTipo()) {
-            case "Solar": case "Servicios":
-                if (this.getDuenho().equals(banca) || this.getDuenho().equals(actual)) {
-                    return true;
-                } else {
-                    return (actual.getFortuna() > this.getImpuesto());
-                }
-            case "Especiales":
-                if (this.getNombre().equals("Cárcel")) {
-                    return (actual.getFortuna() > this.getImpuesto());
-                } else {
-                    return true;
-                }
-            case "Transporte":
-                switch (this.getDuenho().getNumTransportes()) {
-                    case 1:
-                        return actual.getFortuna() > this.getImpuesto() * 0.25f;
-                    case 2:
-                        return actual.getFortuna() > this.getImpuesto() * 0.5f;
-                    case 3:
-                        return actual.getFortuna() > this.getImpuesto() * 0.75f;
-                    case 4:
-                        return actual.getFortuna() > this.getImpuesto();
-                }
-            default:
-                return true;
+        if (actual.equals(this.getDuenho())) {
+            return true;
+        } else {
+            switch (this.getTipo()) {
+                case "Solar":
+                    if (this.getDuenho().equals(banca)) {
+                        return true;
+                    } else {
+                        return (actual.getFortuna() > this.getImpuesto());
+                    }
+                case "Servicios":
+                    switch (this.getDuenho().getNumServicios()) {
+                        case 1:
+                            return actual.getFortuna() > (this.getImpuesto() * 4 * tirada);
+                        case 2:
+                            return actual.getFortuna() > (this.getImpuesto() * 10 * tirada);
+                    }
 
+                case "Especiales":
+                    if (this.getNombre().equals("Cárcel")) {
+                        return (actual.getFortuna() > this.getImpuesto());
+                    } else {
+                        return true;
+                    }
+                case "Transporte":
+                    switch (this.getDuenho().getNumTransportes()) {
+                        case 1:
+                            return actual.getFortuna() > this.getImpuesto() * 0.25f;
+                        case 2:
+                            return actual.getFortuna() > this.getImpuesto() * 0.5f;
+                        case 3:
+                            return actual.getFortuna() > this.getImpuesto() * 0.75f;
+                        case 4:
+                            return actual.getFortuna() > this.getImpuesto();
+                    }
+                default:
+                    return true;
+            }
         }
+    }
 
+    public void pagarAlquiler(Jugador actual, Jugador banca, int tirada) {
+        if (!actual.equals(this.getDuenho())) {
+            switch (this.getTipo()) {
+                case "Solar":
+                    Jugador duenhoSolar = this.getDuenho();
+
+                    //Comprobar si el dueño del solar es dueño de todo el grupo de color
+                    if (this.getGrupo().esDuenhoGrupo(duenhoSolar)) {
+                        actual.setFortuna(actual.getFortuna() - 2*this.getImpuesto());
+                        duenhoSolar.setFortuna(duenhoSolar.getFortuna() + 2*this.getImpuesto());
+                        actual.setGastos(actual.getGastos() + 2*this.getImpuesto());
+                    } else {
+                        actual.setFortuna(actual.getFortuna() - this.getImpuesto());
+                        duenhoSolar.setFortuna(duenhoSolar.getFortuna() + this.getImpuesto());
+                        actual.setGastos(actual.getGastos() + this.getImpuesto());
+                    }
+                    break;
+
+                case "Servicios":
+                    Jugador duenhoServicios = this.getDuenho();
+                    switch (duenhoServicios.getNumServicios()) {
+                        case 1:
+                            actual.setFortuna(actual.getFortuna() - this.getImpuesto() * 4 * tirada);
+                            duenhoServicios.setFortuna(duenhoServicios.getFortuna() + this.getImpuesto() * 4 * tirada);
+                            actual.setGastos(actual.getGastos() + this.getImpuesto() * 4 * tirada);
+                            break;
+
+                        case 2:
+                            actual.setFortuna(actual.getFortuna() - this.getImpuesto() * 10 * tirada);
+                            duenhoServicios.setFortuna(duenhoServicios.getFortuna() + this.getImpuesto() * 10 * tirada);
+                            actual.setGastos(actual.getGastos() + this.getImpuesto() * 10 * tirada);
+                            break;
+                    }
+                    break;
+
+                case "Transporte":
+                    Jugador duenhoTransporte = this.getDuenho();
+                    switch (duenhoTransporte.getNumTransportes()) {
+                        case 1:
+                            actual.setFortuna(actual.getFortuna() - this.getImpuesto() * 0.25f);
+                            duenhoTransporte.setFortuna(duenhoTransporte.getFortuna() + this.getImpuesto() * 0.25f);
+                            actual.setGastos(actual.getGastos() + this.getImpuesto() * 0.25f);
+                            break;
+                        case 2:
+                            actual.setFortuna(actual.getFortuna() - this.getImpuesto() * 0.5f);
+                            duenhoTransporte.setFortuna(duenhoTransporte.getFortuna() + this.getImpuesto() * 0.5f);
+                            actual.setGastos(actual.getGastos() + this.getImpuesto() * 0.5f);
+                            break;
+                        case 3:
+                            actual.setFortuna(actual.getFortuna() - this.getImpuesto() * 0.75f);
+                            duenhoTransporte.setFortuna(duenhoTransporte.getFortuna() + this.getImpuesto() * 0.75f);
+                            actual.setGastos(actual.getGastos() + this.getImpuesto() * 0.75f);
+                            break;
+                        case 4:
+                            actual.setFortuna(actual.getFortuna() - this.getImpuesto());
+                            duenhoTransporte.setFortuna(duenhoTransporte.getFortuna() + this.getImpuesto());
+                            actual.setGastos(actual.getGastos() + this.getImpuesto());
+                            break;
+                    }
+                    break;
+            }
+        }
     }
 
     /*Método usado para comprar una casilla determinada. Parámetros:

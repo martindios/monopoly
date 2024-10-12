@@ -42,6 +42,7 @@ public class Jugador {
         this.tiradasCarcel = 0;
         this.vueltas = 0;
         this.numTransportes = 0;
+        this.numServicios = 0;
         this.propiedades = new ArrayList<>();
         this.hipotecas = new ArrayList<>();
         this.edificios = new ArrayList<>();
