@@ -4,6 +4,9 @@ import java.util.ArrayList;
 
 import monopoly.*;
 
+import static monopoly.Valor.FORTUNA_BANCA;
+import static monopoly.Valor.FORTUNA_INICIAL;
+
 
 public class Jugador {
 
@@ -15,6 +18,7 @@ public class Jugador {
     private boolean enCarcel; //Será true si el jugador está en la carcel
     private int tiradasCarcel; //Cuando está en la carcel, contará las tiradas sin éxito que ha hecho allí para intentar salir (se usa para limitar el numero de intentos).
     private int vueltas; //Cuenta las vueltas dadas al tablero.
+    private int numTransportes; //Cuenta la cantidad de transportes que tiene el jugador
     private ArrayList<Casilla> propiedades; //Propiedades que posee el jugador.
     private ArrayList<String> hipotecas;
     private ArrayList<String> edificios; //Propiedades que posee el jugador.
@@ -22,6 +26,7 @@ public class Jugador {
     //Constructor vacío. Se usará para crear la banca.
     public Jugador() {
         this.nombre = "banca";
+        this.fortuna = FORTUNA_BANCA;
     }
 
     /*Constructor principal. Requiere parámetros:
@@ -32,11 +37,12 @@ public class Jugador {
     public Jugador(String nombre, String tipoAvatar, Casilla inicio, ArrayList<Avatar> avCreados) {
         this.nombre = nombre;
         //Como temos que crear aquí o avatar, usamos o constructor del con args: Tipo do avatar, Xogador que o ten, Casilla de inicio e o array de avatares para nn repetilo
-        this.fortuna = 1500; //Fortuna inicial de ejemplo, dsp cambiamolo
+        this.fortuna = FORTUNA_INICIAL;
         this.gastos = 0;
         this.enCarcel = false;
         this.tiradasCarcel = 0;
         this.vueltas = 0;
+        this.numTransportes = 0;
         this.propiedades = new ArrayList<>();
         this.hipotecas = new ArrayList<>();
         this.edificios = new ArrayList<>();
@@ -72,7 +78,9 @@ public class Jugador {
         this.tiradasCarcel = tiradasCarcel;
     }
 
-
+    public void setNumTransportes(int numTransportes) {
+        this.numTransportes = numTransportes;
+    }
 
     //Otros métodos:
     //Método para añadir una propiedad al jugador. Como parámetro, la casilla a añadir.
@@ -132,6 +140,10 @@ public class Jugador {
 
     public float getGastos() {
         return gastos;
+    }
+
+    public int getNumTransportes() {
+        return numTransportes;
     }
 
     public ArrayList<Casilla> getPropiedades() {

@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import java.lang.String;
 import java.util.Objects;
 
+import static monopoly.Valor.SUMA_VUELTA;
+
 
 public class Casilla {
 
@@ -45,10 +47,10 @@ public class Casilla {
             this.impuesto = valor*0.1f;
         }
         else if(tipo.equals("Servicios")) {
-            this.impuesto = Valor.SUMA_VUELTA * 0.75f;
+            this.impuesto = SUMA_VUELTA * 0.75f;
         }
         else if(tipo.equals("Transporte")) {
-            this.impuesto = Valor.SUMA_VUELTA;
+            this.impuesto = SUMA_VUELTA;
         }
         this.hipoteca = valor*0.5f;
         avatares = new ArrayList<Avatar>();
@@ -93,8 +95,8 @@ public class Casilla {
         //Salida e IrCarcel non teñen valor, pero Parking o valor é o bote e en Carcel (entendo) que é o precio para salir dela. Ademais, este 25% págase á BANCA
         //As casillas suerte están relacionadas con pagos/cobros, pero no guion1 non pon nada, entonces entenco que de momento deso nada
         //As casillas de comunidad tmp din moito, solo que principalmente consisten en movimientos entre casillas
-        if(nombre.equals("Carcel")) {
-            this.impuesto = Valor.SUMA_VUELTA * 0.25f;
+        if(nombre.equals("Cárcel")) {
+            this.impuesto = SUMA_VUELTA * 0.25f;
         }
         else if(nombre.equals("Parking")) {
             this.valor = 0; //O valor do parking ven sendo o bote que recibe o xogador que cae na casilla. Entonces, empeza en 0 de valor.
@@ -157,10 +159,36 @@ public class Casilla {
     * Valor devuelto: true en caso de ser solvente (es decir, de cumplir las deudas), y false
     * en caso de no cumplirlas.*/
     public boolean evaluarCasilla(Jugador actual, Jugador banca, int tirada) {
-        if(this.tipo.equals("Solar")) {
+        Casilla casillaActual = actual.getAvatar().getLugar();
+        switch (casillaActual.getTipo()) {
+            case "Solar": case "Servicios":
+                if (casillaActual.getDuenho().equals(banca) || casillaActual.getDuenho().equals(actual)) {
+                    return true;
+                } else {
+                    return (actual.getFortuna() > casillaActual.getImpuesto());
+                }
+            case "Especiales":
+                if (casillaActual.getNombre().equals("Cárcel")) {
+                    return (actual.getFortuna() > casillaActual.getImpuesto());
+                } else {
+                    return true;
+                }
+            case "Transporte":
+                switch (casillaActual.getDuenho().getNumTransportes()) {
+                    case 1:
+                        return actual.getFortuna() > casillaActual.getImpuesto() * 0.25f;
+                    case 2:
+                        return actual.getFortuna() > casillaActual.getImpuesto() * 0.5f;
+                    case 3:
+                        return actual.getFortuna() > casillaActual.getImpuesto() * 0.75f;
+                    case 4:
+                        return actual.getFortuna() > casillaActual.getImpuesto();
+                }
+            default:
+                return true;
 
         }
-        return false;
+
     }
 
     /*Método usado para comprar una casilla determinada. Parámetros:
