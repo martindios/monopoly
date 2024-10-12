@@ -416,12 +416,10 @@ public class Menu {
 
     // Método que realiza las acciones asociadas al comando 'listar enventa'.
     private void listarVenta() {
-        for (ArrayList<Casilla> casillas : tablero.getPosiciones()) {
-            for (Casilla casilla : casillas) {
-                if (casilla.getTipo().equals("Solar") || casilla.getTipo().equals("Transporte") || casilla.getTipo().equals("Servicios")) {
-                    if (casilla.getDuenho() == banca) {
-                        //hay que listar las casillas con una función auxiliar
-                    }
+        for(ArrayList<Casilla> fila : tablero.getPosiciones()) {
+            for(Casilla c : fila) {
+                if(c.getTipo() == "Solar" || c.getTipo() == "Transporte" || c.getTipo() == "Servicios") {
+                    c.casEnVenta();
                 }
             }
         }

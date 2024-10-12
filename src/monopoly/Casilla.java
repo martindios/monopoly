@@ -175,14 +175,10 @@ public class Casilla {
             System.out.println("La casilla ya pertenece a un jugador.");
             return;
         }
-        if(solicitante.getFortuna() < this.valor) {
-            System.out.println("El jugador no tiene suficiente saldo para comprar la casilla.");
-            return;
-        }
         System.out.println("El jugador ha comprado la casilla.");
         solicitante.setFortuna(solicitante.getFortuna() - this.valor);
-        this.setDuenho(solicitante);
         solicitante.setGastos(solicitante.getGastos() + this.valor);
+        this.setDuenho(solicitante);
         solicitante.anhadirPropiedad(this);
     }
 
@@ -279,8 +275,20 @@ public class Casilla {
     /* Método para mostrar información de una casilla en venta.
      * Valor devuelto: texto con esa información.
      */
+    public String casEnVenta() {
+        switch (this.tipo) {
+            case "Solar":
 
-    public String casaEnVenta() {
+                break;
+            case "Transporte":
+
+                break;
+            case "Servicios":
+
+                break;
+            default:
+                System.out.println("Casilla no en venta.");
+        }
         return null;
     }
 
@@ -333,5 +341,13 @@ public class Casilla {
         return avatares;
     }
 
+    private String infoSolar() {
+        return """
+                {
+                    Tipo: %s,
+                    grupo: %s,
+                    valor: %f.
+                }""".formatted(tipo, grupo.getColorGrupo(), valor);
+    }
 
 }
