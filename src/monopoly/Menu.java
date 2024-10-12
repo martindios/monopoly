@@ -2,10 +2,7 @@ package monopoly;
 
 import java.awt.desktop.AppReopenedEvent;
 import java.lang.reflect.Array;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Scanner;
-import java.util.InputMismatchException;
+import java.util.*;
 
 import partida.*;
 
@@ -196,6 +193,7 @@ public class Menu {
 
                 case "lanzar":
                     lanzarDados();
+                    solvente = jugadores.get(turno).getAvatar().getLugar().evaluarCasilla(jugadores.get(turno), banca, dado1.getValor() + dado2.getValor());
                     break;
 
                 case "acabar":
@@ -224,7 +222,11 @@ public class Menu {
                     break;
 
                 case "comprar":
-                    comprar(palabrasArray[1]);
+                    if (palabrasArray.length == 2) {
+                        comprar(palabrasArray[1]);
+                    } else {
+                        System.out.println("El formato correcto es: comprar nombrePropiedad");
+                    }
                     break;
 
                 case "ver":
@@ -297,7 +299,7 @@ public class Menu {
             System.out.println("La casilla no existe.");
         }
         else {
-            casillaBuscada.infoCasilla();
+            System.out.println(casillaBuscada.infoCasilla());
         }
     }
 
@@ -418,7 +420,7 @@ public class Menu {
     private void listarVenta() {
         for(ArrayList<Casilla> fila : tablero.getPosiciones()) {
             for(Casilla c : fila) {
-                if(c.getTipo() == "Solar" || c.getTipo() == "Transporte" || c.getTipo() == "Servicios") {
+                if(Objects.equals(c.getTipo(), "Solar") || Objects.equals(c.getTipo(), "Transporte") || Objects.equals(c.getTipo(), "Servicios")) {
                     c.casEnVenta();
                 }
             }
