@@ -13,7 +13,7 @@ public class Menu {
     static Scanner scanner = new Scanner(System.in); //scanner para leer lo que se pone por teclado
     int maxJugadores = 0;
     int jugadoresActuales = 0; //Variable auxiliar para limitar el número de jugadores
-
+    boolean finalizarPartida = false;
 
     //Atributos
     private ArrayList<Jugador> jugadores; //Jugadores de la partida.
@@ -117,12 +117,14 @@ public class Menu {
 
     // Método para inciar una partida: crea los jugadores y avatares.
     private void iniciarPartida() {
-        while(true) {
+        while(!finalizarPartida) {
             System.out.print("Introduce el comando: ");
             String comando = scanner.nextLine();
             analizarComando(comando);
         }
-        //HAY QUE HACER UN SCANNER CLOSE AQUI CUANDO ACABE EL MENÚ, ANTES DE SALIR, AUN NO SE PUEDE PORQUE ESTA EL WHILE TRUE
+        System.out.println("Partida finalizada.");
+        scanner.close();
+        System.exit(0);
     }
 
 
@@ -192,7 +194,16 @@ public class Menu {
 
                 case "lanzar":
                     lanzarDados();
-                    solvente = jugadores.get(turno).getAvatar().getLugar().evaluarCasilla(jugadores.get(turno), banca, dado1.getValor() + dado2.getValor());
+                    Casilla casillaActual = jugadores.get(turno).getAvatar().getLugar();
+                    solvente = casillaActual.evaluarCasilla(jugadores.get(turno), banca, dado1.getValor() + dado2.getValor());
+                    if (!solvente) {
+                        finalizarPartida = true;
+                    } else {
+                        //Comprobar que hay en la casilla en la que se cae hay que pagar
+                        if (casillaActual.getTipo().equals("Solar") || casillaActual.getTipo().equals("Servicios") || casillaActual.getTipo().equals("Transporte")) {
+                            casillaActual.pagarAlquiler(jugadores.get(turno), banca, dado1.getValor() + dado2.getValor());
+                        }
+                    }
                     break;
 
                 case "acabar":
@@ -204,7 +215,7 @@ public class Menu {
                     break;
 
                 case "describir":
-                    if(palabrasArray.length >= 3) {
+                    if(palabrasArray.length == 3) {
                         switch (palabrasArray[1]) {
                             case "jugador":
                                 descJugador(palabrasArray[2]);

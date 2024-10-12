@@ -17,6 +17,7 @@ public class Jugador {
     private int tiradasCarcel; //Cuando está en la carcel, contará las tiradas sin éxito que ha hecho allí para intentar salir (se usa para limitar el numero de intentos).
     private int vueltas; //Cuenta las vueltas dadas al tablero.
     private int numTransportes; //Cuenta la cantidad de transportes que tiene el jugador
+    private int numServicios; //Cuenta la cantidad de servicios que tiene el jugador
     private ArrayList<Casilla> propiedades; //Propiedades que posee el jugador.
     private ArrayList<String> hipotecas;
     private ArrayList<String> edificios; //Propiedades que posee el jugador.
@@ -41,6 +42,7 @@ public class Jugador {
         this.tiradasCarcel = 0;
         this.vueltas = 0;
         this.numTransportes = 0;
+        this.numServicios = 0;
         this.propiedades = new ArrayList<>();
         this.hipotecas = new ArrayList<>();
         this.edificios = new ArrayList<>();
@@ -78,6 +80,10 @@ public class Jugador {
 
     public void setNumTransportes(int numTransportes) {
         this.numTransportes = numTransportes;
+    }
+
+    public void setNumServicios(int numServicios) {
+        this.numServicios = numServicios;
     }
 
     //Otros métodos:
@@ -142,6 +148,10 @@ public class Jugador {
 
     public int getNumTransportes() {
         return numTransportes;
+    }
+
+    public int getNumServicios() {
+        return numServicios;
     }
 
     public ArrayList<Casilla> getPropiedades() {
