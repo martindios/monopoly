@@ -50,6 +50,9 @@ class Grupo {
     * Parámetro: casilla que se quiere añadir.
      */
     public void anhadirCasilla(Casilla miembro) {
+        this.miembros.add(miembro);
+        this.numCasillas = miembros.size();
+        miembro.setGrupo(this);
     }
 
     /*Método que comprueba si el jugador pasado tiene en su haber todas las casillas del grupo:
@@ -57,6 +60,15 @@ class Grupo {
     * Valor devuelto: true si es dueño de todas las casillas del grupo, false en otro caso.
      */
     public boolean esDuenhoGrupo(Jugador jugador) {
+        int contador = 0;
+        for(Casilla casilla : this.miembros) {
+            if(casilla.getDuenho() == jugador) {
+                contador++;
+            }
+        }
+        if(contador == this.numCasillas) {
+            return true;
+        }
         return false;
     }
 

@@ -163,7 +163,7 @@ public class Menu {
                     acabarTurno();
                     break;
 
-                case "salir":
+                case "salir carcel":
                     salirCarcel();
                     break;
 
@@ -264,12 +264,19 @@ public class Menu {
 
     //Método que ejecuta todas las acciones relacionadas con el comando 'lanzar dados'.
     private void lanzarDados() {
-        dado1.hacerTirada();
-        dado2.hacerTirada();
-        lanzamientos++;
-        tirado = true;
-        System.out.println("Dado 1: " + dado1.getValor());
-        System.out.println("Dado 2: " + dado2.getValor());
+        if(lanzamientos == 0) {
+            dado1.hacerTirada();
+            dado2.hacerTirada();
+            lanzamientos++;
+            tirado = true;
+            System.out.println("Dado 1: " + dado1.getValor());
+            System.out.println("Dado 2: " + dado2.getValor());
+            Avatar avatar = avatares.get(turno);
+            avatar.moverAvatar(tablero.getPosiciones(), (dado1.getValor() + dado2.getValor()));
+        }
+        else {
+            System.out.println("Ya has lanzado el dado en este turno.");
+        }
     }
 
     /*Método que ejecuta todas las acciones realizadas con el comando 'comprar nombre_casilla'.
@@ -280,10 +287,13 @@ public class Menu {
         Casilla casillaDeseada = tablero.encontrar_casilla(nombre);
         if(casillaDeseada == null) {
             System.out.println("La casilla deseada no existe.");
+            return;
         }
-        else {
-            casillaDeseada.comprarCasilla(comprador, banca);
+        if(comprador.getFortuna() < casillaDeseada.getValor()) {
+            System.out.println("El jugador no tiene dinero suficiente para comprar la casilla.");
+            return;
         }
+        casillaDeseada.comprarCasilla(comprador, banca);
     }
 
     //Método que ejecuta todas las acciones relacionadas con el comando 'salir carcel'. 
@@ -325,8 +335,8 @@ public class Menu {
                 System.out.println("El jugador paga la fianza. Tiene derecho a usar su turno");
                 JugActual.setEnCarcel(false);
                 JugActual.setTiradasCarcel(0);
-                JugActual.setFortuna(JugActual.getFortuna() - fianza);
-                JugActual.setGastos(JugActual.getGastos() + fianza);
+                JugActual.sumarFortuna(-fianza);
+                JugActual.sumarGastos(fianza);
             }
         }
         else if(TiradasCarcel && !Presupuesto) {
@@ -349,12 +359,14 @@ public class Menu {
             System.out.println("El jugador paga la fianza. Tiene derecho a usar su turno.");
             JugActual.setEnCarcel(false);
             JugActual.setTiradasCarcel(0);
-            JugActual.setFortuna(JugActual.getFortuna() - fianza);
-            JugActual.setGastos(JugActual.getGastos() + fianza);
+            JugActual.sumarFortuna(-fianza);
+            JugActual.sumarGastos(fianza);
         }
         else {
             System.out.println("El jugador no puede tirar los dados ni tiene saldo suficiente para pagar la fianza.");
             System.out.println("El jugador se declara en bancarrota");
+            solvente = false;
+            System.exit(0);
             //Dsp, unha vez poidamos hipotecar, supoño que poderemos poñer algo do estilo de que se pode hipotecar para pagar
             //Tmb teremos que añadir a movida das cartas de suerte
         }
@@ -402,6 +414,7 @@ public class Menu {
         turno = (turno+1)%(jugadores.size());
         lanzamientos = 0;
         tirado = false;
+        solvente = true;
         Jugador jugador = jugadores.get(turno);
         System.out.println("El turno le pertenece al jugador " + jugador.getNombre() + ". Con avatar " + jugador.getAvatar().getId() + ".");
     }
