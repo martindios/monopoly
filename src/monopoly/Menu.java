@@ -120,7 +120,6 @@ public class Menu {
 
     // Método para inciar una partida: crea los jugadores y avatares.
     private void iniciarPartida() {
-
         while(true) {
             System.out.print("Introduce el comando: ");
             String comando = scanner.nextLine();
@@ -168,8 +167,8 @@ public class Menu {
     */
     public void analizarComando(String comando) {
         String[] palabrasArray = comando.split(" ");
-        if (palabrasArray.length > 0) {
-            switch (palabrasArray[0]) {
+        if(palabrasArray.length > 0) {
+            switch(palabrasArray[0]) {
                 case "crear":
                     System.out.println("Todos los jugadores están registrados");
                     break;
@@ -207,19 +206,21 @@ public class Menu {
                     break;
 
                 case "describir":
-                    switch (palabrasArray[1]){
-                        case "jugador":
-                            descJugador(palabrasArray[2]);
-                            break;
-                        case "avatar":
-                            descAvatar(palabrasArray[2]);
-                            break;
-                        case "casilla":
-                            descCasilla(palabrasArray[2]);
-                            break;
-                        default:
-                            System.out.println("Comando no válido");
-                            break;
+                    if(palabrasArray.length >= 3) {
+                        switch (palabrasArray[1]) {
+                            case "jugador":
+                                descJugador(palabrasArray[2]);
+                                break;
+                            case "avatar":
+                                descAvatar(palabrasArray[2]);
+                                break;
+                            default:
+                                System.out.println("Comando no válido");
+                                break;
+                        }
+                    }
+                    else {
+                        descCasilla(palabrasArray[1]);
                     }
                     break;
 
@@ -303,18 +304,18 @@ public class Menu {
 
     //Método que ejecuta todas las acciones relacionadas con el comando 'lanzar dados'.
     private void lanzarDados() {
-        if(lanzamientos == 0) {
-            dado1.hacerTirada();
-            dado2.hacerTirada();
+        if(!tirado) {
+            int valor1 = dado1.hacerTirada();
+            int valor2 = dado2.hacerTirada();
             lanzamientos++;
             tirado = true;
-            System.out.println("Dado 1: " + dado1.getValor());
-            System.out.println("Dado 2: " + dado2.getValor());
-            if(dado1.getValor() == dado2.getValor()) {
+            System.out.println("Dado 1: " + valor1);
+            System.out.println("Dado 2: " + valor2);
+            if(valor1 == valor2) {
                 tirado = false;
             }
             Avatar avatar = avatares.get(turno);
-            avatar.moverAvatar(tablero.getPosiciones(), (dado1.getValor() + dado2.getValor()));
+            avatar.moverAvatar(tablero.getPosiciones(), (valor1 + valor2));
         }
         else {
             System.out.println("Ya has lanzado el dado en este turno.");
@@ -329,6 +330,10 @@ public class Menu {
         Casilla casillaDeseada = tablero.encontrar_casilla(nombre);
         if(casillaDeseada == null) {
             System.out.println("La casilla deseada no existe.");
+            return;
+        }
+        if(!(casillaDeseada.getTipo().equals("Solar")) && !(casillaDeseada.getTipo().equals("Transporte")) && !(casillaDeseada.getTipo().equals("Servicios"))) {
+            System.out.println("Casilla sin opción de compra.");
             return;
         }
         if(comprador.getFortuna() < casillaDeseada.getValor()) {
@@ -379,6 +384,7 @@ public class Menu {
                 JugActual.setTiradasCarcel(0);
                 JugActual.sumarFortuna(-fianza);
                 JugActual.sumarGastos(fianza);
+                banca.sumarFortuna(fianza);
             }
         }
         else if(TiradasCarcel && !Presupuesto) {
@@ -403,6 +409,7 @@ public class Menu {
             JugActual.setTiradasCarcel(0);
             JugActual.sumarFortuna(-fianza);
             JugActual.sumarGastos(fianza);
+            banca.sumarFortuna(fianza);
         }
         else {
             System.out.println("El jugador no puede tirar los dados ni tiene saldo suficiente para pagar la fianza.");
@@ -418,8 +425,8 @@ public class Menu {
     private void listarVenta() {
         for(ArrayList<Casilla> fila : tablero.getPosiciones()) {
             for(Casilla c : fila) {
-                if(c.getTipo() == "Solar" || c.getTipo() == "Transporte" || c.getTipo() == "Servicios") {
-                    c.casEnVenta();
+                if((c.getTipo().equals("Solar") || c.getTipo().equals("Transporte") || c.getTipo().equals("Servicios")) && c.getDuenho().equals(banca)) {
+                    System.out.println(c.casEnVenta());
                 }
             }
         }
@@ -458,7 +465,7 @@ public class Menu {
     // Método que realiza las acciones asociadas al comando 'acabar turno'.
     private void acabarTurno() {
         //Tiradas carcel xa axustadas na funcion SaliCarcel
-        if(tirado == false) {
+        if(!tirado) {
             System.out.println("No puedes acabar turno sin haber lanzado los dados.");
             return;
         }
@@ -473,14 +480,10 @@ public class Menu {
     }
 
     private void darAltaJugador(String nombre, String tipoAvatar){
-
         Casilla casillaInicio = tablero.encontrar_casilla("Salida"); //Se busca la casilla correspondiente a la salida
-
-
         //Se crea el jugador y se añade al array que contiene a todos los participantes de la partida
         Jugador jugadorCreado = new Jugador(nombre, tipoAvatar, casillaInicio, avatares);
         jugadores.add(jugadorCreado);
-
         //Se muestra por pantalla la información del jugador creado
         System.out.println("{");
         System.out.println("    nombre: " + jugadorCreado.getNombre() + ",");

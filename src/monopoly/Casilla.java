@@ -93,7 +93,7 @@ public class Casilla {
         //Salida e IrCarcel non teñen valor, pero Parking o valor é o bote e en Carcel (entendo) que é o precio para salir dela. Ademais, este 25% págase á BANCA
         //As casillas suerte están relacionadas con pagos/cobros, pero no guion1 non pon nada, entonces entenco que de momento deso nada
         //As casillas de comunidad tmp din moito, solo que principalmente consisten en movimientos entre casillas
-        if(nombre.equals("Carcel")) {
+        if(nombre.equals("Cárcel")) {
             this.impuesto = Valor.SUMA_VUELTA * 0.25f;
         }
         else if(nombre.equals("Parking")) {
@@ -176,8 +176,9 @@ public class Casilla {
             return;
         }
         System.out.println("El jugador ha comprado la casilla.");
-        solicitante.setFortuna(solicitante.getFortuna() - this.valor);
-        solicitante.setGastos(solicitante.getGastos() + this.valor);
+        solicitante.sumarFortuna(-this.valor);
+        solicitante.sumarGastos(this.valor);
+        banca.sumarFortuna(this.valor);
         this.setDuenho(solicitante);
         solicitante.anhadirPropiedad(this);
     }
@@ -239,7 +240,7 @@ public class Casilla {
                 return impuestos.toString();
 
             case "Especiales":
-                if (Objects.equals(this.nombre, "Carcel")) {
+                if (Objects.equals(this.nombre, "Cárcel")) {
                     StringBuilder carcel = new StringBuilder();
                     carcel.append("Tipo: ").append(this.tipo.toLowerCase() + ",\n");
                     carcel.append("salir: ").append(this.impuesto + ",\n");
@@ -276,20 +277,21 @@ public class Casilla {
      * Valor devuelto: texto con esa información.
      */
     public String casEnVenta() {
+        String resultado;
         switch (this.tipo) {
             case "Solar":
-
+                resultado = this.infoSolar();
                 break;
             case "Transporte":
-
+                resultado = this.infoTransServ();
                 break;
             case "Servicios":
-
+                resultado = infoTransServ();
                 break;
             default:
-                System.out.println("Casilla no en venta.");
+                resultado = "Casilla no en venta.";
         }
-        return null;
+        return resultado;
     }
 
     /*
@@ -344,10 +346,19 @@ public class Casilla {
     private String infoSolar() {
         return """
                 {
+                    Nombre: %s,
                     Tipo: %s,
                     grupo: %s,
-                    valor: %f.
-                }""".formatted(tipo, grupo.getColorGrupo(), valor);
+                    valor: %.2f.
+                }""".formatted(nombre, tipo, grupo.getNombreGrupo(), valor);
+    }
+    private String infoTransServ() {
+        return """
+                {
+                    Nombre: %s
+                    Tipo: %s,
+                    valor: %.2f.
+                }""".formatted(nombre, tipo, valor);
     }
 
 }

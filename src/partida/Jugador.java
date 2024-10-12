@@ -3,7 +3,7 @@ package partida;
 import java.util.ArrayList;
 
 import monopoly.*;
-
+import static monopoly.Valor.*;
 
 public class Jugador {
 
@@ -32,7 +32,7 @@ public class Jugador {
     public Jugador(String nombre, String tipoAvatar, Casilla inicio, ArrayList<Avatar> avCreados) {
         this.nombre = nombre;
         //Como temos que crear aquí o avatar, usamos o constructor del con args: Tipo do avatar, Xogador que o ten, Casilla de inicio e o array de avatares para nn repetilo
-        this.fortuna = 1500; //Fortuna inicial de ejemplo, dsp cambiamolo
+        this.fortuna = FORTUNA_INICIAL; //Fortuna inicial de ejemplo, dsp cambiamolo
         this.gastos = 0;
         this.enCarcel = false;
         this.tiradasCarcel = 0;
@@ -81,7 +81,7 @@ public class Jugador {
     }
 
     //Método para eliminar una propiedad del arraylist de propiedades de jugador.
-    public void eliminarPropiedad(Casilla casilla) {
+    public void eliminarPropiedad(Casilla casilla) { propiedades.remove(casilla);
     }
 
     //Método para añadir fortuna a un jugador
@@ -107,7 +107,7 @@ public class Jugador {
         casillaOld.eliminarAvatar(av);
         for(ArrayList<Casilla> casillas : pos) {
             for(Casilla casilla : casillas) {
-                if(casilla.getNombre().equalsIgnoreCase("Carcel")) {
+                if(casilla.getNombre().equalsIgnoreCase("Cárcel")) {
                     casilla.anhadirAvatar(av);
                     System.out.println("El jugador ha sido encarcelado");
                 }
