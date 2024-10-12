@@ -377,6 +377,13 @@ public class Menu {
 
     // Método que realiza las acciones asociadas al comando 'listar enventa'.
     private void listarVenta() {
+        for(ArrayList<Casilla> fila : tablero.getPosiciones()) {
+            for(Casilla c : fila) {
+                if(c.getTipo() == "Solar" || c.getTipo() == "Transporte" || c.getTipo() == "Servicios") {
+                    c.casEnVenta();
+                }
+            }
+        }
     }
 
     // Método que realiza las acciones asociadas al comando 'listar jugadores'.
