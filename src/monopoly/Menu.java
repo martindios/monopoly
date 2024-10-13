@@ -601,7 +601,9 @@ public class Menu {
                 jugadorActual.sumarGastos(casillaActual.getImpuesto());
                 Casilla bote = tablero.encontrar_casilla("Parking");
                 bote.sumarValor(casillaActual.getImpuesto());
+              
                 System.out.println("El jugador " + jugadorActual.getNombre() + " ha pagado en impuestos " + casillaActual.getImpuesto());
+                banca.sumarFortuna(casillaActual.getImpuesto());
             }
         }
     }
