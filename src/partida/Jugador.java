@@ -86,7 +86,9 @@ public class Jugador {
         this.numServicios = numServicios;
     }
 
-
+    public void setVueltas(int vueltas) {
+        this.vueltas = vueltas;
+    }
 
     //Otros métodos:
     //Método para añadir una propiedad al jugador. Como parámetro, la casilla a añadir.
@@ -161,6 +163,10 @@ public class Jugador {
 
     public ArrayList<Casilla> getPropiedades() {
         return propiedades;
+    }
+
+    public int getVueltas() {
+        return vueltas;
     }
 
     private String listaPropiedades() {
