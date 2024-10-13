@@ -133,6 +133,7 @@ public class Avatar {
         for(Avatar avatar : avCreados){
             if(idCreado.equalsIgnoreCase(avatar.getId())){
                 generarId(avCreados);
+                return ;
             }
         }
         setId(idCreado);
