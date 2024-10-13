@@ -6,22 +6,18 @@ import java.util.ArrayList;
 
 class Grupo {
 
-    //Atributos
+    /**********Atributos**********/
     private ArrayList<Casilla> miembros; //Casillas miembros del grupo.
     private String colorGrupo; //Color del grupo
     private String nombreGrupo; //Nombre del grupo
     private int numCasillas; //Número de casillas del grupo.
 
-    //Constructor vacío.
-    public Grupo() {
-    }
+
+    /**********Constructores**********/
 
     /*Constructor para cuando el grupo está formado por DOS CASILLAS:
     * Requiere como parámetros las dos casillas miembro y el color del grupo.
      */
-    //public Grupo(Casilla cas1, Casilla cas2, String colorGrupo) {
-    //}
-    //temporal
     public Grupo(Casilla cas1, Casilla cas2, String colorGrupo, String nombreGrupo) {
         this.numCasillas = 2;
         this.colorGrupo = colorGrupo;
@@ -47,7 +43,28 @@ class Grupo {
         anhadirCasilla(cas3);
     }
 
+    /**********Getters**********/
 
+    //getter para devolver los miembros que pertenecen a un grupo
+    public ArrayList<Casilla> getMiembros() {
+        return miembros;
+    }
+
+    //getter para devolver el color correspondiente a un grupo
+    public String getColorGrupo() {
+        return colorGrupo;
+    }
+
+    //getter para devolver el número de casillas que pertenecen a un grupo
+    public int getNumCasillas() {
+        return numCasillas;
+    }
+
+    public String getNombreGrupo() {
+        return nombreGrupo;
+    }
+
+    /**********Métodos**********/
 
     /* Método que añade una casilla al array de casillas miembro de un grupo.
     * Parámetro: casilla que se quiere añadir.
@@ -76,26 +93,5 @@ class Grupo {
         return false;
     }
 
-    /*
-    GETTERS
-     */
 
-    //getter para devolver los miembros que pertenecen a un grupo
-    public ArrayList<Casilla> getMiembros() {
-        return miembros;
-    }
-
-    //getter para devolver el color correspondiente a un grupo
-    public String getColorGrupo() {
-        return colorGrupo;
-    }
-
-    //getter para devolver el número de casillas que pertenecen a un grupo
-    public int getNumCasillas() {
-        return numCasillas;
-    }
-
-    public String getNombreGrupo() {
-        return nombreGrupo;
-    }
 }

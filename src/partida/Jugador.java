@@ -8,7 +8,7 @@ import static monopoly.Valor.FORTUNA_INICIAL;
 
 public class Jugador {
 
-    //Atributos:
+    /**********Atributos**********/
     private String nombre; //Nombre del jugador
     private Avatar avatar; //Avatar que tiene en la partida.
     private float fortuna; //Dinero que posee.
@@ -22,13 +22,16 @@ public class Jugador {
     private ArrayList<String> hipotecas;
     private ArrayList<String> edificios; //Propiedades que posee el jugador.
 
-    //Constructor vacío. Se usará para crear la banca.
+    /**********Constructores**********/
+
+    /*Constructor vacío, se usará para crear la banca*/
     public Jugador() {
         this.nombre = "banca";
         this.fortuna = FORTUNA_BANCA;
     }
 
-    /*Constructor principal. Requiere parámetros:
+    /*Constructor principal
+    * Parámetros:
     * Nombre del jugador, tipo del avatar que tendrá, casilla en la que empezará y ArrayList de
     * avatares creados (usado para dos propósitos: evitar que dos jugadores tengan el mismo nombre y
     * que dos avatares tengan mismo ID). Desde este constructor también se crea el avatar.
@@ -51,84 +54,7 @@ public class Jugador {
         avCreados.add(this.avatar);
     }
 
-
-    //SETTER
-    public void setFortuna(float fortuna) {
-        if(fortuna < 0) {
-            this.fortuna = 0;
-        }
-        else {
-            this.fortuna = fortuna;
-        }
-    }
-
-    public void setGastos(float gastos) {
-        if(gastos < 0) {
-            this.gastos = 0;
-        }
-        else {
-            this.gastos = gastos;
-        }
-    }
-    public void setEnCarcel(boolean enCarcel) {
-        this.enCarcel = enCarcel;
-    }
-
-    public void setTiradasCarcel(int tiradasCarcel) {
-        this.tiradasCarcel = tiradasCarcel;
-    }
-
-    public void setNumTransportes(int numTransportes) {
-        this.numTransportes = numTransportes;
-    }
-
-    public void setNumServicios(int numServicios) {
-        this.numServicios = numServicios;
-    }
-
-    public void setVueltas(int vueltas) {
-        this.vueltas = vueltas;
-    }
-
-    //Otros métodos:
-    //Método para añadir una propiedad al jugador. Como parámetro, la casilla a añadir.
-    public void anhadirPropiedad(Casilla casilla) {
-        propiedades.add(casilla);
-    }
-
-    //Método para eliminar una propiedad del arraylist de propiedades de jugador.
-    public void eliminarPropiedad(Casilla casilla) { propiedades.remove(casilla);
-    }
-
-    //Método para añadir fortuna a un jugador
-    //Como parámetro se pide el valor a añadir. Si hay que restar fortuna, se pasaría un valor negativo.
-    public void sumarFortuna(float valor) {
-        this.fortuna += valor;
-    }
-
-    //Método para sumar gastos a un jugador.
-    //Parámetro: valor a añadir a los gastos del jugador (será el precio de un solar, impuestos pagados...).
-    public void sumarGastos(float valor) {
-        this.gastos += valor;
-    }
-
-    /*Método para establecer al jugador en la cárcel. 
-    * Se requiere disponer de las casillas del tablero para ello (por eso se pasan como parámetro).*/
-    public void encarcelar(ArrayList<ArrayList<Casilla>> pos) {
-        this.enCarcel = true;
-        this.tiradasCarcel = 0;
-        Avatar av = this.avatar;
-        Casilla casillaOld = av.getLugar();
-        casillaOld.eliminarAvatar(av);
-        for(ArrayList<Casilla> casillas : pos) {
-            for(Casilla casilla : casillas) {
-                if(casilla.getNombre().equalsIgnoreCase("Cárcel")) {
-                    casilla.anhadirAvatar(av);
-                    System.out.println("El jugador ha sido encarcelado.");
-                }
-            }
-        }
-    }
+    /**********Getters**********/
 
     public String getNombre() {
         return nombre;
@@ -169,80 +95,120 @@ public class Jugador {
         return vueltas;
     }
 
-    private String listaPropiedades() {
-        String listaPropiedades = "";
-        if (!propiedades.isEmpty()) {
-            listaPropiedades = listaPropiedades + "[" + (propiedades.get(0)).getNombre();
+    /**********Setters**********/
 
-            for(int i = 1; i < propiedades.size(); ++i) {
-                listaPropiedades = listaPropiedades + ", " + (propiedades.get(i)).getNombre();
-            }
-
-            listaPropiedades = listaPropiedades + "]";
+    public void setFortuna(float fortuna) {
+        if(fortuna < 0) {
+            this.fortuna = 0;
         }
         else {
-            listaPropiedades = "-";
+            this.fortuna = fortuna;
         }
-        return listaPropiedades;
     }
 
-    private String listaHipotecas() {
-        String listaHipotecas = "";
-        if (!hipotecas.isEmpty()) {
-            listaHipotecas = listaHipotecas + "[" + (hipotecas.get(0));
-
-            for(int i = 1; i < hipotecas.size(); ++i) {
-                listaHipotecas = listaHipotecas + ", " + hipotecas.get(i);
-            }
-
-            listaHipotecas = listaHipotecas + "]";
+    public void setGastos(float gastos) {
+        if(gastos < 0) {
+            this.gastos = 0;
         }
         else {
-            listaHipotecas = "-";
+            this.gastos = gastos;
         }
-        return listaHipotecas;
+    }
+    public void setEnCarcel(boolean enCarcel) {
+        this.enCarcel = enCarcel;
     }
 
-    private String listaEdificios() {
-        String listaEdificios = "";
-        if (!edificios.isEmpty()) {
-            listaEdificios = listaEdificios + "[" + edificios.getFirst();
+    public void setTiradasCarcel(int tiradasCarcel) {
+        this.tiradasCarcel = tiradasCarcel;
+    }
 
-            for(int i = 1; i < edificios.size(); ++i) {
-                listaEdificios = listaEdificios + ", " + edificios.get(i);
+    public void setNumTransportes(int numTransportes) {
+        this.numTransportes = numTransportes;
+    }
+
+    public void setNumServicios(int numServicios) {
+        this.numServicios = numServicios;
+    }
+
+    public void setVueltas(int vueltas) {
+        this.vueltas = vueltas;
+    }
+
+    /**********Métodos**********/
+
+    //Método para añadir una propiedad al jugador. Como parámetro, la casilla a añadir.
+    public void anhadirPropiedad(Casilla casilla) {
+        propiedades.add(casilla);
+    }
+
+    //Método para eliminar una propiedad del arraylist de propiedades de jugador.
+    public void eliminarPropiedad(Casilla casilla) { propiedades.remove(casilla);
+    }
+
+    //Método para añadir fortuna a un jugador
+    //Como parámetro se pide el valor a añadir. Si hay que restar fortuna, se pasaría un valor negativo.
+    public void sumarFortuna(float valor) {
+        this.fortuna += valor;
+    }
+
+    //Método para sumar gastos a un jugador.
+    //Parámetro: valor a añadir a los gastos del jugador (será el precio de un solar, impuestos pagados...).
+    public void sumarGastos(float valor) {
+        this.gastos += valor;
+    }
+
+    /*Método para establecer al jugador en la cárcel. 
+    * Se requiere disponer de las casillas del tablero para ello (por eso se pasan como parámetro).*/
+    public void encarcelar(ArrayList<ArrayList<Casilla>> pos) {
+        this.enCarcel = true;
+        this.tiradasCarcel = 0;
+        Avatar av = this.avatar;
+        Casilla casillaOld = av.getLugar();
+        casillaOld.eliminarAvatar(av);
+        for(ArrayList<Casilla> casillas : pos) {
+            for(Casilla casilla : casillas) {
+                if(casilla.getNombre().equalsIgnoreCase("Cárcel")) {
+                    casilla.anhadirAvatar(av);
+                    System.out.println("El jugador ha sido encarcelado.");
+                }
             }
-
-            listaEdificios = listaEdificios + "]";
         }
-        else {
-            listaEdificios = "-";
-        }
-        return listaEdificios;
     }
 
-    private String listaArray(ArrayList<String> array) {
-        String listaArray = "";
+    private String listaArray(ArrayList<?> array) {
+        StringBuilder listaArray = new StringBuilder();
+
         if (!array.isEmpty()) {
-            listaArray = listaArray + "[" + array.getFirst();
+            Object firstElement = array.getFirst();
 
-            for(int i = 1; i < array.size(); ++i) {
-                listaArray = listaArray + ", " + array.get(i);
+            if (firstElement instanceof String) {
+                listaArray.append("[").append((String) firstElement);
+            } else if (firstElement instanceof Casilla) {
+                listaArray.append("[").append(((Casilla) firstElement).getNombre());
             }
 
-            listaArray = listaArray + "]";
+            for (int i = 1; i < array.size(); ++i) {
+                Object element = array.get(i);
+                if (element instanceof String) {
+                    listaArray.append(", ").append((String) element);
+                } else if (element instanceof Casilla) {
+                    listaArray.append(", ").append(((Casilla) element).getNombre());
+                }
+            }
+
+            listaArray.append("]");
+        } else {
+            listaArray = new StringBuilder("-");
         }
-        else {
-            listaArray = "-";
-        }
-        return listaArray;
+        return listaArray.toString();
     }
 
     public String info() {
-        String listaPropiedades = listaPropiedades();
+        String listaPropiedades = listaArray(propiedades);
         String listaHipotecas = listaArray(hipotecas);
         String listaEdificios = listaArray(edificios);
 
-        String info = """
+        return """
                 {
                     Nombre: %s,
                     Avatar: %s,
@@ -251,7 +217,6 @@ public class Jugador {
                     Hipotecas: %s
                     Edificios: %s
                 }""".formatted(nombre, getAvatar().getId(), fortuna, listaPropiedades, listaHipotecas, listaEdificios);
-        return info;
     }
 
 
