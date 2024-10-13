@@ -1,7 +1,5 @@
 package monopoly;
 
-import java.awt.desktop.AppReopenedEvent;
-import java.lang.reflect.Array;
 import java.util.*;
 
 import partida.*;
@@ -194,8 +192,9 @@ public class Menu {
 
                 case "lanzar":
                     lanzarDados();
-                    CaeIrCarcel();
+                    ComprobarEncarcelado();
                     Evaluacion();
+                    VueltasTablero();
                     break;
 
                 case "acabar":
@@ -205,11 +204,10 @@ public class Menu {
                 case "salir":
                     if (palabrasArray[1].equals("carcel")) {
                         salirCarcel();
-                        break;
                     } else {
                         System.out.println("Comando no válido.");
-                        break;
                     }
+                    break;
 
                 case "describir":
                     if(palabrasArray.length == 3) {
@@ -248,8 +246,9 @@ public class Menu {
 
                 case "moveraux":
                     MoverAux(palabrasArray[1]);
-                    CaeIrCarcel();
+                    ComprobarEncarcelado();
                     Evaluacion();
+                    VueltasTablero();
                     break;
                 default:
                     System.out.println("Comando no válido");
@@ -351,6 +350,7 @@ public class Menu {
         }
     }
 
+    //@Override
     //Metodo que maneja las posibilidades de lanzar los dados solo en la cárcel, con mensajes.
     //El parámetro es el jugador encarcelado
     private void lanzarDados(Jugador jugador) {
@@ -561,12 +561,9 @@ public class Menu {
     }
 
     //Metodo para comprobar se o xogador cae en IrCarcel, en ese caso, encarcelar.
-    private void CaeIrCarcel() {
+    private void ComprobarEncarcelado() {
         Jugador jugadorActual = jugadores.get(turno);
-        Casilla casillaActual = jugadorActual.getAvatar().getLugar();
-        //Comprobar si cae en IrCarcel
-        if (casillaActual.getNombre().equals("IrCarcel")) {
-            jugadorActual.encarcelar(tablero.getPosiciones());
+        if(jugadorActual.getEnCarcel()) {
             acabarTurno();
         }
     }
@@ -589,6 +586,37 @@ public class Menu {
                 Casilla bote = tablero.encontrar_casilla("Parking");
                 bote.sumarValor(casillaActual.getValor());
             }
+        }
+    }
+
+    private void VueltasTablero() {
+        boolean sumarSolares = false;
+        int menosVueltas = Integer.MAX_VALUE;
+        Jugador jugadorMenosVueltas = null;
+        // Encontrar el jugador con menos vueltas
+        for (int i = 0; i < jugadores.size(); i++) {
+            Jugador jugadorActual = jugadores.get(i);
+            int vueltasActuales = jugadorActual.getVueltas();
+            if (vueltasActuales < menosVueltas) {
+                menosVueltas = vueltasActuales;
+                jugadorMenosVueltas = jugadorActual;
+            }
+        }
+        // Comprobar que el jugador con menos vueltas ha dado más de 0 vueltas y es múltiplo de 4
+        if (jugadorMenosVueltas != null && jugadorMenosVueltas.getVueltas() > 0 && jugadorMenosVueltas.getVueltas() % 4 == 0) {
+            sumarSolares = true;
+        }
+        // Incrementar el valor de los solares si se han completado 4 vueltas
+        if (sumarSolares) {
+            for (ArrayList<Casilla> fila : tablero.getPosiciones()) {
+                for (Casilla casilla : fila) {
+                    if (casilla.getTipo().equals("Solar") && casilla.getDuenho().equals(banca)) {
+                        casilla.sumarValor(casilla.getValor() * 0.05f); // Aumenta el valor de la casilla
+                    }
+                }
+            }
+            System.out.println("Todos los jugadores han completado 4 vueltas.\n" +
+                    "El precio de los solares sin comprar aumenta un 5%");
         }
     }
     private void MoverAux(String pos) {

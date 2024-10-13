@@ -2,6 +2,7 @@ package partida;
 
 import monopoly.*;
 
+import static monopoly.Valor.*;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -53,11 +54,26 @@ public class Avatar {
         Casilla casillaOld = this.lugar;
         casillaOld.eliminarAvatar(this);
         int max = 40;
-        int posicionNueva = (valorTirada + lugar.getPosicion())%max;
+        int posicionNueva = (casillaOld.getPosicion() + valorTirada);
+        boolean pasaPorSalida = posicionNueva > max;
+        if (pasaPorSalida) {
+            posicionNueva = posicionNueva % max;
+            if (posicionNueva == 0) posicionNueva = max;  // Si el resultado es 0, en realidad estamos en la casilla 40
+        }
         for (ArrayList<Casilla> fila : casillas) {
             for (Casilla casilla : fila) {
                 if (casilla.getPosicion() == posicionNueva) {
+                    if (casilla.getNombre().equals("IrCarcel")) {
+                        jugador.encarcelar(casillas);
+                        return;
+                    }
+                    if (pasaPorSalida) {
+                        jugador.setVueltas(jugador.getVueltas() + 1);
+                        jugador.sumarFortuna(SUMA_VUELTA);
+                        System.out.println("El jugador ha completado una vuelta y recibe " + SUMA_VUELTA);
+                    }
                     casilla.anhadirAvatar(this);
+                    this.lugar = casilla;  // Actualiza la casilla actual del avatar
                     System.out.println("El avatar se mueve a la casilla " + casilla.getNombre() + ". Posición: " + casilla.getPosicion());
                     return;
                 }

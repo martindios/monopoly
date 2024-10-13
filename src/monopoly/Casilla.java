@@ -293,14 +293,6 @@ public class Casilla {
         solicitante.anhadirPropiedad(this);
     }
 
-
-
-
-
-
-
-
-
     /*Método para añadir valor a una casilla. Utilidad:
     * - Sumar valor a la casilla de parking.
     * - Sumar valor a las casillas de solar al no comprarlas tras cuatro vueltas de todos los jugadores.
@@ -308,14 +300,6 @@ public class Casilla {
     public void sumarValor(float suma) {
         this.valor += suma;
     }
-
-
-
-
-
-
-
-
 
     /*Método para mostrar información sobre una casilla.
     * Devuelve una cadena con información específica de cada tipo de casilla.*/
