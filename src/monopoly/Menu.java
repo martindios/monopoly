@@ -86,7 +86,7 @@ public class Menu {
             String comando = scanner.nextLine();
             String[] palabrasArray = comando.split(" ");
             if (palabrasArray.length > 0) {
-                if (palabrasArray[0].equals("crear")) {
+                if (palabrasArray[0].equals("crear") && palabrasArray[1].equals("jugador")) {
                     if (palabrasArray.length == 4) {
                         //Comprobación de que el jugador no está repetido
                         if (!esJugadorRepetido(palabrasArray[2])) {
@@ -126,11 +126,15 @@ public class Menu {
                     break;
 
                 case "lanzar":
-                    lanzarDados();
-                    Evaluacion();
-                    VueltasTablero();
+                    if (palabrasArray.length == 2 && palabrasArray[1].equals("dados")) {
+                        lanzarDados();
+                        System.out.println(tablero.toString());
+                        Evaluacion();
+                        VueltasTablero();
+                    } else {
+                        System.out.println("El formato correcto es: lanzar dados");
+                    }
                     break;
-
                 case "acabar":
                     acabarTurno();
                     break;
@@ -298,7 +302,11 @@ public class Menu {
         }
     }
 
-    /*Método que ejecuta todas las acciones relacionadas con el comando 'lanzar dados'*/
+    /**
+     * Método que ejecuta las acciones relacionadas con el comando 'lanzar dados'.
+     * Realiza la tirada de dados, maneja el movimiento del avatar, y controla las reglas especiales
+     * como los dobles y la encarcelación tras tres dobles consecutivos.
+     */
     private void lanzarDados() {
         if (!tirado) {
             Jugador jugador = jugadores.get(turno);
@@ -334,9 +342,13 @@ public class Menu {
             System.out.println("Ya has lanzado el dado en este turno.");
         }
     }
-    
-    /*Metodo que maneja las posibilidades de lanzar los dados solo en la cárcel, con mensajes
-    * El parámetro es el jugador encarcelado*/
+
+    /**
+     * Método que maneja las posibles acciones al lanzar los dados cuando un jugador está encarcelado,
+     * mostrando los resultados y tomando decisiones en función de los valores obtenidos.
+     *
+     * @param jugador El jugador que está encarcelado y realiza la tirada.
+     */
     private void lanzarDados(Jugador jugador) {
         int valor1 = dado1.hacerTirada();
         int valor2 = dado2.hacerTirada();
@@ -356,8 +368,11 @@ public class Menu {
         }
     }
 
-    /*Método que ejecuta todas las acciones realizadas con el comando 'comprar nombre_casilla'.
-    * Parámetro: cadena de caracteres con el nombre de la casilla.
+    /**
+     * Método que ejecuta las acciones asociadas al comando 'comprar nombre_casilla',
+     * permitiendo al jugador adquirir una casilla si cumple con las condiciones.
+     *
+     * @param nombre El nombre de la casilla que el jugador desea comprar.
      */
     private void comprar(String nombre) {
         if(lanzamientos == 0) {
@@ -381,7 +396,11 @@ public class Menu {
         casillaDeseada.comprarCasilla(comprador, banca);
     }
 
-    /*Método que ejecuta todas las acciones relacionadas con el comando 'salir carcel'*/
+    /**
+     * Método que ejecuta todas las acciones relacionadas con el comando 'salir carcel'.
+     * Permite al jugador intentar salir de la cárcel, ya sea tirando los dados o pagando la fianza,
+     * dependiendo de sus opciones y recursos disponibles.
+     */
     private void salirCarcel() {
         Jugador JugActual = jugadores.get(turno);
         Casilla carcel = tablero.encontrar_casilla("Cárcel");
@@ -552,7 +571,15 @@ public class Menu {
             """.formatted(jugador.getFortuna(), jugador.getGastos(), propiedades.toString());
     }
 
-    //Metodo para evaluar se o xogador é solvente na casilla que cae
+    /**
+     * Método para evaluar si el jugador es solvente en la casilla en la que cae.
+     *
+     * Este método comprueba la solvencia del jugador actual en la casilla correspondiente.
+     * Si el jugador no es solvente, la partida se finalizará. Si es solvente y la casilla
+     * requiere el pago (Solar, Servicios o Transporte), se calcula el alquiler correspondiente.
+     * En el caso de que el jugador caiga en una casilla de Impuestos, se deduce el impuesto
+     * de la fortuna del jugador y se suma al bote del Parking.
+     */
     private void Evaluacion() {
         Jugador jugadorActual = jugadores.get(turno);
         Casilla casillaActual = jugadorActual.getAvatar().getLugar();
@@ -573,6 +600,11 @@ public class Menu {
         }
     }
 
+    /**
+     * Método que ajusta el valor de las casillas de tipo "Solar" propiedad de la banca
+     * si todos los jugadores han completado al menos 4 vueltas al tablero.
+     * El valor de estas casillas aumenta un 5% cada vez que un jugador complete un múltiplo de 4 vueltas.
+     */
     private void VueltasTablero() {
         boolean sumarSolares = false;
         int menosVueltas = Integer.MAX_VALUE;
