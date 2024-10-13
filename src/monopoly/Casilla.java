@@ -35,14 +35,10 @@ public class Casilla {
         this.posicion = posicion;
         this.duenho = duenho;
         this.valor = valor;
-        if(tipo.equals("Solar")) {
-            this.impuesto = valor*0.1f;
-        }
-        else if(tipo.equals("Servicios")) {
-            this.impuesto = SUMA_VUELTA / 200;
-        }
-        else if(tipo.equals("Transporte")) {
-            this.impuesto = SUMA_VUELTA;
+        switch (tipo) {
+            case "Solar" -> this.impuesto = valor * 0.1f;
+            case "Servicios" -> this.impuesto = SUMA_VUELTA / 200;
+            case "Transporte" -> this.impuesto = SUMA_VUELTA;
         }
         this.hipoteca = valor*0.5f;
         avatares = new ArrayList<Avatar>();
@@ -335,8 +331,18 @@ public class Casilla {
         this.valor += suma;
     }
 
-    /*Método para mostrar información sobre una casilla.
-    * Devuelve una cadena con información específica de cada tipo de casilla.*/
+    /**
+     * Método para mostrar información sobre una casilla.
+     * Devuelve una cadena con información específica de cada tipo de casilla.
+     *
+     * @return Una cadena con la descripción de la casilla que puede incluir:
+     *         - Para solares: tipo, grupo, propietario, valor, alquiler, hipoteca y valores relacionados con edificios y alquileres.
+     *         - Para servicios: tipo, dueño, valor y hipoteca.
+     *         - Para transporte: tipo, dueño, valor y hipoteca.
+     *         - Para impuestos: tipo e impuesto.
+     *         - Para casillas especiales (como Cárcel o Parking): tipo, información específica de la casilla, y jugadores involucrados.
+     *         - En caso de tipo incorrecto, se devuelve un mensaje de error.
+     */
     public String infoCasilla() {
         System.out.println("Descripción de la casilla: " + this.getNombre() + ". Posición " + this.getPosicion() + ".");
         switch (this.tipo) {
@@ -409,25 +415,21 @@ public class Casilla {
 
     }
 
-    /* Método para mostrar información de una casilla en venta.
-     * Valor devuelto: texto con esa información.
+    /**
+     * Método para mostrar información de una casilla en venta.
+     *
+     * @return Un texto con la información de la casilla en venta:
+     *         - Para casillas de tipo "Solar", se devuelve información específica de la casilla solar.
+     *         - Para casillas de tipo "Transporte" y "Servicios", se devuelve información de transporte o servicios.
+     *         - Si la casilla no está en venta, se devuelve el mensaje "Casilla no en venta."
      */
     public String casEnVenta() {
-        String resultado;
-        switch (this.tipo) {
-            case "Solar":
-                resultado = this.infoSolar();
-                break;
-            case "Transporte":
-                resultado = this.infoTransServ();
-                break;
-            case "Servicios":
-                resultado = infoTransServ();
-                break;
-            default:
-                resultado = "Casilla no en venta.";
-        }
-        return resultado;
+        return switch (this.tipo) {
+            case "Solar" -> this.infoSolar();
+            case "Transporte" -> this.infoTransServ();
+            case "Servicios" -> infoTransServ();
+            default -> "Casilla no en venta.";
+        };
     }
 
     private String infoSolar() {

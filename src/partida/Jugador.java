@@ -157,8 +157,14 @@ public class Jugador {
         this.gastos += valor;
     }
 
-    /*Método para establecer al jugador en la cárcel. 
-    * Se requiere disponer de las casillas del tablero para ello (por eso se pasan como parámetro).*/
+    /**
+     * Método para establecer al jugador en la cárcel.
+     * Este método utiliza las casillas del tablero proporcionadas como parámetro
+     * para mover el avatar del jugador a la casilla de la cárcel.
+     *
+     * @param pos El conjunto de casillas que representa el tablero,
+     *            necesaria para localizar la casilla de la cárcel.
+     */
     public void encarcelar(ArrayList<ArrayList<Casilla>> pos) {
         this.enCarcel = true;
         this.tiradasCarcel = 0;
@@ -175,6 +181,17 @@ public class Jugador {
         }
     }
 
+    /**
+     * Método que convierte una lista de elementos en una representación de cadena.
+     * Si la lista contiene cadenas, se devuelven como una lista de cadenas.
+     * Si la lista contiene objetos de tipo Casilla, se devuelven sus nombres.
+     *
+     * @param array La lista de elementos a convertir en cadena. Puede contener
+     *              objetos de tipo String o Casilla.
+     * @return Una representación de cadena de la lista, con los elementos
+     *         separados por comas y encerrados entre corchetes. Si la lista está
+     *         vacía, se devuelve un guion ("-").
+     */
     private String listaArray(ArrayList<?> array) {
         StringBuilder listaArray = new StringBuilder();
 
@@ -203,6 +220,19 @@ public class Jugador {
         return listaArray.toString();
     }
 
+    /**
+     * Método que devuelve una representación en cadena de la información del jugador.
+     * Incluye el nombre, el avatar, la fortuna y las listas de propiedades, hipotecas
+     * y edificios del jugador
+     *
+     * @return Una cadena que representa la información del jugador, incluyendo:
+     *         - Nombre del jugador
+     *         - ID del avatar
+     *         - Fortuna del jugador
+     *         - Lista de propiedades del jugador
+     *         - Lista de hipotecas del jugador
+     *         - Lista de edificios del jugador
+     */
     public String info() {
         String listaPropiedades = listaArray(propiedades);
         String listaHipotecas = listaArray(hipotecas);
