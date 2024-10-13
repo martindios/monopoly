@@ -86,6 +86,8 @@ public class Jugador {
         this.numServicios = numServicios;
     }
 
+
+
     //Otros métodos:
     //Método para añadir una propiedad al jugador. Como parámetro, la casilla a añadir.
     public void anhadirPropiedad(Casilla casilla) {
@@ -113,7 +115,6 @@ public class Jugador {
     public void encarcelar(ArrayList<ArrayList<Casilla>> pos) {
         this.enCarcel = true;
         this.tiradasCarcel = 0;
-        this.vueltas -= 1;
         Avatar av = this.avatar;
         Casilla casillaOld = av.getLugar();
         casillaOld.eliminarAvatar(av);
@@ -121,7 +122,7 @@ public class Jugador {
             for(Casilla casilla : casillas) {
                 if(casilla.getNombre().equalsIgnoreCase("Cárcel")) {
                     casilla.anhadirAvatar(av);
-                    System.out.println("El jugador ha sido encarcelado");
+                    System.out.println("El jugador ha sido encarcelado.");
                 }
             }
         }
@@ -152,6 +153,10 @@ public class Jugador {
 
     public int getNumServicios() {
         return numServicios;
+    }
+
+    public boolean getEnCarcel() {
+        return enCarcel;
     }
 
     public ArrayList<Casilla> getPropiedades() {
@@ -225,4 +230,6 @@ public class Jugador {
                 }""".formatted(nombre, getAvatar().getId(), fortuna, listaPropiedades, listaHipotecas, listaEdificios);
         return info;
     }
+
+
 }

@@ -63,14 +63,14 @@ public class Tablero {
         ladoSur.add(new Casilla("Salida", "Especiales", 1, banca));
         Casilla solar1 = new Casilla("Solar1", "Solar", 2, 600000, banca);
         ladoSur.add(solar1);
-        ladoSur.add(new Casilla("Caja", "Comunidad", 3, 3, banca));
+        ladoSur.add(new Casilla("Caja", "Comunidad", 3, banca));
         Casilla solar2 = new Casilla("Solar2", "Solar", 4, 600000, banca);
         ladoSur.add(solar2);
         ladoSur.add(new Casilla("Imp1", 5, 0.5f*SUMA_VUELTA, banca));
         ladoSur.add(new Casilla("Trans1", "Transporte", 6, SUMA_VUELTA, banca));
         Casilla solar3 = new Casilla("Solar3", "Solar", 7, 520000, banca);
         ladoSur.add(solar3);
-        ladoSur.add(new Casilla("Suerte", "Suerte", 8, 8, banca));
+        ladoSur.add(new Casilla("Suerte", "Suerte", 8, banca));
         Casilla solar4 = new Casilla("Solar4", "Solar", 9, 520000, banca);
         ladoSur.add(solar4);
         Casilla solar5 = new Casilla("Solar5", "Solar", 10, 520000, banca);
@@ -90,7 +90,7 @@ public class Tablero {
     //Método que inserta casillas del lado oeste.
     private void insertarLadoOeste() {
         ArrayList<Casilla> ladoOeste = new ArrayList<>();
-        ladoOeste.add(new Casilla("Cárcel", "Especiales", 11, 11, banca));
+        ladoOeste.add(new Casilla("Cárcel", "Especiales", 11, banca));
         Casilla solar6 = new Casilla("Solar6", "Solar", 12, 676000, banca);
         ladoOeste.add(solar6);
         ladoOeste.add(new Casilla("Serv1", "Servicios", 13, 0.75f*SUMA_VUELTA, banca));
@@ -101,7 +101,7 @@ public class Tablero {
         ladoOeste.add(new Casilla("Trans2", "Transporte", 16, SUMA_VUELTA, banca));
         Casilla solar9 = new Casilla("Solar9", "Solar", 17, 878800, banca);
         ladoOeste.add(solar9);
-        ladoOeste.add(new Casilla("Caja", "Comunidad", 18, 18, banca));
+        ladoOeste.add(new Casilla("Caja", "Comunidad", 18, banca));
         Casilla solar10 = new Casilla("Solar10", "Solar", 19, 878800, banca);
         ladoOeste.add(solar10);
         Casilla solar11 = new Casilla("Solar11", "Solar", 20, 878800, banca);
@@ -124,11 +124,11 @@ public class Tablero {
         ladoEste.add(solar18);
         Casilla solar19 = new Casilla("Solar19", "Solar", 33, 1930723.6f, banca);
         ladoEste.add(solar19);
-        ladoEste.add(new Casilla("Caja", "Comunidad", 34, 34, banca));
+        ladoEste.add(new Casilla("Caja", "Comunidad", 34, banca));
         Casilla solar20 = new Casilla("Solar20", "Solar", 35, 1930723.6f, banca);
         ladoEste.add(solar20);
         ladoEste.add(new Casilla("Trans4", "Transporte", 36, SUMA_VUELTA, banca));
-        ladoEste.add(new Casilla("Suerte", "Suerte", 37, 37, banca));
+        ladoEste.add(new Casilla("Suerte", "Suerte", 37, banca));
         Casilla solar21 = new Casilla("Solar21", "Solar", 38, 3764911.02f, banca);
         ladoEste.add(solar21);
         ladoEste.add(new Casilla("Imp2", 39, SUMA_VUELTA, banca));

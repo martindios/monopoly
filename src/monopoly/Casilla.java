@@ -193,6 +193,8 @@ public class Casilla {
                         case 4:
                             return actual.getFortuna() > this.getImpuesto();
                     }
+                case "Impuestos":
+                    return actual.getFortuna() > this.getImpuesto();
                 default:
                     return true;
             }
@@ -200,62 +202,62 @@ public class Casilla {
     }
 
     public void pagarAlquiler(Jugador actual, Jugador banca, int tirada) {
+        if(this.getDuenho().equals(banca)) {
+            return;
+        }
         if (!actual.equals(this.getDuenho())) {
             switch (this.getTipo()) {
                 case "Solar":
                     Jugador duenhoSolar = this.getDuenho();
-
-                    //Comprobar si el dueño del solar es dueño de todo el grupo de color
+                    // Comprobar si el dueño del solar es dueño de tdo el grupo de color
                     if (this.getGrupo().esDuenhoGrupo(duenhoSolar)) {
-                        actual.setFortuna(actual.getFortuna() - 2*this.getImpuesto());
-                        duenhoSolar.setFortuna(duenhoSolar.getFortuna() + 2*this.getImpuesto());
-                        actual.setGastos(actual.getGastos() + 2*this.getImpuesto());
+                        actual.sumarFortuna(-2 * this.getImpuesto());
+                        duenhoSolar.sumarFortuna(2 * this.getImpuesto());
+                        actual.sumarGastos(2 * this.getImpuesto());
                     } else {
-                        actual.setFortuna(actual.getFortuna() - this.getImpuesto());
-                        duenhoSolar.setFortuna(duenhoSolar.getFortuna() + this.getImpuesto());
-                        actual.setGastos(actual.getGastos() + this.getImpuesto());
+                        actual.sumarFortuna(-this.getImpuesto());
+                        duenhoSolar.sumarFortuna(this.getImpuesto());
+                        actual.sumarGastos(this.getImpuesto());
                     }
                     break;
-
                 case "Servicios":
                     Jugador duenhoServicios = this.getDuenho();
                     switch (duenhoServicios.getNumServicios()) {
                         case 1:
-                            actual.setFortuna(actual.getFortuna() - this.getImpuesto() * 4 * tirada);
-                            duenhoServicios.setFortuna(duenhoServicios.getFortuna() + this.getImpuesto() * 4 * tirada);
-                            actual.setGastos(actual.getGastos() + this.getImpuesto() * 4 * tirada);
+                            actual.sumarFortuna(-this.getImpuesto() * 4 * tirada);
+                            duenhoServicios.sumarFortuna(this.getImpuesto() * 4 * tirada);
+                            actual.sumarGastos(this.getImpuesto() * 4 * tirada);
                             break;
 
                         case 2:
-                            actual.setFortuna(actual.getFortuna() - this.getImpuesto() * 10 * tirada);
-                            duenhoServicios.setFortuna(duenhoServicios.getFortuna() + this.getImpuesto() * 10 * tirada);
-                            actual.setGastos(actual.getGastos() + this.getImpuesto() * 10 * tirada);
+                            actual.sumarFortuna(-this.getImpuesto() * 10 * tirada);
+                            duenhoServicios.sumarFortuna(this.getImpuesto() * 10 * tirada);
+                            actual.sumarGastos(this.getImpuesto() * 10 * tirada);
                             break;
                     }
                     break;
-
                 case "Transporte":
                     Jugador duenhoTransporte = this.getDuenho();
                     switch (duenhoTransporte.getNumTransportes()) {
                         case 1:
-                            actual.setFortuna(actual.getFortuna() - this.getImpuesto() * 0.25f);
-                            duenhoTransporte.setFortuna(duenhoTransporte.getFortuna() + this.getImpuesto() * 0.25f);
-                            actual.setGastos(actual.getGastos() + this.getImpuesto() * 0.25f);
+                            actual.sumarFortuna(-this.getImpuesto() * 0.25f);
+                            duenhoTransporte.sumarFortuna(this.getImpuesto() * 0.25f);
+                            actual.sumarGastos(this.getImpuesto() * 0.25f);
                             break;
                         case 2:
-                            actual.setFortuna(actual.getFortuna() - this.getImpuesto() * 0.5f);
-                            duenhoTransporte.setFortuna(duenhoTransporte.getFortuna() + this.getImpuesto() * 0.5f);
-                            actual.setGastos(actual.getGastos() + this.getImpuesto() * 0.5f);
+                            actual.sumarFortuna(-this.getImpuesto() * 0.5f);
+                            duenhoTransporte.sumarFortuna(this.getImpuesto() * 0.5f);
+                            actual.sumarGastos(this.getImpuesto() * 0.5f);
                             break;
                         case 3:
-                            actual.setFortuna(actual.getFortuna() - this.getImpuesto() * 0.75f);
-                            duenhoTransporte.setFortuna(duenhoTransporte.getFortuna() + this.getImpuesto() * 0.75f);
-                            actual.setGastos(actual.getGastos() + this.getImpuesto() * 0.75f);
+                            actual.sumarFortuna(-this.getImpuesto() * 0.75f);
+                            duenhoTransporte.sumarFortuna(this.getImpuesto() * 0.75f);
+                            actual.sumarGastos(this.getImpuesto() * 0.75f);
                             break;
                         case 4:
-                            actual.setFortuna(actual.getFortuna() - this.getImpuesto());
-                            duenhoTransporte.setFortuna(duenhoTransporte.getFortuna() + this.getImpuesto());
-                            actual.setGastos(actual.getGastos() + this.getImpuesto());
+                            actual.sumarFortuna(-this.getImpuesto());
+                            duenhoTransporte.sumarFortuna(this.getImpuesto());
+                            actual.sumarGastos(this.getImpuesto());
                             break;
                     }
                     break;
@@ -304,7 +306,7 @@ public class Casilla {
     * - Sumar valor a las casillas de solar al no comprarlas tras cuatro vueltas de todos los jugadores.
     * Este método toma como argumento la cantidad a añadir del valor de la casilla.*/
     public void sumarValor(float suma) {
-
+        this.valor += suma;
     }
 
 
