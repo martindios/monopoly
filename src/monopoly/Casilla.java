@@ -12,7 +12,7 @@ import static monopoly.Valor.SUMA_VUELTA;
 
 public class Casilla {
 
-    //Atributos:
+    /**********Atributos**********/
     private String nombre; //Nombre de la casilla
     private String tipo; //Tipo de casilla (Solar, Especial, Transporte, Servicios, Comunidad, Impuestos).
     private float valor; //Valor de esa casilla (en la mayoría será valor de compra, en la casilla parking se usará como el bote).
@@ -24,19 +24,11 @@ public class Casilla {
     private ArrayList<Avatar> avatares; //Avatares que están situados en la casilla.
 
 
-    //Constructores:
-    //Parámetros vacíos
-    public Casilla() {
-    }
+    /**********Constructores**********/
 
     /*Constructor para casillas tipo Solar, Servicios o Transporte:
     * Parámetros: nombre casilla, tipo (debe ser solar, serv. o transporte), posición en el tablero, valor y dueño.
      */
-
-    //Aquí falta o grupo, que sinceramente, nin puta idea de como facelo, pq mo imagino como algo circular
-    //Generamos o tablero, que genera as casillas e dsp genera os grupos metendo as casillas, pero se se generan antes as casillas
-    //Como coño inicializo un grupo se nin existen. O que se me ocurre é generar as casillas sin grupos, generar dsp os grupos e dsp crear un
-    //metodo que asigne a cada casilla o grupo no que está
     public Casilla(String nombre, String tipo, int posicion, float valor, Jugador duenho) {
         this.nombre = nombre;
         this.tipo = tipo;
@@ -55,13 +47,6 @@ public class Casilla {
         this.hipoteca = valor*0.5f;
         avatares = new ArrayList<Avatar>();
     }
-
-    public Casilla(String nombre, String tipo, int posicion) {
-        this.nombre = nombre;
-        this.tipo = tipo;
-        this.posicion = posicion;
-    }
-
 
     /*Constructor utilizado para inicializar las casillas de tipo IMPUESTOS.
     * Parámetros: nombre, posición en el tablero, impuesto establecido y dueño.
@@ -108,9 +93,56 @@ public class Casilla {
         this.avatares = new ArrayList<Avatar>();
     }
 
+    /**********Getters**********/
+
+    //getter para devolver el nombre de la casilla
+    public String getNombre() {
+        return nombre;
+    }
+
+    //getter para devolver el tipo de la casilla
+    public String getTipo() {
+        return tipo;
+    }
+
+    //getter para devolver el valor de la casilla
+    public float getValor() {
+        return valor;
+    }
+
+    //getter para devolver la posición de la casilla
+    public int getPosicion() {
+        return posicion;
+    }
+
+    //getter para devolver el dueño de la casilla
+    public Jugador getDuenho() {
+        return duenho;
+    }
+
+    //getter para devolver el grupo de la casilla
+    public Grupo getGrupo() {
+        return grupo;
+    }
+
+    //getter para devolver la cantidad que hay que pagar al caer en la casilla
+    public float getImpuesto() {
+        return impuesto;
+    }
+
+    //getter para devolver el valor otorgado por hipotecar una casilla
+    public float getHipoteca() {
+        return hipoteca;
+    }
+
+    //getter para devolver la lista de los avatares en la casilla
+    public ArrayList<Avatar> getAvatares() {
+        return avatares;
+    }
 
 
-    //SETTERS
+    /**********Setters**********/
+
     public void setValor(float valor) {
         if(valor < 0) this.valor = 0;
         else this.valor = valor;
@@ -138,6 +170,8 @@ public class Casilla {
     public void setAvatares(ArrayList<Avatar> avatares) {
         this.avatares = avatares;
     }
+
+    /**********Métodos**********/
 
     //Método utilizado para añadir un avatar al array de avatares en casilla.
     public void anhadirAvatar(Avatar av) {
@@ -307,53 +341,45 @@ public class Casilla {
         System.out.println("Descripción de la casilla: " + this.getNombre() + ". Posición " + this.getPosicion() + ".");
         switch (this.tipo) {
             case "Solar":
-                StringBuilder solar  = new StringBuilder();
-                solar.append("Tipo: ").append(this.tipo.toLowerCase() + ",\n");
-                solar.append("grupo: ").append(this.grupo.getNombreGrupo() + ",\n");
-                solar.append("propietario: ").append(this.duenho.getNombre() + ",\n");
-                solar.append("valor: ").append(this.valor + ",\n");
-                solar.append("alquiler: ").append(this.impuesto + ",\n");
-                solar.append("Hipoteca: ").append(this.hipoteca + ",\n");
-                solar.append("valor hotel: ").append(this.valor*0.6 + ",\n");
-                solar.append("valor casa: ").append(this.valor*0.6 + ",\n");
-                solar.append("valor piscina: ").append(this.valor*0.4 + ",\n");
-                solar.append("pista de deporte: ").append(this.valor*1.25 + ",\n");
-                solar.append("alquiler una casa: ").append(this.impuesto*5 + ",\n");
-                solar.append("alquiler dos casas: ").append(this.impuesto*15 + ",\n");
-                solar.append("alquiler tres casas: ").append(this.impuesto*35 + ",\n");
-                solar.append("alquiler cuatro casas: ").append(this.impuesto*50 + ",\n");
-                solar.append("alquiler hotel: ").append(this.impuesto*70 + ",\n");
-                solar.append("alquiler piscina: ").append(this.impuesto*25 + ",\n");
-                solar.append("alquiler pista de deporte: ").append(this.impuesto*25);
-                return solar.toString();
+                return "Tipo: " + this.tipo.toLowerCase() + ",\n" +
+                        "grupo: " + this.grupo.getNombreGrupo() + ",\n" +
+                        "propietario: " + this.duenho.getNombre() + ",\n" +
+                        "valor: " + this.valor + ",\n" +
+                        "alquiler: " + this.impuesto + ",\n" +
+                        "Hipoteca: " + this.hipoteca + ",\n" +
+                        "valor hotel: " + this.valor * 0.6 + ",\n" +
+                        "valor casa: " + this.valor * 0.6 + ",\n" +
+                        "valor piscina: " + this.valor * 0.4 + ",\n" +
+                        "pista de deporte: " + this.valor * 1.25 + ",\n" +
+                        "alquiler una casa: " + this.impuesto * 5 + ",\n" +
+                        "alquiler dos casas: " + this.impuesto * 15 + ",\n" +
+                        "alquiler tres casas: " + this.impuesto * 35 + ",\n" +
+                        "alquiler cuatro casas: " + this.impuesto * 50 + ",\n" +
+                        "alquiler hotel: " + this.impuesto * 70 + ",\n" +
+                        "alquiler piscina: " + this.impuesto * 25 + ",\n" +
+                        "alquiler pista de deporte: " + this.impuesto * 25;
 
             case "Servicios":
-                StringBuilder servicios = new StringBuilder();
-                servicios.append("Tipo: ").append(this.tipo.toLowerCase() + ",\n");
-                servicios.append("dueño: ").append(duenho.getNombre() + ",\n");
-                servicios.append("valor: ").append(this.valor + ",\n");
-                servicios.append("hipoteca: ").append(this.hipoteca);
-                return servicios.toString();
+                return "Tipo: " + this.tipo.toLowerCase() + ",\n" +
+                        "dueño: " + duenho.getNombre() + ",\n" +
+                        "valor: " + this.valor + ",\n" +
+                        "hipoteca: " + this.hipoteca;
 
             case "Transporte":
-                StringBuilder transporte = new StringBuilder();
-                transporte.append("Tipo: ").append(this.tipo.toLowerCase() + ",\n");
-                transporte.append("dueño: ").append(duenho.getNombre() + ",\n");
-                transporte.append("valor: ").append(this.valor + ",\n");
-                transporte.append("hipoteca: ").append(this.impuesto);
-                return transporte.toString();
+                return "Tipo: " + this.tipo.toLowerCase() + ",\n" +
+                        "dueño: " + duenho.getNombre() + ",\n" +
+                        "valor: " + this.valor + ",\n" +
+                        "hipoteca: " + this.impuesto;
 
             case "Impuestos":
-                StringBuilder impuestos = new StringBuilder();
-                impuestos.append("Tipo: ").append(this.tipo.toLowerCase() + ",\n");
-                impuestos.append("impuesto: ").append(this.impuesto);
-                return impuestos.toString();
+                return "Tipo: " + this.tipo.toLowerCase() + ",\n" +
+                        "impuesto: " + this.impuesto;
 
             case "Especiales":
                 if (Objects.equals(this.nombre, "Cárcel")) {
                     StringBuilder carcel = new StringBuilder();
-                    carcel.append("Tipo: ").append(this.tipo.toLowerCase() + ",\n");
-                    carcel.append("salir: ").append(this.impuesto + ",\n");
+                    carcel.append("Tipo: ").append(this.tipo.toLowerCase()).append(",\n");
+                    carcel.append("salir: ").append(this.impuesto).append(",\n");
                     carcel.append("jugadores: ");
                     for(Avatar avatar : this.getAvatares()) {
                         carcel.append("[").append(avatar.getJugador().getNombre())
@@ -362,14 +388,14 @@ public class Casilla {
                     return carcel.toString();
                 } else if (Objects.equals(this.nombre, "Parking")) {
                     StringBuilder parking = new StringBuilder();
-                    parking.append("Tipo: ").append(this.tipo.toLowerCase() + ",\n");
-                    parking.append("bote: ").append(this.valor + ",\n");
+                    parking.append("Tipo: ").append(this.tipo.toLowerCase()).append(",\n");
+                    parking.append("bote: ").append(this.valor).append(",\n");
                     parking.append("jugadores: [");
                     for(Avatar avatar : this.getAvatares()) {
                         parking.append(avatar.getJugador().getNombre()).append(", ");
                     }
 
-                    if(this.getAvatares().size() > 0) {
+                    if(!this.getAvatares().isEmpty()) {
                         parking.setLength(parking.length() - 2);
                     }
                     parking.append("]\n");
@@ -404,55 +430,6 @@ public class Casilla {
         return resultado;
     }
 
-    /*
-    GETTERS
-    */
-
-    //getter para devolver el nombre de la casilla
-    public String getNombre() {
-        return nombre;
-    }
-
-    //getter para devolver el tipo de la casilla
-    public String getTipo() {
-        return tipo;
-    }
-
-    //getter para devolver el valor de la casilla
-    public float getValor() {
-        return valor;
-    }
-
-    //getter para devolver la posición de la casilla
-    public int getPosicion() {
-        return posicion;
-    }
-
-    //getter para devolver el dueño de la casilla
-    public Jugador getDuenho() {
-        return duenho;
-    }
-
-    //getter para devolver el grupo de la casilla
-    public Grupo getGrupo() {
-        return grupo;
-    }
-
-    //getter para devolver la cantidad que hay que pagar al caer en la casilla
-    public float getImpuesto() {
-        return impuesto;
-    }
-
-    //getter para devolver el valor otorgado por hipotecar una casilla
-    public float getHipoteca() {
-        return hipoteca;
-    }
-
-    //getter para devolver la lista de los avatares en la casilla
-    public ArrayList<Avatar> getAvatares() {
-        return avatares;
-    }
-
     private String infoSolar() {
         return """
                 {
@@ -462,6 +439,7 @@ public class Casilla {
                     valor: %.2f.
                 }""".formatted(nombre, tipo, grupo.getNombreGrupo(), valor);
     }
+
     private String infoTransServ() {
         return """
                 {

@@ -1,19 +1,13 @@
 package monopoly;
 
 import java.util.*;
-
 import partida.*;
-
-//En esta clase no se necesitan getters, setters ya que solo llama a métodos de otras clases
 import java.util.Scanner;
+
+/*En esta clase no se necesitan getters, setters ya que solo llama a métodos de otras clases*/
 public class Menu {
 
-    static Scanner scanner = new Scanner(System.in); //scanner para leer lo que se pone por teclado
-    int maxJugadores = 0;
-    int jugadoresActuales = 0; //Variable auxiliar para limitar el número de jugadores
-    boolean finalizarPartida = false;
-
-    //Atributos
+    /**********Atributos**********/
     private ArrayList<Jugador> jugadores; //Jugadores de la partida.
     private ArrayList<Avatar> avatares; //Avatares en la partida.
     private int turno = 0; //Índice correspondiente a la posición en el arrayList del jugador (y el avatar) que tienen el turno
@@ -24,7 +18,12 @@ public class Menu {
     private Jugador banca; //El jugador banca.
     private boolean tirado; //Booleano para comprobar si el jugador que tiene el turno ha tirado o no.
     private boolean solvente; //Booleano para comprobar si el jugador que tiene el turno es solvente, es decir, si ha pagado sus deudas.
+    static Scanner scanner = new Scanner(System.in); //scanner para leer lo que se pone por teclado
+    int maxJugadores = 0;
+    int jugadoresActuales = 0;
+    boolean finalizarPartida = false;
 
+    /**********Constructor**********/
     public Menu() {
         this.jugadores = new ArrayList<>();
         this.avatares = new ArrayList<>();
@@ -40,60 +39,13 @@ public class Menu {
         preIniciarPartida();
     }
 
+    /**********Métodos**********/
 
-    /*"""
-                    %s
-                    │%10s│%19s│%10s│%19s│%19s│%10s│%19s│%19s│%10s│%19s│%10s│
-                    │%10s│%10s│%10s│%10s│%10s│%10s│%10s│%10s│%10s│%10s│%10s│
-                    %s
-                    │%19s│                                                                                                  │%19s│
-                    │%10s│                                                                                                  │%10s│
-                    %s                                                                                                  %s
-                    │%19s│                                                                                                  │%19s│
-                    │%10s│                                                                                                  │%10s│
-                    %s                                                                                                  %s
-                    │%10s│                                                                                                  │%10s│
-                    │%10s│                                                                                                  │%10s│
-                    %s                                                                                                  %s
-                    │%19s│      .___  ___.   ______   .__   __.   ______   .______     ______    __      ____    ____       │%19s│
-                    │%10s│      |   \\/   |  /  __  \\  |  \\ |  |  /  __  \\  |   _  \\   /  __  \\  |  |     \\   \\  /   /       │%10s│
-                    %s     |  \\  /  | |  |  |  | |   \\|  | |  |  |  | |  |_)  | |  |  |  | |  |      \\   \\/   /    %s
-                    │%10s│      |  |\\/|  | |  |  |  | |  . `  | |  |  |  | |   ___/  |  |  |  | |  |       \\_    _/         │%10s│
-                    │%10s│      |  |  |  | |  `--'  | |  |\\   | |  `--'  | |  |      |  `--'  | |  `----.    |  |           │%10s│
-                    %s          |__|  |__|  \\______/  |__| \\__|  \\______/  | _|       \\______/  |_______|    |__|       %s
-                    │%19s│                                                                                                  │%10s│
-                    │%10s│                                                                                                  │%10s│
-                    %s                                                                                                  %s
-                    │%19s│                                                                                                  │%19s│
-                    │%10s│                                                                                                  │%10s│
-                    %s                                                                                                  %s
-                    │%10s│                                                                                                  │%10s│
-                    │%10s│                                                                                                  │%10s│
-                    %s                                                                                                  %s
-                    │%19s│                                                                                                  │%19s│
-                    │%10s│                                                                                                  │%10s│
-                    %s
-                    │%10s│%19s│%19s│%10s│%19s│%10s│%10s│%19s│%10s│%19s│%10s│
-                    │%10s│%10s│%10s│%10s│%10s│%10s│%10s│%10s│%10s│%10s│%10s│
-                    %s
-                    """*/
-
-    //SETTERS
-    public void setTurno(int turno) {
-        this.turno = turno;
-    }
-
+    /*Método para mostrar la pantalla de inicio y crear los jugadores*/
     private void preIniciarPartida() {
-        System.out.println("*************************************************************************************");
+        imprimirLogo();
 
-        System.out.print(".___  ___.   ______   .__   __.   ______   .______     ______    __      ____    ____ \n" +
-                "|   \\/   |  /  __  \\  |  \\ |  |  /  __  \\  |   _  \\   /  __  \\  |  |     \\   \\  /   / \n" +
-                "|  \\  /  | |  |  |  | |   \\|  | |  |  |  | |  |_)  | |  |  |  | |  |      \\   \\/   /  \n" +
-                "|  |\\/|  | |  |  |  | |  . `  | |  |  |  | |   ___/  |  |  |  | |  |       \\_    _/   \n" +
-                "|  |  |  | |  `--'  | |  |\\   | |  `--'  | |  |      |  `--'  | |  `----.    |  |     \n" +
-                "|__|  |__|  \\______/  |__| \\__|  \\______/  | _|       \\______/  |_______|    |__|     \n");
-        System.out.println("*************************************************************************************");
-        System.out.println("Iniciando partida...");
+        /*establece el número de jugadores que van a jugar la partida*/
         while (maxJugadores < 2 || maxJugadores > 6) {
             System.out.print("¿Cuántos jugadores van a ser? [2-6] ");
             try {
@@ -107,13 +59,12 @@ public class Menu {
             }
 
         }
-
         crearJugadores();
 
         iniciarPartida();
     }
 
-    // Método para inciar una partida: crea los jugadores y avatares.
+    /*Método en el que se desarrolla la partida hasta que un jugador es no solvente*/
     private void iniciarPartida() {
         while(!finalizarPartida) {
             System.out.print("Introduce el comando: ");
@@ -126,10 +77,10 @@ public class Menu {
         System.exit(0);
     }
 
-
+    /*Método que crea a todos los jugadores que van a jugar*/
     private void crearJugadores() {
         scanner.nextLine();
-        //Comprobación para que no se exceda el número de jugadores establecido
+        /*Comprobación para que no se exceda el número de jugadores establecido*/
         while (jugadoresActuales < maxJugadores) {
             System.out.print("Introduce el comando: ");
             String comando = scanner.nextLine();
@@ -159,9 +110,8 @@ public class Menu {
         }
     }
 
-
-    /*Método que interpreta el comando introducido y toma la accion correspondiente.
-    * Parámetro: cadena de caracteres (el comando).
+    /*Método que interpreta el comando introducido y toma la accion correspondiente
+    * Parámetro: cadena de caracteres (el comando)
     */
     public void analizarComando(String comando) {
         String[] palabrasArray = comando.split(" ");
@@ -256,6 +206,30 @@ public class Menu {
         }
     }
 
+    /*Método que imprime el logo mediante un for con un efecto visual*/
+    private void imprimirLogo() {
+        ArrayList<String> array = new ArrayList<>();
+        array.add("*************************************************************************************\n");
+        array.add(".___  ___.   ______   .__   __.   ______   .______     ______    __      ____    ____ \n");
+        array.add("|   \\/   |  /  __  \\  |  \\ |  |  /  __  \\  |   _  \\   /  __  \\  |  |     \\   \\  /   / \n");
+        array.add("|  \\  /  | |  |  |  | |   \\|  | |  |  |  | |  |_)  | |  |  |  | |  |      \\   \\/   /  \n");
+        array.add("|  |\\/|  | |  |  |  | |  . `  | |  |  |  | |   ___/  |  |  |  | |  |       \\_    _/   \n");
+        array.add("|  |  |  | |  `--'  | |  |\\   | |  `--'  | |  |      |  `--'  | |  `----.    |  |     \n");
+        array.add("|__|  |__|  \\______/  |__| \\__|  \\______/  | _|       \\______/  |_______|    |__|     \n");
+        array.add("*************************************************************************************\n\n");
+
+        for (String s : array) {
+            for (int i = 0; i < s.length(); i++) {
+                System.out.print(s.charAt(i));
+                try {
+                    Thread.sleep(4);
+                } catch (InterruptedException e) {
+                    System.out.println("Error en la impresión del logo");
+                }
+            }
+        }
+    }
+
     //Método privado para saber si el nombre es repetido o no
     private boolean esJugadorRepetido(String nombre) {
         if (jugadores.isEmpty()) {
@@ -315,7 +289,7 @@ public class Menu {
         }
     }
 
-    //Método que ejecuta todas las acciones relacionadas con el comando 'lanzar dados'.
+    /*Método que ejecuta todas las acciones relacionadas con el comando 'lanzar dados'*/
     private void lanzarDados() {
         if (!tirado) {
             Jugador jugador = jugadores.get(turno);
@@ -351,8 +325,7 @@ public class Menu {
             System.out.println("Ya has lanzado el dado en este turno.");
         }
     }
-
-    //@Override
+    
     //Metodo que maneja las posibilidades de lanzar los dados solo en la cárcel, con mensajes.
     //El parámetro es el jugador encarcelado
     private void lanzarDados(Jugador jugador) {

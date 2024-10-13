@@ -8,20 +8,30 @@ import static monopoly.Valor.*;
 
 
 public class Tablero {
-    //Atributos.
+
+    /**********Atributos**********/
     private ArrayList<ArrayList<Casilla>> posiciones; //Posiciones del tablero: se define como un arraylist de arraylists de casillas (uno por cada lado del tablero).
     private HashMap<String, Grupo> grupos; //Grupos del tablero, almacenados como un HashMap con clave String (será el color del grupo).
     private Jugador banca; //Un jugador que será la banca.
 
-    //Constructor: únicamente le pasamos el jugador banca (que se creará desde el menú).
+    /**********Constructor**********/
+    /*Únicamente le pasamos el jugador banca (que se creará desde el menú)*/
     public Tablero(Jugador banca) {
         this.banca = banca;
         this.posiciones = new ArrayList<>(4);
         this.grupos = new HashMap<String, Grupo>(8);
         this.generarCasillas();
     }
-  
-    //Método para crear todas las casillas del tablero. Formado a su vez por cuatro métodos (1/lado).
+
+    /**********Getter**********/
+    /*Getter hecho para auxiliar a descCasilla, para verificar la existencia de la casilla*/
+    public ArrayList<ArrayList<Casilla>> getPosiciones() {
+        return posiciones;
+    }
+
+    /**********Métodos**********/
+
+    /*Método para crear todas las casillas del tablero. Formado a su vez por cuatro métodos (1/lado)*/
     private void generarCasillas() {
         this.insertarLadoSur();
         this.insertarLadoOeste();
@@ -78,14 +88,10 @@ public class Tablero {
         Grupo grupo1 = new Grupo(solar1, solar2, WHITE, "White");
         Grupo grupo2 = new Grupo(solar3, solar4, solar5, BLUE, "Blue");
 
-
-
         grupos.put(grupo1.getColorGrupo(), grupo1);
         grupos.put(grupo2.getColorGrupo(), grupo2);
         posiciones.add(ladoSur);
     }
-
-
 
     //Método que inserta casillas del lado oeste.
     private void insertarLadoOeste() {
@@ -108,8 +114,6 @@ public class Tablero {
         ladoOeste.add(solar11);
         Grupo grupo3 = new Grupo(solar6, solar7, solar8, PURPLE, "Purple");
         Grupo grupo4 = new Grupo(solar9, solar10, solar11, YELLOW, "Yellow");
-
-
 
         grupos.put(grupo3.getColorGrupo(), grupo3);
         grupos.put(grupo4.getColorGrupo(), grupo4);
@@ -137,14 +141,12 @@ public class Tablero {
         Grupo grupo7 = new Grupo(solar18, solar19, solar20, GREEN, "Green");
         Grupo grupo8 = new Grupo(solar21, solar22, BLUE, "Blue");
 
-
-
         grupos.put(grupo7.getColorGrupo(), grupo7);
         grupos.put(grupo8.getColorGrupo(), grupo8);
         posiciones.add(ladoEste);
     }
 
-    //Para imprimir el tablero, modificamos el método toString().
+    //Para imprimir el tablero, modificamos el método toString()
     @Override
     public String toString() {
         String tablero = """
@@ -332,12 +334,6 @@ public class Tablero {
         return tablero;
     }
 
-    //GETTERS
-    //Getter hecho para auxiliar a descCasilla, para verificar la existencia de la casilla
-    public ArrayList<ArrayList<Casilla>> getPosiciones() {
-        return posiciones;
-    }
-
     //Método usado para buscar la casilla con el nombre pasado como argumento:
     public Casilla encontrar_casilla(String nombre){
         //return null;
@@ -355,7 +351,6 @@ public class Tablero {
         return null;
     }
 
-
     private String pintarCasilla(Casilla casilla) {
         if (casilla.getGrupo() != null) {
             return (casilla.getGrupo().getColorGrupo() + casilla.getNombre() + RESET);
@@ -366,13 +361,13 @@ public class Tablero {
 
     private String imprimirAvatares(Casilla casilla) {
         ArrayList<Avatar> avatares = casilla.getAvatares();
-        StringBuilder sb = new StringBuilder();
+        StringBuilder str = new StringBuilder();
         for (Avatar avatar : avatares) {
-            sb.append("&");
-            sb.append(avatar.getId());
-            sb.append(" ");
+            str.append("&");
+            str.append(avatar.getId());
+            str.append(" ");
         }
-        return sb.toString();
+        return str.toString();
     }
 
 }

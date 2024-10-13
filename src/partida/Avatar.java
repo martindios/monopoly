@@ -10,16 +10,13 @@ import java.util.Random;
 
 public class Avatar {
 
-    //Atributos
+    /**********Atributos**********/
     private String id; //Identificador: una letra generada aleatoriamente.
     private String tipo; //Sombrero, Esfinge, Pelota, Coche
     private Jugador jugador; //Un jugador al que pertenece ese avatar.
     private Casilla lugar; //Los avatares se sitúan en casillas del tablero.
 
-    //Constructor vacío
-    public Avatar() {
-    }
-
+    /**********Constructor**********/
 
     /*Constructor principal. Requiere éstos parámetros:
     * Tipo del avatar, jugador al que pertenece, lugar en el que estará ubicado, y un arraylist con los
@@ -34,6 +31,37 @@ public class Avatar {
         //Generamos o id do avatar co metodo e asígnase dentro deste, pasándolle o array de avatares xa creados, para asi dsp coller o seu id e non repetilos
         generarId(avCreados);
         lugar.anhadirAvatar(this);
+    }
+
+    /**********Getters**********/
+
+    //getter para devolver el id de un jugador
+    public String getId() {
+        return id;
+    }
+
+    //getter para devolver el tipo de avatar de un jugador
+    public String getTipo() {
+        return tipo;
+    }
+
+    //getter para devolver el jugador asociado al avatar
+    public Jugador getJugador() {
+        return jugador;
+    }
+
+    //getters para devolver el lugar en el que se encuentra el avatar
+    public Casilla getLugar() {
+        return lugar;
+    }
+    public String infoAvatar() {
+        return """
+                {
+                    Id: %s,
+                    Tipo: %s,
+                    Casilla: %s,
+                    Jugador: %s
+                }""".formatted(id, tipo, lugar.getNombre(), jugador.getNombre());
     }
 
     //SETTERS
@@ -104,34 +132,7 @@ public class Avatar {
     GETTERS
      */
 
-    //getter para devolver el id de un jugador
-    public String getId() {
-        return id;
-    }
 
-    //getter para devolver el tipo de avatar de un jugador
-    public String getTipo() {
-        return tipo;
-    }
-
-    //getter para devolver el jugador asociado al avatar
-    public Jugador getJugador() {
-        return jugador;
-    }
-
-    //getters para devolver el lugar en el que se encuentra el avatar
-    public Casilla getLugar() {
-        return lugar;
-    }
-    public String infoAvatar() {
-        return """
-                {
-                    Id: %s,
-                    Tipo: %s,
-                    Casilla: %s,
-                    Jugador: %s
-                }""".formatted(id, tipo, lugar.getNombre(), jugador.getNombre());
-    }
 
     /*
     SETTERS
