@@ -91,7 +91,7 @@ public class Menu {
                         //Comprobación de que el jugador no está repetido
                         if (!esJugadorRepetido(palabrasArray[2])) {
                             //Comprobación de que el tipoAvatar es correcto
-                            if (esAvatarDisponible(palabrasArray[3])) {
+                            if (esAvatarCorrecto(palabrasArray[3])) {
                                 darAltaJugador(palabrasArray[2], palabrasArray[3]);
                                 jugadoresActuales++;
                             } else {
@@ -120,22 +120,6 @@ public class Menu {
                 case "crear":
                     System.out.println("Todos los jugadores están registrados");
                     break;
-                case "listar": //listar jugador //listar avatar // listar enventa
-                    switch (palabrasArray[1]){
-                        case "jugadores":
-                            listarJugadores();
-                            break;
-                        case "avatares":
-                            listarAvatares();
-                            break;
-                        case "enventa":
-                            listarVenta();
-                            break;
-                        default:
-                            System.out.println("Comando no válido");
-                            break;
-                    }
-                    break;
 
                 case "jugador":
                     System.out.println("Tiene el turno: " + (jugadores.get(turno)).getNombre());
@@ -151,13 +135,34 @@ public class Menu {
                     acabarTurno();
                     break;
 
-                case "salir":
-                    if (palabrasArray[1].equals("carcel")) {
-                        salirCarcel();
+                case "listar":
+                    if (palabrasArray.length == 2) {
+                        switch (palabrasArray[1]){
+                            case "jugadores":
+                                listarJugadores();
+                                break;
+                            case "avatares":
+                                listarAvatares();
+                                break;
+                            case "enventa":
+                                listarVenta();
+                                break;
+                            default:
+                                System.out.println("Comando no válido");
+                                break;
+                        }
                     } else {
-                        System.out.println("Comando no válido.");
+                        System.out.println("El formato correcto es: listar [jugadores, avatares, enventa]");
+                        break;
                     }
-                    break;
+
+                case "salir":
+                    if (palabrasArray.length == 2 && palabrasArray[1].equals("carcel")) {
+                            salirCarcel();
+                        } else {
+                            System.out.println("Comando no válido.");
+                        }
+                        break;
 
                 case "describir":
                     if(palabrasArray.length == 3) {
@@ -187,7 +192,7 @@ public class Menu {
                     break;
 
                 case "ver":
-                    if (palabrasArray[1].equals("tablero")) {
+                    if (palabrasArray.length == 2 && palabrasArray[1].equals("tablero")) {
                         System.out.println(tablero.toString());
                     } else {
                         System.out.println("Comando no válido");
@@ -195,10 +200,14 @@ public class Menu {
                     break;
 
                 case "moveraux":
-                    MoverAux(palabrasArray[1]);
-                    Evaluacion();
-                    VueltasTablero();
-                    break;
+                    if (palabrasArray.length == 2) {
+                        MoverAux(palabrasArray[1]);
+                        Evaluacion();
+                        VueltasTablero();
+                        break;
+                    } else {
+                        System.out.println("El formato correcto es: moveraux numPosiciones");
+                    }
                 default:
                     System.out.println("Comando no válido");
                     break;
@@ -222,7 +231,7 @@ public class Menu {
             for (int i = 0; i < s.length(); i++) {
                 System.out.print(s.charAt(i));
                 try {
-                    Thread.sleep(4);
+                    Thread.sleep(2);
                 } catch (InterruptedException e) {
                     System.out.println("Error en la impresión del logo");
                 }
@@ -230,7 +239,7 @@ public class Menu {
         }
     }
 
-    //Método privado para saber si el nombre es repetido o no
+    /*Método auxiliar para el método 'crearJugadores', saber si el nombre del jugador es repetido o no*/
     private boolean esJugadorRepetido(String nombre) {
         if (jugadores.isEmpty()) {
             return false;
@@ -242,7 +251,8 @@ public class Menu {
         return true;
     }
 
-    private boolean esAvatarDisponible(String tipoAvatar) {
+    /*Método auxiliar para el método 'crearJugadores', saber si el avatar es del tipo correcto*/
+    private boolean esAvatarCorrecto(String tipoAvatar) {
         ArrayList<String> tipoAvatarArray = new ArrayList<>(Arrays.asList("Coche", "Esfinge", "Sombrero", "Pelota"));
         return tipoAvatarArray.contains(tipoAvatar);
     }
@@ -278,7 +288,6 @@ public class Menu {
     /* Método que realiza las acciones asociadas al comando 'describir nombre_casilla'.
     * Parámetros: nombre de la casilla a describir.
     */
-
     public void descCasilla(String NombreCasilla) {
         Casilla casillaBuscada = tablero.encontrar_casilla(NombreCasilla);
         if(casillaBuscada == null) {
@@ -326,8 +335,8 @@ public class Menu {
         }
     }
     
-    //Metodo que maneja las posibilidades de lanzar los dados solo en la cárcel, con mensajes.
-    //El parámetro es el jugador encarcelado
+    /*Metodo que maneja las posibilidades de lanzar los dados solo en la cárcel, con mensajes
+    * El parámetro es el jugador encarcelado*/
     private void lanzarDados(Jugador jugador) {
         int valor1 = dado1.hacerTirada();
         int valor2 = dado2.hacerTirada();
@@ -372,7 +381,7 @@ public class Menu {
         casillaDeseada.comprarCasilla(comprador, banca);
     }
 
-    //Método que ejecuta todas las acciones relacionadas con el comando 'salir carcel'. 
+    /*Método que ejecuta todas las acciones relacionadas con el comando 'salir carcel'*/
     private void salirCarcel() {
         Jugador JugActual = jugadores.get(turno);
         Casilla carcel = tablero.encontrar_casilla("Cárcel");
@@ -436,7 +445,7 @@ public class Menu {
         acabarTurno();
     }
 
-    // Método que realiza las acciones asociadas al comando 'listar enventa'.
+    /*Método que realiza las acciones asociadas al comando 'listar enventa'*/
     private void listarVenta() {
         for(ArrayList<Casilla> fila : tablero.getPosiciones()) {
             for(Casilla casilla : fila) {
@@ -496,6 +505,13 @@ public class Menu {
         System.out.println("El turno le pertenece al jugador " + jugador.getNombre() + ". Con avatar " + jugador.getAvatar().getId() + ".");
     }
 
+    /**
+     * Método que registra un nuevo jugador, lo añade a la lista de jugadores
+     * e imprime la información del jugador recién creado por pantalla.
+     *
+     * @param nombre Nombre del jugador a crear.
+     * @param tipoAvatar Tipo de avatar que representará al jugador.
+     */
     private void darAltaJugador(String nombre, String tipoAvatar){
         Casilla casillaInicio = tablero.encontrar_casilla("Salida"); //Se busca la casilla correspondiente a la salida
         //Se crea el jugador y se añade al array que contiene a todos los participantes de la partida
@@ -509,12 +525,19 @@ public class Menu {
 
     }
 
+    /**
+     * Método que imprime por pantalla información sobre el estado financiero de un jugador después de su turno.
+     * Muestra la fortuna, los gastos y las propiedades actuales del jugador.
+     *
+     * @param jugador El jugador del cual se generará la información.
+     * @return Una cadena formateada que contiene la fortuna, los gastos y las propiedades del jugador.
+     */
     private String infoTrasTurno(Jugador jugador) {
         ArrayList<Casilla> props = jugador.getPropiedades();
         System.out.println("El estado financiero de " + jugador.getNombre() + " es:");
         StringBuilder propiedades = new StringBuilder();
         for (Casilla casilla : props) {
-            propiedades.append(casilla.getNombre()).append(", "); // Suponiendo que casilla tiene un metodo getNombre()
+            propiedades.append(casilla.getNombre()).append(", ");
         }
         // Eliminar la última coma y espacio si hay propiedades
         if (!props.isEmpty()) {
@@ -555,8 +578,7 @@ public class Menu {
         int menosVueltas = Integer.MAX_VALUE;
         Jugador jugadorMenosVueltas = null;
         // Encontrar el jugador con menos vueltas
-        for (int i = 0; i < jugadores.size(); i++) {
-            Jugador jugadorActual = jugadores.get(i);
+        for (Jugador jugadorActual : jugadores) {
             int vueltasActuales = jugadorActual.getVueltas();
             if (vueltasActuales < menosVueltas) {
                 menosVueltas = vueltasActuales;
@@ -580,6 +602,13 @@ public class Menu {
                     "El precio de los solares sin comprar aumenta un 5%");
         }
     }
+
+    /**
+     * Método auxiliar que permite mover el avatar de un jugador a una posición específica en el tablero.
+     * Se utiliza para realizar comprobaciones en el juego relacionadas con el movimiento del jugador.
+     *
+     * @param pos La posición a la que se quiere mover el avatar (en formato de cadena, que será convertida a entero).
+     */
     private void MoverAux(String pos) {
         lanzamientos = 1;
         tirado = true;
@@ -587,7 +616,6 @@ public class Menu {
         Avatar av = jugador.getAvatar();
         int posicion = Integer.parseInt(pos);
         av.moverAvatar(tablero.getPosiciones(), posicion);
-
     }
 
 }
