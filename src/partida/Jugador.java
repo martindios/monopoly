@@ -214,10 +214,27 @@ public class Jugador {
         return listaEdificios;
     }
 
+    private String listaArray(ArrayList<String> array) {
+        String listaArray = "";
+        if (!array.isEmpty()) {
+            listaArray = listaArray + "[" + array.getFirst();
+
+            for(int i = 1; i < array.size(); ++i) {
+                listaArray = listaArray + ", " + array.get(i);
+            }
+
+            listaArray = listaArray + "]";
+        }
+        else {
+            listaArray = "-";
+        }
+        return listaArray;
+    }
+
     public String info() {
         String listaPropiedades = listaPropiedades();
-        String listaHipotecas = listaHipotecas();
-        String listaEdificios = listaEdificios();
+        String listaHipotecas = listaArray(hipotecas);
+        String listaEdificios = listaArray(edificios);
 
         String info = """
                 {

@@ -470,9 +470,10 @@ public class Menu {
     // Método que realiza las acciones asociadas al comando 'listar enventa'.
     private void listarVenta() {
         for(ArrayList<Casilla> fila : tablero.getPosiciones()) {
-            for(Casilla c : fila) {
-                if((c.getTipo().equals("Solar") || c.getTipo().equals("Transporte") || c.getTipo().equals("Servicios")) && c.getDuenho().equals(banca)) {
-                    System.out.println(c.casEnVenta());
+            for(Casilla casilla : fila) {
+                if((casilla.getTipo().equals("Solar") || casilla.getTipo().equals("Transporte")
+                        || casilla.getTipo().equals("Servicios")) && casilla.getDuenho().equals(banca)) {
+                    System.out.println(casilla.casEnVenta());
                 }
             }
         }
@@ -556,7 +557,6 @@ public class Menu {
             Fortuna: %.2f
             Gastos: %.2f
             Propiedades: %s
-            \n
             """.formatted(jugador.getFortuna(), jugador.getGastos(), propiedades.toString());
     }
 
