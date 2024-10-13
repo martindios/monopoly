@@ -212,7 +212,7 @@ public class Casilla {
 
                 case "Especiales":
                     if (this.getNombre().equals("Cárcel")) {
-                        return (actual.getFortuna() > this.getImpuesto());
+                        return (actual.getFortuna() > this.getImpuesto()) || (actual.getTiradasCarcel() < 3);
                     } else {
                         return true;
                     }

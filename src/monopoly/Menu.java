@@ -71,7 +71,8 @@ public class Menu {
             String comando = scanner.nextLine();
             analizarComando(comando);
         }
-        System.out.println("Partida finalizada.");
+        System.out.println(tablero.toString());
+        System.out.println("Partida finalizada. El jugador ha caído en una casilla y no es solvente.");
         scanner.close();
         System.exit(0);
     }
@@ -142,7 +143,6 @@ public class Menu {
 
                 case "lanzar":
                     lanzarDados();
-                    ComprobarEncarcelado();
                     Evaluacion();
                     VueltasTablero();
                     break;
@@ -196,7 +196,6 @@ public class Menu {
 
                 case "moveraux":
                     MoverAux(palabrasArray[1]);
-                    ComprobarEncarcelado();
                     Evaluacion();
                     VueltasTablero();
                     break;
@@ -318,6 +317,9 @@ public class Menu {
                 }
             }
             avatar.moverAvatar(tablero.getPosiciones(), (valor1 + valor2));
+            if(jugador.getEnCarcel()) {
+                acabarTurno();
+            }
         }
         else {
             System.out.println("Ya has lanzado el dado en este turno.");
@@ -342,7 +344,6 @@ public class Menu {
         } else {
             System.out.println("No han salido dobles... El jugador pierde el turno");
             jugador.setTiradasCarcel(jugador.getTiradasCarcel() + 1);
-            acabarTurno(); // Finalizar el turno
         }
     }
 
@@ -421,6 +422,7 @@ public class Menu {
         else if (TiradasCarcel) {
             System.out.println("El jugador solo puede tirar los dados.");
             lanzarDados(JugActual);
+            System.out.println(JugActual.getTiradasCarcel());
         }
         // Caso 3: Solo puede pagar la fianza
         else if (Presupuesto) {
@@ -431,13 +433,7 @@ public class Menu {
             JugActual.sumarGastos(fianza);
             banca.sumarFortuna(fianza);
         }
-        // Caso 4: No puede tirar los dados ni pagar la fianza (bancarrota)
-        else {
-            System.out.println("El jugador no puede tirar los dados ni tiene saldo suficiente para pagar la fianza.");
-            System.out.println("El jugador se declara en bancarrota");
-            solvente = false;
-            System.exit(0);
-        }
+        acabarTurno();
     }
 
     // Método que realiza las acciones asociadas al comando 'listar enventa'.
@@ -484,8 +480,8 @@ public class Menu {
 
     // Método que realiza las acciones asociadas al comando 'acabar turno'.
     private void acabarTurno() {
-        //Tiradas carcel xa axustadas na funcion SalirCarcel
-        if(!tirado) {
+        //Tiradas carcel xa axustadas na funcion SaliCarcel
+        if(!tirado && dado1.getValor() != dado2.getValor()) {
             System.out.println("No puedes acabar turno sin haber lanzado los dados.");
             return;
         }
@@ -531,14 +527,6 @@ public class Menu {
             Gastos: %.2f
             Propiedades: %s
             """.formatted(jugador.getFortuna(), jugador.getGastos(), propiedades.toString());
-    }
-
-    //Metodo para comprobar se o xogador cae en IrCarcel, en ese caso, encarcelar.
-    private void ComprobarEncarcelado() {
-        Jugador jugadorActual = jugadores.get(turno);
-        if(jugadorActual.getEnCarcel()) {
-            acabarTurno();
-        }
     }
 
     //Metodo para evaluar se o xogador é solvente na casilla que cae
@@ -599,6 +587,7 @@ public class Menu {
         Avatar av = jugador.getAvatar();
         int posicion = Integer.parseInt(pos);
         av.moverAvatar(tablero.getPosiciones(), posicion);
+
     }
 
 }
