@@ -98,7 +98,9 @@ public class Avatar {
                     if (casilla.getNombre().equals("Parking")) {
                         if(casilla.getValor() > 0) {
                             jugador.sumarFortuna(casilla.getValor());
-                            System.out.println("El jugador " + jugador.getNombre() + " ha recibido " + casilla.getValor() + " como bote del Parking.");
+                            System.out.println("El jugador " + jugador.getNombre() + " ha recibido " + casilla.getValor() + " de la banca, como bote del Parking.");
+                            Jugador banca = casilla.getDuenho();
+                            banca.sumarFortuna(-casilla.getValor());
                             casilla.setValor(0);
                         }
                         else {
