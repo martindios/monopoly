@@ -595,7 +595,7 @@ public class Menu {
                 jugadorActual.sumarFortuna(-casillaActual.getImpuesto());
                 jugadorActual.sumarGastos(casillaActual.getImpuesto());
                 Casilla bote = tablero.encontrar_casilla("Parking");
-                bote.sumarValor(casillaActual.getValor());
+                bote.sumarValor(casillaActual.getImpuesto());
             }
         }
     }

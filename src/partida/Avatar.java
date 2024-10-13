@@ -95,6 +95,16 @@ public class Avatar {
                         jugador.encarcelar(casillas);
                         return;
                     }
+                    if (casilla.getNombre().equals("Parking")) {
+                        if(casilla.getValor() > 0) {
+                            jugador.sumarFortuna(casilla.getValor());
+                            System.out.println("El jugador " + jugador.getNombre() + " ha recibido " + casilla.getValor() + " como bote del Parking.");
+                            casilla.setValor(0);
+                        }
+                        else {
+                            System.out.println("El bote está vacío. No se entrega nada.");
+                        }
+                    }
                     if (pasaPorSalida) {
                         jugador.setVueltas(jugador.getVueltas() + 1);
                         jugador.sumarFortuna(SUMA_VUELTA);

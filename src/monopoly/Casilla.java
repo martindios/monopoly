@@ -388,8 +388,13 @@ public class Casilla {
                     carcel.append("salir: ").append(this.impuesto).append(",\n");
                     carcel.append("jugadores: ");
                     for(Avatar avatar : this.getAvatares()) {
-                        carcel.append("[").append(avatar.getJugador().getNombre())
-                                .append(", ").append(avatar.getJugador().getTiradasCarcel()).append("] ");
+                        if(avatar.getJugador().getEnCarcel()) {
+                            carcel.append("[").append(avatar.getJugador().getNombre())
+                                    .append(", ").append(avatar.getJugador().getTiradasCarcel()).append("] ");
+                        }
+                        else {
+                            carcel.append("[").append(avatar.getJugador().getNombre()).append("] ");
+                        }
                     }
                     return carcel.toString();
                 } else if (Objects.equals(this.nombre, "Parking")) {
