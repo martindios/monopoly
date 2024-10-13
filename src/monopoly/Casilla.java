@@ -249,6 +249,8 @@ public class Casilla {
                         duenhoSolar.sumarFortuna(this.getImpuesto());
                         actual.sumarGastos(this.getImpuesto());
                     }
+                    System.out.println("El jugador " + actual.getNombre() + " ha pagado a " + duenhoSolar.getNombre()
+                            + "por el alquiler de " + this.getNombre());
                     break;
                 case "Servicios":
                     Jugador duenhoServicios = this.getDuenho();
@@ -265,6 +267,8 @@ public class Casilla {
                             actual.sumarGastos(this.getImpuesto() * 10 * tirada);
                             break;
                     }
+                    System.out.println("El jugador " + actual.getNombre() + " ha pagado a " + duenhoServicios.getNombre()
+                            + "por el servicio de " + this.getNombre());
                     break;
                 case "Transporte":
                     Jugador duenhoTransporte = this.getDuenho();
@@ -290,6 +294,8 @@ public class Casilla {
                             actual.sumarGastos(this.getImpuesto());
                             break;
                     }
+                    System.out.println("El jugador " + actual.getNombre() + " ha pagado a " + duenhoTransporte.getNombre()
+                            + "por el transporte de " + this.getNombre());
                     break;
             }
         }
