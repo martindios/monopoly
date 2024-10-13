@@ -365,7 +365,7 @@ public class Tablero {
         for (Avatar avatar : avatares) {
             str.append("&");
             str.append(avatar.getId());
-            str.append(" ");
+            //str.append(" ");
         }
         return str.toString();
     }

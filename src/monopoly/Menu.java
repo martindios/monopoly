@@ -46,11 +46,11 @@ public class Menu {
         imprimirLogo();
 
         /*establece el número de jugadores que van a jugar la partida*/
-        while (maxJugadores < 2 || maxJugadores > 6) {
-            System.out.print("¿Cuántos jugadores van a ser? [2-6] ");
+        while (maxJugadores < 2 || maxJugadores > 4) {
+            System.out.print("¿Cuántos jugadores van a ser? [2-4] ");
             try {
                 maxJugadores = scanner.nextInt();
-                if (maxJugadores < 2 || maxJugadores > 6) {
+                if (maxJugadores < 2 || maxJugadores > 4) {
                     System.out.println("Introduzca un número dentro del rango");
                 }
             } catch (InputMismatchException e) {
@@ -136,8 +136,13 @@ public class Menu {
                     }
                     break;
                 case "acabar":
-                    acabarTurno();
-                    break;
+                    if (palabrasArray.length == 2 && palabrasArray[1].equals("turno")) {
+                        acabarTurno();
+                        break;
+                    } else {
+                        System.out.println("El formato correcto es: acabar turno");
+                        break;
+                    }
 
                 case "listar":
                     if (palabrasArray.length == 2) {
@@ -159,7 +164,7 @@ public class Menu {
                         System.out.println("El formato correcto es: listar [jugadores, avatares, enventa]");
                         break;
                     }
-
+                    break;
                 case "salir":
                     if (palabrasArray.length == 2 && palabrasArray[1].equals("carcel")) {
                             salirCarcel();
@@ -596,6 +601,7 @@ public class Menu {
                 jugadorActual.sumarGastos(casillaActual.getImpuesto());
                 Casilla bote = tablero.encontrar_casilla("Parking");
                 bote.sumarValor(casillaActual.getImpuesto());
+                System.out.println("El jugador " + jugadorActual.getNombre() + " ha pagado en impuestos " + casillaActual.getImpuesto());
             }
         }
     }
