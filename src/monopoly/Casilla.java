@@ -6,6 +6,7 @@ import java.sql.SQLOutput;
 import java.util.ArrayList;
 import java.lang.String;
 import java.util.Objects;
+import java.util.Random;
 
 import static monopoly.Valor.SUMA_VUELTA;
 
@@ -426,6 +427,38 @@ public class Casilla {
 
     }
 
+    public void edificarCasa(Jugador jugador, ArrayList<Jugador> jugadores) {
+    }
+
+    public void edificarHotel(Jugador jugador) {
+
+    }
+
+    public void edificarPiscina(Jugador jugador){
+
+    }
+
+    private void generarIdEdificacion(ArrayList<Jugador> jugadores) {
+        Random random = new Random();
+        int numeroAleatorio = random.nextInt(999);
+
+        //Recorre la lista de avatares para comprobar si el id ya existe. Si existe, se llama recursivamente a la función para que cree uno nuevo
+        for (Jugador jugador : jugadores){
+
+        }
+
+        /*
+        for(Avatar avatar : avCreados){
+            if(idCreado.equalsIgnoreCase(avatar.getId())){
+                generarId(avCreados);
+                return ;
+            }
+        }
+        setId(idCreado);
+
+         */
+    }
+
     /**
      * Método para mostrar información de una casilla en venta.
      *
@@ -437,12 +470,17 @@ public class Casilla {
     public String casEnVenta() {
         return switch (this.tipo) {
             case "Solar" -> this.infoSolar();
-            case "Transporte" -> this.infoTransServ();
-            case "Servicios" -> infoTransServ();
+            case "Transporte", "Servicios" -> this.infoTransServ();
             default -> "Casilla no en venta.";
         };
     }
 
+    /**
+     * Proporciona información detallada sobre una casilla de tipo "Solar".
+     *
+     * @return Una cadena formateada que contiene el nombre, tipo,
+     *         grupo y valor de la casilla.
+     */
     private String infoSolar() {
         return """
                 {
@@ -453,6 +491,12 @@ public class Casilla {
                 }""".formatted(nombre, tipo, grupo.getNombreGrupo(), valor);
     }
 
+    /**
+     * Proporciona información detallada sobre una casilla de tipo "Transporte" o "Servicios".
+     *
+     * @return Una cadena formateada que contiene el nombre, tipo,
+     *         y valor de la casilla.
+     */
     private String infoTransServ() {
         return """
                 {

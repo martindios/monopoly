@@ -15,7 +15,10 @@ public class Tablero {
     private Jugador banca; //Un jugador que será la banca.
 
     /**********Constructor**********/
-    /*Únicamente le pasamos el jugador banca (que se creará desde el menú)*/
+    /**
+     * @param banca El jugador que representa a la banca en el juego.
+     *              Este jugador se encargará de gestionar las propiedades y pagos.
+     */
     public Tablero(Jugador banca) {
         this.banca = banca;
         this.posiciones = new ArrayList<>(4);
@@ -31,14 +34,30 @@ public class Tablero {
 
     /**********Métodos**********/
 
-    /*Método para crear todas las casillas del tablero. Formado a su vez por cuatro métodos (1/lado)*/
+    /**
+     * Método para generar todas las casillas del tablero.
+     *
+     * Este método es responsable de crear y organizar las casillas que formarán el tablero.
+     * Está compuesto por cuatro métodos auxiliares, cada uno encargado de insertar las casillas
+     * en un lado del tablero: sur, oeste, norte y este.
+     *
+     * Los métodos auxiliares utilizados son:
+     * - {@link #insertarLadoSur()} para insertar las casillas en el lado sur.
+     * - {@link #insertarLadoOeste()} para insertar las casillas en el lado oeste.
+     * - {@link #insertarLadoNorte()} para insertar las casillas en el lado norte.
+     * - {@link #insertarLadoEste()} para insertar las casillas en el lado este.
+     */
     private void generarCasillas() {
         this.insertarLadoSur();
         this.insertarLadoOeste();
         this.insertarLadoNorte();
         this.insertarLadoEste();
     }
-    //Método para insertar las casillas del lado norte.
+
+    /**
+     * Método para insertar las casillas correspondientes al lado norte del tablero.
+     * Este método crea un ArrayList llamado `ladoNorte` que contiene las casillas del lado norte del tablero.
+     */
     private void insertarLadoNorte() {
         ArrayList<Casilla> ladoNorte = new ArrayList<>();
         ladoNorte.add(new Casilla("Parking", "Especiales", 21, banca));
@@ -60,14 +79,15 @@ public class Tablero {
         Grupo grupo5 = new Grupo(solar12, solar13, solar14, RED, "Red");
         Grupo grupo6 = new Grupo(solar15, solar16, solar17, BLACK, "Black");
 
-
-
         grupos.put(grupo5.getColorGrupo(), grupo5);
         grupos.put(grupo6.getColorGrupo(), grupo6);
         posiciones.add(ladoNorte);
     }
 
-    //Método para insertar las casillas del lado sur.
+    /**
+     * Método para insertar las casillas correspondientes al lado sur del tablero.
+     * Este método crea un ArrayList llamado `ladoSur` que contiene las casillas del lado sur del tablero.
+     */
     private void insertarLadoSur() {
         ArrayList<Casilla> ladoSur = new ArrayList<>();
         ladoSur.add(new Casilla("Salida", "Especiales", 1, banca));
@@ -93,7 +113,10 @@ public class Tablero {
         posiciones.add(ladoSur);
     }
 
-    //Método que inserta casillas del lado oeste.
+    /**
+     * Método para insertar las casillas correspondientes al lado oeste del tablero.
+     * Este método crea un ArrayList llamado `ladoOeste` que contiene las casillas del lado oeste del tablero.
+     */
     private void insertarLadoOeste() {
         ArrayList<Casilla> ladoOeste = new ArrayList<>();
         ladoOeste.add(new Casilla("Cárcel", "Especiales", 11, banca));
@@ -120,7 +143,10 @@ public class Tablero {
         posiciones.add(ladoOeste);
     }
 
-    //Método que inserta las casillas del lado este.
+    /**
+     * Método para insertar las casillas correspondientes al lado este del tablero.
+     * Este método crea un ArrayList llamado `ladoEste` que contiene las casillas del lado este del tablero.
+     */
     private void insertarLadoEste() {
         ArrayList<Casilla> ladoEste = new ArrayList<>();
         ladoEste.add(new Casilla("IrCarcel", "Especiales", 31, banca));
@@ -146,46 +172,53 @@ public class Tablero {
         posiciones.add(ladoEste);
     }
 
-    //Para imprimir el tablero, modificamos el método toString()
+    /**
+     * Método que genera una representación en forma de cadena del tablero de juego.
+     * Este método sobrescribe el método toString() para crear una visualización del tablero
+     * en la consola. Utiliza caracteres especiales para formar la estructura del tablero,
+     * incluyendo casillas, líneas divisorias y avatares de los jugadores.
+     *
+     * @return Una cadena que representa el estado actual del tablero.
+     */
     @Override
     public String toString() {
         String tablero = """
                     %s
-                    │%10s│%19s│%10s│%19s│%19s│%10s│%19s│%19s│%10s│%19s│%10s│
-                    │%10s│%10s│%10s│%10s│%10s│%10s│%10s│%10s│%10s│%10s│%10s│
+                    │%12s│%21s│%12s│%21s│%21s│%12s│%21s│%21s│%12s│%21s│%12s│
+                    │%12s│%12s│%12s│%12s│%12s│%12s│%12s│%12s│%12s│%12s│%12s│
                     %s
-                    │%19s│                                                                                                  │%19s│
-                    │%10s│                                                                                                  │%10s│
-                    %s                                                                                                  %s
-                    │%19s│                                                                                                  │%19s│
-                    │%10s│                                                                                                  │%10s│
-                    %s                                                                                                  %s
-                    │%10s│                                                                                                  │%10s│
-                    │%10s│                                                                                                  │%10s│
-                    %s                                                                                                  %s
-                    │%19s│      .___  ___.   ______   .__   __.   ______   .______     ______    __      ____    ____       │%19s│
-                    │%10s│      |   \\/   |  /  __  \\  |  \\ |  |  /  __  \\  |   _  \\   /  __  \\  |  |     \\   \\  /   /       │%10s│
-                    %s      |  \\  /  | |  |  |  | |   \\|  | |  |  |  | |  |_)  | |  |  |  | |  |      \\   \\/   /        %s
-                    │%10s│      |  |\\/|  | |  |  |  | |  . `  | |  |  |  | |   ___/  |  |  |  | |  |       \\_    _/         │%10s│
-                    │%10s│      |  |  |  | |  `--'  | |  |\\   | |  `--'  | |  |      |  `--'  | |  `----.    |  |           │%10s│
-                    %s      |__|  |__|  \\______/  |__| \\__|  \\______/  | _|       \\______/  |_______|    |__|           %s
-                    │%19s│                                                                                                  │%10s│
-                    │%10s│                                                                                                  │%10s│
-                    %s                                                                                                  %s
-                    │%19s│                                                                                                  │%19s│
-                    │%10s│                                                                                                  │%10s│
-                    %s                                                                                                  %s
-                    │%10s│                                                                                                  │%10s│
-                    │%10s│                                                                                                  │%10s│
-                    %s                                                                                                  %s
-                    │%19s│                                                                                                  │%19s│
-                    │%10s│                                                                                                  │%10s│
+                    │%21s│                                                                                                                    │%21s│
+                    │%12s│                                                                                                                    │%12s│
+                    %s                                                                                                                    %s
+                    │%21s│                                                                                                                    │%21s│
+                    │%12s│                                                                                                                    │%12s│
+                    %s                                                                                                                    %s
+                    │%12s│                                                                                                                    │%12s│
+                    │%12s│                                                                                                                    │%12s│
+                    %s                                                                                                                    %s
+                    │%21s│              .___  ___.   ______   .__   __.   ______   .______     ______    __      ____    ____                 │%21s│
+                    │%12s│              |   \\/   |  /  __  \\  |  \\ |  |  /  __  \\  |   _  \\   /  __  \\  |  |     \\   \\  /   /                 │%12s│
+                    %s              |  \\  /  | |  |  |  | |   \\|  | |  |  |  | |  |_)  | |  |  |  | |  |      \\   \\/   /                  %s
+                    │%12s│              |  |\\/|  | |  |  |  | |  . `  | |  |  |  | |   ___/  |  |  |  | |  |       \\_    _/                   │%12s│
+                    │%12s│              |  |  |  | |  `--'  | |  |\\   | |  `--'  | |  |      |  `--'  | |  `----.    |  |                     │%12s│
+                    %s              |__|  |__|  \\______/  |__| \\__|  \\______/  | _|       \\______/  |_______|    |__|                     %s
+                    │%21s│                                                                                                                    │%12s│
+                    │%12s│                                                                                                                    │%12s│
+                    %s                                                                                                                    %s
+                    │%21s│                                                                                                                    │%21s│
+                    │%12s│                                                                                                                    │%12s│
+                    %s                                                                                                                    %s
+                    │%12s│                                                                                                                    │%12s│
+                    │%12s│                                                                                                                    │%12s│
+                    %s                                                                                                                    %s
+                    │%21s│                                                                                                                    │%21s│
+                    │%12s│                                                                                                                    │%12s│
                     %s
-                    │%10s│%19s│%19s│%10s│%19s│%10s│%10s│%19s│%10s│%19s│%10s│
-                    │%10s│%10s│%10s│%10s│%10s│%10s│%10s│%10s│%10s│%10s│%10s│
+                    │%12s│%21s│%21s│%12s│%21s│%12s│%12s│%21s│%12s│%21s│%12s│
+                    │%12s│%12s│%12s│%12s│%12s│%12s│%12s│%12s│%12s│%12s│%12s│
                     %s
                     """.formatted(
-                "─".repeat(122),
+                "─".repeat(144),
                 //Norte (con la última casilla el inicio del este)
                 pintarCasilla(posiciones.get(2).get(0)),
                 //posiciones.get(2).get(1).getGrupo().getColorGrupo() + posiciones.get(2).get(1).getNombre() + RESET,
@@ -214,7 +247,7 @@ public class Tablero {
 
                 imprimirAvatares(posiciones.get(3).get(0)),
 
-                "─".repeat(122),
+                "─".repeat(144),
 
                 //Este y oeste simultáneo
 
@@ -224,8 +257,8 @@ public class Tablero {
                 imprimirAvatares(posiciones.get(1).get(9)),
                 imprimirAvatares(posiciones.get(3).get(1)),
 
-                "─".repeat(12),
-                "─".repeat(12),
+                "─".repeat(14),
+                "─".repeat(14),
 
                 pintarCasilla(posiciones.get(1).get(8)),
                 pintarCasilla(posiciones.get(3).get(2)),
@@ -233,8 +266,8 @@ public class Tablero {
                 imprimirAvatares(posiciones.get(1).get(8)),
                 imprimirAvatares(posiciones.get(3).get(2)),
 
-                "─".repeat(12),
-                "─".repeat(12),
+                "─".repeat(14),
+                "─".repeat(14),
 
                 pintarCasilla(posiciones.get(1).get(7)),
                 pintarCasilla(posiciones.get(3).get(3)),
@@ -242,8 +275,8 @@ public class Tablero {
                 imprimirAvatares(posiciones.get(1).get(7)),
                 imprimirAvatares(posiciones.get(3).get(3)),
 
-                "─".repeat(12),
-                "─".repeat(12),
+                "─".repeat(14),
+                "─".repeat(14),
 
                 pintarCasilla(posiciones.get(1).get(6)),
                 pintarCasilla(posiciones.get(3).get(4)),
@@ -251,8 +284,8 @@ public class Tablero {
                 imprimirAvatares(posiciones.get(1).get(6)),
                 imprimirAvatares(posiciones.get(3).get(4)),
 
-                "─".repeat(12),
-                "─".repeat(12),
+                "─".repeat(14),
+                "─".repeat(14),
 
                 pintarCasilla(posiciones.get(1).get(5)),
                 pintarCasilla(posiciones.get(3).get(5)),
@@ -260,8 +293,8 @@ public class Tablero {
                 imprimirAvatares(posiciones.get(1).get(5)),
                 imprimirAvatares(posiciones.get(3).get(5)),
 
-                "─".repeat(12),
-                "─".repeat(12),
+                "─".repeat(14),
+                "─".repeat(14),
 
                 pintarCasilla(posiciones.get(1).get(4)),
                 pintarCasilla(posiciones.get(3).get(6)),
@@ -269,8 +302,8 @@ public class Tablero {
                 imprimirAvatares(posiciones.get(1).get(4)),
                 imprimirAvatares(posiciones.get(3).get(6)),
 
-                "─".repeat(12),
-                "─".repeat(12),
+                "─".repeat(14),
+                "─".repeat(14),
 
                 pintarCasilla(posiciones.get(1).get(3)),
                 pintarCasilla(posiciones.get(3).get(7)),
@@ -278,8 +311,8 @@ public class Tablero {
                 imprimirAvatares(posiciones.get(1).get(3)),
                 imprimirAvatares(posiciones.get(3).get(7)),
 
-                "─".repeat(12),
-                "─".repeat(12),
+                "─".repeat(14),
+                "─".repeat(14),
 
                 pintarCasilla(posiciones.get(1).get(2)),
                 pintarCasilla(posiciones.get(3).get(8)),
@@ -287,8 +320,8 @@ public class Tablero {
                 imprimirAvatares(posiciones.get(1).get(2)),
                 imprimirAvatares(posiciones.get(3).get(8)),
 
-                "─".repeat(12),
-                "─".repeat(12),
+                "─".repeat(14),
+                "─".repeat(14),
 
                 pintarCasilla(posiciones.get(1).get(1)),
                 pintarCasilla(posiciones.get(3).get(9)),
@@ -298,7 +331,7 @@ public class Tablero {
 
                 //Sur (con la primera casilla inicio oeste)
 
-                "─".repeat(122),
+                "─".repeat(144),
 
                 pintarCasilla(posiciones.get(1).get(0)),
 
@@ -326,7 +359,7 @@ public class Tablero {
                 imprimirAvatares(posiciones.get(0).get(1)),
                 imprimirAvatares(posiciones.get(0).get(0)),
 
-                "─".repeat(122)
+                "─".repeat(144)
 
         );
 
@@ -334,7 +367,12 @@ public class Tablero {
         return tablero;
     }
 
-    //Método usado para buscar la casilla con el nombre pasado como argumento:
+    /**
+     * Busca una casilla en el tablero por su nombre.
+     *
+     * @param nombre El nombre de la casilla que se desea encontrar.
+     * @return La casilla que coincide con el nombre proporcionado, o null si no se encuentra.
+     */
     public Casilla encontrar_casilla(String nombre){
         //return null;
         // Recorremos cada lado del tablero
@@ -351,6 +389,15 @@ public class Tablero {
         return null;
     }
 
+    /**
+     * Devuelve una representación en forma de cadena de la casilla,
+     * pintada con el color correspondiente si pertenece a un grupo.
+     *
+     * @param casilla La casilla que se desea pintar.
+     * @return Una cadena que representa la casilla,
+     *         con el color del grupo si está asociado;
+     *         de lo contrario, el nombre de la casilla sin formato.
+     */
     private String pintarCasilla(Casilla casilla) {
         if (casilla.getGrupo() != null) {
             return (casilla.getGrupo().getColorGrupo() + casilla.getNombre() + RESET);
@@ -359,13 +406,19 @@ public class Tablero {
         }
     }
 
+    /**
+     * Genera una cadena que representa los avatares presentes en una casilla.
+     *
+     * @param casilla La casilla de la que se desea obtener los avatares.
+     * @return Una cadena que contiene los IDs de los avatares presentes en la casilla,
+     *         separados por el carácter '&'.
+     */
     private String imprimirAvatares(Casilla casilla) {
         ArrayList<Avatar> avatares = casilla.getAvatares();
         StringBuilder str = new StringBuilder();
         for (Avatar avatar : avatares) {
             str.append("&");
             str.append(avatar.getId());
-            //str.append(" ");
         }
         return str.toString();
     }
