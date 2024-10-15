@@ -198,7 +198,11 @@ public class Casilla {
                     } else {
                         return (actual.getFortuna() > this.getImpuesto());
                     }
+
                 case "Servicios":
+                    if(this.getDuenho().equals(banca)) {
+                        return true;
+                    }
                     switch (this.getDuenho().getNumServicios()) {
                         case 1:
                             return actual.getFortuna() > (this.getImpuesto() * 4 * tirada);
@@ -213,6 +217,9 @@ public class Casilla {
                         return true;
                     }
                 case "Transporte":
+                    if(this.getDuenho().equals(banca)) {
+                        return true;
+                    }
                     switch (this.getDuenho().getNumTransportes()) {
                         case 1:
                             return actual.getFortuna() > this.getImpuesto() * 0.25f;
