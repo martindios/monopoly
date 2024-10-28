@@ -67,9 +67,6 @@ public class Casilla {
     /*Constructor utilizado para crear las otras casillas (Suerte, Caja de comunidad y Especiales[carcel, parking, salida, IrCarcel]):
     * Parámetros: nombre, tipo de la casilla (será uno de los que queda), posición en el tablero y dueño.
      */
-    //public Casilla(String nombre, String tipo, int posicion, Jugador duenho) {
-    //}
-    //temporal
     public Casilla(String nombre, String tipo, int posicion, Jugador duenho) {
         this.nombre = nombre;
         this.tipo = tipo;
@@ -427,36 +424,35 @@ public class Casilla {
 
     }
 
-    public void edificarCasa(Jugador jugador, ArrayList<Jugador> jugadores) {
+    public void edificarCasa(Jugador jugador, ArrayList<Jugador> jugadores) {;
+        System.out.println(generarIdEdificacion(jugadores, "casa"));
     }
 
-    public void edificarHotel(Jugador jugador) {
-
-    }
-
-    public void edificarPiscina(Jugador jugador){
+    public void edificarHotel(Jugador jugador, ArrayList<Jugador> jugadores) {
 
     }
 
-    private void generarIdEdificacion(ArrayList<Jugador> jugadores) {
+    public void edificarPiscina(Jugador jugador, ArrayList<Jugador> jugadores){
+
+    }
+
+    private String generarIdEdificacion(ArrayList<Jugador> jugadores, String nombre) {
         Random random = new Random();
         int numeroAleatorio = random.nextInt(999);
+        StringBuilder id = new StringBuilder();
+        id.append(nombre).append(numeroAleatorio);
 
         //Recorre la lista de avatares para comprobar si el id ya existe. Si existe, se llama recursivamente a la función para que cree uno nuevo
         for (Jugador jugador : jugadores){
-
-        }
-
-        /*
-        for(Avatar avatar : avCreados){
-            if(idCreado.equalsIgnoreCase(avatar.getId())){
-                generarId(avCreados);
-                return ;
+            for (String str : jugador.getEdificios()) {
+                if (id.toString().equals(str)) {
+                    generarIdEdificacion(jugadores, nombre);
+                    return generarIdEdificacion(jugadores, nombre);
+                }
             }
         }
-        setId(idCreado);
+        return id.toString();
 
-         */
     }
 
     /**

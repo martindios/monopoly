@@ -95,6 +95,10 @@ public class Jugador {
         return vueltas;
     }
 
+    public ArrayList<String> getEdificios() {
+        return edificios;
+    }
+
     /**********Setters**********/
 
     public void setFortuna(float fortuna) {

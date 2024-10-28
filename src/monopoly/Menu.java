@@ -224,6 +224,7 @@ public class Menu {
                     } else {
                         System.out.println("El formato correcto es: edificar [casa, hotel, piscina]");
                     }
+                    break;
 
                 default:
                     System.out.println("Comando no válido");
