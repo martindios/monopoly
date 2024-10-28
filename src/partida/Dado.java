@@ -2,13 +2,23 @@ package partida;
 import java.util.Random;
 
 public class Dado {
-    //El dado solo tiene un atributo en nuestro caso: su valor.
-    private int valor;
 
-    //Metodo para simular lanzamiento de un dado: devolverá un valor aleatorio entre 1 y 6.
-    public int hacerTirada() {
-        Random random = new Random();
-        valor = random.nextInt(6) + 1;
+    /**********Atributos**********/
+    private int valor;
+    private final Random random = new Random();
+
+    /**********Getter**********/
+    public int getValor() {
         return valor;
     }
+
+    /**********Método**********/
+    //Metodo para simular lanzamiento de un dado: devolverá un valor aleatorio entre 1 y 6.
+    public int hacerTirada() {
+        this.valor = this.random.nextInt(6) + 1;
+        return valor;
+    }
+
 }
+
+
