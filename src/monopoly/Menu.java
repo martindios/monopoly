@@ -46,11 +46,11 @@ public class Menu {
         imprimirLogo();
 
         /*establece el número de jugadores que van a jugar la partida*/
-        while (maxJugadores < 2 || maxJugadores > 4) {
-            System.out.print("¿Cuántos jugadores van a ser? [2-4] ");
+        while (maxJugadores < 2 || maxJugadores > 6) {
+            System.out.print("¿Cuántos jugadores van a ser? [2-6] ");
             try {
                 maxJugadores = scanner.nextInt();
-                if (maxJugadores < 2 || maxJugadores > 4) {
+                if (maxJugadores < 2 || maxJugadores > 6) {
                     System.out.println("Introduzca un número dentro del rango");
                 }
             } catch (InputMismatchException e) {
@@ -217,10 +217,31 @@ public class Menu {
                     } else {
                         System.out.println("El formato correcto es: moveraux numPosiciones");
                     }
+
+                case "edificar":
+                    if (palabrasArray.length == 2) {
+                        edificar(palabrasArray[1]);
+                    } else {
+                        System.out.println("El formato correcto es: edificar [casa, hotel, piscina]");
+                    }
+                    break;
+
                 default:
                     System.out.println("Comando no válido");
                     break;
             }
+        }
+    }
+
+    private void edificar(String palabra) {
+        Jugador jugador = jugadores.get(turno);
+        Casilla casilla = jugador.getAvatar().getLugar();
+        if (palabra.equals("casa")) {
+            casilla.edificarCasa(jugador, jugadores);
+        } else if (palabra.equals("hotel")) {
+            casilla.edificarHotel(jugador, jugadores);
+        } else if (palabra.equals("piscina")) {
+            casilla.edificarPiscina(jugador, jugadores);
         }
     }
 

@@ -6,6 +6,7 @@ import java.sql.SQLOutput;
 import java.util.ArrayList;
 import java.lang.String;
 import java.util.Objects;
+import java.util.Random;
 
 import static monopoly.Valor.SUMA_VUELTA;
 
@@ -66,9 +67,6 @@ public class Casilla {
     /*Constructor utilizado para crear las otras casillas (Suerte, Caja de comunidad y Especiales[carcel, parking, salida, IrCarcel]):
     * Parámetros: nombre, tipo de la casilla (será uno de los que queda), posición en el tablero y dueño.
      */
-    //public Casilla(String nombre, String tipo, int posicion, Jugador duenho) {
-    //}
-    //temporal
     public Casilla(String nombre, String tipo, int posicion, Jugador duenho) {
         this.nombre = nombre;
         this.tipo = tipo;
@@ -433,6 +431,37 @@ public class Casilla {
 
     }
 
+    public void edificarCasa(Jugador jugador, ArrayList<Jugador> jugadores) {;
+        System.out.println(generarIdEdificacion(jugadores, "casa"));
+    }
+
+    public void edificarHotel(Jugador jugador, ArrayList<Jugador> jugadores) {
+
+    }
+
+    public void edificarPiscina(Jugador jugador, ArrayList<Jugador> jugadores){
+
+    }
+
+    private String generarIdEdificacion(ArrayList<Jugador> jugadores, String nombre) {
+        Random random = new Random();
+        int numeroAleatorio = random.nextInt(999);
+        StringBuilder id = new StringBuilder();
+        id.append(nombre).append(numeroAleatorio);
+
+        //Recorre la lista de avatares para comprobar si el id ya existe. Si existe, se llama recursivamente a la función para que cree uno nuevo
+        for (Jugador jugador : jugadores){
+            for (String str : jugador.getEdificios()) {
+                if (id.toString().equals(str)) {
+                    generarIdEdificacion(jugadores, nombre);
+                    return generarIdEdificacion(jugadores, nombre);
+                }
+            }
+        }
+        return id.toString();
+
+    }
+
     /**
      * Método para mostrar información de una casilla en venta.
      *
@@ -444,12 +473,17 @@ public class Casilla {
     public String casEnVenta() {
         return switch (this.tipo) {
             case "Solar" -> this.infoSolar();
-            case "Transporte" -> this.infoTransServ();
-            case "Servicios" -> infoTransServ();
+            case "Transporte", "Servicios" -> this.infoTransServ();
             default -> "Casilla no en venta.";
         };
     }
 
+    /**
+     * Proporciona información detallada sobre una casilla de tipo "Solar".
+     *
+     * @return Una cadena formateada que contiene el nombre, tipo,
+     *         grupo y valor de la casilla.
+     */
     private String infoSolar() {
         return """
                 {
@@ -460,6 +494,12 @@ public class Casilla {
                 }""".formatted(nombre, tipo, grupo.getNombreGrupo(), valor);
     }
 
+    /**
+     * Proporciona información detallada sobre una casilla de tipo "Transporte" o "Servicios".
+     *
+     * @return Una cadena formateada que contiene el nombre, tipo,
+     *         y valor de la casilla.
+     */
     private String infoTransServ() {
         return """
                 {
