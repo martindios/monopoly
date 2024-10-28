@@ -236,12 +236,13 @@ public class Menu {
     private void edificar(String palabra) {
         Jugador jugador = jugadores.get(turno);
         Casilla casilla = jugador.getAvatar().getLugar();
-        if (palabra.equals("casa")) {
-            casilla.edificarCasa(jugador, jugadores);
-        } else if (palabra.equals("hotel")) {
-            casilla.edificarHotel(jugador, jugadores);
-        } else if (palabra.equals("piscina")) {
-            casilla.edificarPiscina(jugador, jugadores);
+        switch (palabra) {
+            case "casa":
+                casilla.edificarCasa(jugador, jugadores);
+            case "hotel":
+                casilla.edificarHotel(jugador, jugadores);
+            case "piscina":
+                casilla.edificarPiscina(jugador, jugadores);
         }
     }
 

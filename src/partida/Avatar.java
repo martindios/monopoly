@@ -95,6 +95,9 @@ public class Avatar {
                         jugador.encarcelar(casillas);
                         return;
                     }
+                    if(casilla.getNombre().equals("Solar") && casilla.getDuenho().equals(jugador)){
+                        casilla.sumarContadorDuenho();
+                    }
                     if (casilla.getNombre().equals("Parking")) {
                         if(casilla.getValor() > 0) {
                             jugador.sumarFortuna(casilla.getValor());

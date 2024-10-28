@@ -99,6 +99,8 @@ public class Jugador {
         return edificios;
     }
 
+
+
     /**********Setters**********/
 
     public void setFortuna(float fortuna) {
@@ -252,6 +254,8 @@ public class Jugador {
                     Edificios: %s
                 }""".formatted(nombre, getAvatar().getId(), fortuna, listaPropiedades, listaHipotecas, listaEdificios);
     }
+
+
 
 
 }
