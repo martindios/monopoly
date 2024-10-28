@@ -237,7 +237,7 @@ public class Menu {
         Jugador jugador = jugadores.get(turno);
         Casilla casilla = jugador.getAvatar().getLugar();
         if (palabra.equals("casa")) {
-            casilla.edificarCasa(jugador, jugadores);
+            casilla.edificarCasa();
         } else if (palabra.equals("hotel")) {
             casilla.edificarHotel(jugador, jugadores);
         } else if (palabra.equals("piscina")) {

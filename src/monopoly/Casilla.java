@@ -10,7 +10,8 @@ import java.util.Random;
 
 import static monopoly.Valor.SUMA_VUELTA;
 
-
+//Cando se vende un solar por bancarrota, o precio reiníciase. Sin embargo, o precio incrementa cando non compras, entonces simplemente se da que o solar volve ao precio
+//No que se compru, dado que nn se debería actualizar
 public class Casilla {
 
     /**********Atributos**********/
@@ -23,6 +24,7 @@ public class Casilla {
     private float impuesto; //Cantidad a pagar por caer en la casilla: el alquiler en solares/servicios/transportes o impuestos.
     private float hipoteca; //Valor otorgado por hipotecar una casilla
     private ArrayList<Avatar> avatares; //Avatares que están situados en la casilla.
+    private ArrayList<String> edificios; //Edificios que están construídos en la casilla.
 
 
     /**********Constructores**********/
@@ -374,7 +376,8 @@ public class Casilla {
                         "alquiler cuatro casas: " + this.impuesto * 50 + ",\n" +
                         "alquiler hotel: " + this.impuesto * 70 + ",\n" +
                         "alquiler piscina: " + this.impuesto * 25 + ",\n" +
-                        "alquiler pista de deporte: " + this.impuesto * 25;
+                        "alquiler pista de deporte: " + this.impuesto * 25 + ",\n" +
+                        "Edificios construídos: " + this.listaArray(edificios);
 
             case "Servicios":
                 return "Tipo: " + this.tipo.toLowerCase() + ",\n" +
@@ -431,8 +434,8 @@ public class Casilla {
 
     }
 
-    public void edificarCasa(Jugador jugador, ArrayList<Jugador> jugadores) {;
-        System.out.println(generarIdEdificacion(jugadores, "casa"));
+    public void edificarCasa() {;
+
     }
 
     public void edificarHotel(Jugador jugador, ArrayList<Jugador> jugadores) {
@@ -509,4 +512,42 @@ public class Casilla {
                 }""".formatted(nombre, tipo, valor);
     }
 
+    /**
+     * Metodo que convierte una lista de elementos en una representación de cadena.
+     * Si la lista contiene cadenas, se devuelven como una lista de cadenas.
+     * Si la lista contiene objetos de tipo Casilla, se devuelven sus nombres.
+     *
+     * @param array La lista de elementos a convertir en cadena. Puede contener
+     *              objetos de tipo String o Casilla.
+     * @return Una representación de cadena de la lista, con los elementos
+     *         separados por comas y encerrados entre corchetes. Si la lista está
+     *         vacía, se devuelve un guion ("-").
+     */
+    private String listaArray(ArrayList<?> array) {
+        StringBuilder listaArray = new StringBuilder();
+
+        if (!array.isEmpty()) {
+            Object firstElement = array.getFirst();
+
+            if (firstElement instanceof String) {
+                listaArray.append("[").append((String) firstElement);
+            } else if (firstElement instanceof Casilla) {
+                listaArray.append("[").append(((Casilla) firstElement).getNombre());
+            }
+
+            for (int i = 1; i < array.size(); ++i) {
+                Object element = array.get(i);
+                if (element instanceof String) {
+                    listaArray.append(", ").append((String) element);
+                } else if (element instanceof Casilla) {
+                    listaArray.append(", ").append(((Casilla) element).getNombre());
+                }
+            }
+
+            listaArray.append("]");
+        } else {
+            listaArray = new StringBuilder("-");
+        }
+        return listaArray.toString();
+    }
 }
