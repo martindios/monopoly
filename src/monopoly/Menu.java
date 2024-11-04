@@ -149,12 +149,21 @@ public class Menu {
                             case "enventa":
                                 listarVenta();
                                 break;
+                            case "edificios":
+                                listarEdificios();
+                                break;
                             default:
                                 System.out.println("Comando no válido");
                                 break;
                         }
+                    } else if(palabrasArray.length == 3) {
+                        if(palabrasArray[1].equals("edificios")) {
+                            listarEdificios(palabrasArray[2]);
+                        } else {
+                            System.out.println("El formato correcto es: listar edificios [colorGrupo]");
+                        }
                     } else {
-                        System.out.println("El formato correcto es: listar [jugadores, avatares, enventa]");
+                        System.out.println("El formato correcto es: listar [jugadores, avatares, enventa, edificios]");
                         break;
                     }
                     break;
@@ -230,7 +239,7 @@ public class Menu {
         Jugador jugador = jugadores.get(turno);
         Casilla casilla = jugador.getAvatar().getLugar();
         if (palabra.equals("casa")) {
-            casilla.edificarCasa(jugador, jugadores);
+            casilla.edificarCasa();
         } else if (palabra.equals("hotel")) {
             casilla.edificarHotel(jugador, jugadores);
         } else if (palabra.equals("piscina")) {
@@ -739,6 +748,70 @@ public class Menu {
     }
 
     /**
+     * Metodo que permite listar los edificios que han sido construídos.
+     */
+    private void listarEdificios() {
+        boolean existenEdificios = false;
+        for(Jugador jugador : jugadores) {
+            if(!jugador.getEdificios().isEmpty()) {
+                existenEdificios = true;
+                break;
+            }
+        }
+        if(existenEdificios) {
+            System.out.println("Edificios construídos:");
+            StringBuilder str = new StringBuilder();
+            for (Jugador jugador : jugadores) {
+                for(Edificio edificio : jugador.getEdificios()){
+                    edificio.infoEdificio();
+                }
+                if (!jugador.equals(jugadores.getLast())) {
+                    str.append(",\n");
+                } else {
+                    str.append("\n");
+                }
+            }
+            System.out.println(str);
+        }
+        else {
+            System.out.println("No existen edificios construídos actualmente.");
+        }
+    }
+
+    /**
+     * Metodo que permite listar los edificios construídos en un grupo de solares
+     */
+    private void listarEdificios(String color) {
+        boolean existenEdificios = false;
+        for(Jugador jugador : jugadores) {
+            if(!jugador.getEdificios().isEmpty()) {
+                existenEdificios = true;
+                break;
+            }
+        }
+        if(existenEdificios) {
+            System.out.println("Edificios construídos en el grupo " + color + ":");
+            StringBuilder str = new StringBuilder();
+            for (Jugador jugador : jugadores) {
+                for(Edificio edificio : jugador.getEdificios()){
+                    if(edificio.getCasilla().getGrupo().getNombreGrupo().equalsIgnoreCase(color)){
+                        edificio.infoEdificio();
+                    }
+                }
+                if (!jugador.equals(jugadores.getLast())) {
+                    str.append(",\n");
+                } else {
+                    str.append("\n");
+                }
+            }
+            System.out.println(str);
+        }
+        else {
+            System.out.println("No existen edificios construídos en este grupo actualmente.");
+        }
+    }
+
+    /**
      * Método auxiliar que permite mover el avatar de un jugador a una posición específica en el tablero.
      * Se utiliza para realizar comprobaciones en el juego relacionadas con el movimiento del jugador.
      *
@@ -782,3 +855,5 @@ public class Menu {
     }
 
 }
+
+
