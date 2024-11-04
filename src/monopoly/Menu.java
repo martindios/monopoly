@@ -225,6 +225,19 @@ public class Menu {
                         System.out.println("El formato correcto es: edificar [casa, hotel, piscina]");
                     }
                     break;
+                case "cambiar":
+                    if (palabrasArray.length == 2 && palabrasArray[1].equals("modo")){
+                        Jugador jugador = jugadores.get(turno);
+                        Avatar avatar = jugador.getAvatar();
+                        avatar.setAvanzado(1);
+                        lanzarDados();
+                        System.out.println(tablero.toString());
+                        Evaluacion();
+                        VueltasTablero();
+                    } else {
+                        System.out.println("El formato correcto es: cambiar modo");
+                    }
+                    break;
 
                 default:
                     System.out.println("Comando no válido");
@@ -337,33 +350,46 @@ public class Menu {
     private void lanzarDados() {
         if (!tirado) {
             Jugador jugador = jugadores.get(turno);
+            Avatar avatar = avatares.get(turno);
+
             if(jugador.getEnCarcel()) {
                 System.out.println("El jugador está en la cárcel, no puede lanzar los dados para moverse.");
                 return;
             }
-            Avatar avatar = avatares.get(turno);
+
+
             int valor1 = dado1.hacerTirada();
             int valor2 = dado2.hacerTirada();
             lanzamientos += 1;
             tirado = true;
             System.out.println("Dado 1: " + valor1);
             System.out.println("Dado 2: " + valor2);
-            if (valor1 == valor2) {
-                System.out.println("¡Has sacado dobles!");
-                if(lanzamientos == 3) {
-                    System.out.println("¡Tres dobles consecutivos! El jugador va a la cárcel.");
-                    jugador.encarcelar(tablero.getPosiciones());
+
+            if(avatar.getAvanzado() == 0){
+                if (valor1 == valor2) {
+                    System.out.println("¡Has sacado dobles!");
+                    if(lanzamientos == 3) {
+                        System.out.println("¡Tres dobles consecutivos! El jugador va a la cárcel.");
+                        jugador.encarcelar(tablero.getPosiciones());
+                        acabarTurno();
+                        return;
+                    } else {
+                        System.out.println("Puedes lanzar otra vez.");
+                        tirado = false;
+                    }
+                }
+                avatar.moverAvatar(tablero.getPosiciones(), (valor1 + valor2));
+                if(jugador.getEnCarcel()) {
                     acabarTurno();
-                    return;
-                } else {
-                    System.out.println("Puedes lanzar otra vez.");
-                    tirado = false;
+                }
+            } else if (avatar.getAvanzado() == 1) {
+                if(avatar.getTipo().equalsIgnoreCase("Pelota")){
+                    avatar.moverJugadorPelota(tablero.getPosiciones(), valor1, valor2);
+                } else if (avatar.getTipo().equalsIgnoreCase("Coche")){
+                    avatar.moverJugadorCoche(tablero.getPosiciones(), valor1, valor2, lanzamientos);
                 }
             }
-            avatar.moverAvatar(tablero.getPosiciones(), (valor1 + valor2));
-            if(jugador.getEnCarcel()) {
-                acabarTurno();
-            }
+
         }
         else {
             System.out.println("Ya has lanzado el dado en este turno.");
