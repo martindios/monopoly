@@ -1,11 +1,8 @@
 package monopoly;
 
-import partida.Avatar;
 import partida.Jugador;
 
-import java.util.ArrayList;
-
-public class Edificios {
+public class Edificio {
 
     /**********Atributos**********/
     private String tipo; //Tipo de edificio (Casa, Hotel, Piscina, Deporte).
@@ -13,8 +10,9 @@ public class Edificios {
     private float valor; //Valor del edificio (valor de compra).
     private Casilla casilla; //Casilla en la que está construído el edificio
     private float impuesto; //Factor que multiplica el valor de la casilla (Me refiero, se a casa incrementa un 5% (por ej) o alquiler do solar, aquí almacenamos 0.05)
+    private Jugador propietario; //Almacenamos el propietario del edificio
 
-    public Edificios(String tipo, Casilla casilla) {
+    public Edificio(String tipo, Casilla casilla) {
         this.tipo = tipo;
         //this.idEdificio = generarIdEdificio(this.tipo);
         this.casilla = casilla;
@@ -27,5 +25,26 @@ public class Edificios {
                 this.valor = casilla.getValor() * 0.6f;
                 this.impuesto = casilla.getImpuesto() * 70;
         }
+        propietario = casilla.getDuenho();
+    }
+
+    public String getIdEdificio() {
+        return idEdificio;
+    }
+
+    public Casilla getCasilla() {
+        return casilla;
+    }
+
+    public String infoEdificio() {
+        return """
+                {
+                id: %s,
+                Propietario: %s,
+                Casilla: %s,
+                Grupo: %s,
+                Coste: %.2f
+                }
+                """.formatted(idEdificio, propietario, casilla, casilla.getGrupo().getNombreGrupo(), valor);
     }
 }

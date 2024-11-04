@@ -2,7 +2,6 @@ package monopoly;
 
 import partida.*;
 
-import java.sql.SQLOutput;
 import java.util.ArrayList;
 import java.lang.String;
 import java.util.Objects;
@@ -24,7 +23,7 @@ public class Casilla {
     private float impuesto; //Cantidad a pagar por caer en la casilla: el alquiler en solares/servicios/transportes o impuestos.
     private float hipoteca; //Valor otorgado por hipotecar una casilla
     private ArrayList<Avatar> avatares; //Avatares que están situados en la casilla.
-    private ArrayList<String> edificios; //Edificios que están construídos en la casilla.
+    private ArrayList<Edificio> edificios; //Edificios que están construídos en la casilla.
 
 
     /**********Constructores**********/
@@ -45,6 +44,7 @@ public class Casilla {
         }
         this.hipoteca = valor*0.5f;
         avatares = new ArrayList<Avatar>();
+        this.edificios = new ArrayList<Edificio>();
     }
 
     /*Constructor utilizado para inicializar las casillas de tipo IMPUESTOS.
@@ -64,6 +64,7 @@ public class Casilla {
         this.impuesto = impuesto;
         //Hipoteca tmp ten un valor determinado, non se pode comprar/vender etc
         this.avatares = new ArrayList<Avatar>();
+        this.edificios = new ArrayList<Edificio>();
     }
 
     /*Constructor utilizado para crear las otras casillas (Suerte, Caja de comunidad y Especiales[carcel, parking, salida, IrCarcel]):
@@ -87,6 +88,7 @@ public class Casilla {
         //IMpuesto non teñen nada
         //Hipoteca tmp ten nada
         this.avatares = new ArrayList<Avatar>();
+        this.edificios = new ArrayList<Edificio>();
     }
 
     /**********Getters**********/
@@ -434,6 +436,7 @@ public class Casilla {
 
     }
 
+    //IMPORTANTE! En cada función de construít algo, hai que asignarlle o xogador que a constrúe como propietario
     public void edificarCasa() {;
 
     }
@@ -454,8 +457,8 @@ public class Casilla {
 
         //Recorre la lista de avatares para comprobar si el id ya existe. Si existe, se llama recursivamente a la función para que cree uno nuevo
         for (Jugador jugador : jugadores){
-            for (String str : jugador.getEdificios()) {
-                if (id.toString().equals(str)) {
+            for (Edificio edificio : jugador.getEdificios()) {
+                if (id.toString().equals(edificio.getIdEdificio())) {
                     generarIdEdificacion(jugadores, nombre);
                     return generarIdEdificacion(jugadores, nombre);
                 }
@@ -516,6 +519,7 @@ public class Casilla {
      * Metodo que convierte una lista de elementos en una representación de cadena.
      * Si la lista contiene cadenas, se devuelven como una lista de cadenas.
      * Si la lista contiene objetos de tipo Casilla, se devuelven sus nombres.
+     * Si la lista contiene objetos de tipo Edificios, se devuelven sus id's.
      *
      * @param array La lista de elementos a convertir en cadena. Puede contener
      *              objetos de tipo String o Casilla.
@@ -533,6 +537,8 @@ public class Casilla {
                 listaArray.append("[").append((String) firstElement);
             } else if (firstElement instanceof Casilla) {
                 listaArray.append("[").append(((Casilla) firstElement).getNombre());
+            } else if (firstElement instanceof Edificio) {
+                listaArray.append("[").append(((Edificio) firstElement).getIdEdificio());
             }
 
             for (int i = 1; i < array.size(); ++i) {
@@ -541,6 +547,8 @@ public class Casilla {
                     listaArray.append(", ").append((String) element);
                 } else if (element instanceof Casilla) {
                     listaArray.append(", ").append(((Casilla) element).getNombre());
+                } else if (element instanceof Edificio) {
+                    listaArray.append(", ").append(((Edificio) element).getIdEdificio());
                 }
             }
 

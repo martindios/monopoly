@@ -20,7 +20,7 @@ public class Jugador {
     private int numServicios; //Cuenta la cantidad de servicios que tiene el jugador
     private ArrayList<Casilla> propiedades; //Propiedades que posee el jugador.
     private ArrayList<String> hipotecas;
-    private ArrayList<String> edificios; //Propiedades que posee el jugador.
+    private ArrayList<Edificio> edificios; //Propiedades que posee el jugador.
 
     /**********Constructores**********/
 
@@ -95,7 +95,7 @@ public class Jugador {
         return vueltas;
     }
 
-    public ArrayList<String> getEdificios() {
+    public ArrayList<Edificio> getEdificios() {
         return edificios;
     }
 
@@ -186,9 +186,10 @@ public class Jugador {
     }
 
     /**
-     * Método que convierte una lista de elementos en una representación de cadena.
+     * Metodo que convierte una lista de elementos en una representación de cadena.
      * Si la lista contiene cadenas, se devuelven como una lista de cadenas.
      * Si la lista contiene objetos de tipo Casilla, se devuelven sus nombres.
+     * Si la lista contiene objetos de tipo Edificios, se devuelven sus id's.
      *
      * @param array La lista de elementos a convertir en cadena. Puede contener
      *              objetos de tipo String o Casilla.
@@ -206,6 +207,8 @@ public class Jugador {
                 listaArray.append("[").append((String) firstElement);
             } else if (firstElement instanceof Casilla) {
                 listaArray.append("[").append(((Casilla) firstElement).getNombre());
+            } else if (firstElement instanceof Edificio) {
+                listaArray.append("[").append(((Edificio) firstElement).getIdEdificio());
             }
 
             for (int i = 1; i < array.size(); ++i) {
@@ -214,6 +217,8 @@ public class Jugador {
                     listaArray.append(", ").append((String) element);
                 } else if (element instanceof Casilla) {
                     listaArray.append(", ").append(((Casilla) element).getNombre());
+                } else if (element instanceof Edificio) {
+                    listaArray.append(", ").append(((Edificio) element).getIdEdificio());
                 }
             }
 
