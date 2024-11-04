@@ -16,6 +16,7 @@ public class Menu {
     private Dado dado1; //Dos dados para lanzar y avanzar casillas.
     private Dado dado2;
     private Jugador banca; //El jugador banca.
+    private Baraja barajas;
     private boolean tirado; //Booleano para comprobar si el jugador que tiene el turno ha tirado o no.
     private boolean solvente; //Booleano para comprobar si el jugador que tiene el turno es solvente, es decir, si ha pagado sus deudas.
     static Scanner scanner = new Scanner(System.in); //scanner para leer lo que se pone por teclado
@@ -27,6 +28,7 @@ public class Menu {
     public Menu() {
         this.jugadores = new ArrayList<>();
         this.avatares = new ArrayList<>();
+        this.barajas = new Baraja();
         this.turno = 0;
         this.lanzamientos = 0;
         this.tirado = false;
@@ -618,17 +620,20 @@ public class Menu {
                     banca.sumarFortuna(casillaActual.getImpuesto());
                 }
                 case "Suerte" -> {
-                    evaluarSuerte();
+                    barajas.evaluarSuerte(jugadorActual, tablero);
                 }
                 case "Comunidad" -> {
-                    evaluarComunidad();
+                    barajas.evaluarComunidad();
                 }
             }
         }
     }
+    /*
 
     public void evaluarSuerte() {
-        HashMap<Integer, String> baraja = new HashMap<>();
+        Jugador jugadorActual = jugadores.get(turno);
+
+        final HashMap<Integer, String> baraja = new HashMap<>();
         baraja.put(1, "Ve al Transportes1 y coge un avión. " +
                 "Si pasas por la casilla de Salida, cobra la cantidad habitual.");
         baraja.put(2, "Decides hacer un viaje de placer. " +
@@ -641,16 +646,42 @@ public class Menu {
 
         //Se pasa a un List para poder mezclar
         List<Map.Entry<Integer, String>> cartasSuerte = new ArrayList<>(baraja.entrySet());
-
         Collections.shuffle(cartasSuerte);
+
+        //DEPURACIÓN (poder ver las cartas mezcladas para poder elegir a conveniencia)
+        System.out.println("Cartas de suerte mezcladas: ");
+        for (Map.Entry<Integer, String> carta : cartasSuerte) {
+            System.out.println("Carta " + carta.getKey() + ": " + carta.getValue());
+        }
+
         System.out.println("-----Número a elegir de carta-----");
         int numCarta = introducirNum(1, 6);
         scanner.nextLine(); //Limpiar buffer
-        System.out.println(cartasSuerte.get(numCarta-1).getValue());
+
+        Map.Entry<Integer, String> cartaSeleccionada = cartasSuerte.get(numCarta - 1); //Restamos 1 porque el índice comienza en 0
+        Integer key = cartaSeleccionada.getKey();
+        String mensaje = cartaSeleccionada.getValue();
+
+
+        System.out.println(mensaje);
+
+        switch (key) {
+            case 1: //HAY QUE MODULARIZAR LO DE COBRAR O NO AL PASAR POR LA SALIDA (ESTÁ EN MOVERAVATAR)
+                jugadorActual.mover(tablero.getPosiciones(), tablero.encontrar_casilla("Transportes1"));
+                break;
+            case 2:
+                System.out.println("Decides hacer un viaje de placer");
+                break;
+            case 3:
+                break;
+        }
+
     }
 
     public void evaluarComunidad() {
-        HashMap<Integer, String> baraja = new HashMap<>();
+        final HashMap<Integer, String> baraja = new HashMap<>();
+
+
         baraja.put(1, "Paga 500000€ por un fin de semana en un balneario de 5 estrellas.");
         baraja.put(2, "Te investigan por fraude de identidad. Ve a la Cárcel. Ve directamente sin pasar por la casilla de Salida y" +
                 "sin cobrar la cantidad habitual.");
@@ -669,6 +700,8 @@ public class Menu {
         System.out.println(cartasComunidad.get(numCarta-1).getValue());
 
     }
+
+     */
 
     /**
      * Método que ajusta el valor de las casillas de tipo "Solar" propiedad de la banca
