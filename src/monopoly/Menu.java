@@ -629,88 +629,14 @@ public class Menu {
                     banca.sumarFortuna(casillaActual.getImpuesto());
                 }
                 case "Suerte" -> {
-                    barajas.evaluarSuerte(jugadorActual, tablero);
+                    barajas.evaluarSuerte(banca, jugadorActual, tablero);
                 }
                 case "Comunidad" -> {
-                    barajas.evaluarComunidad();
+                    barajas.evaluarComunidad(banca, jugadorActual, tablero, jugadores);
                 }
             }
         }
     }
-    /*
-
-    public void evaluarSuerte() {
-        Jugador jugadorActual = jugadores.get(turno);
-
-        final HashMap<Integer, String> baraja = new HashMap<>();
-        baraja.put(1, "Ve al Transportes1 y coge un avión. " +
-                "Si pasas por la casilla de Salida, cobra la cantidad habitual.");
-        baraja.put(2, "Decides hacer un viaje de placer. " +
-                "Avanza hasta Solar15 directamente, sin pasar por la casilla de Salida y sin cobrar la cantidad habitual.");
-        baraja.put(3, "Vendes tu billete de avión para Solar171 en una subasta por Internet. Cobra 500000€.");
-        baraja.put(4, "Ve a Solar3. Si pasas por la casilla de Salida, cobra la cantidad habitual.");
-        baraja.put(5, "Los acreedores te persiguen por impago. Ve a la Cárcel. Ve directamente sin pasar por la casilla de Salida " +
-                "y sin cobrar la cantidad habitual.");
-        baraja.put(6, "¡Has ganado el bote de la lotería! Recibe 1000000€.");
-
-        //Se pasa a un List para poder mezclar
-        List<Map.Entry<Integer, String>> cartasSuerte = new ArrayList<>(baraja.entrySet());
-        Collections.shuffle(cartasSuerte);
-
-        //DEPURACIÓN (poder ver las cartas mezcladas para poder elegir a conveniencia)
-        System.out.println("Cartas de suerte mezcladas: ");
-        for (Map.Entry<Integer, String> carta : cartasSuerte) {
-            System.out.println("Carta " + carta.getKey() + ": " + carta.getValue());
-        }
-
-        System.out.println("-----Número a elegir de carta-----");
-        int numCarta = introducirNum(1, 6);
-        scanner.nextLine(); //Limpiar buffer
-
-        Map.Entry<Integer, String> cartaSeleccionada = cartasSuerte.get(numCarta - 1); //Restamos 1 porque el índice comienza en 0
-        Integer key = cartaSeleccionada.getKey();
-        String mensaje = cartaSeleccionada.getValue();
-
-
-        System.out.println(mensaje);
-
-        switch (key) {
-            case 1: //HAY QUE MODULARIZAR LO DE COBRAR O NO AL PASAR POR LA SALIDA (ESTÁ EN MOVERAVATAR)
-                jugadorActual.mover(tablero.getPosiciones(), tablero.encontrar_casilla("Transportes1"));
-                break;
-            case 2:
-                System.out.println("Decides hacer un viaje de placer");
-                break;
-            case 3:
-                break;
-        }
-
-    }
-
-    public void evaluarComunidad() {
-        final HashMap<Integer, String> baraja = new HashMap<>();
-
-
-        baraja.put(1, "Paga 500000€ por un fin de semana en un balneario de 5 estrellas.");
-        baraja.put(2, "Te investigan por fraude de identidad. Ve a la Cárcel. Ve directamente sin pasar por la casilla de Salida y" +
-                "sin cobrar la cantidad habitual.");
-        baraja.put(3, "Colócate en la casilla de Salida. Cobra la cantidad habitual.");
-        baraja.put(4, "Tu compañía de Internet obtiene beneficios. Recibe 2000000€.");
-        baraja.put(5, "Paga 1000000€ por invitar a todos tus amigos a un viaje a Solar14.");
-        baraja.put(6, "Alquilas a tus compañeros una villa en Solar7 durante una semana. Paga 200000€ a cada jugador.");
-
-        //Se pasa a un List para poder mezclar
-        List<Map.Entry<Integer, String>> cartasComunidad = new ArrayList<>(baraja.entrySet());
-
-        Collections.shuffle(cartasComunidad);
-        System.out.println("-----Número a elegir de carta-----");
-        int numCarta = introducirNum(1, 6);
-        scanner.nextLine(); //Limpiar buffer
-        System.out.println(cartasComunidad.get(numCarta-1).getValue());
-
-    }
-
-     */
 
     /**
      * Método que ajusta el valor de las casillas de tipo "Solar" propiedad de la banca

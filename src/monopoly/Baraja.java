@@ -71,8 +71,8 @@ public class Baraja {
         Collections.shuffle(baraja);
     }
 
-    public void evaluarSuerte(Jugador jugadorActual, Tablero tablero) {
-
+    public void evaluarSuerte(Jugador banca, Jugador jugadorActual, Tablero tablero) {
+        Casilla bote;
         barajar(barajaSuerte);
 
         //DEPURACIÓN (poder ver las cartas mezcladas para poder elegir a conveniencia)
@@ -89,25 +89,34 @@ public class Baraja {
 
         int idCarta = barajaSuerte.get(numCarta-1).getIdCarta();
         switch(idCarta) {
-            case 1:
+            case 1: /*Ir a Transportes1*/
                 jugadorActual.getAvatar().moverAvatar(tablero.getPosiciones(), tablero.encontrar_casilla("Trans1"));
                 break;
-            case 2: //HACER LUEGO
+            case 2: /*Ir a Solar15, sin cobrar salida*/
                 break;
-            case 3:
+            case 3: /*Cobra 500000€*/
+                bote = tablero.encontrar_casilla("Parking");
+                bote.sumarValor(-500000);
+                banca.sumarFortuna(-500000);
                 jugadorActual.sumarFortuna(500000);
                 break;
-            case 4:
+            case 4: /*Ir a Solar3*/
+                jugadorActual.getAvatar().moverAvatar(tablero.getPosiciones(), tablero.encontrar_casilla("Solar3"));
                 break;
-            case 5:
+            case 5: /*Ve a la Cárcel*/
+                jugadorActual.encarcelar(tablero.getPosiciones());
                 break;
-            case 6:
+            case 6: /*Cobra 1000000€*/
+                bote = tablero.encontrar_casilla("Parking");
+                bote.sumarValor(-500000);
+                banca.sumarFortuna(-500000);
+                jugadorActual.sumarFortuna(1000000);
                 break;
         }
     }
 
-    public void evaluarComunidad() {
-
+    public void evaluarComunidad(Jugador banca, Jugador jugadorActual, Tablero tablero, ArrayList<Jugador> jugadores) {
+        Casilla bote;
         barajar(barajaComunidad);
 
         //DEPURACIÓN (poder ver las cartas mezcladas para poder elegir a conveniencia)
@@ -124,9 +133,37 @@ public class Baraja {
 
         int idCarta = barajaComunidad.get(numCarta-1).getIdCarta();
         switch(idCarta) {
-            case 1:
+            case 1: /*Cobra 500000*/
+                bote = tablero.encontrar_casilla("Parking");
+                bote.sumarValor(-500000);
+                banca.sumarFortuna(-500000);
+                jugadorActual.sumarFortuna(500000);
                 break;
-            case 2:
+            case 2: /*Ve a la Cárcel*/
+                jugadorActual.encarcelar(tablero.getPosiciones());
+                break;
+            case 3: /*Ir a Salida*/
+                jugadorActual.getAvatar().moverAvatar(tablero.getPosiciones(), tablero.encontrar_casilla("Salida"));
+                break;
+            case 4: /*Cobra 2000000*/
+                jugadorActual.sumarFortuna(2000000);
+                break;
+            case 5: /*Paga 1000000€ (se paga a la banca)*/
+                bote = tablero.encontrar_casilla("Parking");
+                bote.sumarValor(1000000);
+                banca.sumarFortuna(1000000);
+
+                jugadorActual.sumarFortuna(-1000000);
+                jugadorActual.sumarGastos(1000000);
+                break;
+            case 6: /*200000€ pagar a cada jugador*/
+                float gastoTotal = 0;
+                for (Jugador jugador: jugadores) {
+                    jugador.sumarFortuna(200000);
+                    gastoTotal += 200000;
+                }
+                jugadorActual.sumarFortuna(-gastoTotal);
+                jugadorActual.sumarGastos(gastoTotal);
                 break;
         }
     }
