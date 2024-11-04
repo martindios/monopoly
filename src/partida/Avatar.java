@@ -78,7 +78,7 @@ public class Avatar {
     * - Un entero que indica el numero de casillas a moverse (será el valor sacado en la tirada de los dados).
     * EN ESTA VERSIÓN SUPONEMOS QUE valorTirada siemrpe es positivo.
      */
-    public void moverAvatar(ArrayList<ArrayList<Casilla>> casillas, int valorTirada) {
+    public void moverAvatar(ArrayList<ArrayList<Casilla>> tablero, int valorTirada) { //MODIFICAR PARA QUE TENGA LA MISMA LÓGICA QUE LA OVERLOAD
         Casilla casillaOld = this.lugar;
         casillaOld.eliminarAvatar(this);
         int max = 40;
@@ -88,11 +88,11 @@ public class Avatar {
             posicionNueva = posicionNueva % max;
             if (posicionNueva == 0) posicionNueva = max;  // Si el resultado es 0, en realidad estamos en la casilla 40
         }
-        for (ArrayList<Casilla> fila : casillas) {
+        for (ArrayList<Casilla> fila : tablero) {
             for (Casilla casilla : fila) {
                 if (casilla.getPosicion() == posicionNueva) {
                     if (casilla.getNombre().equals("IrCarcel")) {
-                        jugador.encarcelar(casillas);
+                        jugador.encarcelar(tablero);
                         return;
                     }
                     if (casilla.getNombre().equals("Parking")) {
@@ -121,6 +121,27 @@ public class Avatar {
         }
     }
 
+    public void moverAvatar(ArrayList<ArrayList<Casilla>> tablero, Casilla casilla) {
+
+        if((casilla.getPosicion() - this.getLugar().getPosicion()) < 0) { //Pasa por la salida
+            jugador.setVueltas(jugador.getVueltas() + 1);
+            jugador.sumarFortuna(SUMA_VUELTA);
+            System.out.println("El jugador ha completado una vuelta y recibe " + SUMA_VUELTA);
+        }
+
+        Casilla casillaOld = this.getLugar();
+        casillaOld.eliminarAvatar(this);
+        for (ArrayList<Casilla> casillas : tablero) {
+            for (Casilla cas : casillas) {
+                if (cas.getNombre().equals(casilla.getNombre())) {
+                    casilla.anhadirAvatar(this);
+                    System.out.println("El jugador " + jugador.getNombre() + " (&" + id + ")" + " se ha movido a la casilla " + casilla.getNombre());
+                }
+            }
+        }
+    }
+
+
     /*Método que permite generar un ID para un avatar. Sólo lo usamos en esta clase (por ello es privado).
     * El ID generado será una letra mayúscula. Parámetros:
     * - Un arraylist de los avatares ya creados, con el objetivo de evitar que se generen dos ID iguales.
@@ -140,16 +161,6 @@ public class Avatar {
         }
         setId(idCreado);
     }
-
-    /*
-    GETTERS
-     */
-
-
-
-    /*
-    SETTERS
-     */
 
     public void setId(String id) {
         this.id = id;

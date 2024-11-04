@@ -16,6 +16,7 @@ public class Menu {
     private Dado dado1; //Dos dados para lanzar y avanzar casillas.
     private Dado dado2;
     private Jugador banca; //El jugador banca.
+    private Baraja barajas;
     private boolean tirado; //Booleano para comprobar si el jugador que tiene el turno ha tirado o no.
     private boolean solvente; //Booleano para comprobar si el jugador que tiene el turno es solvente, es decir, si ha pagado sus deudas.
     static Scanner scanner = new Scanner(System.in); //scanner para leer lo que se pone por teclado
@@ -27,6 +28,7 @@ public class Menu {
     public Menu() {
         this.jugadores = new ArrayList<>();
         this.avatares = new ArrayList<>();
+        this.barajas = new Baraja();
         this.turno = 0;
         this.lanzamientos = 0;
         this.tirado = false;
@@ -46,19 +48,10 @@ public class Menu {
         imprimirLogo();
 
         /*establece el número de jugadores que van a jugar la partida*/
-        while (maxJugadores < 2 || maxJugadores > 6) {
-            System.out.print("¿Cuántos jugadores van a ser? [2-6] ");
-            try {
-                maxJugadores = scanner.nextInt();
-                if (maxJugadores < 2 || maxJugadores > 6) {
-                    System.out.println("Introduzca un número dentro del rango");
-                }
-            } catch (InputMismatchException e) {
-                System.out.println("Entrada inválida, introduzca un número");
-                scanner.next();
-            }
+        System.out.println("-----Número de jugadores-----");
+        maxJugadores = introducirNum(2, 6);
 
-        }
+
         crearJugadores();
 
         iniciarPartida();
@@ -79,7 +72,7 @@ public class Menu {
 
     /*Método que crea a todos los jugadores que van a jugar*/
     private void crearJugadores() {
-        scanner.nextLine();
+        scanner.nextLine(); //Limpiar buffer
         /*Comprobación para que no se exceda el número de jugadores establecido*/
         while (jugadoresActuales < maxJugadores) {
             System.out.print("Introduce el comando: ");
@@ -129,7 +122,7 @@ public class Menu {
                     if (palabrasArray.length == 2 && palabrasArray[1].equals("dados")) {
                         lanzarDados();
                         System.out.println(tablero.toString());
-                        Evaluacion();
+                        evaluacion();
                         VueltasTablero();
                     } else {
                         System.out.println("El formato correcto es: lanzar dados");
@@ -220,7 +213,7 @@ public class Menu {
                 case "moveraux":
                     if (palabrasArray.length == 2) {
                         MoverAux(palabrasArray[1]);
-                        Evaluacion();
+                        evaluacion();
                         VueltasTablero();
                         break;
                     } else {
@@ -615,7 +608,7 @@ public class Menu {
      * En el caso de que el jugador caiga en una casilla de Impuestos, se deduce el impuesto
      * de la fortuna del jugador y se suma al bote del Parking.
      */
-    private void Evaluacion() {
+    private void evaluacion() {
         Jugador jugadorActual = jugadores.get(turno);
         Casilla casillaActual = jugadorActual.getAvatar().getLugar();
         solvente = casillaActual.evaluarCasilla(jugadores.get(turno), banca, dado1.getValor() + dado2.getValor());
@@ -623,20 +616,101 @@ public class Menu {
             finalizarPartida = true;
         } else {
             //Comprobar que hay en la casilla en la que se cae hay que pagar
-            if (casillaActual.getTipo().equals("Solar") || casillaActual.getTipo().equals("Servicios") || casillaActual.getTipo().equals("Transporte")) {
-                casillaActual.pagarAlquiler(jugadores.get(turno), banca, dado1.getValor() + dado2.getValor());
-            }
-            else if(casillaActual.getTipo().equals("Impuestos")) {
-                jugadorActual.sumarFortuna(-casillaActual.getImpuesto());
-                jugadorActual.sumarGastos(casillaActual.getImpuesto());
-                Casilla bote = tablero.encontrar_casilla("Parking");
-                bote.sumarValor(casillaActual.getImpuesto());
-              
-                System.out.println("El jugador " + jugadorActual.getNombre() + " ha pagado en impuestos " + casillaActual.getImpuesto());
-                banca.sumarFortuna(casillaActual.getImpuesto());
+            switch (casillaActual.getTipo()) {
+                case "Solar", "Servicios", "Transporte" ->
+                        casillaActual.pagarAlquiler(jugadores.get(turno), banca, dado1.getValor() + dado2.getValor());
+                case "Impuestos" -> {
+                    jugadorActual.sumarFortuna(-casillaActual.getImpuesto());
+                    jugadorActual.sumarGastos(casillaActual.getImpuesto());
+                    Casilla bote = tablero.encontrar_casilla("Parking");
+                    bote.sumarValor(casillaActual.getImpuesto());
+
+                    System.out.println("El jugador " + jugadorActual.getNombre() + " ha pagado en impuestos " + casillaActual.getImpuesto());
+                    banca.sumarFortuna(casillaActual.getImpuesto());
+                }
+                case "Suerte" -> {
+                    barajas.evaluarSuerte(jugadorActual, tablero);
+                }
+                case "Comunidad" -> {
+                    barajas.evaluarComunidad();
+                }
             }
         }
     }
+    /*
+
+    public void evaluarSuerte() {
+        Jugador jugadorActual = jugadores.get(turno);
+
+        final HashMap<Integer, String> baraja = new HashMap<>();
+        baraja.put(1, "Ve al Transportes1 y coge un avión. " +
+                "Si pasas por la casilla de Salida, cobra la cantidad habitual.");
+        baraja.put(2, "Decides hacer un viaje de placer. " +
+                "Avanza hasta Solar15 directamente, sin pasar por la casilla de Salida y sin cobrar la cantidad habitual.");
+        baraja.put(3, "Vendes tu billete de avión para Solar171 en una subasta por Internet. Cobra 500000€.");
+        baraja.put(4, "Ve a Solar3. Si pasas por la casilla de Salida, cobra la cantidad habitual.");
+        baraja.put(5, "Los acreedores te persiguen por impago. Ve a la Cárcel. Ve directamente sin pasar por la casilla de Salida " +
+                "y sin cobrar la cantidad habitual.");
+        baraja.put(6, "¡Has ganado el bote de la lotería! Recibe 1000000€.");
+
+        //Se pasa a un List para poder mezclar
+        List<Map.Entry<Integer, String>> cartasSuerte = new ArrayList<>(baraja.entrySet());
+        Collections.shuffle(cartasSuerte);
+
+        //DEPURACIÓN (poder ver las cartas mezcladas para poder elegir a conveniencia)
+        System.out.println("Cartas de suerte mezcladas: ");
+        for (Map.Entry<Integer, String> carta : cartasSuerte) {
+            System.out.println("Carta " + carta.getKey() + ": " + carta.getValue());
+        }
+
+        System.out.println("-----Número a elegir de carta-----");
+        int numCarta = introducirNum(1, 6);
+        scanner.nextLine(); //Limpiar buffer
+
+        Map.Entry<Integer, String> cartaSeleccionada = cartasSuerte.get(numCarta - 1); //Restamos 1 porque el índice comienza en 0
+        Integer key = cartaSeleccionada.getKey();
+        String mensaje = cartaSeleccionada.getValue();
+
+
+        System.out.println(mensaje);
+
+        switch (key) {
+            case 1: //HAY QUE MODULARIZAR LO DE COBRAR O NO AL PASAR POR LA SALIDA (ESTÁ EN MOVERAVATAR)
+                jugadorActual.mover(tablero.getPosiciones(), tablero.encontrar_casilla("Transportes1"));
+                break;
+            case 2:
+                System.out.println("Decides hacer un viaje de placer");
+                break;
+            case 3:
+                break;
+        }
+
+    }
+
+    public void evaluarComunidad() {
+        final HashMap<Integer, String> baraja = new HashMap<>();
+
+
+        baraja.put(1, "Paga 500000€ por un fin de semana en un balneario de 5 estrellas.");
+        baraja.put(2, "Te investigan por fraude de identidad. Ve a la Cárcel. Ve directamente sin pasar por la casilla de Salida y" +
+                "sin cobrar la cantidad habitual.");
+        baraja.put(3, "Colócate en la casilla de Salida. Cobra la cantidad habitual.");
+        baraja.put(4, "Tu compañía de Internet obtiene beneficios. Recibe 2000000€.");
+        baraja.put(5, "Paga 1000000€ por invitar a todos tus amigos a un viaje a Solar14.");
+        baraja.put(6, "Alquilas a tus compañeros una villa en Solar7 durante una semana. Paga 200000€ a cada jugador.");
+
+        //Se pasa a un List para poder mezclar
+        List<Map.Entry<Integer, String>> cartasComunidad = new ArrayList<>(baraja.entrySet());
+
+        Collections.shuffle(cartasComunidad);
+        System.out.println("-----Número a elegir de carta-----");
+        int numCarta = introducirNum(1, 6);
+        scanner.nextLine(); //Limpiar buffer
+        System.out.println(cartasComunidad.get(numCarta-1).getValue());
+
+    }
+
+     */
 
     /**
      * Método que ajusta el valor de las casillas de tipo "Solar" propiedad de la banca
@@ -750,6 +824,34 @@ public class Menu {
         Avatar av = jugador.getAvatar();
         int posicion = Integer.parseInt(pos);
         av.moverAvatar(tablero.getPosiciones(), posicion);
+    }
+
+    /**
+     * Método que solicita al usuario introducir un número dentro de un rango específico.
+     * Se encarga de validar que la entrada esté dentro de los límites establecidos y
+     * maneja excepciones de entrada inválida. Si la entrada es válida, se devuelve el número.
+     *
+     * @param min El valor mínimo permitido para la entrada.
+     * @param max El valor máximo permitido para la entrada.
+     * @return El número introducido por el usuario, dentro del rango especificado.
+     */
+    private int introducirNum(int min, int max){
+        int num = -1;
+        while (num < min || num > max) {
+            System.out.print("Introduce un número del " + min + " al " + max + ": ");
+            try {
+                num = scanner.nextInt();
+                if (num < min || num > max) {
+                    System.out.println("Introduzca un número dentro del rango");
+                } else {
+                    return num;
+                }
+            } catch (InputMismatchException e) {
+                System.out.println("Entrada inválida, introduzca un número");
+                scanner.next();
+            }
+        }
+        return num;
     }
 
 }
