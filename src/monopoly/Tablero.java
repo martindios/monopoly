@@ -26,6 +26,13 @@ public class Tablero {
         this.generarCasillas();
     }
 
+    //TEMPORAL
+    public Tablero(){
+        this.posiciones = new ArrayList<>(4);
+        this.grupos = new HashMap<String, Grupo>(8);
+        this.generarCasillas();
+    }
+
     /**********Getter**********/
     /*Getter hecho para auxiliar a descCasilla, para verificar la existencia de la casilla*/
     public ArrayList<ArrayList<Casilla>> getPosiciones() {

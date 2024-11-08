@@ -9,7 +9,8 @@ import java.util.Random;
 
 import static monopoly.Valor.SUMA_VUELTA;
 
-
+//Cando se vende un solar por bancarrota, o precio reiníciase. Sin embargo, o precio incrementa cando non compras, entonces simplemente se da que o solar volve ao precio
+//No que se compru, dado que nn se debería actualizar
 public class Casilla {
 
     /**********Atributos**********/
@@ -44,6 +45,7 @@ public class Casilla {
         }
         this.hipoteca = valor*0.5f;
         avatares = new ArrayList<Avatar>();
+        this.edificios = new ArrayList<Edificio>();
     }
 
     /*Constructor utilizado para inicializar las casillas de tipo IMPUESTOS.
@@ -63,6 +65,7 @@ public class Casilla {
         this.impuesto = impuesto;
         //Hipoteca tmp ten un valor determinado, non se pode comprar/vender etc
         this.avatares = new ArrayList<Avatar>();
+        this.edificios = new ArrayList<Edificio>();
     }
 
     /*Constructor utilizado para crear las otras casillas (Suerte, Caja de comunidad y Especiales[carcel, parking, salida, IrCarcel]):
@@ -86,6 +89,7 @@ public class Casilla {
         //IMpuesto non teñen nada
         //Hipoteca tmp ten nada
         this.avatares = new ArrayList<Avatar>();
+        this.edificios = new ArrayList<Edificio>();
     }
 
     /**********Getters**********/
@@ -383,7 +387,8 @@ public class Casilla {
                         "alquiler cuatro casas: " + this.impuesto * 50 + ",\n" +
                         "alquiler hotel: " + this.impuesto * 70 + ",\n" +
                         "alquiler piscina: " + this.impuesto * 25 + ",\n" +
-                        "alquiler pista de deporte: " + this.impuesto * 25;
+                        "alquiler pista de deporte: " + this.impuesto * 25 + ",\n" +
+                        "Edificios construídos: " + this.listaArray(edificios);
 
             case "Servicios":
                 return "Tipo: " + this.tipo.toLowerCase() + ",\n" +
@@ -440,6 +445,7 @@ public class Casilla {
 
     }
 
+
     public int getNumCasas(ArrayList<Edificio> edificios){
         edificios = this.edificios;
         int numCasas = 0;
@@ -481,8 +487,8 @@ public class Casilla {
 
         //Recorre la lista de avatares para comprobar si el id ya existe. Si existe, se llama recursivamente a la función para que cree uno nuevo
         for (Jugador jugador : jugadores){
-            for (String str : jugador.getEdificios()) {
-                if (id.toString().equals(str)) {
+            for (Edificio edificio : jugador.getEdificios()) {
+                if (id.toString().equals(edificio.getIdEdificio())) {
                     generarIdEdificacion(jugadores, nombre);
                     return generarIdEdificacion(jugadores, nombre);
                 }
@@ -542,5 +548,47 @@ public class Casilla {
     public void sumarContadorDuenho() {
         this.contador++;
     }
+    /**
+     * Metodo que convierte una lista de elementos en una representación de cadena.
+     * Si la lista contiene cadenas, se devuelven como una lista de cadenas.
+     * Si la lista contiene objetos de tipo Casilla, se devuelven sus nombres.
+     * Si la lista contiene objetos de tipo Edificios, se devuelven sus id's.
+     *
+     * @param array La lista de elementos a convertir en cadena. Puede contener
+     *              objetos de tipo String o Casilla.
+     * @return Una representación de cadena de la lista, con los elementos
+     *         separados por comas y encerrados entre corchetes. Si la lista está
+     *         vacía, se devuelve un guion ("-").
+     */
+    private String listaArray(ArrayList<?> array) {
+        StringBuilder listaArray = new StringBuilder();
 
+        if (!array.isEmpty()) {
+            Object firstElement = array.getFirst();
+
+            if (firstElement instanceof String) {
+                listaArray.append("[").append((String) firstElement);
+            } else if (firstElement instanceof Casilla) {
+                listaArray.append("[").append(((Casilla) firstElement).getNombre());
+            } else if (firstElement instanceof Edificio) {
+                listaArray.append("[").append(((Edificio) firstElement).getIdEdificio());
+            }
+
+            for (int i = 1; i < array.size(); ++i) {
+                Object element = array.get(i);
+                if (element instanceof String) {
+                    listaArray.append(", ").append((String) element);
+                } else if (element instanceof Casilla) {
+                    listaArray.append(", ").append(((Casilla) element).getNombre());
+                } else if (element instanceof Edificio) {
+                    listaArray.append(", ").append(((Edificio) element).getIdEdificio());
+                }
+            }
+
+            listaArray.append("]");
+        } else {
+            listaArray = new StringBuilder("-");
+        }
+        return listaArray.toString();
+    }
 }
