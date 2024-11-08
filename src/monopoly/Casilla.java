@@ -23,7 +23,8 @@ public class Casilla {
     private float impuesto; //Cantidad a pagar por caer en la casilla: el alquiler en solares/servicios/transportes o impuestos.
     private float hipoteca; //Valor otorgado por hipotecar una casilla
     private ArrayList<Avatar> avatares; //Avatares que están situados en la casilla.
-    private ArrayList<Edificio> edificios; //Edificios que están construídos en la casilla.
+    private int contador = 0; //Contador de veces que el dueño ha caído en la casilla
+    private ArrayList<Edificio> edificios; //Avatares que están situados en la casilla.
 
 
     /**********Constructores**********/
@@ -126,6 +127,14 @@ public class Casilla {
     //getter para devolver la cantidad que hay que pagar al caer en la casilla
     public float getImpuesto() {
         return impuesto;
+    }
+
+    public int getContador() {
+        return contador;
+    }
+
+    public ArrayList<Edificio> getEdificios() {
+        return edificios;
     }
 
     //getter para devolver el valor otorgado por hipotecar una casilla
@@ -436,13 +445,34 @@ public class Casilla {
 
     }
 
-    //IMPORTANTE! En cada función de construít algo, hai que asignarlle o xogador que a constrúe como propietario
-    public void edificarCasa() {;
 
+    public int getNumCasas(ArrayList<Edificio> edificios){
+        edificios = this.edificios;
+        int numCasas = 0;
+        for(Edificio edificio : edificios){
+            if(edificio.getNombre().contains("casa")){
+                numCasas ++;
+            }
+        }
+        return numCasas;
+    }
+    public void edificarCasa(Jugador jugador, ArrayList<Jugador> jugadores) {
+        if(!this.getDuenho().equals(jugador)){
+            System.out.println("El jugador no puede edificar, ya que no es el propietario de la casilla.");
+        }
+        if(this.getNumCasas(this.getEdificios()) < this.getGrupo().getNumCasillas()){
+            System.out.println("El número de casas que se pueden edificar en la casilla ya es el máximo.");
+        }
+        if(!(this.getContador() > 2 || this.getGrupo().esDuenhoGrupo(this.getDuenho()))){
+            System.out.println("El jugador no ha caído en la casilla más de dos veces o no posee el grupo de casillas a la que pertenece dicha casilla.");
+        }
+        this.getDuenho().getEdificios().add(this.generarIdEdificacion(jugadores, "casa"));
     }
 
     public void edificarHotel(Jugador jugador, ArrayList<Jugador> jugadores) {
-
+        if(this.getDuenho().equals(jugador) && this.getDuenho().getEdificios().size() >= 4){
+            //Quitar las 4 casas y poner un hotel
+        }
     }
 
     public void edificarPiscina(Jugador jugador, ArrayList<Jugador> jugadores){
@@ -515,6 +545,9 @@ public class Casilla {
                 }""".formatted(nombre, tipo, valor);
     }
 
+    public void sumarContadorDuenho() {
+        this.contador++;
+    }
     /**
      * Metodo que convierte una lista de elementos en una representación de cadena.
      * Si la lista contiene cadenas, se devuelven como una lista de cadenas.

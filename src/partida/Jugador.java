@@ -99,6 +99,8 @@ public class Jugador {
         return edificios;
     }
 
+
+
     /**********Setters**********/
 
     public void setFortuna(float fortuna) {
