@@ -147,6 +147,10 @@ public class Casilla {
         return avatares;
     }
 
+    //getter para devolver la lista de los edificios construídos en la casilla
+    public ArrayList<Edificio> getEdificios() {
+        return edificios;
+    }
 
     /**********Setters**********/
 
@@ -590,5 +594,51 @@ public class Casilla {
             listaArray = new StringBuilder("-");
         }
         return listaArray.toString();
+    }
+
+    public String edificiosGrupo() {
+        ArrayList<String> Casas = new ArrayList<>();
+        ArrayList<String> Hoteles = new ArrayList<>();
+        ArrayList<String> Piscinas = new ArrayList<>();
+        ArrayList<String> Deporte = new ArrayList<>();
+        for(Edificio edificio : edificios){
+            switch (edificio.getTipo()) {
+                case "Casa":
+                    Casas.add(edificio.getIdEdificio());
+                    break;
+                case "Hotel":
+                    Hoteles.add(edificio.getIdEdificio());
+                    break;
+                case "Piscina":
+                    Piscinas.add(edificio.getIdEdificio());
+                    break;
+                case "Deporte":
+                    Deporte.add(edificio.getIdEdificio());
+                    break;
+            }
+        }
+        return """
+                Propiedad: %s,
+                Casas: %s,
+                Hoteles: %s,
+                Piscinas: %s,
+                Pistas de deporte: %s,
+                Alquiler: %.2f
+                """.formatted(this.getNombre(), Casas.isEmpty() ? '-' : Casas, Hoteles.isEmpty() ? '-' : Hoteles, Piscinas.isEmpty() ? '-' : Piscinas,
+                Deporte.isEmpty() ? '-' : Deporte, this.getImpuesto());
+    }
+
+    public void venderEdificios(String tipo, int cantidad) {
+        Jugador propietario = this.getDuenho();
+        for(Edificio edificio : edificios) {
+            if(edificio.getTipo().equals(tipo) && cantidad > 0) {
+                edificios.remove(edificio);
+                ArrayList<Edificio> aux = propietario.getEdificios();
+                aux.remove(edificio);
+                propietario.setEdificios(aux);
+                propietario.sumarFortuna(edificio.getValor() / 2);
+                edificio.setCasilla(null);
+            }
+        }
     }
 }

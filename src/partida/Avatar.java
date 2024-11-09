@@ -109,10 +109,13 @@ public class Avatar {
                     }
                     if (casilla.getNombre().equals("Parking")) {
                         if(casilla.getValor() > 0) {
+                            //Súmaselle ao xgodaor o que hai no parking
                             jugador.sumarFortuna(casilla.getValor());
                             System.out.println("El jugador " + jugador.getNombre() + " ha recibido " + casilla.getValor() + " de la banca, como bote del Parking.");
                             Jugador banca = casilla.getDuenho();
+                            //Réstaselle á banca o que hai que pagar
                             banca.sumarFortuna(-casilla.getValor());
+                            //o valor do parking ponse a 0. este valor é SIMBÓLICO
                             casilla.setValor(0);
                         }
                         else {

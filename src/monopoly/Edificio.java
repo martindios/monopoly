@@ -28,12 +28,20 @@ public class Edificio {
         propietario = casilla.getDuenho();
     }
 
+    public String getTipo() {
+        return tipo;
+    }
+
     public String getIdEdificio() {
         return idEdificio;
     }
 
     public Casilla getCasilla() {
         return casilla;
+    }
+
+    public float getValor() {
+        return valor;
     }
 
     public String infoEdificio() {
@@ -46,5 +54,10 @@ public class Edificio {
                 Coste: %.2f
                 }
                 """.formatted(idEdificio, propietario, casilla, casilla.getGrupo().getNombreGrupo(), valor);
+    }
+
+
+    public void setCasilla(Casilla casilla) {
+        this.casilla = casilla;
     }
 }
