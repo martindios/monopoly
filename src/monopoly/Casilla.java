@@ -133,10 +133,6 @@ public class Casilla {
         return contador;
     }
 
-    public ArrayList<Edificio> getEdificios() {
-        return edificios;
-    }
-
     //getter para devolver el valor otorgado por hipotecar una casilla
     public float getHipoteca() {
         return hipoteca;

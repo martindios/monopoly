@@ -57,10 +57,6 @@ public class Edificio {
     }
 
 
-    public String getTipo() {
-        return tipo;
-
-
     public void setCasilla(Casilla casilla) {
         this.casilla = casilla;
 
