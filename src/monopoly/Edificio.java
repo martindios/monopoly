@@ -47,4 +47,8 @@ public class Edificio {
                 }
                 """.formatted(idEdificio, propietario, casilla, casilla.getGrupo().getNombreGrupo(), valor);
     }
+
+    public String getTipo() {
+        return tipo;
+    }
 }

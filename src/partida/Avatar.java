@@ -283,9 +283,6 @@ public class Avatar {
     SETTERS
      */
 
-    public void setId(String id) {
-        this.id = id;
-    }
 
     public void setTipo(String tipo) {
         this.tipo = tipo;
