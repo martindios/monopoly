@@ -138,6 +138,8 @@ public class Jugador {
         this.vueltas = vueltas;
     }
 
+    public void setEdificios(ArrayList<Edificio> edificios) {this.edificios = edificios;}
+
     /**********Métodos**********/
 
     //Método para añadir una propiedad al jugador. Como parámetro, la casilla a añadir.

@@ -165,7 +165,7 @@ public class Menu {
                         }
                     } else if(palabrasArray.length == 3) {
                         if(palabrasArray[1].equals("edificios")) {
-                            listarEdificios(palabrasArray[2]);
+                            listarEdificiosGrupo(palabrasArray[2]);
                         } else {
                             System.out.println("El formato correcto es: listar edificios [colorGrupo]");
                         }
@@ -235,6 +235,10 @@ public class Menu {
                     }
                     break;
 
+                case "vender":
+                    if(palabrasArray.length == 4) {
+                        ventaEdificio(palabrasArray[1], palabrasArray[2], palabrasArray[3]);
+                    }
                 default:
                     System.out.println("Comando no válido");
                     break;
@@ -707,21 +711,24 @@ public class Menu {
     /**
      * Metodo que permite listar los edificios construídos en un grupo de solares
      */
-    private void listarEdificios(String color) {
+    //!!!Comprobar que funciona + añadir qué edificios se poden construír!!!
+    private void listarEdificiosGrupo(String color) {
         boolean existenEdificios = false;
         for(Jugador jugador : jugadores) {
-            if(!jugador.getEdificios().isEmpty()) {
-                existenEdificios = true;
-                break;
+            for(Edificio edificio : jugador.getEdificios()){
+                if (edificio.getCasilla().getGrupo().getNombreGrupo().equals(color)) {
+                    existenEdificios = true;
+                    break;
+                }
             }
         }
         if(existenEdificios) {
             System.out.println("Edificios construídos en el grupo " + color + ":");
             StringBuilder str = new StringBuilder();
             for (Jugador jugador : jugadores) {
-                for(Edificio edificio : jugador.getEdificios()){
-                    if(edificio.getCasilla().getGrupo().getNombreGrupo().equalsIgnoreCase(color)){
-                        edificio.infoEdificio();
+                for(Casilla casilla : jugador.getPropiedades()) {
+                    if(casilla.getGrupo().getNombreGrupo().equals(color) && !casilla.getEdificios().isEmpty()) {
+                        str.append(casilla.edificiosGrupo());
                     }
                 }
                 if (!jugador.equals(jugadores.getLast())) {
@@ -750,6 +757,35 @@ public class Menu {
         Avatar av = jugador.getAvatar();
         int posicion = Integer.parseInt(pos);
         av.moverAvatar(tablero.getPosiciones(), posicion);
+    }
+
+    private void ventaEdificio(String tipo, String nombreCasilla, String cantidad) {
+        int contador = 0;
+        Casilla casilla = tablero.encontrar_casilla(nombreCasilla);
+        if(casilla == null) {
+            System.out.println("Casilla no encontrada");
+            return;
+        }
+        if(casilla.getDuenho() != jugadores.get(turno)) {
+            System.out.println("No eres propietario de la casilla, no puedes vender edificios.");
+            return;
+        }
+        if(casilla.getEdificios().isEmpty()) {
+            System.out.println("No hay edificios en la casilla.");
+            return;
+        }
+        for(Edificio edificio : casilla.getEdificios()) {
+            if(edificio.getTipo().equals(tipo)) {
+                contador++;
+                if(contador == Integer.parseInt(cantidad)) {
+                    break;
+                }
+            }
+        }
+        if(contador != Integer.parseInt(cantidad)) {
+            System.out.println("No hay " + Integer.parseInt(cantidad) + " edificios del tipo " + tipo + " en la casilla.");
+        }
+        casilla.venderEdificios(tipo, contador);
     }
 
 }
