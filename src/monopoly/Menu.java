@@ -119,13 +119,25 @@ public class Menu {
                     break;
 
                 case "lanzar":
+                    if(tirado){
+                        System.out.println("Ya has lanzado los dados en este turno.");
+                        break;
+                    }
                     if (palabrasArray.length == 2 && palabrasArray[1].equals("dados")) {
-                        lanzarDados();
+                        lanzarDados(0, 0);
                         System.out.println(tablero.toString());
                         evaluacion();
                         VueltasTablero();
+
+                    } else if (palabrasArray.length == 4 && palabrasArray[1].equals("dados")) { //Dados trucados
+                        lanzarDados(Integer.parseInt(palabrasArray[2]), Integer.parseInt(palabrasArray[3]));
+                        System.out.println(tablero.toString());
+                        evaluacion();
+                        VueltasTablero();
+
+
                     } else {
-                        System.out.println("El formato correcto es: lanzar dados");
+                        System.out.println("El formato correcto es: lanzar dados o lanzar dados (núm primer dado) (núm segundo dado)");
                     }
                     break;
                 case "acabar":
@@ -215,10 +227,10 @@ public class Menu {
                         MoverAux(palabrasArray[1]);
                         evaluacion();
                         VueltasTablero();
-                        break;
                     } else {
                         System.out.println("El formato correcto es: moveraux numPosiciones");
                     }
+                    break;
 
                 case "edificar":
                     if (palabrasArray.length == 2) {
@@ -232,9 +244,9 @@ public class Menu {
                         Jugador jugador = jugadores.get(turno);
                         Avatar avatar = jugador.getAvatar();
                         avatar.setAvanzado(1);
-                        lanzarDados();
+                        lanzarDados(0, 0);
                         System.out.println(tablero.toString());
-                        Evaluacion();
+                        evaluacion();
                         VueltasTablero();
                     } else {
                         System.out.println("El formato correcto es: cambiar modo");
@@ -353,7 +365,7 @@ public class Menu {
      * Realiza la tirada de dados, maneja el movimiento del avatar, y controla las reglas especiales
      * como los dobles y la encarcelación tras tres dobles consecutivos.
      */
-    private void lanzarDados() {
+    private void lanzarDados(int tirada1, int tirada2) {
         if (!tirado) {
             Jugador jugador = jugadores.get(turno);
             Avatar avatar = avatares.get(turno);
@@ -363,9 +375,15 @@ public class Menu {
                 return;
             }
 
+            int valor1, valor2;
+            if (tirada1 == 0 && tirada2 == 0) {
+                valor1 = dado1.hacerTirada();
+                valor2 = dado2.hacerTirada();
+            } else {
+                valor1 = tirada1;
+                valor2 = tirada2;
+            }
 
-            int valor1 = dado1.hacerTirada();
-            int valor2 = dado2.hacerTirada();
             lanzamientos += 1;
             tirado = true;
             System.out.println("Dado 1: " + valor1);

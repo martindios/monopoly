@@ -454,7 +454,7 @@ public class Casilla {
         edificios = this.edificios;
         int numCasas = 0;
         for(Edificio edificio : edificios){
-            if(edificio.getNombre().contains("casa")){
+            if(edificio.getTipo().contains("casa")){
                 numCasas ++;
             }
         }
@@ -470,7 +470,7 @@ public class Casilla {
         if(!(this.getContador() > 2 || this.getGrupo().esDuenhoGrupo(this.getDuenho()))){
             System.out.println("El jugador no ha caído en la casilla más de dos veces o no posee el grupo de casillas a la que pertenece dicha casilla.");
         }
-        this.getDuenho().getEdificios().add(this.generarIdEdificacion(jugadores, "casa"));
+        //this.getDuenho().getEdificios().add(this.generarIdEdificacion(jugadores, "casa"));
     }
 
     public void edificarHotel(Jugador jugador, ArrayList<Jugador> jugadores) {
