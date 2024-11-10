@@ -49,6 +49,7 @@ public class Menu {
 
         /*establece el número de jugadores que van a jugar la partida*/
         System.out.println("-----Número de jugadores-----");
+
         maxJugadores = introducirNum(2, 6);
 
 

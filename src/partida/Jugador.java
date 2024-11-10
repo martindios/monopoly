@@ -28,7 +28,7 @@ public class Jugador {
     private float pagoDeAlquileres;
     private float cobroDeAlquileres;
     private float pasarPorCasillaDeSalida;
-    private float premiosInversionesOBote;
+    private float premiosInversionesOBote; //MIRAR LO QUE ES INVERSIONES
     private int vecesEnLaCarcel;
 
 
