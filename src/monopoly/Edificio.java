@@ -12,9 +12,9 @@ public class Edificio {
     private float impuesto; //Factor que multiplica el valor de la casilla (Me refiero, se a casa incrementa un 5% (por ej) o alquiler do solar, aquí almacenamos 0.05)
     private Jugador propietario; //Almacenamos el propietario del edificio
 
-    public Edificio(String tipo, Casilla casilla) {
+    public Edificio(String tipo, Casilla casilla, int contador) {
         this.tipo = tipo;
-        //this.idEdificio = generarIdEdificio(this.tipo);
+        this.idEdificio = generarIdEdificio(this.tipo, contador);
         this.casilla = casilla;
         switch (tipo) {
             case "Casa":
@@ -53,12 +53,17 @@ public class Edificio {
                 Grupo: %s,
                 Coste: %.2f
                 }
-                """.formatted(idEdificio, propietario, casilla, casilla.getGrupo().getNombreGrupo(), valor);
+                """.formatted(idEdificio, propietario.getNombre(), casilla.getNombre(), casilla.getGrupo().getNombreGrupo(), valor);
     }
 
 
     public void setCasilla(Casilla casilla) {
         this.casilla = casilla;
 
+    }
+
+    public String generarIdEdificio(String tipo, int contadorId ){
+        String id = tipo.concat("-").concat(String.valueOf(contadorId));
+        return id;
     }
 }

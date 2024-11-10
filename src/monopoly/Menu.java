@@ -20,9 +20,13 @@ public class Menu {
     private boolean tirado; //Booleano para comprobar si el jugador que tiene el turno ha tirado o no.
     private boolean solvente; //Booleano para comprobar si el jugador que tiene el turno es solvente, es decir, si ha pagado sus deudas.
     static Scanner scanner = new Scanner(System.in); //scanner para leer lo que se pone por teclado
-    int maxJugadores = 0;
-    int jugadoresActuales = 0;
-    boolean finalizarPartida = false;
+    private int maxJugadores = 0;
+    private int jugadoresActuales = 0;
+    private boolean finalizarPartida = false;
+    private int contadorCasa;
+    private int contadorHotel;
+    private int contadorPiscina;
+    private int contadorPistaDeporte;
 
     /**********Constructor**********/
     public Menu() {
@@ -237,7 +241,7 @@ public class Menu {
                     if (palabrasArray.length == 2) {
                         edificar(palabrasArray[1]);
                     } else {
-                        System.out.println("El formato correcto es: edificar [casa, hotel, piscina]");
+                        System.out.println("El formato correcto es: edificar [Casa, Hotel, Piscina, PistaDeporte]");
                     }
                     break;
 
@@ -296,12 +300,25 @@ public class Menu {
         Jugador jugador = jugadores.get(turno);
         Casilla casilla = jugador.getAvatar().getLugar();
         switch (palabra) {
-            case "casa":
-                casilla.edificarCasa(jugador, jugadores);
-            case "hotel":
-                casilla.edificarHotel(jugador, jugadores);
-            case "piscina":
-                casilla.edificarPiscina(jugador, jugadores);
+            case "Casa":
+                casilla.edificarCasa(jugador, contadorCasa);
+                contadorCasa++;
+                break;
+            case "Hotel":
+                casilla.edificarHotel(jugador, contadorHotel);
+                contadorHotel++;
+                break;
+            case "Piscina":
+                casilla.edificarPiscina(jugador, contadorPiscina);
+                contadorPiscina++;
+                break;
+            case "PistaDeporte":
+                casilla.edificarPistaDeporte(jugador, contadorPistaDeporte);
+                contadorPistaDeporte++;
+                break;
+            default:
+                System.out.println("Edificio no válido.");
+                break;
         }
     }
 
@@ -764,17 +781,17 @@ public class Menu {
                 break;
             }
         }
+
         if(existenEdificios) {
             System.out.println("Edificios construídos:");
             StringBuilder str = new StringBuilder();
             for (Jugador jugador : jugadores) {
-                for(Edificio edificio : jugador.getEdificios()){
-                    edificio.infoEdificio();
-                }
-                if (!jugador.equals(jugadores.getLast())) {
-                    str.append(",\n");
-                } else {
-                    str.append("\n");
+                if(!jugador.getEdificios().isEmpty()) {
+                    // Iteramos sobre todos los edificios del jugador
+                    for(Edificio edificio : jugador.getEdificios()){
+                        str.append(edificio.infoEdificio());
+                        str.append("\n");  // Añadimos salto de línea después de cada edificio
+                    }
                 }
             }
             System.out.println(str);
@@ -789,35 +806,77 @@ public class Menu {
      */
     //!!!Comprobar que funciona + añadir qué edificios se poden construír!!!
     private void listarEdificiosGrupo(String color) {
+        Casilla casillaGrupo = null;
         boolean existenEdificios = false;
+
+        // Buscar una casilla del grupo primero en edificios
         for(Jugador jugador : jugadores) {
-            for(Edificio edificio : jugador.getEdificios()){
+            for(Edificio edificio : jugador.getEdificios()) {
                 if (edificio.getCasilla().getGrupo().getNombreGrupo().equals(color)) {
                     existenEdificios = true;
+                    casillaGrupo = edificio.getCasilla();
                     break;
                 }
             }
+            if(casillaGrupo != null) break;  // Si ya encontramos una casilla, salimos del bucle
         }
+
+        // Si no encontramos casilla en edificios, buscamos en el tablero una cualquiera
+        if (casillaGrupo == null) {
+            for(ArrayList<Casilla> fila : tablero.getPosiciones()) {
+                for (Casilla casilla : fila) {
+                    if(casilla.getTipo().equals("Solar") && casilla.getGrupo().getNombreGrupo().equals(color)) {
+                        casillaGrupo = casilla;
+                    }
+                }
+            }
+        }
+
+        int numCasillasGrupo = casillaGrupo.getGrupo().getNumCasillas();
+        int numHotelesActuales = casillaGrupo.getGrupo().getNumEdificios(casillaGrupo.getGrupo().getEdificiosGrupo(), "Hotel");
+        int numCasasActuales = casillaGrupo.getGrupo().getNumEdificios(casillaGrupo.getGrupo().getEdificiosGrupo(), "Casa");
+        int numPiscinasActuales = casillaGrupo.getGrupo().getNumEdificios(casillaGrupo.getGrupo().getEdificiosGrupo(), "Piscina");
+        int numPistasActuales = casillaGrupo.getGrupo().getNumEdificios(casillaGrupo.getGrupo().getEdificiosGrupo(), "Pista");
+
+        System.out.println("\n=== Estado actual del grupo " + color + " ===");
+
         if(existenEdificios) {
-            System.out.println("Edificios construídos en el grupo " + color + ":");
+            System.out.println("Edificios construidos:");
             StringBuilder str = new StringBuilder();
             for (Jugador jugador : jugadores) {
                 for(Casilla casilla : jugador.getPropiedades()) {
-                    if(casilla.getGrupo().getNombreGrupo().equals(color) && !casilla.getEdificios().isEmpty()) {
+                    if(casilla.getGrupo().getNombreGrupo().equals(color) && !casilla.getGrupo().getEdificiosGrupo().isEmpty()) {
                         str.append(casilla.edificiosGrupo());
                     }
                 }
-                if (!jugador.equals(jugadores.getLast())) {
-                    str.append(",\n");
-                } else {
-                    str.append("\n");
-                }
             }
             System.out.println(str);
+        } else {
+            System.out.println("No hay edificios construidos actualmente.");
         }
-        else {
-            System.out.println("No existen edificios construídos en este grupo actualmente.");
+
+        System.out.println("\n=== Edificios disponibles para construcción ===");
+
+        // Información sobre hoteles
+        int hotelesDisponibles = numCasillasGrupo - numHotelesActuales;
+        System.out.println("Hoteles: " + hotelesDisponibles + " disponibles de " + numCasillasGrupo + " máximos");
+
+        // Información sobre casas
+        if (numHotelesActuales < numCasillasGrupo) {
+            int casasMaximasPorSolar = 4;
+            int casasTotalesDisponibles = (numCasillasGrupo * casasMaximasPorSolar) - numCasasActuales;
+            System.out.println("Casas: " + casasTotalesDisponibles + " disponibles (máximo 4 por solar)");
+        } else {
+            System.out.println("Casas: No se pueden construir más (máximo de hoteles alcanzado)");
         }
+
+        // Información sobre piscinas
+        int piscinasDisponibles = numCasillasGrupo - numPiscinasActuales;
+        System.out.println("Piscinas: " + piscinasDisponibles + " disponibles de " + numCasillasGrupo + " máximas");
+
+        // Información sobre pistas deportivas
+        int pistasDisponibles = numCasillasGrupo - numPistasActuales;
+        System.out.println("Pistas deportivas: " + pistasDisponibles + " disponibles de " + numCasillasGrupo + " máximas");
     }
 
     /**
