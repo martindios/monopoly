@@ -266,7 +266,9 @@ public class Menu {
                     break;
 
                 case "estadisticas":
-                    if (palabrasArray.length == 2) {
+                    if (palabrasArray.length == 1) {
+                        estadisticas();
+                    } else if (palabrasArray.length == 2) {
                         estadisticasJugador(palabrasArray[1]);
                     }
                     break;
@@ -428,6 +430,7 @@ public class Menu {
                 valor1 = tirada1;
                 valor2 = tirada2;
             }
+            jugador.sumarVecesTiradasDados();
 
             lanzamientos += 1;
             tirado = true;
@@ -476,6 +479,7 @@ public class Menu {
         int valor2 = dado2.hacerTirada();
         tirado = true;
         lanzamientos++;
+        jugador.sumarVecesTiradasDados();
         System.out.println("Dado 1: " + valor1);
         System.out.println("Dado 2: " + valor2);
         if (valor1 == valor2) {
@@ -949,6 +953,95 @@ public class Menu {
             }
         }
         return num;
+    }
+
+    private void estadisticas() {
+        Casilla casillaMasRentable = casillaMasRentable();
+        if (casillaMasRentable != null) {
+            System.out.println("{");
+            System.out.println("\tcasillaMasRentable: " + casillaMasRentable.getNombre());
+            System.out.println("\tgrupoMasRentable: " + calcularGrupoMasRentable().getNombreGrupo());
+            System.out.println("\tcasillaMasFrecuentada: " + casillaMasFrecuentada().getNombre());
+            System.out.println("\tjugadorMasVueltas: " + jugadorConMasVueltas().getNombre());
+            System.out.println("\tjugadorMasVecesDados: " + jugadorConMasTiradasDados().getNombre());
+            System.out.println("\tjugadorEnCabeza: " + jugadorEnCabeza().getNombre());
+            System.out.println("}");
+        } else {
+            System.out.println("No se han registrado suficientes datos para mostrar estadísticas.");
+        }
+
+    }
+
+    private Jugador jugadorConMasVueltas() {
+        Jugador jugadorMasVueltas = jugadores.getFirst();
+        for(Jugador jugador : jugadores) {
+            if(jugador.getVueltas() > jugadorMasVueltas.getVueltas())
+                jugadorMasVueltas = jugador;
+        }
+        return jugadorMasVueltas;
+    }
+
+    private Jugador jugadorConMasTiradasDados() {
+        Jugador jugadorMasTiradas = jugadores.getFirst();
+        for(Jugador jugador : jugadores) {
+            if(jugador.getVecesTiradasDados() > jugadorMasTiradas.getVecesTiradasDados())
+                jugadorMasTiradas = jugador;
+        }
+        return jugadorMasTiradas;
+    }
+
+    private Jugador jugadorEnCabeza() {
+        Jugador jugadorEnCabeza = jugadores.getFirst();
+        for(Jugador jugador : jugadores) {
+            if(jugador.calcularFortunaTotal() > jugadorEnCabeza.calcularFortunaTotal())
+                jugadorEnCabeza = jugador;
+        }
+        return jugadorEnCabeza;
+    }
+
+    private Casilla casillaMasRentable() {
+        Casilla casillaMasRentable = tablero.getPosiciones().getFirst().getFirst();
+        for (ArrayList<Casilla> fila : tablero.getPosiciones()) {
+            for (Casilla casilla : fila) {
+                if (casilla.getTotalAlquileresPagados() > casillaMasRentable.getTotalAlquileresPagados())
+                    casillaMasRentable = casilla;
+            }
+        }
+        if(Objects.equals(casillaMasRentable.getNombre(), "Salida")) {
+            return null;
+        } else return casillaMasRentable;
+    }
+
+    private Grupo calcularGrupoMasRentable() {
+        HashMap<Grupo, Float> rentabilidadPorGrupo = new HashMap<>();
+        Grupo grupoMasRentable = null;
+        float maxRentabilidad = 0;
+        for (ArrayList<Casilla> fila : tablero.getPosiciones()) {
+            for (Casilla casilla : fila) {
+                Grupo grupo = casilla.getGrupo();
+                rentabilidadPorGrupo.put(grupo, rentabilidadPorGrupo.getOrDefault(grupo, 0f)
+                        + casilla.getTotalAlquileresPagados());
+            }
+        }
+
+        for (Map.Entry<Grupo, Float> entry : rentabilidadPorGrupo.entrySet()) {
+            if (entry.getValue() > maxRentabilidad) {
+                maxRentabilidad = entry.getValue();
+                grupoMasRentable = entry.getKey();
+            }
+        }
+        return grupoMasRentable;
+    }
+
+    private Casilla casillaMasFrecuentada() {
+        Casilla casillaMasFrecuentada = tablero.getPosiciones().getFirst().getFirst();
+        for (ArrayList<Casilla> fila : tablero.getPosiciones()) {
+            for (Casilla casilla : fila) {
+                if (casilla.getTotalVecesFrecuentada() > casillaMasFrecuentada.getTotalVecesFrecuentada())
+                    casillaMasFrecuentada = casilla;
+            }
+        }
+        return casillaMasFrecuentada;
     }
 
 }
