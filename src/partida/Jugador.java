@@ -22,6 +22,16 @@ public class Jugador {
     private ArrayList<String> hipotecas;
     private ArrayList<Edificio> edificios; //Propiedades que posee el jugador.
 
+    /*Atributos designados para las estadísticas*/
+    private float dineroInvertido; //HAY QUE AÑADIR EL DINERO DE LAS EDIFICACIONES
+    private float pagoTasasEImpuestos;
+    private float pagoDeAlquileres;
+    private float cobroDeAlquileres;
+    private float pasarPorCasillaDeSalida;
+    private float premiosInversionesOBote;
+    private int vecesEnLaCarcel;
+
+
     /**********Constructores**********/
 
     /*Constructor vacío, se usará para crear la banca*/
@@ -46,6 +56,15 @@ public class Jugador {
         this.vueltas = 0;
         this.numTransportes = 0;
         this.numServicios = 0;
+
+        this.dineroInvertido = 0;
+        this.pagoTasasEImpuestos = 0;
+        this.pagoDeAlquileres = 0;
+        this.cobroDeAlquileres = 0;
+        this.pasarPorCasillaDeSalida = 0;
+        this.premiosInversionesOBote = 0;
+        this.vecesEnLaCarcel = 0;
+
         this.propiedades = new ArrayList<>();
         this.hipotecas = new ArrayList<>();
         this.edificios = new ArrayList<>();
@@ -99,7 +118,33 @@ public class Jugador {
         return edificios;
     }
 
+    public float getDineroInvertido() {
+        return dineroInvertido;
+    }
 
+    public float getPagoTasasEImpuestos() {
+        return pagoTasasEImpuestos;
+    }
+
+    public float getPagoDeAlquileres() {
+        return pagoDeAlquileres;
+    }
+
+    public float getCobroDeAlquileres() {
+        return cobroDeAlquileres;
+    }
+
+    public float getPasarPorCasillaDeSalida() {
+        return pasarPorCasillaDeSalida;
+    }
+
+    public float getPremiosInversionesOBote() {
+        return premiosInversionesOBote;
+    }
+
+    public int getVecesEnLaCarcel() {
+        return vecesEnLaCarcel;
+    }
 
     /**********Setters**********/
 
@@ -142,6 +187,7 @@ public class Jugador {
 
     public void setEdificios(ArrayList<Edificio> edificios) {this.edificios = edificios;}
 
+
     /**********Métodos**********/
 
     //Método para añadir una propiedad al jugador. Como parámetro, la casilla a añadir.
@@ -151,6 +197,34 @@ public class Jugador {
 
     //Método para eliminar una propiedad del arraylist de propiedades de jugador.
     public void eliminarPropiedad(Casilla casilla) { propiedades.remove(casilla);
+    }
+
+    public void sumarTasasEImpuestos(float valor) {
+        this.pagoTasasEImpuestos += valor;
+    }
+
+    public void sumarDineroInvertido(float valor) {
+        this.dineroInvertido += valor;
+    }
+
+    public void sumarPagoDeAlquileres(float valor) {
+        this.pagoDeAlquileres += valor;
+    }
+
+    public void sumarCobroDeAlquileres(float valor) {
+        this.cobroDeAlquileres += valor;
+    }
+
+    public void sumarPasarPorCasillaDeSalida(float valor) {
+        this.pasarPorCasillaDeSalida += valor;
+    }
+
+    public void sumarPremiosInversionesOBote(float valor) {
+        this.premiosInversionesOBote += valor;
+    }
+
+    public void sumarVecesEnLaCarcel(float valor) {
+        this.vecesEnLaCarcel += valor;
     }
 
     //Método para añadir fortuna a un jugador
@@ -174,6 +248,7 @@ public class Jugador {
      *            necesaria para localizar la casilla de la cárcel.
      */
     public void encarcelar(ArrayList<ArrayList<Casilla>> pos) {
+        sumarVecesEnLaCarcel(getVecesEnLaCarcel() + 1);
         this.enCarcel = true;
         this.tiradasCarcel = 0;
         Avatar av = this.avatar;

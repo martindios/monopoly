@@ -109,8 +109,9 @@ public class Avatar {
                     }
                     if (casilla.getNombre().equals("Parking")) {
                         if(casilla.getValor() > 0) {
-                            //Súmaselle ao xgodaor o que hai no parking
+                            //Súmaselle ao xogador o que hai no parking
                             jugador.sumarFortuna(casilla.getValor());
+                            jugador.sumarPremiosInversionesOBote(casilla.getValor());
                             System.out.println("El jugador " + jugador.getNombre() + " ha recibido " + casilla.getValor() + " de la banca, como bote del Parking.");
                             Jugador banca = casilla.getDuenho();
                             //Réstaselle á banca o que hai que pagar
@@ -125,6 +126,7 @@ public class Avatar {
                     if (pasaPorSalida) {
                         jugador.setVueltas(jugador.getVueltas() + 1);
                         jugador.sumarFortuna(SUMA_VUELTA);
+                        jugador.sumarPasarPorCasillaDeSalida(SUMA_VUELTA);
                         System.out.println("El jugador ha completado una vuelta y recibe " + SUMA_VUELTA);
                     }
                     casilla.anhadirAvatar(this);
@@ -247,6 +249,7 @@ public class Avatar {
         if((casilla.getPosicion() - this.getLugar().getPosicion()) < 0) { //Pasa por la salida
             jugador.setVueltas(jugador.getVueltas() + 1);
             jugador.sumarFortuna(SUMA_VUELTA);
+            jugador.sumarPasarPorCasillaDeSalida(SUMA_VUELTA);
             System.out.println("El jugador ha completado una vuelta y recibe " + SUMA_VUELTA);
         }
 

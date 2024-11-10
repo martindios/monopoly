@@ -239,6 +239,7 @@ public class Menu {
                         System.out.println("El formato correcto es: edificar [casa, hotel, piscina]");
                     }
                     break;
+
                 case "cambiar":
                     if (palabrasArray.length == 2 && palabrasArray[1].equals("modo")){
                         Jugador jugador = jugadores.get(turno);
@@ -257,12 +258,38 @@ public class Menu {
                     if(palabrasArray.length == 4) {
                         ventaEdificio(palabrasArray[1], palabrasArray[2], palabrasArray[3]);
                     }
+                    break;
+
+                case "estadisticas":
+                    if (palabrasArray.length == 2) {
+                        estadisticasJugador(palabrasArray[1]);
+                    }
+                    break;
                 default:
                     System.out.println("Comando no válido");
                     break;
             }
         }
     }
+
+    private void estadisticasJugador(String jugadorStr) {
+        for(Jugador jugador : jugadores) {
+            if(jugador.getNombre().equals(jugadorStr)) {
+                System.out.println("{");
+                System.out.println("\tdineroInvertido: " + jugador.getDineroInvertido());
+                System.out.println("\tpagoTasasEImpuestos: " + jugador.getPagoTasasEImpuestos());
+                System.out.println("\tpagoDeAlquileres: " + jugador.getPagoDeAlquileres());
+                System.out.println("\tcobroDeAlquileres: " + jugador.getCobroDeAlquileres());
+                System.out.println("\tpasarPorCasillaDeSalida: " + jugador.getPasarPorCasillaDeSalida());
+                System.out.println("\tpremiosInversionesOBote: " + jugador.getPremiosInversionesOBote());
+                System.out.println("\tvecesEnLaCarcel: " + jugador.getVecesEnLaCarcel());
+                System.out.println("}");
+                return ;
+            }
+        }
+        System.out.println("El jugador no existe");
+    }
+
 
     private void edificar(String palabra) {
         Jugador jugador = jugadores.get(turno);
@@ -520,7 +547,9 @@ public class Menu {
                 JugActual.setTiradasCarcel(0);
                 JugActual.sumarFortuna(-fianza);
                 JugActual.sumarGastos(fianza);
+                JugActual.sumarTasasEImpuestos(fianza);
                 banca.sumarFortuna(fianza);
+
             }
         }
         // Caso 2: Solo puede tirar los dados
@@ -671,6 +700,7 @@ public class Menu {
                 case "Impuestos" -> {
                     jugadorActual.sumarFortuna(-casillaActual.getImpuesto());
                     jugadorActual.sumarGastos(casillaActual.getImpuesto());
+                    jugadorActual.sumarTasasEImpuestos(casillaActual.getImpuesto());
                     Casilla bote = tablero.encontrar_casilla("Parking");
                     bote.sumarValor(casillaActual.getImpuesto());
 
