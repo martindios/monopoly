@@ -78,30 +78,31 @@ public class Baraja {
 
         System.out.println(barajaSuerte.get(numCarta-1).getDescripcion());
 
-        int idCarta = barajaSuerte.get(numCarta-1).getIdCarta();
+        int idCarta = barajaSuerte.get(numCarta-1).getIdCarta(), dinero=0;
         switch(idCarta) {
             case 1: /*Ir a Transportes1*/
-                jugadorActual.getAvatar().moverAvatar(tablero.getPosiciones(), tablero.encontrar_casilla("Trans1"));
+                jugadorActual.getAvatar().moverAvatar(tablero.getPosiciones(), tablero.encontrar_casilla("Trans1"), true);
                 break;
             case 2: /*Ir a Solar15, sin cobrar salida*/
+                jugadorActual.getAvatar().moverAvatar(tablero.getPosiciones(), tablero.encontrar_casilla("Solar15"), false);
                 break;
             case 3: /*Cobra 500000€*/
-                bote = tablero.encontrar_casilla("Parking");
-                bote.sumarValor(-500000);
-                banca.sumarFortuna(-500000);
-                jugadorActual.sumarFortuna(500000);
+                dinero = 500000;
+                banca.sumarFortuna(-dinero);
+                jugadorActual.sumarFortuna(dinero);
+                jugadorActual.sumarPremiosInversionesOBote(dinero);
                 break;
             case 4: /*Ir a Solar3*/
-                jugadorActual.getAvatar().moverAvatar(tablero.getPosiciones(), tablero.encontrar_casilla("Solar3"));
+                jugadorActual.getAvatar().moverAvatar(tablero.getPosiciones(), tablero.encontrar_casilla("Solar3"), true);
                 break;
             case 5: /*Ve a la Cárcel*/
                 jugadorActual.encarcelar(tablero.getPosiciones());
                 break;
             case 6: /*Cobra 1000000€*/
-                bote = tablero.encontrar_casilla("Parking");
-                bote.sumarValor(-500000);
-                banca.sumarFortuna(-500000);
-                jugadorActual.sumarFortuna(1000000);
+                dinero = 1000000;
+                banca.sumarFortuna(-dinero);
+                jugadorActual.sumarFortuna(dinero);
+                jugadorActual.sumarPremiosInversionesOBote(dinero);
                 break;
         }
     }
@@ -130,22 +131,25 @@ public class Baraja {
 
         System.out.println(barajaComunidad.get(numCarta-1).getDescripcion());
 
-        int idCarta = barajaComunidad.get(numCarta-1).getIdCarta();
+        int idCarta = barajaComunidad.get(numCarta-1).getIdCarta(), dinero=0;
         switch(idCarta) {
             case 1: /*Cobra 500000*/
-                bote = tablero.encontrar_casilla("Parking");
-                bote.sumarValor(-500000);
-                banca.sumarFortuna(-500000);
-                jugadorActual.sumarFortuna(500000);
+                dinero = 500000;
+                banca.sumarFortuna(-dinero);
+                jugadorActual.sumarFortuna(dinero);
+                jugadorActual.sumarPremiosInversionesOBote(dinero);
                 break;
             case 2: /*Ve a la Cárcel*/
                 jugadorActual.encarcelar(tablero.getPosiciones());
                 break;
             case 3: /*Ir a Salida*/
-                jugadorActual.getAvatar().moverAvatar(tablero.getPosiciones(), tablero.encontrar_casilla("Salida"));
+                jugadorActual.getAvatar().moverAvatar(tablero.getPosiciones(), tablero.encontrar_casilla("Salida"), true);
                 break;
             case 4: /*Cobra 2000000*/
-                jugadorActual.sumarFortuna(2000000);
+                dinero = 2000000;
+                banca.sumarFortuna(-dinero);
+                jugadorActual.sumarFortuna(dinero);
+                jugadorActual.sumarPremiosInversionesOBote(dinero);
                 break;
             case 5: /*Paga 1000000€ (se paga a la banca)*/
                 bote = tablero.encontrar_casilla("Parking");

@@ -109,8 +109,9 @@ public class Avatar {
                     }
                     if (casilla.getNombre().equals("Parking")) {
                         if(casilla.getValor() > 0) {
-                            //Súmaselle ao xgodaor o que hai no parking
+                            //Súmaselle ao xogador o que hai no parking
                             jugador.sumarFortuna(casilla.getValor());
+                            jugador.sumarPremiosInversionesOBote(casilla.getValor());
                             System.out.println("El jugador " + jugador.getNombre() + " ha recibido " + casilla.getValor() + " de la banca, como bote del Parking.");
                             Jugador banca = casilla.getDuenho();
                             //Réstaselle á banca o que hai que pagar
@@ -125,12 +126,42 @@ public class Avatar {
                     if (pasaPorSalida) {
                         jugador.setVueltas(jugador.getVueltas() + 1);
                         jugador.sumarFortuna(SUMA_VUELTA);
+                        jugador.sumarPasarPorCasillaDeSalida(SUMA_VUELTA);
                         System.out.println("El jugador ha completado una vuelta y recibe " + SUMA_VUELTA);
                     }
                     casilla.anhadirAvatar(this);
                     this.lugar = casilla;  // Actualiza la casilla actual del avatar
                     System.out.println("El avatar se mueve a la casilla " + casilla.getNombre() + ". Posición: " + casilla.getPosicion());
-                    return;
+                    return ;
+                }
+            }
+        }
+    }
+
+    public void moverAvatar(ArrayList<ArrayList<Casilla>> tablero, Casilla casilla, boolean cobraSalida) {
+        if (cobraSalida) {
+            if((casilla.getPosicion() - this.getLugar().getPosicion()) < 0) { //Pasa por la salida
+                jugador.setVueltas(jugador.getVueltas() + 1);
+                jugador.sumarFortuna(SUMA_VUELTA);
+                jugador.sumarPasarPorCasillaDeSalida(SUMA_VUELTA);
+                System.out.println("El jugador ha completado una vuelta y recibe " + SUMA_VUELTA);
+            }
+        }
+
+        if(casilla.getNombre().equals("Solar") && casilla.getDuenho().equals(jugador)){
+            casilla.sumarContadorDuenho();
+        }
+
+
+        Casilla casillaOld = this.getLugar();
+        casillaOld.eliminarAvatar(this);
+        for (ArrayList<Casilla> casillas : tablero) {
+            for (Casilla cas : casillas) {
+                if (cas.getNombre().equals(casilla.getNombre())) {
+                    casilla.anhadirAvatar(this);
+                    this.lugar = casilla;
+                    System.out.println("El avatar se mueve a la casilla " + casilla.getNombre() + ". Posición: " + casilla.getPosicion());
+                    return ;
                 }
             }
         }
@@ -242,25 +273,7 @@ public class Avatar {
     }
   
   
-    public void moverAvatar(ArrayList<ArrayList<Casilla>> tablero, Casilla casilla) {
 
-        if((casilla.getPosicion() - this.getLugar().getPosicion()) < 0) { //Pasa por la salida
-            jugador.setVueltas(jugador.getVueltas() + 1);
-            jugador.sumarFortuna(SUMA_VUELTA);
-            System.out.println("El jugador ha completado una vuelta y recibe " + SUMA_VUELTA);
-        }
-
-        Casilla casillaOld = this.getLugar();
-        casillaOld.eliminarAvatar(this);
-        for (ArrayList<Casilla> casillas : tablero) {
-            for (Casilla cas : casillas) {
-                if (cas.getNombre().equals(casilla.getNombre())) {
-                    casilla.anhadirAvatar(this);
-                    System.out.println("El jugador " + jugador.getNombre() + " (&" + id + ")" + " se ha movido a la casilla " + casilla.getNombre());
-                }
-            }
-        }
-    }
 
     /*Método que permite generar un ID para un avatar. Sólo lo usamos en esta clase (por ello es privado).
     * El ID generado será una letra mayúscula. Parámetros:

@@ -257,15 +257,19 @@ public class Casilla {
             switch (this.getTipo()) {
                 case "Solar":
                     Jugador duenhoSolar = this.getDuenho();
-                    // Comprobar si el dueño del solar es dueño de tdo el grupo de color
+                    // Comprobar si el dueño del solar es dueño de todo el grupo de color
                     if (this.getGrupo().esDuenhoGrupo(duenhoSolar)) {
                         actual.sumarFortuna(-2 * this.getImpuesto());
                         duenhoSolar.sumarFortuna(2 * this.getImpuesto());
+                        duenhoSolar.sumarCobroDeAlquileres(2 * this.getImpuesto());
                         actual.sumarGastos(2 * this.getImpuesto());
+                        actual.sumarPagoDeAlquileres(2 * this.getImpuesto());
                     } else {
                         actual.sumarFortuna(-this.getImpuesto());
                         duenhoSolar.sumarFortuna(this.getImpuesto());
+                        duenhoSolar.sumarCobroDeAlquileres(this.getImpuesto());
                         actual.sumarGastos(this.getImpuesto());
+                        actual.sumarPagoDeAlquileres(this.getImpuesto());
                     }
                     System.out.println("El jugador " + actual.getNombre() + " ha pagado a " + duenhoSolar.getNombre()
                             + "por el alquiler de " + this.getNombre());
@@ -342,6 +346,7 @@ public class Casilla {
         }
         solicitante.sumarFortuna(-this.valor);
         solicitante.sumarGastos(this.valor);
+        solicitante.sumarDineroInvertido(this.valor);
         banca.sumarFortuna(this.valor);
         this.setDuenho(solicitante);
         solicitante.anhadirPropiedad(this);
