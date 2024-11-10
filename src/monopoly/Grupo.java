@@ -11,6 +11,7 @@ class Grupo {
     private String colorGrupo; //Color del grupo
     private String nombreGrupo; //Nombre del grupo
     private int numCasillas; //Número de casillas del grupo.
+    private ArrayList<Edificio> edificiosGrupo;
 
 
     /**********Constructores**********/
@@ -23,6 +24,7 @@ class Grupo {
         this.colorGrupo = colorGrupo;
         this.nombreGrupo = nombreGrupo;
         this.miembros = new ArrayList<Casilla>();
+        this.edificiosGrupo = new ArrayList<>();
         anhadirCasilla(cas1);
         anhadirCasilla(cas2);
     }
@@ -35,6 +37,7 @@ class Grupo {
         this.colorGrupo = colorGrupo;
         this.nombreGrupo = nombreGrupo;
         this.miembros = new ArrayList<Casilla>();
+        this.edificiosGrupo = new ArrayList<>();
         anhadirCasilla(cas1);
         anhadirCasilla(cas2);
         anhadirCasilla(cas3);
@@ -59,6 +62,10 @@ class Grupo {
 
     public String getNombreGrupo() {
         return nombreGrupo;
+    }
+
+    public ArrayList<Edificio> getEdificiosGrupo() {
+        return edificiosGrupo;
     }
 
     /**********Métodos**********/
@@ -91,5 +98,14 @@ class Grupo {
         return contador == this.numCasillas;
     }
 
+    public int getNumEdificios(ArrayList<Edificio> edificios, String tipoEdificio) {
+        int numEdificios = 0;
+        for (Edificio edificio : edificios) {
+            if (edificio.getTipo().contains(tipoEdificio)) {
+                numEdificios++;
+            }
+        }
+        return numEdificios;
+    }
 
 }

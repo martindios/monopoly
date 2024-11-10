@@ -21,9 +21,10 @@ public class Casilla {
     private Jugador duenho; //Dueño de la casilla (por defecto sería la banca).
     private Grupo grupo; //Grupo al que pertenece la casilla (si es solar).
     private float impuesto; //Cantidad a pagar por caer en la casilla: el alquiler en solares/servicios/transportes o impuestos.
+    private float impuestoInicial;
     private float hipoteca; //Valor otorgado por hipotecar una casilla
     private ArrayList<Avatar> avatares; //Avatares que están situados en la casilla.
-    private int contador = 0; //Contador de veces que el dueño ha caído en la casilla
+    private int contador; //Contador de veces que el dueño ha caído en la casilla
     private ArrayList<Edificio> edificios; //Avatares que están situados en la casilla.
 
 
@@ -46,6 +47,9 @@ public class Casilla {
         this.hipoteca = valor*0.5f;
         avatares = new ArrayList<Avatar>();
         this.edificios = new ArrayList<Edificio>();
+        if(tipo.equals("Solar")) {
+            impuestoInicial = impuesto;
+        }
     }
 
     /*Constructor utilizado para inicializar las casillas de tipo IMPUESTOS.
@@ -446,36 +450,71 @@ public class Casilla {
     }
 
 
-    public int getNumCasas(ArrayList<Edificio> edificios){
-        edificios = this.edificios;
-        int numCasas = 0;
-        for(Edificio edificio : edificios){
-            if(edificio.getTipo().contains("casa")){
-                numCasas ++;
+    public int getNumEdificios(ArrayList<Edificio> edificios, String tipoEdificio) {
+        int numEdificios = 0;
+        for (Edificio edificio : edificios) {
+            if (edificio.getTipo().contains(tipoEdificio)) {
+                numEdificios++;
             }
         }
-        return numCasas;
+        return numEdificios;
     }
-    public void edificarCasa(Jugador jugador, ArrayList<Jugador> jugadores) {
+
+    public void edificarCasa(Jugador jugador, int contadorCasa) {
+        if(!jugador.getAvatar().getLugar().getTipo().equals("Solar")) {
+            System.out.println("El jugador no está en una casilla edificable.");
+            return;
+        }
         if(!this.getDuenho().equals(jugador)){
             System.out.println("El jugador no puede edificar, ya que no es el propietario de la casilla.");
+            return;
         }
-        if(this.getNumCasas(this.getEdificios()) < this.getGrupo().getNumCasillas()){
-            System.out.println("El número de casas que se pueden edificar en la casilla ya es el máximo.");
+        if(jugador.getFortuna() < valor*0.6) {
+            System.out.println("El jugador no tiene dinero suficiente para edificar una casa.");
         }
         if(!(this.getContador() > 2 || this.getGrupo().esDuenhoGrupo(this.getDuenho()))){
             System.out.println("El jugador no ha caído en la casilla más de dos veces o no posee el grupo de casillas a la que pertenece dicha casilla.");
+            return;
         }
-        //this.getDuenho().getEdificios().add(this.generarIdEdificacion(jugadores, "casa"));
+        //Si el número de hoteles no llega al máximo, se pueden construít 4 casas por solar
+        if(this.getGrupo().getNumEdificios(this.getGrupo().getEdificiosGrupo(), "Hotel") < this.getGrupo().getNumCasillas()) {
+            System.out.println("No tienes el número máximo de hoteles construídos en el grupo, puedes construír hasta 4 casas por solar.");
+            if(!(this.getNumEdificios(edificios, "Casa") < 4)) {
+                System.out.println("Has alcanzado el número máximo de casas en este solar (sin el máximo de hoteles).");
+                return;
+            }
+        }
+        else {
+            System.out.println("Tienes el número máximo de hoteles construídos en el grupo (" + this.getGrupo().getNumCasillas()
+                    + "), solo puedes construír " + this.getGrupo().getNumCasillas() + " casas en el grupo.");
+            if(!(this.getGrupo().getNumEdificios(this.getGrupo().getEdificiosGrupo(), "Casa") < this.getGrupo().getNumCasillas())) {
+                System.out.println("Tienes el número máximo de casas construídas en el grupo (" + this.getGrupo().getNumCasillas() + "), con el máximo de hoteles.");
+                return;
+            }
+        }
+        Edificio edificio = new Edificio("Casa", this, contadorCasa);
+        edificios.add(edificio);
+        jugador.getEdificios().add(edificio);
+        this.getGrupo().getEdificiosGrupo().add(edificio);
+        float precio = valor*0.6f;
+        jugador.sumarFortuna(-precio);
+        jugador.sumarGastos(precio);
+        System.out.println("El jugador " + jugador.getNombre() + " ha edificado una casa en " + this.getNombre() + " por un precio de " + precio + ".");
+        infoTrasEdificiar();
+
     }
 
-    public void edificarHotel(Jugador jugador, ArrayList<Jugador> jugadores) {
+    public void edificarHotel(Jugador jugador, int contador) {
         if(this.getDuenho().equals(jugador) && this.getDuenho().getEdificios().size() >= 4){
             //Quitar las 4 casas y poner un hotel
         }
     }
 
-    public void edificarPiscina(Jugador jugador, ArrayList<Jugador> jugadores){
+    public void edificarPiscina(Jugador jugador, int contador){
+
+    }
+
+    public void edificarPistaDeporte(Jugador jugador, int contador){
 
     }
 
@@ -614,16 +653,19 @@ public class Casilla {
             }
         }
         return """
+                {
                 Propiedad: %s,
                 Casas: %s,
                 Hoteles: %s,
                 Piscinas: %s,
                 Pistas de deporte: %s,
                 Alquiler: %.2f
+                }
                 """.formatted(this.getNombre(), Casas.isEmpty() ? '-' : Casas, Hoteles.isEmpty() ? '-' : Hoteles, Piscinas.isEmpty() ? '-' : Piscinas,
                 Deporte.isEmpty() ? '-' : Deporte, this.getImpuesto());
     }
 
+    //Completar co alquiler
     public void venderEdificios(String tipo, int cantidad) {
         Jugador propietario = this.getDuenho();
         for(Edificio edificio : edificios) {
@@ -637,4 +679,41 @@ public class Casilla {
             }
         }
     }
+
+
+    private String infoTrasEdificiar() {
+        return """
+                El %s tiene los siguientes edificios:
+                - Casas: %d,
+                - Hoteles: %d,
+                - Piscinas: %d,
+                - Deporte: %d.
+                Máximo de cada edificio en el grupo: %d.
+                """.formatted(this.nombre, getNumEdificios(edificios, "Casa"), getNumEdificios(edificios, "Hotel"), getNumEdificios(edificios, "Piscina"),
+                getNumEdificios(edificios, "Deporte"), this.getGrupo().getNumCasillas());
+    }
+
+    /*private void aumentarAlquiler(String tipoEdificio) {
+        switch (tipoEdificio) {
+            case "Casa":
+                switch (this.getNumEdificios(edificios, "Casa")) {
+                    case 1:
+                        impuesto = impuestoInicial*5;
+                        break;
+                    case 2:
+                        impuesto = impuestoInicial*15;
+                        break;
+                    case 3:
+                        impuesto = impuestoInicial*35;
+                        break;
+                    case 4:
+                        impuesto = impuestoInicial*50;
+                        break;
+                }
+                break;
+            case "Hotel":
+
+        }
+
+    }*/
 }
