@@ -8,10 +8,11 @@ import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class Baraja {
+    /**********Atributos**********/
     private final ArrayList<Carta> baraja;
-
     Scanner scanner = new Scanner(System.in);
 
+    /**********Constructor**********/
     public Baraja() {
         this.baraja = new ArrayList<>();
 
@@ -46,14 +47,19 @@ public class Baraja {
 
     }
 
-    public ArrayList<Carta> getBaraja() {
-        return baraja;
-    }
+    /**********Métodos**********/
 
     private void barajar(ArrayList<Carta> baraja) {
         Collections.shuffle(baraja);
     }
 
+    /**
+     * Evalúa una carta de "Suerte" para el jugador actual.
+     *
+     * @param banca         El jugador banca.
+     * @param jugadorActual El jugador actual.
+     * @param tablero       El tablero del juego.
+     */
     public void evaluarSuerte(Jugador banca, Jugador jugadorActual, Tablero tablero) {
         Casilla bote;
 
@@ -107,6 +113,14 @@ public class Baraja {
         }
     }
 
+    /**
+     * Evalúa una carta de "Comunidad" para el jugador actual.
+     *
+     * @param banca         El jugador banca.
+     * @param jugadorActual El jugador actual.
+     * @param tablero       El tablero del juego.
+     * @param jugadores     La lista de jugadores.
+     */
     public void evaluarComunidad(Jugador banca, Jugador jugadorActual, Tablero tablero, ArrayList<Jugador> jugadores) {
         Casilla bote;
 
@@ -137,7 +151,6 @@ public class Baraja {
                 dinero = 500000;
                 banca.sumarFortuna(-dinero);
                 jugadorActual.sumarFortuna(dinero);
-                jugadorActual.sumarPremiosInversionesOBote(dinero);
                 break;
             case 2: /*Ve a la Cárcel*/
                 jugadorActual.encarcelar(tablero.getPosiciones());
