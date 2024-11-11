@@ -30,6 +30,7 @@ public class Jugador {
     private float pasarPorCasillaDeSalida;
     private float premiosInversionesOBote; //MIRAR LO QUE ES INVERSIONES
     private int vecesEnLaCarcel;
+    private int vecesTiradasDados;
 
 
     /**********Constructores**********/
@@ -64,6 +65,7 @@ public class Jugador {
         this.pasarPorCasillaDeSalida = 0;
         this.premiosInversionesOBote = 0;
         this.vecesEnLaCarcel = 0;
+        this.vecesTiradasDados = 0;
 
         this.propiedades = new ArrayList<>();
         this.hipotecas = new ArrayList<>();
@@ -146,6 +148,10 @@ public class Jugador {
         return vecesEnLaCarcel;
     }
 
+    public int getVecesTiradasDados() {
+        return vecesTiradasDados;
+    }
+
     /**********Setters**********/
 
     public void setFortuna(float fortuna) {
@@ -223,8 +229,12 @@ public class Jugador {
         this.premiosInversionesOBote += valor;
     }
 
-    public void sumarVecesEnLaCarcel(float valor) {
+    public void sumarVecesEnLaCarcel(int valor) {
         this.vecesEnLaCarcel += valor;
+    }
+
+    public void sumarVecesTiradasDados() {
+        this.vecesTiradasDados += 1;
     }
 
     //Método para añadir fortuna a un jugador
@@ -336,4 +346,16 @@ public class Jugador {
                     Edificios: %s
                 }""".formatted(nombre, getAvatar().getId(), fortuna, listaPropiedades, listaHipotecas, listaEdificios);
     }
+
+    public float calcularFortunaTotal() {
+        float fortunaTotal = this.fortuna;
+        for (Casilla casilla : propiedades) {
+            fortunaTotal += casilla.getValor();
+        }
+        for (Edificio edificio : edificios) {
+            fortunaTotal += edificio.getValor();
+        }
+        return fortunaTotal;
+    }
+
 }

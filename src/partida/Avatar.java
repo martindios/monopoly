@@ -87,7 +87,7 @@ public class Avatar {
     * - Un entero que indica el numero de casillas a moverse (será el valor sacado en la tirada de los dados).
     * EN ESTA VERSIÓN SUPONEMOS QUE valorTirada siemrpe es positivo.
      */
-    public void moverAvatar(ArrayList<ArrayList<Casilla>> tablero, int valorTirada) { //MODIFICAR PARA QUE TENGA LA MISMA LÓGICA QUE LA OVERLOAD
+    public void moverAvatar(ArrayList<ArrayList<Casilla>> tablero, int valorTirada) {
         Casilla casillaOld = this.lugar;
         casillaOld.eliminarAvatar(this);
         int max = 40;
@@ -131,6 +131,7 @@ public class Avatar {
                     }
                     casilla.anhadirAvatar(this);
                     this.lugar = casilla;  // Actualiza la casilla actual del avatar
+                    casilla.sumarVecesFrecuentada();
                     System.out.println("El avatar se mueve a la casilla " + casilla.getNombre() + ". Posición: " + casilla.getPosicion());
                     return ;
                 }
@@ -152,7 +153,6 @@ public class Avatar {
             casilla.sumarContadorDuenho();
         }
 
-
         Casilla casillaOld = this.getLugar();
         casillaOld.eliminarAvatar(this);
         for (ArrayList<Casilla> casillas : tablero) {
@@ -160,6 +160,7 @@ public class Avatar {
                 if (cas.getNombre().equals(casilla.getNombre())) {
                     casilla.anhadirAvatar(this);
                     this.lugar = casilla;
+                    casilla.sumarVecesFrecuentada();
                     System.out.println("El avatar se mueve a la casilla " + casilla.getNombre() + ". Posición: " + casilla.getPosicion());
                     return ;
                 }
