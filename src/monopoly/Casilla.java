@@ -4,6 +4,7 @@ import partida.*;
 
 import java.util.ArrayList;
 import java.lang.String;
+import java.util.Iterator;
 import java.util.Objects;
 import java.util.Random;
 
@@ -465,28 +466,28 @@ public class Casilla {
         return numEdificios;
     }
 
-    public void edificarCasa(Jugador jugador, int contadorCasa) {
+    public boolean edificarCasa(Jugador jugador, int contadorCasa) {
         if(!jugador.getAvatar().getLugar().getTipo().equals("Solar")) {
             System.out.println("El jugador no está en una casilla edificable.");
-            return;
+            return false;
         }
         if(!this.getDuenho().equals(jugador)){
             System.out.println("El jugador no puede edificar, ya que no es el propietario de la casilla.");
-            return;
+            return false;
         }
         if(jugador.getFortuna() < valor*0.6) {
             System.out.println("El jugador no tiene dinero suficiente para edificar una casa.");
         }
         if(!(this.getContador() > 2 || this.getGrupo().esDuenhoGrupo(this.getDuenho()))){
             System.out.println("El jugador no ha caído en la casilla más de dos veces o no posee el grupo de casillas a la que pertenece dicha casilla.");
-            return;
+            return false;
         }
         //Si el número de hoteles no llega al máximo, se pueden construít 4 casas por solar
         if(this.getGrupo().getNumEdificios(this.getGrupo().getEdificiosGrupo(), "Hotel") < this.getGrupo().getNumCasillas()) {
             System.out.println("No tienes el número máximo de hoteles construídos en el grupo, puedes construír hasta 4 casas por solar.");
             if(!(this.getNumEdificios(edificios, "Casa") < 4)) {
                 System.out.println("Has alcanzado el número máximo de casas en este solar (sin el máximo de hoteles).");
-                return;
+                return false;
             }
         }
         else {
@@ -494,34 +495,115 @@ public class Casilla {
                     + "), solo puedes construír " + this.getGrupo().getNumCasillas() + " casas en el grupo.");
             if(!(this.getGrupo().getNumEdificios(this.getGrupo().getEdificiosGrupo(), "Casa") < this.getGrupo().getNumCasillas())) {
                 System.out.println("Tienes el número máximo de casas construídas en el grupo (" + this.getGrupo().getNumCasillas() + "), con el máximo de hoteles.");
-                return;
+                return false;
             }
         }
-        Edificio edificio = new Edificio("Casa", this, contadorCasa);
+        crearEdificio("Casa", jugador, contadorCasa, 0.6f);
+        infoTrasEdificiar();
+        return true;
+    }
+
+    public boolean edificarHotel(Jugador jugador, int contadorHotel) {
+        if (!this.getDuenho().equals(jugador)) {
+            System.out.println("El jugador no puede edificar, ya que no es el propietario de la casilla.");
+            return false;
+        }
+        if (jugador.getFortuna() < valor * 0.6) {
+            System.out.println("El jugador no tiene dinero suficiente para edificar una casa.");
+            return false;
+        }
+        if((this.getGrupo().getNumEdificios(this.getGrupo().getEdificiosGrupo(), "Hotel") == this.getGrupo().getNumCasillas())) {
+            System.out.println("Tienes el número máximo de hoteles construídos en el grupo (" + this.getGrupo().getNumCasillas() + ").");
+            return false;
+        }
+        if((this.getNumEdificios(edificios, "Casa")) != 4){
+            System.out.println("No tienes el mínimo de casas en la casilla para poder edificar un hotel (4 casas).");
+            return false;
+        }
+        quitarCasas(4, jugador);
+        crearEdificio("Hotel", jugador, contadorHotel, 0.6f);
+        infoTrasEdificiar();
+        return true;
+    }
+
+    public boolean edificarPiscina(Jugador jugador, int contadorPiscina){
+        if (!this.getDuenho().equals(jugador)) {
+            System.out.println("El jugador no puede edificar, ya que no es el propietario de la casilla.");
+            return false;
+        }
+        if (jugador.getFortuna() < valor * 0.4) {
+            System.out.println("El jugador no tiene dinero suficiente para edificar una casa.");
+            return false;
+        }
+        if(!((this.getNumEdificios(edificios, "Hotel") >= 1) && (this.getNumEdificios(edificios, "Casa") >= 2))){
+            System.out.println("En el solar no se han construido al menos 1 hotel y dos casas.");
+            return false;
+        }
+        crearEdificio("Piscina", jugador, contadorPiscina, 0.4f);
+        infoTrasEdificiar();
+        return true;
+    }
+
+    public boolean edificarPistaDeporte(Jugador jugador, int contadorPistaDeporte){
+        if (!this.getDuenho().equals(jugador)) {
+            System.out.println("El jugador no puede edificar, ya que no es el propietario de la casilla.");
+            return false;
+        }
+        if (jugador.getFortuna() < valor * 1.25) {
+            System.out.println("El jugador no tiene dinero suficiente para edificar una casa.");
+            return false;
+        }
+        if(!(this.getNumEdificios(edificios, "Hotel") >= 2)){
+            System.out.println("En el solar no se han construido al menos 2 hoteles.");
+            return false;
+        }
+        crearEdificio("PistaDeporte", jugador, contadorPistaDeporte, 1.25f);
+        infoTrasEdificiar();
+        return true;
+    }
+
+    public void crearEdificio(String tipoEdificio, Jugador jugador, int contador, float v){
+        Edificio edificio = new Edificio(tipoEdificio, this, contador);
         edificios.add(edificio);
         jugador.getEdificios().add(edificio);
         this.getGrupo().getEdificiosGrupo().add(edificio);
-        float precio = valor*0.6f;
+        float precio = valor*v;
         jugador.sumarFortuna(-precio);
         jugador.sumarGastos(precio);
-        System.out.println("El jugador " + jugador.getNombre() + " ha edificado una casa en " + this.getNombre() + " por un precio de " + precio + ".");
-        infoTrasEdificiar();
-
+        System.out.println("El jugador " + jugador.getNombre() + " ha edificado un/una " + tipoEdificio + " en " + this.getNombre() + " por un precio de " + precio + ".");
     }
-
-    public void edificarHotel(Jugador jugador, int contador) {
-        if(this.getDuenho().equals(jugador) && this.getDuenho().getEdificios().size() >= 4){
-            //Quitar las 4 casas y poner un hotel
+    public void quitarCasas(int numCasas, Jugador jugador){
+        ArrayList<Edificio> edificiosBorrar = new ArrayList<>();
+        for(Edificio casa: this.getEdificios()){
+            if(casa.getIdEdificio().contains("Casa") && numCasas != 0){
+                edificiosBorrar.add(casa);
+                numCasas --;
+            }
         }
+        int tamano = edificiosBorrar.size();
+        for (int i = 0; i < tamano; i++) {
+            edificios.remove(edificiosBorrar.get(i));
+        }
+        for (int i = 0; i < tamano; i++) {
+            jugador.getEdificios().remove(edificiosBorrar.get(i));
+        }
+        for (int i = 0; i < tamano; i++) {
+            grupo.getEdificiosGrupo().remove(edificiosBorrar.get(i));
+        }
+
     }
+    /*public void quitarCasas(int numCasas, Jugador jugador) {
+        this.getEdificios().removeIf(casa -> casa.getIdEdificio().contains("Casa") && numCasas != 0);
+        jugador.getEdificios().removeIf(casa -> casa.getIdEdificio().contains("Casa") && numCasas != 0);
+        Iterator<Edificio> iterator = edificios.iterator();
+        while (iterator.hasNext()) {
+            Edificio casa = iterator.next();
+            if (casa.getIdEdificio().contains("Casa") && numCasas != 0) {
+                iterator.remove(); // Usar iterator.remove() para evitar ConcurrentModificationException
+            }
+        }
+    }*/
 
-    public void edificarPiscina(Jugador jugador, int contador){
-
-    }
-
-    public void edificarPistaDeporte(Jugador jugador, int contador){
-
-    }
 
     private String generarIdEdificacion(ArrayList<Jugador> jugadores, String nombre) {
         Random random = new Random();

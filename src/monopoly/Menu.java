@@ -301,20 +301,25 @@ public class Menu {
         Casilla casilla = jugador.getAvatar().getLugar();
         switch (palabra) {
             case "Casa":
-                casilla.edificarCasa(jugador, contadorCasa);
-                contadorCasa++;
+                if(casilla.edificarCasa(jugador, contadorCasa)){
+                    contadorCasa++;
+                }
                 break;
             case "Hotel":
-                casilla.edificarHotel(jugador, contadorHotel);
-                contadorHotel++;
+                if(casilla.edificarHotel(jugador, contadorHotel)){
+                    contadorHotel++;
+                }
+
                 break;
             case "Piscina":
-                casilla.edificarPiscina(jugador, contadorPiscina);
-                contadorPiscina++;
+                if(casilla.edificarPiscina(jugador, contadorPiscina)){
+                    contadorPiscina++;
+                }
                 break;
             case "PistaDeporte":
-                casilla.edificarPistaDeporte(jugador, contadorPistaDeporte);
-                contadorPistaDeporte++;
+                if(casilla.edificarPistaDeporte(jugador, contadorPistaDeporte)){
+                    contadorPistaDeporte++;
+                }
                 break;
             default:
                 System.out.println("Edificio no válido.");
