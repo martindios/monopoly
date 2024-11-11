@@ -305,18 +305,22 @@ public class Menu {
             case "Casa":
                 casilla.edificarCasa(jugador, contadorCasa);
                 contadorCasa++;
+                casilla.modificarAlquiler();
                 break;
             case "Hotel":
                 casilla.edificarHotel(jugador, contadorHotel);
                 contadorHotel++;
+                casilla.modificarAlquiler();
                 break;
             case "Piscina":
                 casilla.edificarPiscina(jugador, contadorPiscina);
                 contadorPiscina++;
+                casilla.modificarAlquiler();
                 break;
             case "PistaDeporte":
                 casilla.edificarPistaDeporte(jugador, contadorPistaDeporte);
                 contadorPistaDeporte++;
+                casilla.modificarAlquiler();
                 break;
             default:
                 System.out.println("Edificio no válido.");
@@ -457,6 +461,9 @@ public class Menu {
             } else if (avatar.getAvanzado() == 1) {
                 if(avatar.getTipo().equalsIgnoreCase("Pelota")){
                     avatar.moverJugadorPelota(tablero.getPosiciones(), valor1, valor2);
+                    if(avatar.getJugador().getEnCarcel()) {
+                        acabarTurno();
+                    }
                 } else if (avatar.getTipo().equalsIgnoreCase("Coche")){
                     avatar.moverJugadorCoche(tablero.getPosiciones(), valor1, valor2, lanzamientos);
                 }
@@ -565,6 +572,7 @@ public class Menu {
             } else {
                 // Pagar la fianza
                 System.out.println("El jugador paga la fianza. Tiene derecho a usar su turno");
+                tirado = false;
                 JugActual.setEnCarcel(false);
                 JugActual.setTiradasCarcel(0);
                 JugActual.sumarFortuna(-fianza);
@@ -583,13 +591,13 @@ public class Menu {
         // Caso 3: Solo puede pagar la fianza
         else if (Presupuesto) {
             System.out.println("El jugador solo puede pagar la fianza");
+            tirado = false;
             JugActual.setEnCarcel(false);
             JugActual.setTiradasCarcel(0);
             JugActual.sumarFortuna(-fianza);
             JugActual.sumarGastos(fianza);
             banca.sumarFortuna(fianza);
         }
-        acabarTurno();
     }
 
     /*Método que realiza las acciones asociadas al comando 'listar enventa'*/
@@ -637,7 +645,7 @@ public class Menu {
     // Método que realiza las acciones asociadas al comando 'acabar turno'.
     private void acabarTurno() {
         //Tiradas carcel xa axustadas na funcion SaliCarcel
-        if(!tirado && dado1.getValor() != dado2.getValor()) {
+        if(!tirado || dado1.getValor() == dado2.getValor()) {
             System.out.println("No puedes acabar turno sin haber lanzado los dados.");
             return;
         }
@@ -731,9 +739,15 @@ public class Menu {
                 }
                 case "Suerte" -> {
                     barajas.evaluarSuerte(banca, jugadorActual, tablero);
+                    if(jugadorActual.getEnCarcel()) {
+                        acabarTurno();
+                    }
                 }
                 case "Comunidad" -> {
                     barajas.evaluarComunidad(banca, jugadorActual, tablero, jugadores);
+                    if(jugadorActual.getEnCarcel()) {
+                        acabarTurno();
+                    }
                 }
             }
         }
@@ -925,6 +939,7 @@ public class Menu {
             System.out.println("No hay " + Integer.parseInt(cantidad) + " edificios del tipo " + tipo + " en la casilla.");
         }
         casilla.venderEdificios(tipo, contador);
+        casilla.modificarAlquiler();
     }
 
     /**
