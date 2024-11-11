@@ -307,22 +307,25 @@ public class Menu {
                 if(casilla.edificarCasa(jugador, contadorCasa)){
                     contadorCasa++;
                 }
+                casilla.modificarAlquiler();
                 break;
             case "Hotel":
                 if(casilla.edificarHotel(jugador, contadorHotel)){
                     contadorHotel++;
                 }
-
+                casilla.modificarAlquiler();
                 break;
             case "Piscina":
                 if(casilla.edificarPiscina(jugador, contadorPiscina)){
                     contadorPiscina++;
                 }
+                casilla.modificarAlquiler();
                 break;
             case "PistaDeporte":
                 if(casilla.edificarPistaDeporte(jugador, contadorPistaDeporte)){
                     contadorPistaDeporte++;
                 }
+                casilla.modificarAlquiler();
                 break;
             default:
                 System.out.println("Edificio no válido.");
