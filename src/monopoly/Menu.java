@@ -226,6 +226,15 @@ public class Menu {
                     } else {
                         System.out.println("El formato correcto es: hipotecar nombrePropiedad");
                     }
+                    break;
+
+                case "deshipotecar":
+                    if (palabrasArray.length == 2) {
+                        deshipotecar(palabrasArray[1]);
+                    } else {
+                        System.out.println("El formato correcto es: deshipotecar nombrePropiedad");
+                    }
+                    break;
 
                 case "ver":
                     if (palabrasArray.length == 2 && palabrasArray[1].equals("tablero")) {
@@ -1214,18 +1223,52 @@ public class Menu {
             return;
         }
         if (!casilla.getEdificios().isEmpty()) {
-            System.out.println("No puedes hipotecar una casilla con edificios.");
+            System.out.println(jugadorActual.getNombre() + " no puede hipotecar " + nombreCasilla + ". Tiene edificios construidos");
             return;
         }
         if (casilla.isHipotecado()) {
-            System.out.println("La casilla ya está hipotecada.");
+            System.out.println(jugadorActual.getNombre() + " no puede hipotecar " + nombreCasilla + ". Ya está hipotecada");
             return;
         }
 
+        System.out.println("El jugador " + jugadorActual.getNombre() + " hipoteca " + nombreCasilla + " por " + casilla.getHipoteca());
         casilla.setHipotecado(true);
         jugadorActual.sumarFortuna(casilla.getHipoteca());
         banca.sumarFortuna(-casilla.getHipoteca());
     }
+
+    private void deshipotecar(String nombreCasilla) {
+        Jugador jugadorActual = jugadores.get(turno);
+        Casilla casilla = tablero.encontrar_casilla(nombreCasilla);
+
+        if (casilla == null) {
+            System.out.println("Casilla no encontrada");
+            return;
+        }
+
+        if (!casilla.getDuenho().equals(jugadorActual)) {
+            System.out.println(jugadorActual.getNombre() + " no puede deshipotecar " + nombreCasilla + ". No es una propiedad que le pertenece");
+            return;
+        }
+        if (!casilla.isHipotecado()) {
+            System.out.println(jugadorActual.getNombre() + " no puede deshipotecar " + nombreCasilla + ". No está hipotecada");
+            return;
+        }
+
+        float precioDeshipotecar = casilla.getHipoteca() * 1.1f;
+        if(precioDeshipotecar > jugadorActual.getFortuna()) {
+            System.out.println(jugadorActual.getNombre() + " no puede deshipotecar " + nombreCasilla + ". No tiene suficiente dinero");
+            return;
+        }
+
+        System.out.println("El jugador " + jugadorActual.getNombre() + " paga " + precioDeshipotecar + " por deshipotecar "
+                + nombreCasilla + ". Ahora puede recibir alquileres y edificar en el grupo " + casilla.getGrupo().getNombreGrupo());
+        jugadorActual.sumarFortuna(-precioDeshipotecar);
+        jugadorActual.sumarGastos(precioDeshipotecar);
+        banca.sumarFortuna(precioDeshipotecar);
+        casilla.setHipotecado(false);
+    }
+
 
     /**
      * Método que solicita al usuario introducir un número dentro de un rango específico.

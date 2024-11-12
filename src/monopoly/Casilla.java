@@ -289,7 +289,7 @@ public class Casilla {
         }
         /*Comprobar que es dueño de la casilla no es él mismo*/
         if (!actual.equals(this.getDuenho())) {
-            if(this.hipotecado) {
+            if(this.hipotecado) { // Comprobar si la casilla está hipotecada
                 System.out.println("La casilla está hipotecada, no se paga alquiler.");
                 return;
             }
