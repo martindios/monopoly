@@ -82,6 +82,16 @@ public class Avatar {
         this.id = id;
     }
 
+    public void setTipo(String tipo) {
+        this.tipo = tipo;
+    }
+
+    public void setAvanzado(int avanzado) {
+        this.avanzado = avanzado;
+    }
+
+    /**********Métodos**********/
+
     /*Método que permite mover a un avatar a una casilla concreta. Parámetros:
     * - Un array con las casillas del tablero. Se trata de un arrayList de arrayList de casillas (uno por lado).
     * - Un entero que indica el numero de casillas a moverse (será el valor sacado en la tirada de los dados).
@@ -272,9 +282,6 @@ public class Avatar {
         }
 
     }
-  
-  
-
 
     /*Método que permite generar un ID para un avatar. Sólo lo usamos en esta clase (por ello es privado).
     * El ID generado será una letra mayúscula. Parámetros:
@@ -296,16 +303,4 @@ public class Avatar {
         setId(idCreado);
     }
 
-    /*
-    SETTERS
-     */
-
-
-    public void setTipo(String tipo) {
-        this.tipo = tipo;
-    }
-
-    public void setAvanzado(int avanzado) {
-        this.avanzado = avanzado;
-    }
 }

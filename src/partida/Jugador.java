@@ -23,7 +23,7 @@ public class Jugador {
     private ArrayList<Edificio> edificios; //Propiedades que posee el jugador.
 
     /*Atributos designados para las estadísticas*/
-    private float dineroInvertido; //HAY QUE AÑADIR EL DINERO DE LAS EDIFICACIONES
+    private float dineroInvertido;
     private float pagoTasasEImpuestos;
     private float pagoDeAlquileres;
     private float cobroDeAlquileres;

@@ -184,6 +184,15 @@ public class Baraja {
         }
     }
 
+    /**
+     * Método que solicita al usuario introducir un número dentro de un rango específico.
+     * Se encarga de validar que la entrada esté dentro de los límites establecidos y
+     * maneja excepciones de entrada inválida. Si la entrada es válida, se devuelve el número.
+     *
+     * @param min El valor mínimo permitido para la entrada.
+     * @param max El valor máximo permitido para la entrada.
+     * @return El número introducido por el usuario, dentro del rango especificado.
+     */
     private int introducirNum(int min, int max){
         int num = -1;
         while (num < min || num > max) {
