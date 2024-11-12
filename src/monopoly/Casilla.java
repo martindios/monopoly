@@ -618,7 +618,6 @@ public class Casilla {
 
 
 
-
     /**
      * Método para mostrar información de una casilla en venta.
      *
@@ -779,27 +778,30 @@ public class Casilla {
                 getNumEdificios(edificios, "Deporte"), this.getGrupo().getNumCasillas());
     }
 
-    /*private void aumentarAlquiler(String tipoEdificio) {
-        switch (tipoEdificio) {
-            case "Casa":
-                switch (this.getNumEdificios(edificios, "Casa")) {
-                    case 1:
-                        impuesto = impuestoInicial*5;
-                        break;
-                    case 2:
-                        impuesto = impuestoInicial*15;
-                        break;
-                    case 3:
-                        impuesto = impuestoInicial*35;
-                        break;
-                    case 4:
-                        impuesto = impuestoInicial*50;
-                        break;
-                }
-                break;
-            case "Hotel":
-
+    public void modificarAlquiler() {
+        int numCasas = getNumEdificios(edificios, "Casa");
+        int numHoteles = getNumEdificios(edificios, "Hotel");
+        int numPiscinas = getNumEdificios(edificios, "Piscina");
+        int numPistaDeporte = getNumEdificios(edificios, "Deporte");
+        float factorAlquiler = 0;
+        // Cálculo para Casas
+        if (numCasas > 0) {
+            if (numCasas == 1) factorAlquiler += 5;
+            else if (numCasas == 2) factorAlquiler += 15;
+            else if (numCasas == 3) factorAlquiler += 35;
+            else if (numCasas == 4) factorAlquiler += 50;
         }
-
-    }*/
+        // Cálculo para Hoteles
+        factorAlquiler += 70 * numHoteles;
+        // Cálculo para Piscinas
+        factorAlquiler += 25 * numPiscinas;
+        // Cálculo para Pistas de Deporte
+        factorAlquiler += 25 * numPistaDeporte;
+        // Si no hay edificios, el factor es 1 (no se modifica el alquiler)
+        if (factorAlquiler == 0) {
+            factorAlquiler = 1;
+        }
+        // Calculamos el impuesto actualizado
+        impuesto = impuestoInicial * factorAlquiler;
+    }
 }
