@@ -115,7 +115,14 @@ public class Avatar {
 
         for (ArrayList<Casilla> fila : tablero) {
             for (Casilla casilla : fila) {
+
                 if (casilla.getPosicion() == posicionNueva) {
+
+                    casilla.anhadirAvatar(this);
+                    this.lugar = casilla;  // Actualiza la casilla actual del avatar
+                    casilla.sumarVecesFrecuentada();
+                    System.out.println("El avatar se mueve a la casilla " + casilla.getNombre() + ". Posición: " + casilla.getPosicion());
+
                     if (casilla.getNombre().equals("IrCarcel")) {
                         jugador.encarcelar(tablero);
                         return;
@@ -139,6 +146,7 @@ public class Avatar {
                             System.out.println("El bote está vacío. No se entrega nada.");
                         }
                     }
+
                     if (pasaPorSalidaDerecho) {
                         jugador.setVueltas(jugador.getVueltas() + 1);
                         jugador.sumarFortuna(SUMA_VUELTA);
@@ -147,13 +155,16 @@ public class Avatar {
                     }
                     if (pasaPorSalidaReves) {
                         jugador.setVueltas(jugador.getVueltas() - 1);
-                        //Comprobar si el jugador es solvente, sino debe hipotecar o vender
+                        if (jugador.getFortuna() < SUMA_VUELTA) {
+                            System.out.println("El jugador no tiene suficiente dinero para pagar la vuelta. " +
+                                    "Debe vender edificio, hipotecar propiedades o declarse en bancarrota.");
+                            while (jugador.getFortuna() < SUMA_VUELTA) {
+                                jugador.conseguirDinero(SUMA_VUELTA);
+                            }
+                        }
 
                     }
-                    casilla.anhadirAvatar(this);
-                    this.lugar = casilla;  // Actualiza la casilla actual del avatar
-                    casilla.sumarVecesFrecuentada();
-                    System.out.println("El avatar se mueve a la casilla " + casilla.getNombre() + ". Posición: " + casilla.getPosicion());
+
                     return ;
                 }
             }
@@ -231,60 +242,7 @@ public class Avatar {
 
     }
 
-    public void moverJugadorPelota(ArrayList<ArrayList<Casilla>> casillas, int dado1, int dado2) {
-        int valorTirada = dado1 + dado2;
-        int i = 4;
-        int j = 0;
-        int k = 0;
-        //Dado tiradaDobles1 = new Dado();
-        //Dado tiradaDobles2 = new Dado();
-        //int valor1 = tiradaDobles1.hacerTirada();
-        //int valor2 = tiradaDobles2.hacerTirada();
 
-        if (valorTirada > 4){
-            while(i != valorTirada){
-                i++;
-                if (i % 2 != 0) {
-                    if(i == 5){
-                        moverAvatar(casillas, 5);
-                    }else{
-                        moverAvatar(casillas, 2);
-                    }
-                }if((i == valorTirada) && (i % 2 == 0)){
-                    moverAvatar(casillas, 1);
-                }
-            }
-        } else {
-            while(j != valorTirada){
-                j++;
-                if (j % 2 != 0) {
-                    if(j == 1){
-                        moverAvatar(casillas, -1);
-                    }else{
-                        moverAvatar(casillas, -2);
-                    }
-                }if((j == valorTirada) && (j % 2 == 0)){
-                    moverAvatar(casillas, -1);
-                }
-            }
-        }
-
-        /*
-        while((dado1 == dado2) && k != 3){
-            k++;
-            System.out.println("Dado 1: " + dado1);
-            System.out.println("Dado 2: " + dado2);
-
-        }
-
-        if(k == 3){
-            jugador.encarcelar(casillas);
-            System.out.println("El jugador ha sido encarcelado.");
-
-        } */
-
-
-    }
 
     /*Método que permite generar un ID para un avatar. Sólo lo usamos en esta clase (por ello es privado).
     * El ID generado será una letra mayúscula. Parámetros:

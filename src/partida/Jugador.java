@@ -1,6 +1,7 @@
 package partida;
 
 import java.util.ArrayList;
+import java.util.Scanner;
 
 import monopoly.*;
 import static monopoly.Valor.FORTUNA_BANCA;
@@ -42,10 +43,10 @@ public class Jugador {
     }
 
     /*Constructor principal
-    * Parámetros:
-    * Nombre del jugador, tipo del avatar que tendrá, casilla en la que empezará y ArrayList de
-    * avatares creados (usado para dos propósitos: evitar que dos jugadores tengan el mismo nombre y
-    * que dos avatares tengan mismo ID). Desde este constructor también se crea el avatar.
+     * Parámetros:
+     * Nombre del jugador, tipo del avatar que tendrá, casilla en la que empezará y ArrayList de
+     * avatares creados (usado para dos propósitos: evitar que dos jugadores tengan el mismo nombre y
+     * que dos avatares tengan mismo ID). Desde este constructor también se crea el avatar.
      */
     public Jugador(String nombre, String tipoAvatar, Casilla inicio, ArrayList<Avatar> avCreados) {
         this.nombre = nombre;
@@ -84,6 +85,7 @@ public class Jugador {
     public Avatar getAvatar() {
         return avatar;
     }
+
     public int getTiradasCarcel() {
         return tiradasCarcel;
     }
@@ -155,22 +157,21 @@ public class Jugador {
     /**********Setters**********/
 
     public void setFortuna(float fortuna) {
-        if(fortuna < 0) {
+        if (fortuna < 0) {
             this.fortuna = 0;
-        }
-        else {
+        } else {
             this.fortuna = fortuna;
         }
     }
 
     public void setGastos(float gastos) {
-        if(gastos < 0) {
+        if (gastos < 0) {
             this.gastos = 0;
-        }
-        else {
+        } else {
             this.gastos = gastos;
         }
     }
+
     public void setEnCarcel(boolean enCarcel) {
         this.enCarcel = enCarcel;
     }
@@ -191,7 +192,9 @@ public class Jugador {
         this.vueltas = vueltas;
     }
 
-    public void setEdificios(ArrayList<Edificio> edificios) {this.edificios = edificios;}
+    public void setEdificios(ArrayList<Edificio> edificios) {
+        this.edificios = edificios;
+    }
 
 
     /**********Métodos**********/
@@ -202,7 +205,8 @@ public class Jugador {
     }
 
     //Método para eliminar una propiedad del arraylist de propiedades de jugador.
-    public void eliminarPropiedad(Casilla casilla) { propiedades.remove(casilla);
+    public void eliminarPropiedad(Casilla casilla) {
+        propiedades.remove(casilla);
     }
 
     public void sumarTasasEImpuestos(float valor) {
@@ -264,9 +268,9 @@ public class Jugador {
         Avatar av = this.avatar;
         Casilla casillaOld = av.getLugar();
         casillaOld.eliminarAvatar(av);
-        for(ArrayList<Casilla> casillas : pos) {
-            for(Casilla casilla : casillas) {
-                if(casilla.getNombre().equalsIgnoreCase("Cárcel")) {
+        for (ArrayList<Casilla> casillas : pos) {
+            for (Casilla casilla : casillas) {
+                if (casilla.getNombre().equalsIgnoreCase("Cárcel")) {
                     casilla.anhadirAvatar(av);
                     System.out.println("El jugador ha sido encarcelado.");
                 }
@@ -283,8 +287,8 @@ public class Jugador {
      * @param array La lista de elementos a convertir en cadena. Puede contener
      *              objetos de tipo String o Casilla.
      * @return Una representación de cadena de la lista, con los elementos
-     *         separados por comas y encerrados entre corchetes. Si la lista está
-     *         vacía, se devuelve un guion ("-").
+     * separados por comas y encerrados entre corchetes. Si la lista está
+     * vacía, se devuelve un guion ("-").
      */
     private String listaArray(ArrayList<?> array) {
         StringBuilder listaArray = new StringBuilder();
@@ -324,12 +328,12 @@ public class Jugador {
      * y edificios del jugador
      *
      * @return Una cadena que representa la información del jugador, incluyendo:
-     *         - Nombre del jugador
-     *         - ID del avatar
-     *         - Fortuna del jugador
-     *         - Lista de propiedades del jugador
-     *         - Lista de hipotecas del jugador
-     *         - Lista de edificios del jugador
+     * - Nombre del jugador
+     * - ID del avatar
+     * - Fortuna del jugador
+     * - Lista de propiedades del jugador
+     * - Lista de hipotecas del jugador
+     * - Lista de edificios del jugador
      */
     public String info() {
         String listaPropiedades = listaArray(propiedades);
@@ -357,5 +361,105 @@ public class Jugador {
         }
         return fortunaTotal;
     }
+
+    /*Método que se llama cuando el jugador tiene que conseguir dinero vendiendo edificios, hipotecando propiedades y sino
+     *    debe declararse en bancarrota*/
+    public void conseguirDinero(float dineroAConseguir) {
+        Scanner scanner = new Scanner(System.in);
+        if (this.getFortuna() < dineroAConseguir) {
+            System.out.println("El jugador no tiene suficiente dinero para pagar. Debe vender edificios y/o hipotecar propiedades.");
+            //Si el jugador no tiene suficiente dinero, se le pide que venda edificios y/o hipoteque propiedades
+            //Si no puede hacer ninguna de las dos, se declara en bancarrota
+            if (this.getEdificios().isEmpty() && this.getPropiedades().isEmpty()) {
+                System.out.println("El jugador no tiene propiedades ni edificios para vender. Se declara en bancarrota.");
+                //HAY QUE DECLARARSE EN BANCARROTA
+            } else {
+                System.out.println("El jugador tiene propiedades y/o edificios. ¿Qué desea vender/hipotecar? (propiedades[1]/edificios[2]) ");
+                int opcion;
+                do {
+                    opcion = scanner.nextInt();
+                    if (opcion != 1 && opcion != 2) {
+                        System.out.println("Opción no válida. Introduzca 1 para propiedades o 2 para edificios.");
+                    }
+                } while (opcion != 1 && opcion != 2);
+                if (opcion == 1) { //Hipotecar propiedades
+                    //Si el jugador tiene propiedades, se le pide que las hipoteque
+                    System.out.println("Propiedades:");
+                    for (Casilla propiedad : this.getPropiedades()) {
+                        System.out.println(propiedad.getNombre());
+                    }
+                    //Se le pide que introduzca el nombre de la propiedad que quiere hipotecar
+                    System.out.println("Introduce el nombre de la propiedad que quieres hipotecar:");
+                    String nombrePropiedad = scanner.next();
+                    //Se busca la propiedad con el nombre introducido
+                    Casilla propiedadHipotecar = null;
+                    for (Casilla propiedad : this.getPropiedades()) {
+                        if (propiedad.getNombre().equalsIgnoreCase(nombrePropiedad)) {
+                            propiedadHipotecar = propiedad;
+                        }
+                    }
+                    //Si la propiedad no existe, se le pide que introduzca un nombre válido
+                    while (propiedadHipotecar == null) {
+                        System.out.println("El nombre introducido no es válido. Introduce un nombre válido:");
+                        nombrePropiedad = scanner.next();
+                        for (Casilla propiedad : this.getPropiedades()) {
+                            if (propiedad.getNombre().equalsIgnoreCase(nombrePropiedad)) {
+                                propiedadHipotecar = propiedad;
+                            }
+                        }
+                    }
+
+
+                    //propiedadHipotecar.hipotecar();
+
+                    //Se añade el valor de la propiedad a la fortuna del jugador y se elimina de la lista de propiedades
+                    this.sumarFortuna(propiedadHipotecar.getValor());
+                    this.eliminarPropiedad(propiedadHipotecar);
+                    this.hipotecas.add(nombrePropiedad);
+
+
+                }
+
+            }
+            /*
+                //Si el jugador tiene edificios, se le pide que los venda
+                if (!this.getEdificios().isEmpty()) {
+                    System.out.println("El jugador tiene edificios. Debe vender edificios.");
+                    //Se le pide que introduzca el id del edificio que quiere vender
+                    System.out.println("Introduce el id del edificio que quieres vender:");
+                    for (Edificio edificio : this.getEdificios()) {
+                        System.out.println(edificio.getIdEdificio());
+                    }
+                    //Se le pide que introduzca el id del edificio que quiere vender
+                    System.out.println("Introduce el id del edificio que quieres vender:");
+                    Scanner scanner = new Scanner(System.in);
+                    int idEdificio = scanner.nextInt();
+                    //Se busca el edificio con el id introducido
+                    Edificio edificioVender = null;
+                    for (Edificio edificio : this.getEdificios()) {
+                        if (edificio.getIdEdificio() == idEdificio) {
+                            edificioVender = edificio;
+                        }
+                    }
+                    //Si el edificio no existe, se le pide que introduzca un id válido
+                    while (edificioVender == null) {
+                        System.out.println("El id introducido no es válido. Introduce un id válido:");
+                        idEdificio = scanner.nextInt();
+                        for (Edificio edificio : this.getEdificios()) {
+                            if (edificio.getIdEdificio() == idEdificio) {
+                                edificioVender = edificio;
+                            }
+                        }
+                    }
+                    //Se añade el valor del edificio a la fortuna del jugador y se elimina de la lista de edificios
+                }
+*/
+        } else {
+            return;
+        }
+    }
+
+
+
 
 }

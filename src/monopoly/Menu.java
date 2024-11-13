@@ -30,6 +30,8 @@ public class Menu {
     private int contadorPiscina;
     private int contadorPistaDeporte;
 
+    private int saltoMovimiento;
+
     /**********Constructor**********/
     public Menu() {
         this.jugadores = new ArrayList<>();
@@ -42,6 +44,7 @@ public class Menu {
         this.dado1 = new Dado();
         this.dado2 = new Dado();
         this.banca = new Jugador();
+        this.saltoMovimiento = 0;
         this.tablero = new Tablero(banca);
 
         preIniciarPartida();
@@ -147,6 +150,14 @@ public class Menu {
                         System.out.println("El formato correcto es: lanzar dados o lanzar dados (núm primer dado) (núm segundo dado)");
                     }
                     break;
+
+                case "avanzar":
+                        avanzar();
+                        System.out.println(tablero.toString());
+                        evaluacion();
+                        VueltasTablero();
+                    break;
+
                 case "acabar":
                     if (palabrasArray.length == 2 && palabrasArray[1].equals("turno")) {
                         acabarTurno();
@@ -292,11 +303,104 @@ public class Menu {
     }
 
     private void modoAvanzado() {
-        Jugador jugador = jugadores.get(turno);
-        Avatar avatar = jugador.getAvatar();
-        avatar.setAvanzado(true);
-        System.out.println("A partir de ahora el avatar " + avatar.getId() + ", de tipo " + avatar.getTipo() + ", se moverá en modo avanzado.");
+        Avatar avatarActual = jugadores.get(turno).getAvatar();
+        avatarActual.setAvanzado(true);
+        System.out.println("A partir de ahora el avatar " + avatarActual.getId() + ", de tipo " + avatarActual.getTipo() + ", se moverá en modo avanzado.");
     }
+
+    /*Método para avanzar con el modo avanzado Pelota*/
+    private void avanzar() {
+        Jugador jugadorAcvtual = jugadores.get(turno);
+        Avatar avatarActual = jugadorAcvtual.getAvatar();
+        if(saltoMovimiento == 0) {
+            System.out.println("No hay ningún movimiento pendiente.");
+            return;
+        }
+        if(saltoMovimiento > 0) {
+            if(saltoMovimiento == 1) {
+                avatarActual.moverAvatar(tablero.getPosiciones(), 1);
+                saltoMovimiento = 0;
+            } else {
+                avatarActual.moverAvatar(tablero.getPosiciones(), 2);
+                //COMPROBAR QUE HA ENTRADO EN LA CÁRCEL, SI ES ASÍ, PONER EL SALTO A 0
+                saltoMovimiento -= 2;
+            }
+        } else {
+            if(saltoMovimiento == -1) {
+                avatarActual.moverAvatar(tablero.getPosiciones(), -1);
+                saltoMovimiento = 0;
+            }
+            else {
+                avatarActual.moverAvatar(tablero.getPosiciones(), -2);
+                saltoMovimiento += 2;
+            }
+        }
+    }
+
+    public void moverJugadorPelota(int valorTirada) {
+        Jugador jugadorActual = jugadores.get(turno);
+        Avatar avatarActual = jugadorActual.getAvatar();
+
+        if (jugadorActual.getEnCarcel()) {
+            System.out.println("El jugador está en la cárcel, no puede avanzar.");
+            return;
+        }
+
+        if (valorTirada > 4) {
+            avatarActual.moverAvatar(tablero.getPosiciones(), 5);
+            if (jugadorActual.getEnCarcel()) {
+                saltoMovimiento = 0;
+                return;
+            }
+
+            saltoMovimiento = valorTirada - 5;
+
+        } else {
+            avatarActual.moverAvatar(tablero.getPosiciones(), -1);
+            if (jugadorActual.getEnCarcel()) {
+                saltoMovimiento = 0;
+                return;
+            }
+
+            saltoMovimiento = -valorTirada + 1;
+        }
+    }
+
+    /**
+     * Método que permite hipotecar una casilla.
+     * Verifica que la casilla exista, que el jugador sea el propietario, que no tenga edificios y que no esté ya hipotecada.
+     * Si todas las condiciones se cumplen, hipoteca la casilla y actualiza la fortuna del jugador y de la banca.
+     *
+     * @param nombreCasilla El nombre de la casilla a hipotecar.
+     */
+    public void hipotecar(String nombreCasilla) {
+        Casilla casilla = tablero.encontrar_casilla(nombreCasilla);
+        Jugador jugadorActual = jugadores.get(turno);
+
+        if (casilla == null) {
+            System.out.println("Casilla no encontrada");
+            return;
+        }
+
+        if (!casilla.getDuenho().equals(jugadorActual)) {
+            System.out.println(jugadorActual.getNombre() + " no puede hipotecar " + nombreCasilla + ". No es una propiedad que le pertenece");
+            return;
+        }
+        if (!casilla.getEdificios().isEmpty()) {
+            System.out.println(jugadorActual.getNombre() + " no puede hipotecar " + nombreCasilla + ". Tiene edificios construidos");
+            return;
+        }
+        if (casilla.isHipotecado()) {
+            System.out.println(jugadorActual.getNombre() + " no puede hipotecar " + nombreCasilla + ". Ya está hipotecada");
+            return;
+        }
+
+        System.out.println("El jugador " + jugadorActual.getNombre() + " hipoteca " + nombreCasilla + " por " + casilla.getHipoteca());
+        casilla.setHipotecado(true);
+        jugadorActual.sumarFortuna(casilla.getHipoteca());
+        banca.sumarFortuna(-casilla.getHipoteca());
+    }
+
 
     private void estadisticasJugador(String jugadorStr) {
         for(Jugador jugador : jugadores) {
@@ -438,6 +542,11 @@ public class Menu {
      */
     private void lanzarDados(int tirada1, int tirada2) {
         if (!tirado) {
+            if (saltoMovimiento != 0) {
+                System.out.println("El jugador está en modo avanzado, no puede lanzar los dados.");
+                return;
+            }
+
             Jugador jugador = jugadores.get(turno);
             Avatar avatar = avatares.get(turno);
 
@@ -476,7 +585,7 @@ public class Menu {
 
             if (avatar.isAvanzado()) {
                 if(avatar.getTipo().equals("Pelota")){
-                    avatar.moverJugadorPelota(tablero.getPosiciones(), valor1, valor2);
+                    moverJugadorPelota(valor1 + valor2);
                 } else if (avatar.getTipo().equals("Coche")){
                     avatar.moverJugadorCoche(tablero.getPosiciones(), valor1, valor2, lanzamientos);
                 }
@@ -1202,41 +1311,6 @@ public class Menu {
             return new ArrayList<>();
         }
         return casillasMasFrecuentadas;
-    }
-
-    /**
-     * Método que permite hipotecar una casilla.
-     * Verifica que la casilla exista, que el jugador sea el propietario, que no tenga edificios y que no esté ya hipotecada.
-     * Si todas las condiciones se cumplen, hipoteca la casilla y actualiza la fortuna del jugador y de la banca.
-     *
-     * @param nombreCasilla El nombre de la casilla a hipotecar.
-     */
-    private void hipotecar(String nombreCasilla) {
-        Jugador jugadorActual = jugadores.get(turno);
-        Casilla casilla = tablero.encontrar_casilla(nombreCasilla);
-
-        if (casilla == null) {
-            System.out.println("Casilla no encontrada");
-            return;
-        }
-
-        if (!casilla.getDuenho().equals(jugadorActual)) {
-            System.out.println(jugadorActual.getNombre() + " no puede hipotecar " + nombreCasilla + ". No es una propiedad que le pertenece");
-            return;
-        }
-        if (!casilla.getEdificios().isEmpty()) {
-            System.out.println(jugadorActual.getNombre() + " no puede hipotecar " + nombreCasilla + ". Tiene edificios construidos");
-            return;
-        }
-        if (casilla.isHipotecado()) {
-            System.out.println(jugadorActual.getNombre() + " no puede hipotecar " + nombreCasilla + ". Ya está hipotecada");
-            return;
-        }
-
-        System.out.println("El jugador " + jugadorActual.getNombre() + " hipoteca " + nombreCasilla + " por " + casilla.getHipoteca());
-        casilla.setHipotecado(true);
-        jugadorActual.sumarFortuna(casilla.getHipoteca());
-        banca.sumarFortuna(-casilla.getHipoteca());
     }
 
     private void deshipotecar(String nombreCasilla) {
