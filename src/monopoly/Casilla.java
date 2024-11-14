@@ -473,6 +473,7 @@ public class Casilla {
         }
         if(jugador.getFortuna() < valor*0.6) {
             System.out.println("El jugador no tiene dinero suficiente para edificar una casa.");
+            return false;
         }
         if(!(this.getContador() > 2 || this.getGrupo().esDuenhoGrupo(this.getDuenho()))){
             System.out.println("El jugador no ha caído en la casilla más de dos veces o no posee el grupo de casillas a la que pertenece dicha casilla.");
@@ -500,12 +501,16 @@ public class Casilla {
     }
 
     public boolean edificarHotel(Jugador jugador, int contadorHotel) {
+        if(!jugador.getAvatar().getLugar().getTipo().equals("Solar")) {
+            System.out.println("El jugador no está en una casilla edificable.");
+            return false;
+        }
         if (!this.getDuenho().equals(jugador)) {
             System.out.println("El jugador no puede edificar, ya que no es el propietario de la casilla.");
             return false;
         }
         if (jugador.getFortuna() < valor * 0.6) {
-            System.out.println("El jugador no tiene dinero suficiente para edificar una casa.");
+            System.out.println("El jugador no tiene dinero suficiente para edificar un hotel.");
             return false;
         }
         if((this.getGrupo().getNumEdificios(this.getGrupo().getEdificiosGrupo(), "Hotel") == this.getGrupo().getNumCasillas())) {
@@ -523,6 +528,10 @@ public class Casilla {
     }
 
     public boolean edificarPiscina(Jugador jugador, int contadorPiscina){
+        if(!jugador.getAvatar().getLugar().getTipo().equals("Solar")) {
+            System.out.println("El jugador no está en una casilla edificable.");
+            return false;
+        }
         if (!this.getDuenho().equals(jugador)) {
             System.out.println("El jugador no puede edificar, ya que no es el propietario de la casilla.");
             return false;
@@ -531,8 +540,12 @@ public class Casilla {
             System.out.println("El jugador no tiene dinero suficiente para edificar una casa.");
             return false;
         }
+        if((this.getGrupo().getNumEdificios(this.getGrupo().getEdificiosGrupo(), "Piscina") == this.getGrupo().getNumCasillas())) {
+            System.out.println("Tienes el número máximo de piscinas construídas en el grupo (" + this.getGrupo().getNumCasillas() + ").");
+            return false;
+        }
         if(!((this.getNumEdificios(edificios, "Hotel") >= 1) && (this.getNumEdificios(edificios, "Casa") >= 2))){
-            System.out.println("En el solar no se han construido al menos 1 hotel y dos casas.");
+            System.out.println("En el solar no se han construido al menos 1 hotel y 2 casas.");
             return false;
         }
         crearEdificio("Piscina", jugador, contadorPiscina, 0.4f);
@@ -541,12 +554,20 @@ public class Casilla {
     }
 
     public boolean edificarPistaDeporte(Jugador jugador, int contadorPistaDeporte){
+        if(!jugador.getAvatar().getLugar().getTipo().equals("Solar")) {
+            System.out.println("El jugador no está en una casilla edificable.");
+            return false;
+        }
         if (!this.getDuenho().equals(jugador)) {
             System.out.println("El jugador no puede edificar, ya que no es el propietario de la casilla.");
             return false;
         }
         if (jugador.getFortuna() < valor * 1.25) {
             System.out.println("El jugador no tiene dinero suficiente para edificar una casa.");
+            return false;
+        }
+        if((this.getGrupo().getNumEdificios(this.getGrupo().getEdificiosGrupo(), "PistaDeporte") == this.getGrupo().getNumCasillas())) {
+            System.out.println("Tienes el número máximo de pistas de deporte construídas en el grupo (" + this.getGrupo().getNumCasillas() + ").");
             return false;
         }
         if(!(this.getNumEdificios(edificios, "Hotel") >= 2)){
@@ -729,7 +750,6 @@ public class Casilla {
                 Deporte.isEmpty() ? '-' : Deporte, this.getImpuesto());
     }
 
-    //Completar co alquiler
     public void venderEdificios(String tipo, int cantidad) {
         Jugador propietario = this.getDuenho();
         for(Edificio edificio : edificios) {
