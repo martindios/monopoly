@@ -1,5 +1,6 @@
 package monopoly;
 
+import java.lang.constant.DynamicCallSiteDesc;
 import java.lang.reflect.Array;
 import java.util.*;
 import partida.*;
@@ -29,6 +30,10 @@ public class Menu {
     private int contadorPiscina;
     private int contadorPistaDeporte;
 
+    private int saltoMovimiento; //Variable para controlar el movimiento del avatar en modo avanzado
+    private boolean seHaMovido; //Booleano para comprobar si el jugador se ha movido en su turno
+    private boolean compraMovimientoCoche;
+
     /**********Constructor**********/
     public Menu() {
         this.jugadores = new ArrayList<>();
@@ -41,6 +46,9 @@ public class Menu {
         this.dado1 = new Dado();
         this.dado2 = new Dado();
         this.banca = new Jugador();
+        this.saltoMovimiento = 0;
+        this.seHaMovido = false;
+        this.compraMovimientoCoche = false;
         this.tablero = new Tablero(banca);
 
         preIniciarPartida();
@@ -65,7 +73,11 @@ public class Menu {
 
     /*Método en el que se desarrolla la partida hasta que un jugador es no solvente*/
     private void iniciarPartida() {
+        if (jugadores.get(turno).getAvatar().getTipo().equals("Coche")) {
+            saltoMovimiento = 4;
+        }
         while(!finalizarPartida) {
+            seHaMovido = false;
             System.out.print("Introduce el comando: ");
             String comando = scanner.nextLine();
             analizarComando(comando);
@@ -129,6 +141,13 @@ public class Menu {
                         System.out.println("Ya has lanzado los dados en este turno.");
                         break;
                     }
+                    if(jugadores.get(turno).getNoPuedeTirarDados() > 0) {
+                        System.out.println("No puedes lanzar los dados en este turno.");
+                        jugadores.get(turno).setNoPuedeTirarDados(jugadores.get(turno).getNoPuedeTirarDados() - 1);
+                        tirado = true;
+                        acabarTurno();
+                        break;
+                    }
                     if (palabrasArray.length == 2 && palabrasArray[1].equals("dados")) {
                         lanzarDados(0, 0);
                         System.out.println(tablero.toString());
@@ -146,6 +165,14 @@ public class Menu {
                         System.out.println("El formato correcto es: lanzar dados o lanzar dados (núm primer dado) (núm segundo dado)");
                     }
                     break;
+
+                case "avanzar":
+                        avanzar();
+                        System.out.println(tablero.toString());
+                        evaluacion();
+                        VueltasTablero();
+                    break;
+
                 case "acabar":
                     if (palabrasArray.length == 2 && palabrasArray[1].equals("turno")) {
                         acabarTurno();
@@ -220,6 +247,22 @@ public class Menu {
                     }
                     break;
 
+                case "hipotecar":
+                    if (palabrasArray.length == 2) {
+                        hipotecar(palabrasArray[1]);
+                    } else {
+                        System.out.println("El formato correcto es: hipotecar nombrePropiedad");
+                    }
+                    break;
+
+                case "deshipotecar":
+                    if (palabrasArray.length == 2) {
+                        deshipotecar(palabrasArray[1]);
+                    } else {
+                        System.out.println("El formato correcto es: deshipotecar nombrePropiedad");
+                    }
+                    break;
+
                 case "ver":
                     if (palabrasArray.length == 2 && palabrasArray[1].equals("tablero")) {
                         System.out.println(tablero.toString());
@@ -248,13 +291,7 @@ public class Menu {
 
                 case "cambiar":
                     if (palabrasArray.length == 2 && palabrasArray[1].equals("modo")){
-                        Jugador jugador = jugadores.get(turno);
-                        Avatar avatar = jugador.getAvatar();
-                        avatar.setAvanzado(1);
-                        lanzarDados(0, 0);
-                        System.out.println(tablero.toString());
-                        evaluacion();
-                        VueltasTablero();
+                        modoAvanzado();
                     } else {
                         System.out.println("El formato correcto es: cambiar modo");
                     }
@@ -278,6 +315,109 @@ public class Menu {
                     break;
             }
         }
+    }
+
+    private void modoAvanzado() {
+        Avatar avatarActual = jugadores.get(turno).getAvatar();
+        avatarActual.setAvanzado(true);
+        System.out.println("A partir de ahora el avatar " + avatarActual.getId() + ", de tipo " + avatarActual.getTipo() + ", se moverá en modo avanzado.");
+    }
+
+    /*Método para avanzar con el modo avanzado Pelota*/
+    private void avanzar() {
+        Jugador jugadorActual = jugadores.get(turno);
+        Avatar avatarActual = jugadorActual.getAvatar();
+        if(saltoMovimiento == 0) {
+            System.out.println("No hay ningún movimiento pendiente.");
+            return;
+        }
+        seHaMovido = true;
+        if(saltoMovimiento > 0) {
+            if(saltoMovimiento == 1) {
+                avatarActual.moverAvatar(tablero.getPosiciones(), 1);
+                saltoMovimiento = 0;
+            } else {
+                avatarActual.moverAvatar(tablero.getPosiciones(), 2);
+                if(jugadorActual.getEnCarcel()) {
+                    saltoMovimiento = 0;
+                } else {
+                    saltoMovimiento -= 2;
+                }
+            }
+        } else {
+            if(saltoMovimiento == -1) {
+                avatarActual.moverAvatar(tablero.getPosiciones(), -1);
+                saltoMovimiento = 0;
+            }
+            else {
+                avatarActual.moverAvatar(tablero.getPosiciones(), -2);
+                saltoMovimiento += 2;
+            }
+        }
+    }
+
+    public void moverJugadorPelota(int valorTirada) {
+        Jugador jugadorActual = jugadores.get(turno);
+        Avatar avatarActual = jugadorActual.getAvatar();
+
+        if (jugadorActual.getEnCarcel()) {
+            System.out.println("El jugador está en la cárcel, no puede avanzar.");
+            return;
+        }
+
+        if (valorTirada > 4) {
+            avatarActual.moverAvatar(tablero.getPosiciones(), 5);
+            if (jugadorActual.getEnCarcel()) {
+                saltoMovimiento = 0;
+                return;
+            }
+
+            saltoMovimiento = valorTirada - 5;
+
+        } else {
+            avatarActual.moverAvatar(tablero.getPosiciones(), -1);
+            if (jugadorActual.getEnCarcel()) {
+                saltoMovimiento = 0;
+                return;
+            }
+
+            saltoMovimiento = -valorTirada + 1;
+        }
+    }
+
+    public void moverJugadorCoche(int valorTirada){
+        Jugador jugadorActual = jugadores.get(turno);
+        Avatar avatarActual = jugadorActual.getAvatar();
+
+        if (jugadorActual.getEnCarcel()) {
+            System.out.println("El jugador está en la cárcel, no puede avanzar.");
+            return;
+        }
+
+        if(valorTirada > 4 && saltoMovimiento > 0) {
+            tirado = false;
+            avatarActual.moverAvatar(tablero.getPosiciones(), valorTirada);
+            if (jugadorActual.getEnCarcel()) {
+                saltoMovimiento = 0;
+                return;
+            }
+            saltoMovimiento--;
+            if(saltoMovimiento == 0) {
+                tirado = true;
+            }
+        }
+
+        if (valorTirada <= 4) {
+            avatarActual.moverAvatar(tablero.getPosiciones(), -valorTirada);
+            jugadorActual.setNoPuedeTirarDados(2);
+            saltoMovimiento = 0;
+            if (jugadorActual.getEnCarcel()) {
+                saltoMovimiento = 0;
+                return;
+            }
+        }
+
+
     }
 
     private void estadisticasJugador(String jugadorStr) {
@@ -423,6 +563,11 @@ public class Menu {
      */
     private void lanzarDados(int tirada1, int tirada2) {
         if (!tirado) {
+            if (saltoMovimiento != 0 && jugadores.get(turno).getAvatar().getTipo().equals("Pelota")) {
+                System.out.println("El jugador está en modo avanzado, no puede lanzar los dados.");
+                return;
+            }
+
             Jugador jugador = jugadores.get(turno);
             Avatar avatar = avatares.get(turno);
 
@@ -446,32 +591,30 @@ public class Menu {
             System.out.println("Dado 1: " + valor1);
             System.out.println("Dado 2: " + valor2);
 
-            if(avatar.getAvanzado() == 0){
-                if (valor1 == valor2) {
-                    System.out.println("¡Has sacado dobles!");
-                    if(lanzamientos == 3) {
-                        System.out.println("¡Tres dobles consecutivos! El jugador va a la cárcel.");
-                        jugador.encarcelar(tablero.getPosiciones());
-                        acabarTurno();
-                        return;
-                    } else {
-                        System.out.println("Puedes lanzar otra vez.");
-                        tirado = false;
-                    }
-                }
-                avatar.moverAvatar(tablero.getPosiciones(), (valor1 + valor2));
-                if(jugador.getEnCarcel()) {
+            if (valor1 == valor2) {
+                System.out.println("¡Has sacado dobles!");
+                if(lanzamientos == 3) {
+                    System.out.println("¡Tres dobles consecutivos! El jugador va a la cárcel.");
+                    jugador.encarcelar(tablero.getPosiciones());
                     acabarTurno();
+                    return;
+                } else {
+                    System.out.println("Puedes lanzar otra vez.");
+                    tirado = false;
                 }
-            } else if (avatar.getAvanzado() == 1) {
-                if(avatar.getTipo().equalsIgnoreCase("Pelota")){
-                    avatar.moverJugadorPelota(tablero.getPosiciones(), valor1, valor2);
-                    if(avatar.getJugador().getEnCarcel()) {
-                        acabarTurno();
-                    }
-                } else if (avatar.getTipo().equalsIgnoreCase("Coche")){
-                    avatar.moverJugadorCoche(tablero.getPosiciones(), valor1, valor2, lanzamientos);
+            }
+
+            seHaMovido = true;
+            if (avatar.isAvanzado()) {
+                if(avatar.getTipo().equals("Pelota")){
+                    moverJugadorPelota(valor1 + valor2);
+                } else if (avatar.getTipo().equals("Coche")){
+                    moverJugadorCoche(valor1 + valor2);
                 }
+            } else avatar.moverAvatar(tablero.getPosiciones(), (valor1 + valor2));
+
+            if(jugador.getEnCarcel()) {
+                acabarTurno();
             }
 
         }
@@ -650,7 +793,9 @@ public class Menu {
     // Método que realiza las acciones asociadas al comando 'acabar turno'.
     private void acabarTurno() {
         //Tiradas carcel xa axustadas na funcion SaliCarcel
-        if(!tirado && dado1.getValor() != dado2.getValor()) {
+        //if(!tirado || dado1.getValor() == dado2.getValor()) {
+        if(!tirado) {
+
             System.out.println("No puedes acabar turno sin haber lanzado los dados.");
             return;
         }
@@ -663,6 +808,12 @@ public class Menu {
         solvente = true;
         Jugador jugador = jugadores.get(turno);
         System.out.println("El turno le pertenece al jugador " + jugador.getNombre() + ". Con avatar " + jugador.getAvatar().getId() + ".");
+
+        if (jugador.getAvatar().getTipo().equals("Coche")) {
+            saltoMovimiento = 3;
+        } else if (jugador.getAvatar().getTipo().equals("Pelota")) {
+            saltoMovimiento = 0;
+        }
     }
 
     /**
@@ -725,6 +876,9 @@ public class Menu {
         Jugador jugadorActual = jugadores.get(turno);
         Casilla casillaActual = jugadorActual.getAvatar().getLugar();
         solvente = casillaActual.evaluarCasilla(jugadores.get(turno), banca, dado1.getValor() + dado2.getValor());
+        if(jugadorActual.getAvatar().isConseguirDinero()) {
+            //HAY QUE HACER QUE EL JUGADOR VENDA SUS PROPIEDADES E HIPOTEQUE SUS EDIFICOS HASTA QUE SEA SOLVENTE
+        }
         if (!solvente) {
             finalizarPartida = true;
         } else {
@@ -743,13 +897,17 @@ public class Menu {
                     banca.sumarFortuna(casillaActual.getImpuesto());
                 }
                 case "Suerte" -> {
-                    barajas.evaluarSuerte(banca, jugadorActual, tablero);
+                    if(seHaMovido || !jugadorActual.getAvatar().isAvanzado()) {
+                        barajas.evaluarSuerte(banca, jugadorActual, tablero);
+                    }
                     if(jugadorActual.getEnCarcel()) {
                         acabarTurno();
                     }
                 }
                 case "Comunidad" -> {
-                    barajas.evaluarComunidad(banca, jugadorActual, tablero, jugadores);
+                    if(seHaMovido || !jugadorActual.getAvatar().isAvanzado()) {
+                        barajas.evaluarComunidad(banca, jugadorActual, tablero, jugadores);
+                    }
                     if(jugadorActual.getEnCarcel()) {
                         acabarTurno();
                     }
@@ -948,6 +1106,385 @@ public class Menu {
     }
 
     /**
+     * Método que imprime las estadísticas del juego.
+     */
+    private void estadisticas() {
+        System.out.println("{");
+        System.out.print("\tcasillaMasRentable: ");
+        imprimirNombresCasillas(casillasMasRentables());
+        System.out.print("\tgrupoMasRentable: ");
+        imprimirNombresGrupos(calcularGruposMasRentables());
+        System.out.print("\tcasillaMasFrecuentada: ");
+        imprimirNombresCasillas(casillasMasFrecuentadas());
+        System.out.print("\tjugadorMasVueltas: ");
+        imprimirNombresJugadores(jugadoresConMasVueltas());
+        System.out.print("\tjugadorMasVecesDados: ");
+        imprimirNombresJugadores(jugadoresConMasTiradasDados());
+        System.out.print("\tjugadorEnCabeza: ");
+        imprimirNombresJugadores(jugadoresEnCabeza());
+        System.out.println("}");
+    }
+
+    /**
+     * Método que imprime los nombres de los jugadores.
+     * Si la lista de jugadores está vacía, imprime un guion ("-").
+     *
+     * @param jugadores La lista de jugadores cuyos nombres se van a imprimir.
+     */
+    private void imprimirNombresJugadores(ArrayList<Jugador> jugadores) {
+        if (jugadores.isEmpty()) {
+            System.out.println("-");
+        } else {
+            for (Jugador jugador : jugadores) {
+                System.out.print(jugador.getNombre());
+                if (!jugador.equals(jugadores.getLast())) {
+                    System.out.print(", ");
+                }
+            }
+            System.out.println();
+        }
+    }
+
+    /**
+     * Método que imprime los nombres de las casillas.
+     * Si la lista de casillas está vacía, imprime un guion ("-").
+     *
+     * @param casillas La lista de casillas cuyos nombres se van a imprimir.
+     */
+    private void imprimirNombresCasillas(ArrayList<Casilla> casillas) {
+        if (casillas.isEmpty()) {
+            System.out.println("-");
+        } else {
+            for (Casilla casilla : casillas) {
+                System.out.print(casilla.getNombre());
+                if (!casilla.equals(casillas.getLast())) {
+                    System.out.print(", ");
+                }
+            }
+            System.out.println();
+        }
+    }
+
+    /**
+     * Método que imprime los nombres de los grupos.
+     * Si la lista de grupos está vacía, imprime un guion ("-").
+     *
+     * @param grupos La lista de grupos cuyos nombres se van a imprimir.
+     */
+    private void imprimirNombresGrupos(ArrayList<Grupo> grupos) {
+        if (grupos.isEmpty()) {
+            System.out.println("-");
+        } else {
+            for (Grupo grupo : grupos) {
+                System.out.print(grupo.getNombreGrupo());
+                if (!grupo.equals(grupos.getLast())) {
+                    System.out.print(", ");
+                }
+            }
+            System.out.println();
+        }
+    }
+
+    private ArrayList<Jugador> jugadoresConMasVueltas() {
+        ArrayList<Jugador> jugadoresMasVueltas = new ArrayList<>();
+        int maxVueltas = 0;
+
+        // Recorre la lista de jugadores para encontrar el número máximo de vueltas
+        for (Jugador jugador : jugadores) {
+            if (jugador.getVueltas() > maxVueltas) {
+                // Si el jugador actual tiene más vueltas que el máximo actual, actualiza el máximo y reinicia la lista
+                maxVueltas = jugador.getVueltas();
+                jugadoresMasVueltas.clear();
+                jugadoresMasVueltas.add(jugador);
+            } else if (jugador.getVueltas() == maxVueltas) {
+                // Si el jugador actual tiene el mismo número de vueltas que el máximo, añádelo a la lista
+                jugadoresMasVueltas.add(jugador);
+            }
+        }
+
+        return jugadoresMasVueltas;
+    }
+
+    /**
+     * Método que devuelve una lista de los jugadores con más tiradas de dados.
+     *
+     * @return Una lista de jugadores con el mayor número de tiradas de dados.
+     */
+    private ArrayList<Jugador> jugadoresConMasTiradasDados() {
+        ArrayList<Jugador> jugadoresMasTiradasDados = new ArrayList<>();
+        int maxTiradasDados = 0;
+
+        // Recorre la lista de jugadores para encontrar el número máximo de tiradas de dados
+        for (Jugador jugador : jugadores) {
+            if (jugador.getVecesTiradasDados() > maxTiradasDados) {
+                // Si el jugador actual tiene más tiradas que el máximo actual, actualiza el máximo y reinicia la lista
+                maxTiradasDados = jugador.getVecesTiradasDados();
+                jugadoresMasTiradasDados.clear();
+                jugadoresMasTiradasDados.add(jugador);
+            } else if (jugador.getVecesTiradasDados() == maxTiradasDados) {
+                // Si el jugador actual tiene el mismo número de tiradas que el máximo, añádelo a la lista
+                jugadoresMasTiradasDados.add(jugador);
+            }
+        }
+
+        return jugadoresMasTiradasDados;
+    }
+
+    /**
+     * Método que devuelve una lista de los jugadores en cabeza.
+     *
+     * @return Una lista de jugadores con la mayor fortuna total.
+     */
+    private ArrayList<Jugador> jugadoresEnCabeza() {
+        ArrayList<Jugador> jugadoresEnCabeza = new ArrayList<>();
+        float maxFortunaTotal = 0;
+
+        // Recorre la lista de jugadores para encontrar la mayor fortuna total
+        for (Jugador jugador : jugadores) {
+            if (jugador.calcularFortunaTotal() > maxFortunaTotal) {
+                // Si el jugador actual tiene más fortuna que el máximo actual, actualiza el máximo y reinicia la lista
+                maxFortunaTotal = jugador.calcularFortunaTotal();
+                jugadoresEnCabeza.clear();
+                jugadoresEnCabeza.add(jugador);
+            } else if (jugador.calcularFortunaTotal() == maxFortunaTotal) {
+                // Si el jugador actual tiene la misma fortuna que el máximo, añádelo a la lista
+                jugadoresEnCabeza.add(jugador);
+            }
+        }
+
+        return jugadoresEnCabeza;
+    }
+
+    /**
+     * Método que devuelve una lista de las casillas más rentables.
+     *
+     * @return Una lista de casillas con el mayor total de alquileres pagados.
+     */
+    private ArrayList<Casilla> casillasMasRentables() {
+        ArrayList<Casilla> casillasMasRentables = new ArrayList<>();
+        float maxAlquileresPagados = 0;
+
+        // Recorre el tablero para encontrar la casilla con el mayor total de alquileres pagados
+        for (ArrayList<Casilla> fila : tablero.getPosiciones()) {
+            for (Casilla casilla : fila) {
+                if (casilla.getTotalAlquileresPagados() > maxAlquileresPagados) {
+                    // Si la casilla actual tiene más alquileres pagados que el máximo actual, actualiza el máximo y reinicia la lista
+                    maxAlquileresPagados = casilla.getTotalAlquileresPagados();
+                    casillasMasRentables.clear();
+                    casillasMasRentables.add(casilla);
+                } else if (casilla.getTotalAlquileresPagados() == maxAlquileresPagados) {
+                    // Si la casilla actual tiene el mismo total de alquileres pagados que el máximo, añádela a la lista
+                    casillasMasRentables.add(casilla);
+                }
+            }
+        }
+
+        // Si todas las casillas tienen el mismo total de alquileres pagados, devuelve una lista vacía
+        if (casillasMasRentables.size() == 40) {
+            return new ArrayList<>();
+        }
+        return casillasMasRentables;
+    }
+
+    /**
+     * Método que calcula los grupos más rentables.
+     *
+     * @return Una lista de los grupos más rentables.
+     */
+    private ArrayList<Grupo> calcularGruposMasRentables() {
+        HashMap<Grupo, Float> rentabilidadPorGrupo = new HashMap<>();
+        ArrayList<Grupo> gruposMasRentables = new ArrayList<>();
+        float maxRentabilidad = 0;
+
+        // Recorre el tablero para calcular la rentabilidad de cada grupo
+        for (ArrayList<Casilla> fila : tablero.getPosiciones()) {
+            for (Casilla casilla : fila) {
+                Grupo grupo = casilla.getGrupo();
+                if (grupo != null) {
+                    rentabilidadPorGrupo.put(grupo, rentabilidadPorGrupo.getOrDefault(grupo, 0f)
+                            + casilla.getTotalAlquileresPagados());
+                }
+            }
+        }
+
+        // Encuentra los grupos con la mayor rentabilidad
+        for (Map.Entry<Grupo, Float> entry : rentabilidadPorGrupo.entrySet()) {
+            if (entry.getValue() > maxRentabilidad) {
+                // Si el grupo actual tiene más rentabilidad que el máximo actual, actualiza el máximo y reinicia la lista
+                maxRentabilidad = entry.getValue();
+                gruposMasRentables.clear();
+                gruposMasRentables.add(entry.getKey());
+            } else if (entry.getValue() == maxRentabilidad) {
+                // Si el grupo actual tiene la misma rentabilidad que el máximo, añádelo a la lista
+                gruposMasRentables.add(entry.getKey());
+            }
+        }
+
+        // Si todos los grupos tienen la misma rentabilidad, devuelve una lista vacía
+        if (gruposMasRentables.size() == 8) {
+            return new ArrayList<>();
+        }
+        return gruposMasRentables;
+    }
+
+    /**
+     * Método que devuelve una lista de las casillas más frecuentadas.
+     *
+     * @return Una lista de casillas con el mayor número de veces frecuentada.
+     */
+    private ArrayList<Casilla> casillasMasFrecuentadas() {
+        ArrayList<Casilla> casillasMasFrecuentadas = new ArrayList<>();
+        float maxTotalVecesFrecuentada = 0;
+
+        // Recorre el tablero para encontrar la casilla con el mayor número de veces frecuentada
+        for (ArrayList<Casilla> fila : tablero.getPosiciones()) {
+            for (Casilla casilla : fila) {
+                if (casilla.getTotalVecesFrecuentada() > maxTotalVecesFrecuentada) {
+                    // Si la casilla actual ha sido frecuentada más veces que el máximo actual, actualiza el máximo y reinicia la lista
+                    maxTotalVecesFrecuentada = casilla.getTotalVecesFrecuentada();
+                    casillasMasFrecuentadas.clear();
+                    casillasMasFrecuentadas.add(casilla);
+                } else if (casilla.getTotalVecesFrecuentada() == maxTotalVecesFrecuentada) {
+                    // Si la casilla actual ha sido frecuentada el mismo número de veces que el máximo, añádela a la lista
+                    casillasMasFrecuentadas.add(casilla);
+                }
+            }
+        }
+
+        // Si todas las casillas han sido frecuentadas el mismo número de veces, devuelve una lista vacía
+        if (casillasMasFrecuentadas.size() == 40) {
+            return new ArrayList<>();
+        }
+        return casillasMasFrecuentadas;
+    }
+
+    /**
+     * Método que permite hipotecar una casilla.
+     * Verifica que la casilla exista, que el jugador sea el propietario, que no tenga edificios y que no esté ya hipotecada.
+     * Si todas las condiciones se cumplen, hipoteca la casilla y actualiza la fortuna del jugador y de la banca.
+     *
+     * @param nombreCasilla El nombre de la casilla a hipotecar.
+     */
+    public void hipotecar(String nombreCasilla) {
+        Casilla casilla = tablero.encontrar_casilla(nombreCasilla);
+        Jugador jugadorActual = jugadores.get(turno);
+
+        if (casilla == null) {
+            System.out.println("Casilla no encontrada");
+            return;
+        }
+
+        if (!casilla.getDuenho().equals(jugadorActual)) {
+            System.out.println(jugadorActual.getNombre() + " no puede hipotecar " + nombreCasilla + ". No es una propiedad que le pertenece");
+            return;
+        }
+        if (!casilla.getEdificios().isEmpty()) {
+            System.out.println(jugadorActual.getNombre() + " no puede hipotecar " + nombreCasilla + ". Tiene edificios construidos");
+            return;
+        }
+        if (casilla.isHipotecado()) {
+            System.out.println(jugadorActual.getNombre() + " no puede hipotecar " + nombreCasilla + ". Ya está hipotecada");
+            return;
+        }
+
+        System.out.println("El jugador " + jugadorActual.getNombre() + " hipoteca " + nombreCasilla + " por " + casilla.getHipoteca());
+        casilla.setHipotecado(true);
+        jugadorActual.sumarFortuna(casilla.getHipoteca());
+        banca.sumarFortuna(-casilla.getHipoteca());
+    }
+
+    private void deshipotecar(String nombreCasilla) {
+        Jugador jugadorActual = jugadores.get(turno);
+        Casilla casilla = tablero.encontrar_casilla(nombreCasilla);
+
+        if (casilla == null) {
+            System.out.println("Casilla no encontrada");
+            return;
+        }
+
+        if (!casilla.getDuenho().equals(jugadorActual)) {
+            System.out.println(jugadorActual.getNombre() + " no puede deshipotecar " + nombreCasilla + ". No es una propiedad que le pertenece");
+            return;
+        }
+        if (!casilla.isHipotecado()) {
+            System.out.println(jugadorActual.getNombre() + " no puede deshipotecar " + nombreCasilla + ". No está hipotecada");
+            return;
+        }
+
+        float precioDeshipotecar = casilla.getHipoteca() * 1.1f;
+        if(precioDeshipotecar > jugadorActual.getFortuna()) {
+            System.out.println(jugadorActual.getNombre() + " no puede deshipotecar " + nombreCasilla + ". No tiene suficiente dinero");
+            return;
+        }
+
+        System.out.println("El jugador " + jugadorActual.getNombre() + " paga " + precioDeshipotecar + " por deshipotecar "
+                + nombreCasilla + ". Ahora puede recibir alquileres y edificar en el grupo " + casilla.getGrupo().getNombreGrupo());
+        jugadorActual.sumarFortuna(-precioDeshipotecar);
+        jugadorActual.sumarGastos(precioDeshipotecar);
+        banca.sumarFortuna(precioDeshipotecar);
+        casilla.setHipotecado(false);
+    }
+
+    /*
+    /*Método que se llama cuando el jugador tiene que conseguir dinero vendiendo edificios, hipotecando propiedades y sino
+     *debe declararse en bancarrota*/
+    public void conseguirDinero(float dineroAConseguir) {
+        Jugador jugadorActual = jugadores.get(turno);
+        Scanner scanner = new Scanner(System.in);
+        if (jugadorActual.getFortuna() < dineroAConseguir) {
+            System.out.println("El jugador no tiene suficiente dinero para pagar. Debe vender edificios y/o hipotecar propiedades.");
+            //Si el jugador no tiene suficiente dinero, se le pide que venda edificios y/o hipoteque propiedades
+            //Si no puede hacer ninguna de las dos, se declara en bancarrota
+            if (jugadorActual.getEdificios().isEmpty() && jugadorActual.getPropiedades().isEmpty()) {
+                System.out.println("El jugador no tiene propiedades ni edificios para vender. Se declara en bancarrota.");
+                //HAY QUE DECLARARSE EN BANCARROTA
+            } else {
+                System.out.println("El jugador tiene propiedades y/o edificios. ¿Qué desea vender/hipotecar? (propiedades[1]/edificios[2]) ");
+                int opcion;
+                do {
+                    opcion = scanner.nextInt();
+                    if (opcion != 1 && opcion != 2) {
+                        System.out.println("Opción no válida. Introduzca 1 para propiedades o 2 para edificios.");
+                    }
+                } while (opcion != 1 && opcion != 2);
+                if (opcion == 1) { //Hipotecar propiedades
+                    //Si el jugador tiene propiedades, se le pide que las hipoteque
+                    System.out.println("Propiedades:");
+                    for (Casilla propiedad : jugadorActual.getPropiedades()) {
+                        System.out.println(propiedad.getNombre());
+                    }
+                    //Se le pide que introduzca el nombre de la propiedad que quiere hipotecar
+                    System.out.println("Introduce el nombre de la propiedad que quieres hipotecar:");
+                    String nombrePropiedad = scanner.next();
+                    //Se busca la propiedad con el nombre introducido
+                    Casilla propiedadHipotecar = null;
+                    for (Casilla propiedad : jugadorActual.getPropiedades()) {
+                        if (propiedad.getNombre().equalsIgnoreCase(nombrePropiedad)) {
+                            propiedadHipotecar = propiedad;
+                        }
+                    }
+                    //Si la propiedad no existe, se le pide que introduzca un nombre válido
+                    while (propiedadHipotecar == null) {
+                        System.out.println("El nombre introducido no es válido. Introduce un nombre válido:");
+                        nombrePropiedad = scanner.next();
+                        for (Casilla propiedad : jugadorActual.getPropiedades()) {
+                            if (propiedad.getNombre().equalsIgnoreCase(nombrePropiedad)) {
+                                propiedadHipotecar = propiedad;
+                            }
+                        }
+                    }
+
+                    hipotecar(propiedadHipotecar.getNombre());
+                }
+
+            }
+        } else {
+            return;
+        }
+    }
+
+
+    /**
      * Método que solicita al usuario introducir un número dentro de un rango específico.
      * Se encarga de validar que la entrada esté dentro de los límites establecidos y
      * maneja excepciones de entrada inválida. Si la entrada es válida, se devuelve el número.
@@ -973,189 +1510,6 @@ public class Menu {
             }
         }
         return num;
-    }
-
-    private void estadisticas() {
-        System.out.println("{");
-        System.out.print("\tcasillaMasRentable: ");
-        imprimirNombresCasillas(casillasMasRentables());
-        System.out.print("\tgrupoMasRentable: ");
-        imprimirNombresGrupos(calcularGruposMasRentables());
-        System.out.print("\tcasillaMasFrecuentada: ");
-        imprimirNombresCasillas(casillasMasFrecuentadas());
-        System.out.print("\tjugadorMasVueltas: ");
-        imprimirNombresJugadores(jugadoresConMasVueltas());
-        System.out.print("\tjugadorMasVecesDados: ");
-        imprimirNombresJugadores(jugadoresConMasTiradasDados());
-        System.out.print("\tjugadorEnCabeza: ");
-        imprimirNombresJugadores(jugadoresEnCabeza());
-        System.out.println("}");
-    }
-
-    private void imprimirNombresJugadores(ArrayList<Jugador> jugadores) {
-        if (jugadores.isEmpty()) {
-            System.out.println("-");
-        } else {
-            for (Jugador jugador : jugadores) {
-                System.out.print(jugador.getNombre());
-                if (!jugador.equals(jugadores.getLast())) {
-                    System.out.print(", ");
-                }
-            }
-            System.out.println();
-        }
-    }
-
-    private void imprimirNombresCasillas(ArrayList<Casilla> casillas) {
-        if (casillas.isEmpty()) {
-            System.out.println("-");
-        } else {
-            for (Casilla casilla : casillas) {
-                System.out.print(casilla.getNombre());
-                if (!casilla.equals(casillas.getLast())) {
-                    System.out.print(", ");
-                }
-            }
-            System.out.println();
-        }
-    }
-
-    private void imprimirNombresGrupos(ArrayList<Grupo> grupos) {
-        if (grupos.isEmpty()) {
-            System.out.println("-");
-        } else {
-            for (Grupo grupo : grupos) {
-                System.out.print(grupo.getNombreGrupo());
-                if (!grupo.equals(grupos.getLast())) {
-                    System.out.print(", ");
-                }
-            }
-            System.out.println();
-        }
-    }
-
-    private ArrayList<Jugador> jugadoresConMasVueltas() {
-        ArrayList<Jugador> jugadoresMasVueltas = new ArrayList<>();
-        int maxVueltas = 0;
-
-        for (Jugador jugador : jugadores) {
-            if (jugador.getVueltas() > maxVueltas) {
-                maxVueltas = jugador.getVueltas();
-                jugadoresMasVueltas.clear();
-                jugadoresMasVueltas.add(jugador);
-            } else if (jugador.getVueltas() == maxVueltas) {
-                jugadoresMasVueltas.add(jugador);
-            }
-        }
-
-        return jugadoresMasVueltas;
-    }
-
-    private ArrayList<Jugador> jugadoresConMasTiradasDados() {
-        ArrayList<Jugador> jugadoresMasTiradasDados = new ArrayList<>();
-        int maxTiradasDados = 0;
-
-        for (Jugador jugador : jugadores) {
-            if (jugador.getVecesTiradasDados() > maxTiradasDados) {
-                maxTiradasDados = jugador.getVecesTiradasDados();
-                jugadoresMasTiradasDados.clear();
-                jugadoresMasTiradasDados.add(jugador);
-            } else if (jugador.getVecesTiradasDados() == maxTiradasDados) {
-                jugadoresMasTiradasDados.add(jugador);
-            }
-        }
-
-        return jugadoresMasTiradasDados;
-    }
-
-    private ArrayList<Jugador> jugadoresEnCabeza() {
-        ArrayList<Jugador> jugadoresEnCabeza = new ArrayList<>();
-        float maxFortunaTotal = 0;
-
-        for (Jugador jugador : jugadores) {
-            if (jugador.calcularFortunaTotal() > maxFortunaTotal) {
-                maxFortunaTotal = jugador.calcularFortunaTotal();
-                jugadoresEnCabeza.clear();
-                jugadoresEnCabeza.add(jugador);
-            } else if (jugador.calcularFortunaTotal() == maxFortunaTotal) {
-                jugadoresEnCabeza.add(jugador);
-            }
-        }
-
-        return jugadoresEnCabeza;
-    }
-
-    private ArrayList<Casilla> casillasMasRentables() {
-        ArrayList<Casilla> casillasMasRentables = new ArrayList<>();
-        float maxAlquileresPagados = 0;
-        for (ArrayList<Casilla> fila : tablero.getPosiciones()) {
-            for (Casilla casilla : fila) {
-                if (casilla.getTotalAlquileresPagados() > maxAlquileresPagados) {
-                    maxAlquileresPagados = casilla.getTotalAlquileresPagados();
-                    casillasMasRentables.clear();
-                    casillasMasRentables.add(casilla);
-                } else if (casilla.getTotalAlquileresPagados() == maxAlquileresPagados) {
-                    casillasMasRentables.add(casilla);
-                }
-            }
-        }
-
-        if (casillasMasRentables.size() == 40) {
-            return new ArrayList<>();
-        }
-        return casillasMasRentables;
-    }
-
-    private ArrayList<Grupo> calcularGruposMasRentables() {
-
-        HashMap<Grupo, Float> rentabilidadPorGrupo = new HashMap<>();
-        ArrayList<Grupo> gruposMasRentables = new ArrayList<>();
-        float maxRentabilidad = 0;
-
-        /*Cálculo de las rentabilidades de cada grupo*/
-        for (ArrayList<Casilla> fila : tablero.getPosiciones()) {
-            for (Casilla casilla : fila) {
-                Grupo grupo = casilla.getGrupo();
-                if (grupo != null) {
-                    rentabilidadPorGrupo.put(grupo, rentabilidadPorGrupo.getOrDefault(grupo, 0f)
-                            + casilla.getTotalAlquileresPagados());
-                }
-            }
-        }
-
-        for (Map.Entry<Grupo, Float> entry : rentabilidadPorGrupo.entrySet()) {
-            if (entry.getValue() > maxRentabilidad) {
-                maxRentabilidad = entry.getValue();
-                gruposMasRentables.clear();
-                gruposMasRentables.add(entry.getKey());
-            } else if (entry.getValue() == maxRentabilidad) {
-                gruposMasRentables.add(entry.getKey());
-            }
-        }
-        if (gruposMasRentables.size() == 8) {
-            return new ArrayList<>();
-        }
-        return gruposMasRentables;
-    }
-
-    private ArrayList<Casilla> casillasMasFrecuentadas() {
-        ArrayList<Casilla> casillasMasFrecuentadas = new ArrayList<>();
-        float maxTotalVecesFrecuentada = 0;
-        for (ArrayList<Casilla> fila : tablero.getPosiciones()) {
-            for (Casilla casilla : fila) {
-                if (casilla.getTotalVecesFrecuentada() > maxTotalVecesFrecuentada) {
-                    maxTotalVecesFrecuentada = casilla.getTotalVecesFrecuentada();
-                    casillasMasFrecuentadas.clear();
-                    casillasMasFrecuentadas.add(casilla);
-                } else if (casilla.getTotalVecesFrecuentada() == maxTotalVecesFrecuentada) {
-                    casillasMasFrecuentadas.add(casilla);
-                }
-            }
-        }
-        if (casillasMasFrecuentadas.size() == 40) {
-            return new ArrayList<>();
-        }
-        return casillasMasFrecuentadas;
     }
 
 }

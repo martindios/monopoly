@@ -24,6 +24,7 @@ public class Casilla {
     private float impuesto; //Cantidad a pagar por caer en la casilla: el alquiler en solares/servicios/transportes o impuestos.
     private float impuestoInicial;
     private float hipoteca; //Valor otorgado por hipotecar una casilla
+    private boolean hipotecado; //Indica si la casilla está hipotecada o no
     private ArrayList<Avatar> avatares; //Avatares que están situados en la casilla.
     private int contador; //Contador de veces que el dueño ha caído en la casilla
     private ArrayList<Edificio> edificios; //Avatares que están situados en la casilla.
@@ -49,6 +50,7 @@ public class Casilla {
             case "Transporte" -> this.impuesto = SUMA_VUELTA;
         }
         this.hipoteca = valor*0.5f;
+        this.hipotecado = false;
         avatares = new ArrayList<Avatar>();
         this.edificios = new ArrayList<Edificio>();
         if(tipo.equals("Solar")) {
@@ -154,6 +156,10 @@ public class Casilla {
         return hipoteca;
     }
 
+    public boolean isHipotecado() {
+        return hipotecado;
+    }
+
     //getter para devolver la lista de los avatares en la casilla
     public ArrayList<Avatar> getAvatares() {
         return avatares;
@@ -200,6 +206,10 @@ public class Casilla {
 
     public void setAvatares(ArrayList<Avatar> avatares) {
         this.avatares = avatares;
+    }
+
+    public void setHipotecado(boolean hipotecado) {
+        this.hipotecado = hipotecado;
     }
 
     /**********Métodos**********/
@@ -277,7 +287,12 @@ public class Casilla {
         if(this.getDuenho().equals(banca)) {
             return;
         }
+        /*Comprobar que es dueño de la casilla no es él mismo*/
         if (!actual.equals(this.getDuenho())) {
+            if(this.hipotecado) { // Comprobar si la casilla está hipotecada
+                System.out.println("La casilla está hipotecada, no se paga alquiler.");
+                return;
+            }
             float alquiler = 0;
             switch (this.getTipo()) {
                 case "Solar":
@@ -479,7 +494,7 @@ public class Casilla {
             System.out.println("El jugador no ha caído en la casilla más de dos veces o no posee el grupo de casillas a la que pertenece dicha casilla.");
             return false;
         }
-        //Si el número de hoteles no llega al máximo, se pueden construít 4 casas por solar
+        //Si el número de hoteles no llega al máximo, se pueden construír 4 casas por solar
         if(this.getGrupo().getNumEdificios(this.getGrupo().getEdificiosGrupo(), "Hotel") < this.getGrupo().getNumCasillas()) {
             System.out.println("No tienes el número máximo de hoteles construídos en el grupo, puedes construír hasta 4 casas por solar.");
             if(!(this.getNumEdificios(edificios, "Casa") < 4)) {
@@ -585,6 +600,7 @@ public class Casilla {
         jugador.getEdificios().add(edificio);
         this.getGrupo().getEdificiosGrupo().add(edificio);
         float precio = valor*v;
+        jugador.sumarDineroInvertido(precio);
         jugador.sumarFortuna(-precio);
         jugador.sumarGastos(precio);
         System.out.println("El jugador " + jugador.getNombre() + " ha edificado un/una " + tipoEdificio + " en " + this.getNombre() + " por un precio de " + precio + ".");
@@ -620,6 +636,7 @@ public class Casilla {
             }
         }
     }*/
+
 
 
     /**
