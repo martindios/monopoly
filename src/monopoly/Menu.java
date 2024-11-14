@@ -34,6 +34,8 @@ public class Menu {
     private boolean seHaMovido; //Booleano para comprobar si el jugador se ha movido en su turno
     private boolean compraMovimientoCoche;
 
+    private boolean dadosDobles;
+
     /**********Constructor**********/
     public Menu() {
         this.jugadores = new ArrayList<>();
@@ -163,6 +165,9 @@ public class Menu {
 
                     } else {
                         System.out.println("El formato correcto es: lanzar dados o lanzar dados (núm primer dado) (núm segundo dado)");
+                    }
+                    if(jugadores.get(turno).getEnCarcel()) {
+                        dadosDobles = false;
                     }
                     break;
 
@@ -562,7 +567,7 @@ public class Menu {
      * como los dobles y la encarcelación tras tres dobles consecutivos.
      */
     private void lanzarDados(int tirada1, int tirada2) {
-        if (!tirado) {
+        if (!tirado || dadosDobles) {
             if (saltoMovimiento != 0 && jugadores.get(turno).getAvatar().getTipo().equals("Pelota")) {
                 System.out.println("El jugador está en modo avanzado, no puede lanzar los dados.");
                 return;
@@ -593,15 +598,20 @@ public class Menu {
 
             if (valor1 == valor2) {
                 System.out.println("¡Has sacado dobles!");
+                dadosDobles = true;
                 if(lanzamientos == 3) {
                     System.out.println("¡Tres dobles consecutivos! El jugador va a la cárcel.");
                     jugador.encarcelar(tablero.getPosiciones());
+                    dadosDobles = false;
                     acabarTurno();
                     return;
                 } else {
                     System.out.println("Puedes lanzar otra vez.");
                     tirado = false;
                 }
+            }
+            else {
+                dadosDobles = false;
             }
 
             seHaMovido = true;
@@ -643,8 +653,10 @@ public class Menu {
             jugador.setTiradasCarcel(0); // Salir de la cárcel
             jugador.setEnCarcel(false);
             tirado = false; // Permitimos otro lanzamiento
+            dadosDobles = true;
         } else {
             System.out.println("No han salido dobles... El jugador pierde el turno");
+            dadosDobles = false;
             jugador.setTiradasCarcel(jugador.getTiradasCarcel() + 1);
         }
     }
@@ -794,8 +806,11 @@ public class Menu {
     private void acabarTurno() {
         //Tiradas carcel xa axustadas na funcion SaliCarcel
         //if(!tirado || dado1.getValor() == dado2.getValor()) {
-        if(!tirado) {
-
+        if(jugadores.get(turno).getEnCarcel()) {
+            dadosDobles = false;
+            tirado = true;
+        }
+        if(!tirado || dadosDobles) {
             System.out.println("No puedes acabar turno sin haber lanzado los dados.");
             return;
         }
@@ -808,6 +823,7 @@ public class Menu {
         solvente = true;
         Jugador jugador = jugadores.get(turno);
         System.out.println("El turno le pertenece al jugador " + jugador.getNombre() + ". Con avatar " + jugador.getAvatar().getId() + ".");
+        dadosDobles = false;
 
         if (jugador.getAvatar().getTipo().equals("Coche")) {
             saltoMovimiento = 3;
@@ -901,6 +917,7 @@ public class Menu {
                         barajas.evaluarSuerte(banca, jugadorActual, tablero);
                     }
                     if(jugadorActual.getEnCarcel()) {
+                        dadosDobles = false;
                         acabarTurno();
                     }
                 }
@@ -909,6 +926,7 @@ public class Menu {
                         barajas.evaluarComunidad(banca, jugadorActual, tablero, jugadores);
                     }
                     if(jugadorActual.getEnCarcel()) {
+                        dadosDobles = false;
                         acabarTurno();
                     }
                 }
@@ -1511,5 +1529,6 @@ public class Menu {
         }
         return num;
     }
+
 
 }
