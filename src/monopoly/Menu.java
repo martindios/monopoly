@@ -30,7 +30,8 @@ public class Menu {
     private int contadorPiscina;
     private int contadorPistaDeporte;
 
-    private int saltoMovimiento;
+    private int saltoMovimiento; //Variable para controlar el movimiento del avatar en modo avanzado
+    private boolean seHaMovido; //Booleano para comprobar si el jugador se ha movido en su turno
 
     /**********Constructor**********/
     public Menu() {
@@ -45,6 +46,7 @@ public class Menu {
         this.dado2 = new Dado();
         this.banca = new Jugador();
         this.saltoMovimiento = 0;
+        this.seHaMovido = false;
         this.tablero = new Tablero(banca);
 
         preIniciarPartida();
@@ -70,6 +72,7 @@ public class Menu {
     /*Método en el que se desarrolla la partida hasta que un jugador es no solvente*/
     private void iniciarPartida() {
         while(!finalizarPartida) {
+            seHaMovido = false;
             System.out.print("Introduce el comando: ");
             String comando = scanner.nextLine();
             analizarComando(comando);
@@ -310,20 +313,24 @@ public class Menu {
 
     /*Método para avanzar con el modo avanzado Pelota*/
     private void avanzar() {
-        Jugador jugadorAcvtual = jugadores.get(turno);
-        Avatar avatarActual = jugadorAcvtual.getAvatar();
+        Jugador jugadorActual = jugadores.get(turno);
+        Avatar avatarActual = jugadorActual.getAvatar();
         if(saltoMovimiento == 0) {
             System.out.println("No hay ningún movimiento pendiente.");
             return;
         }
+        seHaMovido = true;
         if(saltoMovimiento > 0) {
             if(saltoMovimiento == 1) {
                 avatarActual.moverAvatar(tablero.getPosiciones(), 1);
                 saltoMovimiento = 0;
             } else {
                 avatarActual.moverAvatar(tablero.getPosiciones(), 2);
-                //COMPROBAR QUE HA ENTRADO EN LA CÁRCEL, SI ES ASÍ, PONER EL SALTO A 0
-                saltoMovimiento -= 2;
+                if(jugadorActual.getEnCarcel()) {
+                    saltoMovimiento = 0;
+                } else {
+                    saltoMovimiento -= 2;
+                }
             }
         } else {
             if(saltoMovimiento == -1) {
@@ -365,42 +372,6 @@ public class Menu {
             saltoMovimiento = -valorTirada + 1;
         }
     }
-
-    /**
-     * Método que permite hipotecar una casilla.
-     * Verifica que la casilla exista, que el jugador sea el propietario, que no tenga edificios y que no esté ya hipotecada.
-     * Si todas las condiciones se cumplen, hipoteca la casilla y actualiza la fortuna del jugador y de la banca.
-     *
-     * @param nombreCasilla El nombre de la casilla a hipotecar.
-     */
-    public void hipotecar(String nombreCasilla) {
-        Casilla casilla = tablero.encontrar_casilla(nombreCasilla);
-        Jugador jugadorActual = jugadores.get(turno);
-
-        if (casilla == null) {
-            System.out.println("Casilla no encontrada");
-            return;
-        }
-
-        if (!casilla.getDuenho().equals(jugadorActual)) {
-            System.out.println(jugadorActual.getNombre() + " no puede hipotecar " + nombreCasilla + ". No es una propiedad que le pertenece");
-            return;
-        }
-        if (!casilla.getEdificios().isEmpty()) {
-            System.out.println(jugadorActual.getNombre() + " no puede hipotecar " + nombreCasilla + ". Tiene edificios construidos");
-            return;
-        }
-        if (casilla.isHipotecado()) {
-            System.out.println(jugadorActual.getNombre() + " no puede hipotecar " + nombreCasilla + ". Ya está hipotecada");
-            return;
-        }
-
-        System.out.println("El jugador " + jugadorActual.getNombre() + " hipoteca " + nombreCasilla + " por " + casilla.getHipoteca());
-        casilla.setHipotecado(true);
-        jugadorActual.sumarFortuna(casilla.getHipoteca());
-        banca.sumarFortuna(-casilla.getHipoteca());
-    }
-
 
     private void estadisticasJugador(String jugadorStr) {
         for(Jugador jugador : jugadores) {
@@ -774,7 +745,8 @@ public class Menu {
     // Método que realiza las acciones asociadas al comando 'acabar turno'.
     private void acabarTurno() {
         //Tiradas carcel xa axustadas na funcion SaliCarcel
-        if(!tirado || dado1.getValor() == dado2.getValor()) {
+        //if(!tirado || dado1.getValor() == dado2.getValor()) {
+        if(!tirado) {
             System.out.println("No puedes acabar turno sin haber lanzado los dados.");
             return;
         }
@@ -849,6 +821,9 @@ public class Menu {
         Jugador jugadorActual = jugadores.get(turno);
         Casilla casillaActual = jugadorActual.getAvatar().getLugar();
         solvente = casillaActual.evaluarCasilla(jugadores.get(turno), banca, dado1.getValor() + dado2.getValor());
+        if(jugadorActual.getAvatar().isConseguirDinero()) {
+            //HAY QUE HACER QUE EL JUGADOR VENDA SUS PROPIEDADES E HIPOTEQUE SUS EDIFICOS HASTA QUE SEA SOLVENTE
+        }
         if (!solvente) {
             finalizarPartida = true;
         } else {
@@ -867,13 +842,17 @@ public class Menu {
                     banca.sumarFortuna(casillaActual.getImpuesto());
                 }
                 case "Suerte" -> {
-                    barajas.evaluarSuerte(banca, jugadorActual, tablero);
+                    if(seHaMovido) {
+                        barajas.evaluarSuerte(banca, jugadorActual, tablero);
+                    }
                     if(jugadorActual.getEnCarcel()) {
                         acabarTurno();
                     }
                 }
                 case "Comunidad" -> {
-                    barajas.evaluarComunidad(banca, jugadorActual, tablero, jugadores);
+                    if(seHaMovido) {
+                        barajas.evaluarComunidad(banca, jugadorActual, tablero, jugadores);
+                    }
                     if(jugadorActual.getEnCarcel()) {
                         acabarTurno();
                     }
@@ -1324,6 +1303,41 @@ public class Menu {
         return casillasMasFrecuentadas;
     }
 
+    /**
+     * Método que permite hipotecar una casilla.
+     * Verifica que la casilla exista, que el jugador sea el propietario, que no tenga edificios y que no esté ya hipotecada.
+     * Si todas las condiciones se cumplen, hipoteca la casilla y actualiza la fortuna del jugador y de la banca.
+     *
+     * @param nombreCasilla El nombre de la casilla a hipotecar.
+     */
+    public void hipotecar(String nombreCasilla) {
+        Casilla casilla = tablero.encontrar_casilla(nombreCasilla);
+        Jugador jugadorActual = jugadores.get(turno);
+
+        if (casilla == null) {
+            System.out.println("Casilla no encontrada");
+            return;
+        }
+
+        if (!casilla.getDuenho().equals(jugadorActual)) {
+            System.out.println(jugadorActual.getNombre() + " no puede hipotecar " + nombreCasilla + ". No es una propiedad que le pertenece");
+            return;
+        }
+        if (!casilla.getEdificios().isEmpty()) {
+            System.out.println(jugadorActual.getNombre() + " no puede hipotecar " + nombreCasilla + ". Tiene edificios construidos");
+            return;
+        }
+        if (casilla.isHipotecado()) {
+            System.out.println(jugadorActual.getNombre() + " no puede hipotecar " + nombreCasilla + ". Ya está hipotecada");
+            return;
+        }
+
+        System.out.println("El jugador " + jugadorActual.getNombre() + " hipoteca " + nombreCasilla + " por " + casilla.getHipoteca());
+        casilla.setHipotecado(true);
+        jugadorActual.sumarFortuna(casilla.getHipoteca());
+        banca.sumarFortuna(-casilla.getHipoteca());
+    }
+
     private void deshipotecar(String nombreCasilla) {
         Jugador jugadorActual = jugadores.get(turno);
         Casilla casilla = tablero.encontrar_casilla(nombreCasilla);
@@ -1354,6 +1368,64 @@ public class Menu {
         jugadorActual.sumarGastos(precioDeshipotecar);
         banca.sumarFortuna(precioDeshipotecar);
         casilla.setHipotecado(false);
+    }
+
+    /*
+    /*Método que se llama cuando el jugador tiene que conseguir dinero vendiendo edificios, hipotecando propiedades y sino
+     *debe declararse en bancarrota*/
+    public void conseguirDinero(float dineroAConseguir) {
+        Jugador jugadorActual = jugadores.get(turno);
+        Scanner scanner = new Scanner(System.in);
+        if (jugadorActual.getFortuna() < dineroAConseguir) {
+            System.out.println("El jugador no tiene suficiente dinero para pagar. Debe vender edificios y/o hipotecar propiedades.");
+            //Si el jugador no tiene suficiente dinero, se le pide que venda edificios y/o hipoteque propiedades
+            //Si no puede hacer ninguna de las dos, se declara en bancarrota
+            if (jugadorActual.getEdificios().isEmpty() && jugadorActual.getPropiedades().isEmpty()) {
+                System.out.println("El jugador no tiene propiedades ni edificios para vender. Se declara en bancarrota.");
+                //HAY QUE DECLARARSE EN BANCARROTA
+            } else {
+                System.out.println("El jugador tiene propiedades y/o edificios. ¿Qué desea vender/hipotecar? (propiedades[1]/edificios[2]) ");
+                int opcion;
+                do {
+                    opcion = scanner.nextInt();
+                    if (opcion != 1 && opcion != 2) {
+                        System.out.println("Opción no válida. Introduzca 1 para propiedades o 2 para edificios.");
+                    }
+                } while (opcion != 1 && opcion != 2);
+                if (opcion == 1) { //Hipotecar propiedades
+                    //Si el jugador tiene propiedades, se le pide que las hipoteque
+                    System.out.println("Propiedades:");
+                    for (Casilla propiedad : jugadorActual.getPropiedades()) {
+                        System.out.println(propiedad.getNombre());
+                    }
+                    //Se le pide que introduzca el nombre de la propiedad que quiere hipotecar
+                    System.out.println("Introduce el nombre de la propiedad que quieres hipotecar:");
+                    String nombrePropiedad = scanner.next();
+                    //Se busca la propiedad con el nombre introducido
+                    Casilla propiedadHipotecar = null;
+                    for (Casilla propiedad : jugadorActual.getPropiedades()) {
+                        if (propiedad.getNombre().equalsIgnoreCase(nombrePropiedad)) {
+                            propiedadHipotecar = propiedad;
+                        }
+                    }
+                    //Si la propiedad no existe, se le pide que introduzca un nombre válido
+                    while (propiedadHipotecar == null) {
+                        System.out.println("El nombre introducido no es válido. Introduce un nombre válido:");
+                        nombrePropiedad = scanner.next();
+                        for (Casilla propiedad : jugadorActual.getPropiedades()) {
+                            if (propiedad.getNombre().equalsIgnoreCase(nombrePropiedad)) {
+                                propiedadHipotecar = propiedad;
+                            }
+                        }
+                    }
+
+                    hipotecar(propiedadHipotecar.getNombre());
+                }
+
+            }
+        } else {
+            return;
+        }
     }
 
 

@@ -16,6 +16,7 @@ public class Avatar {
     private Jugador jugador; //Un jugador al que pertenece ese avatar.
     private Casilla lugar; //Los avatares se sitúan en casillas del tablero.
     private boolean avanzado;
+    private boolean conseguirDinero;
 
     /**********Constructor**********/
 
@@ -30,6 +31,7 @@ public class Avatar {
         this.jugador = jugador;
         this.lugar = lugar;
         this.avanzado = false;
+        this.conseguirDinero = false;
         //Generamos o id do avatar co metodo e asígnase dentro deste, pasándolle o array de avatares xa creados, para asi dsp coller o seu id e non repetilos
         generarId(avCreados);
         lugar.anhadirAvatar(this);
@@ -59,6 +61,10 @@ public class Avatar {
 
     public boolean isAvanzado() {
         return avanzado;
+    }
+
+    public boolean isConseguirDinero() {
+        return conseguirDinero;
     }
 
     public String infoAvatar() {
@@ -91,6 +97,10 @@ public class Avatar {
         this.avanzado = avanzado;
     }
 
+    public void setConseguirDinero(boolean conseguirDinero) {
+        this.conseguirDinero = conseguirDinero;
+    }
+
     /**********Métodos**********/
 
     /*Método que permite mover a un avatar a una casilla concreta. Parámetros:
@@ -104,6 +114,9 @@ public class Avatar {
         casillaOld.eliminarAvatar(this);
         int max = 40;
         int posicionNueva = (casillaOld.getPosicion() + valorTirada);
+        if(posicionNueva == 0) {
+            posicionNueva = 40;
+        }
         if(posicionNueva < 0) { /*Pasa por salida al revés*/
             pasaPorSalidaReves = true;
             posicionNueva = max + posicionNueva;
@@ -158,9 +171,8 @@ public class Avatar {
                         if (jugador.getFortuna() < SUMA_VUELTA) {
                             System.out.println("El jugador no tiene suficiente dinero para pagar la vuelta. " +
                                     "Debe vender edificio, hipotecar propiedades o declarse en bancarrota.");
-                            while (jugador.getFortuna() < SUMA_VUELTA) {
-                                jugador.conseguirDinero(SUMA_VUELTA);
-                            }
+                            conseguirDinero = true;
+                            return;
                         }
 
                     }
