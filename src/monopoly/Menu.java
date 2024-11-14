@@ -795,6 +795,7 @@ public class Menu {
         //Tiradas carcel xa axustadas na funcion SaliCarcel
         //if(!tirado || dado1.getValor() == dado2.getValor()) {
         if(!tirado) {
+
             System.out.println("No puedes acabar turno sin haber lanzado los dados.");
             return;
         }
