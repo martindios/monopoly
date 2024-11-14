@@ -33,6 +33,8 @@ public class Jugador {
     private int vecesEnLaCarcel;
     private int vecesTiradasDados;
 
+    private int noPuedeTirarDados; //Variable para controlar en movimiento Coche si sale < 4 no puede tirar dados durante los 2 siguientes turnos
+
 
     /**********Constructores**********/
 
@@ -67,6 +69,8 @@ public class Jugador {
         this.premiosInversionesOBote = 0;
         this.vecesEnLaCarcel = 0;
         this.vecesTiradasDados = 0;
+
+        this.noPuedeTirarDados = 0;
 
         this.propiedades = new ArrayList<>();
         this.hipotecas = new ArrayList<>();
@@ -154,6 +158,10 @@ public class Jugador {
         return vecesTiradasDados;
     }
 
+    public int getNoPuedeTirarDados() {
+        return noPuedeTirarDados;
+    }
+
     /**********Setters**********/
 
     public void setFortuna(float fortuna) {
@@ -194,6 +202,10 @@ public class Jugador {
 
     public void setEdificios(ArrayList<Edificio> edificios) {
         this.edificios = edificios;
+    }
+
+    public void setNoPuedeTirarDados(int noPuedeTirarDados) {
+        this.noPuedeTirarDados = noPuedeTirarDados;
     }
 
 

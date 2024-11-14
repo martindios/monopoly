@@ -212,47 +212,7 @@ public class Avatar {
         }
     }
 
-    public void moverJugadorCoche(ArrayList<ArrayList<Casilla>> casillas, int dado1, int dado2, int lanzamientos){
-        int valorTirada = dado1 + dado2;
-        Dado tiradaAdicional1 = new Dado();
-        Dado tiradaAdicional2 = new Dado();
 
-
-        //Caso en el que el valor de la tirada es menor o igual que 4
-        if (valorTirada <= 4){
-            moverAvatar(casillas, -valorTirada); //Si no va a la cárcel retrocede el numero de casillas correspondiente
-        }
-
-        //En el caso de que el valor de la tirada sea mayor que 4 se tiene que contar un máximo de 4 tiradas
-        while (lanzamientos <= 4){
-            if (valorTirada > 4) {
-                moverAvatar(casillas, valorTirada); //Si no va a la cárcel avanza el numero de casillas correspondiente
-                if (lanzamientos == 4 && (dado1 == dado2)){
-                    int valor1 = tiradaAdicional1.hacerTirada();
-                    int valor2 = tiradaAdicional2.hacerTirada();
-                    System.out.println("Dado 1: " + valor1);
-                    System.out.println("Dado 2: " + valor2);
-
-                    this.moverAvatar(casillas, (valor1 + valor2));
-
-                }
-
-                lanzamientos++;
-
-            } else if (valorTirada <= 4 && lanzamientos == 4) {
-                int valor1 = tiradaAdicional1.hacerTirada();
-                int valor2 = tiradaAdicional2.hacerTirada();
-                System.out.println("Dado 1: " + valor1);
-                System.out.println("Dado 2: " + valor2);
-
-                this.moverAvatar(casillas, (valor1 + valor2));
-            }
-            else {
-                break;
-            }
-        }
-
-    }
 
 
 

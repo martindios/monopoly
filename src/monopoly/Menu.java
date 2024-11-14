@@ -32,6 +32,7 @@ public class Menu {
 
     private int saltoMovimiento; //Variable para controlar el movimiento del avatar en modo avanzado
     private boolean seHaMovido; //Booleano para comprobar si el jugador se ha movido en su turno
+    private boolean compraMovimientoCoche;
 
     /**********Constructor**********/
     public Menu() {
@@ -47,6 +48,7 @@ public class Menu {
         this.banca = new Jugador();
         this.saltoMovimiento = 0;
         this.seHaMovido = false;
+        this.compraMovimientoCoche = false;
         this.tablero = new Tablero(banca);
 
         preIniciarPartida();
@@ -71,6 +73,9 @@ public class Menu {
 
     /*Método en el que se desarrolla la partida hasta que un jugador es no solvente*/
     private void iniciarPartida() {
+        if (jugadores.get(turno).getAvatar().getTipo().equals("Coche")) {
+            saltoMovimiento = 4;
+        }
         while(!finalizarPartida) {
             seHaMovido = false;
             System.out.print("Introduce el comando: ");
@@ -134,6 +139,13 @@ public class Menu {
                 case "lanzar":
                     if(tirado){
                         System.out.println("Ya has lanzado los dados en este turno.");
+                        break;
+                    }
+                    if(jugadores.get(turno).getNoPuedeTirarDados() > 0) {
+                        System.out.println("No puedes lanzar los dados en este turno.");
+                        jugadores.get(turno).setNoPuedeTirarDados(jugadores.get(turno).getNoPuedeTirarDados() - 1);
+                        tirado = true;
+                        acabarTurno();
                         break;
                     }
                     if (palabrasArray.length == 2 && palabrasArray[1].equals("dados")) {
@@ -373,6 +385,41 @@ public class Menu {
         }
     }
 
+    public void moverJugadorCoche(int valorTirada){
+        Jugador jugadorActual = jugadores.get(turno);
+        Avatar avatarActual = jugadorActual.getAvatar();
+
+        if (jugadorActual.getEnCarcel()) {
+            System.out.println("El jugador está en la cárcel, no puede avanzar.");
+            return;
+        }
+
+        if(valorTirada > 4 && saltoMovimiento > 0) {
+            tirado = false;
+            avatarActual.moverAvatar(tablero.getPosiciones(), valorTirada);
+            if (jugadorActual.getEnCarcel()) {
+                saltoMovimiento = 0;
+                return;
+            }
+            saltoMovimiento--;
+            if(saltoMovimiento == 0) {
+                tirado = true;
+            }
+        }
+
+        if (valorTirada <= 4) {
+            avatarActual.moverAvatar(tablero.getPosiciones(), -valorTirada);
+            jugadorActual.setNoPuedeTirarDados(2);
+            saltoMovimiento = 0;
+            if (jugadorActual.getEnCarcel()) {
+                saltoMovimiento = 0;
+                return;
+            }
+        }
+
+
+    }
+
     private void estadisticasJugador(String jugadorStr) {
         for(Jugador jugador : jugadores) {
             if(jugador.getNombre().equals(jugadorStr)) {
@@ -516,7 +563,7 @@ public class Menu {
      */
     private void lanzarDados(int tirada1, int tirada2) {
         if (!tirado) {
-            if (saltoMovimiento != 0) {
+            if (saltoMovimiento != 0 && jugadores.get(turno).getAvatar().getTipo().equals("Pelota")) {
                 System.out.println("El jugador está en modo avanzado, no puede lanzar los dados.");
                 return;
             }
@@ -557,11 +604,12 @@ public class Menu {
                 }
             }
 
+            seHaMovido = true;
             if (avatar.isAvanzado()) {
                 if(avatar.getTipo().equals("Pelota")){
                     moverJugadorPelota(valor1 + valor2);
                 } else if (avatar.getTipo().equals("Coche")){
-                    avatar.moverJugadorCoche(tablero.getPosiciones(), valor1, valor2, lanzamientos);
+                    moverJugadorCoche(valor1 + valor2);
                 }
             } else avatar.moverAvatar(tablero.getPosiciones(), (valor1 + valor2));
 
@@ -759,6 +807,12 @@ public class Menu {
         solvente = true;
         Jugador jugador = jugadores.get(turno);
         System.out.println("El turno le pertenece al jugador " + jugador.getNombre() + ". Con avatar " + jugador.getAvatar().getId() + ".");
+
+        if (jugador.getAvatar().getTipo().equals("Coche")) {
+            saltoMovimiento = 3;
+        } else if (jugador.getAvatar().getTipo().equals("Pelota")) {
+            saltoMovimiento = 0;
+        }
     }
 
     /**
@@ -842,7 +896,7 @@ public class Menu {
                     banca.sumarFortuna(casillaActual.getImpuesto());
                 }
                 case "Suerte" -> {
-                    if(seHaMovido) {
+                    if(seHaMovido || !jugadorActual.getAvatar().isAvanzado()) {
                         barajas.evaluarSuerte(banca, jugadorActual, tablero);
                     }
                     if(jugadorActual.getEnCarcel()) {
@@ -850,7 +904,7 @@ public class Menu {
                     }
                 }
                 case "Comunidad" -> {
-                    if(seHaMovido) {
+                    if(seHaMovido || !jugadorActual.getAvatar().isAvanzado()) {
                         barajas.evaluarComunidad(banca, jugadorActual, tablero, jugadores);
                     }
                     if(jugadorActual.getEnCarcel()) {
