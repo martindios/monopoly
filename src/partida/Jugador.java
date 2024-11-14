@@ -1,6 +1,7 @@
 package partida;
 
 import java.util.ArrayList;
+import java.util.Scanner;
 
 import monopoly.*;
 import static monopoly.Valor.FORTUNA_BANCA;
@@ -32,6 +33,8 @@ public class Jugador {
     private int vecesEnLaCarcel;
     private int vecesTiradasDados;
 
+    private int noPuedeTirarDados; //Variable para controlar en movimiento Coche si sale < 4 no puede tirar dados durante los 2 siguientes turnos
+
 
     /**********Constructores**********/
 
@@ -42,10 +45,10 @@ public class Jugador {
     }
 
     /*Constructor principal
-    * Parámetros:
-    * Nombre del jugador, tipo del avatar que tendrá, casilla en la que empezará y ArrayList de
-    * avatares creados (usado para dos propósitos: evitar que dos jugadores tengan el mismo nombre y
-    * que dos avatares tengan mismo ID). Desde este constructor también se crea el avatar.
+     * Parámetros:
+     * Nombre del jugador, tipo del avatar que tendrá, casilla en la que empezará y ArrayList de
+     * avatares creados (usado para dos propósitos: evitar que dos jugadores tengan el mismo nombre y
+     * que dos avatares tengan mismo ID). Desde este constructor también se crea el avatar.
      */
     public Jugador(String nombre, String tipoAvatar, Casilla inicio, ArrayList<Avatar> avCreados) {
         this.nombre = nombre;
@@ -67,6 +70,8 @@ public class Jugador {
         this.vecesEnLaCarcel = 0;
         this.vecesTiradasDados = 0;
 
+        this.noPuedeTirarDados = 0;
+
         this.propiedades = new ArrayList<>();
         this.hipotecas = new ArrayList<>();
         this.edificios = new ArrayList<>();
@@ -84,6 +89,7 @@ public class Jugador {
     public Avatar getAvatar() {
         return avatar;
     }
+
     public int getTiradasCarcel() {
         return tiradasCarcel;
     }
@@ -152,25 +158,28 @@ public class Jugador {
         return vecesTiradasDados;
     }
 
+    public int getNoPuedeTirarDados() {
+        return noPuedeTirarDados;
+    }
+
     /**********Setters**********/
 
     public void setFortuna(float fortuna) {
-        if(fortuna < 0) {
+        if (fortuna < 0) {
             this.fortuna = 0;
-        }
-        else {
+        } else {
             this.fortuna = fortuna;
         }
     }
 
     public void setGastos(float gastos) {
-        if(gastos < 0) {
+        if (gastos < 0) {
             this.gastos = 0;
-        }
-        else {
+        } else {
             this.gastos = gastos;
         }
     }
+
     public void setEnCarcel(boolean enCarcel) {
         this.enCarcel = enCarcel;
     }
@@ -191,7 +200,13 @@ public class Jugador {
         this.vueltas = vueltas;
     }
 
-    public void setEdificios(ArrayList<Edificio> edificios) {this.edificios = edificios;}
+    public void setEdificios(ArrayList<Edificio> edificios) {
+        this.edificios = edificios;
+    }
+
+    public void setNoPuedeTirarDados(int noPuedeTirarDados) {
+        this.noPuedeTirarDados = noPuedeTirarDados;
+    }
 
 
     /**********Métodos**********/
@@ -202,7 +217,8 @@ public class Jugador {
     }
 
     //Método para eliminar una propiedad del arraylist de propiedades de jugador.
-    public void eliminarPropiedad(Casilla casilla) { propiedades.remove(casilla);
+    public void eliminarPropiedad(Casilla casilla) {
+        propiedades.remove(casilla);
     }
 
     public void sumarTasasEImpuestos(float valor) {
@@ -264,9 +280,9 @@ public class Jugador {
         Avatar av = this.avatar;
         Casilla casillaOld = av.getLugar();
         casillaOld.eliminarAvatar(av);
-        for(ArrayList<Casilla> casillas : pos) {
-            for(Casilla casilla : casillas) {
-                if(casilla.getNombre().equalsIgnoreCase("Cárcel")) {
+        for (ArrayList<Casilla> casillas : pos) {
+            for (Casilla casilla : casillas) {
+                if (casilla.getNombre().equalsIgnoreCase("Cárcel")) {
                     casilla.anhadirAvatar(av);
                     System.out.println("El jugador ha sido encarcelado.");
                 }
@@ -283,8 +299,8 @@ public class Jugador {
      * @param array La lista de elementos a convertir en cadena. Puede contener
      *              objetos de tipo String o Casilla.
      * @return Una representación de cadena de la lista, con los elementos
-     *         separados por comas y encerrados entre corchetes. Si la lista está
-     *         vacía, se devuelve un guion ("-").
+     * separados por comas y encerrados entre corchetes. Si la lista está
+     * vacía, se devuelve un guion ("-").
      */
     private String listaArray(ArrayList<?> array) {
         StringBuilder listaArray = new StringBuilder();
@@ -324,12 +340,12 @@ public class Jugador {
      * y edificios del jugador
      *
      * @return Una cadena que representa la información del jugador, incluyendo:
-     *         - Nombre del jugador
-     *         - ID del avatar
-     *         - Fortuna del jugador
-     *         - Lista de propiedades del jugador
-     *         - Lista de hipotecas del jugador
-     *         - Lista de edificios del jugador
+     * - Nombre del jugador
+     * - ID del avatar
+     * - Fortuna del jugador
+     * - Lista de propiedades del jugador
+     * - Lista de hipotecas del jugador
+     * - Lista de edificios del jugador
      */
     public String info() {
         String listaPropiedades = listaArray(propiedades);
@@ -357,5 +373,4 @@ public class Jugador {
         }
         return fortunaTotal;
     }
-
 }

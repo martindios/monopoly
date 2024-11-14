@@ -8,7 +8,8 @@ public class Valor {
     public static final float FORTUNA_BANCA = 500000; // Cantidad que tiene inicialmente la Banca
     public static final float FORTUNA_INICIAL = 9543076.28f; // Cantidad que recibe cada jugador al comenzar la partida
     public static final float SUMA_VUELTA = 1301328.584f; // Cantidad que recibe un jugador al pasar por la Salida
-    
+    //public static final float SUMA_VUELTA = 13013280.584f; // Debug
+
     /*Colores del texto*/
     public static final String RESET = "\u001B[0m";
     public static final String BLACK = "\u001B[30m";

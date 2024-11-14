@@ -16,6 +16,7 @@ public class Avatar {
     private Jugador jugador; //Un jugador al que pertenece ese avatar.
     private Casilla lugar; //Los avatares se sitúan en casillas del tablero.
     private boolean avanzado;
+    private boolean conseguirDinero;
 
     /**********Constructor**********/
 
@@ -30,6 +31,7 @@ public class Avatar {
         this.jugador = jugador;
         this.lugar = lugar;
         this.avanzado = false;
+        this.conseguirDinero = false;
         //Generamos o id do avatar co metodo e asígnase dentro deste, pasándolle o array de avatares xa creados, para asi dsp coller o seu id e non repetilos
         generarId(avCreados);
         lugar.anhadirAvatar(this);
@@ -59,6 +61,10 @@ public class Avatar {
 
     public boolean isAvanzado() {
         return avanzado;
+    }
+
+    public boolean isConseguirDinero() {
+        return conseguirDinero;
     }
 
     public String infoAvatar() {
@@ -91,6 +97,10 @@ public class Avatar {
         this.avanzado = avanzado;
     }
 
+    public void setConseguirDinero(boolean conseguirDinero) {
+        this.conseguirDinero = conseguirDinero;
+    }
+
     /**********Métodos**********/
 
     /*Método que permite mover a un avatar a una casilla concreta. Parámetros:
@@ -104,6 +114,9 @@ public class Avatar {
         casillaOld.eliminarAvatar(this);
         int max = 40;
         int posicionNueva = (casillaOld.getPosicion() + valorTirada);
+        if(posicionNueva == 0) {
+            posicionNueva = 40;
+        }
         if(posicionNueva < 0) { /*Pasa por salida al revés*/
             pasaPorSalidaReves = true;
             posicionNueva = max + posicionNueva;
@@ -115,7 +128,14 @@ public class Avatar {
 
         for (ArrayList<Casilla> fila : tablero) {
             for (Casilla casilla : fila) {
+
                 if (casilla.getPosicion() == posicionNueva) {
+
+                    casilla.anhadirAvatar(this);
+                    this.lugar = casilla;  // Actualiza la casilla actual del avatar
+                    casilla.sumarVecesFrecuentada();
+                    System.out.println("El avatar se mueve a la casilla " + casilla.getNombre() + ". Posición: " + casilla.getPosicion());
+
                     if (casilla.getNombre().equals("IrCarcel")) {
                         jugador.encarcelar(tablero);
                         return;
@@ -139,6 +159,7 @@ public class Avatar {
                             System.out.println("El bote está vacío. No se entrega nada.");
                         }
                     }
+
                     if (pasaPorSalidaDerecho) {
                         jugador.setVueltas(jugador.getVueltas() + 1);
                         jugador.sumarFortuna(SUMA_VUELTA);
@@ -147,13 +168,15 @@ public class Avatar {
                     }
                     if (pasaPorSalidaReves) {
                         jugador.setVueltas(jugador.getVueltas() - 1);
-                        //Comprobar si el jugador es solvente, sino debe hipotecar o vender
+                        if (jugador.getFortuna() < SUMA_VUELTA) {
+                            System.out.println("El jugador no tiene suficiente dinero para pagar la vuelta. " +
+                                    "Debe vender edificio, hipotecar propiedades o declarse en bancarrota.");
+                            conseguirDinero = true;
+                            return;
+                        }
 
                     }
-                    casilla.anhadirAvatar(this);
-                    this.lugar = casilla;  // Actualiza la casilla actual del avatar
-                    casilla.sumarVecesFrecuentada();
-                    System.out.println("El avatar se mueve a la casilla " + casilla.getNombre() + ". Posición: " + casilla.getPosicion());
+
                     return ;
                 }
             }
@@ -189,102 +212,9 @@ public class Avatar {
         }
     }
 
-    public void moverJugadorCoche(ArrayList<ArrayList<Casilla>> casillas, int dado1, int dado2, int lanzamientos){
-        int valorTirada = dado1 + dado2;
-        Dado tiradaAdicional1 = new Dado();
-        Dado tiradaAdicional2 = new Dado();
 
 
-        //Caso en el que el valor de la tirada es menor o igual que 4
-        if (valorTirada <= 4){
-            moverAvatar(casillas, -valorTirada); //Si no va a la cárcel retrocede el numero de casillas correspondiente
-        }
 
-        //En el caso de que el valor de la tirada sea mayor que 4 se tiene que contar un máximo de 4 tiradas
-        while (lanzamientos <= 4){
-            if (valorTirada > 4) {
-                moverAvatar(casillas, valorTirada); //Si no va a la cárcel avanza el numero de casillas correspondiente
-                if (lanzamientos == 4 && (dado1 == dado2)){
-                    int valor1 = tiradaAdicional1.hacerTirada();
-                    int valor2 = tiradaAdicional2.hacerTirada();
-                    System.out.println("Dado 1: " + valor1);
-                    System.out.println("Dado 2: " + valor2);
-
-                    this.moverAvatar(casillas, (valor1 + valor2));
-
-                }
-
-                lanzamientos++;
-
-            } else if (valorTirada <= 4 && lanzamientos == 4) {
-                int valor1 = tiradaAdicional1.hacerTirada();
-                int valor2 = tiradaAdicional2.hacerTirada();
-                System.out.println("Dado 1: " + valor1);
-                System.out.println("Dado 2: " + valor2);
-
-                this.moverAvatar(casillas, (valor1 + valor2));
-            }
-            else {
-                break;
-            }
-        }
-
-    }
-
-    public void moverJugadorPelota(ArrayList<ArrayList<Casilla>> casillas, int dado1, int dado2) {
-        int valorTirada = dado1 + dado2;
-        int i = 4;
-        int j = 0;
-        int k = 0;
-        //Dado tiradaDobles1 = new Dado();
-        //Dado tiradaDobles2 = new Dado();
-        //int valor1 = tiradaDobles1.hacerTirada();
-        //int valor2 = tiradaDobles2.hacerTirada();
-
-        if (valorTirada > 4){
-            while(i != valorTirada){
-                i++;
-                if (i % 2 != 0) {
-                    if(i == 5){
-                        moverAvatar(casillas, 5);
-                    }else{
-                        moverAvatar(casillas, 2);
-                    }
-                }if((i == valorTirada) && (i % 2 == 0)){
-                    moverAvatar(casillas, 1);
-                }
-            }
-        } else {
-            while(j != valorTirada){
-                j++;
-                if (j % 2 != 0) {
-                    if(j == 1){
-                        moverAvatar(casillas, -1);
-                    }else{
-                        moverAvatar(casillas, -2);
-                    }
-                }if((j == valorTirada) && (j % 2 == 0)){
-                    moverAvatar(casillas, -1);
-                }
-            }
-        }
-
-        /*
-        while((dado1 == dado2) && k != 3){
-            k++;
-            System.out.println("Dado 1: " + dado1);
-            System.out.println("Dado 2: " + dado2);
-
-        }
-
-        if(k == 3){
-            jugador.encarcelar(casillas);
-            System.out.println("El jugador ha sido encarcelado.");
-
-        } */
-
-
-    }
 
     /*Método que permite generar un ID para un avatar. Sólo lo usamos en esta clase (por ello es privado).
     * El ID generado será una letra mayúscula. Parámetros:
