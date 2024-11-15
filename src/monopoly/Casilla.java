@@ -282,6 +282,56 @@ public class Casilla {
             }
         }
     }
+    public float calcularDineroNecesarioCasilla(Jugador actual, Jugador banca, int tirada) {
+        if (actual.equals(this.getDuenho())) {
+            return 0;
+        } else {
+            switch (this.getTipo()) {
+                case "Solar":
+                    if (this.getDuenho().equals(banca)) {
+                        return 0;
+                    } else {
+                        return (this.getImpuesto() - actual.getFortuna());
+                    }
+
+                case "Servicios":
+                    if(this.getDuenho().equals(banca)) {
+                        return 0;
+                    }
+                    switch (this.getDuenho().getNumServicios()) {
+                        case 1:
+                            return (this.getImpuesto() * 4 * tirada) - actual.getFortuna();
+                        case 2:
+                            return (this.getImpuesto() * 10 * tirada) - actual.getFortuna();
+                    }
+
+                case "Especiales":
+                    if (this.getNombre().equals("Cárcel")) {
+                        return this.getImpuesto() - actual.getFortuna();
+                    } else {
+                        return 0;
+                    }
+                case "Transporte":
+                    if(this.getDuenho().equals(banca)) {
+                        return 0;
+                    }
+                    switch (this.getDuenho().getNumTransportes()) {
+                        case 1:
+                            return this.getImpuesto() * 0.25f - actual.getFortuna();
+                        case 2:
+                            return this.getImpuesto() * 0.5f - actual.getFortuna();
+                        case 3:
+                            return this.getImpuesto() * 0.75f - actual.getFortuna();
+                        case 4:
+                            return this.getImpuesto() - actual.getFortuna();
+                    }
+                case "Impuestos":
+                    return this.getImpuesto() - actual.getFortuna();
+                default:
+                    return 0;
+            }
+        }
+    }
 
     public void pagarAlquiler(Jugador actual, Jugador banca, int tirada) {
         if(this.getDuenho().equals(banca)) {

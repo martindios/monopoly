@@ -373,4 +373,72 @@ public class Jugador {
         }
         return fortunaTotal;
     }
+
+    public void bancarrota(String motivo, Jugador banca) {
+        if (motivo.equals("Alquiler")) {
+            System.out.println("El jugador " + nombre + " se declara en bancarrota por no poder pagar un alquiler de la casilla " + avatar.getLugar().getNombre() + ". Con propietario " +
+                    avatar.getLugar().getDuenho().getNombre() + ".");
+            System.out.println("Se transfieren la fortuna y las propiedades");
+            Jugador jugBeneficiado = avatar.getLugar().getDuenho();
+
+            // Vender todos los edificios del jugador this
+            for (Casilla propiedad : propiedades) {
+                propiedad.venderEdificios("Casa", propiedad.getNumEdificios(propiedad.getEdificios(), "Casa"));
+                propiedad.venderEdificios("Hotel", propiedad.getNumEdificios(propiedad.getEdificios(), "Hotel"));
+                propiedad.venderEdificios("Piscina", propiedad.getNumEdificios(propiedad.getEdificios(), "Piscina"));
+                propiedad.venderEdificios("PistaDeporte", propiedad.getNumEdificios(propiedad.getEdificios(), "PistaDeporte"));
+            }
+
+            // Transferir todas las propiedades al jugador beneficiado
+            for (Casilla propiedad : propiedades) {
+                propiedad.setDuenho(jugBeneficiado);
+                jugBeneficiado.anhadirPropiedad(propiedad);
+            }
+            propiedades.clear();
+
+            // Transferir la fortuna del jugador this al jugador beneficiado
+            jugBeneficiado.sumarFortuna(this.fortuna);
+            this.fortuna = 0;
+        }
+        else if(motivo.equals("Banca")) {
+            System.out.println("El jugador " + nombre + " se declara en bancarrota por no poder pagar a la banca.");
+            System.out.println("Se transfieren la fortuna y las propiedades a la banca");
+
+            // Vender todos los edificios del jugador this
+            for (Casilla propiedad : propiedades) {
+                propiedad.venderEdificios("Casa", propiedad.getNumEdificios(propiedad.getEdificios(), "Casa"));
+                propiedad.venderEdificios("Hotel", propiedad.getNumEdificios(propiedad.getEdificios(), "Hotel"));
+                propiedad.venderEdificios("Piscina", propiedad.getNumEdificios(propiedad.getEdificios(), "Piscina"));
+                propiedad.venderEdificios("PistaDeporte", propiedad.getNumEdificios(propiedad.getEdificios(), "PistaDeporte"));
+            }
+
+            // Transferir todas las propiedades a la banca
+            for (Casilla propiedad : propiedades) {
+                propiedad.setDuenho(banca);
+            }
+            propiedades.clear();
+
+            // Transferir la fortuna del jugador this a la banca
+            banca.sumarFortuna(this.fortuna);
+            this.fortuna = 0;
+        }
+    }
 }
+/**
+ * System.out.println("El jugador " + jugActual.getNombre() + " se ha declarado en bancarrota, ¿Está seguro? [s/n].");
+ *         String respuesta;
+ *         do {
+ *             respuesta = scanner.next();
+ *             if (respuesta.equalsIgnoreCase("s")) {
+ *                 bancarrota = true;
+ *                 System.out.println("El jugador " + jugActual.getNombre() + " se ha declarado en bancarrota.");
+ *                 break;
+ *             } else if (respuesta.equalsIgnoreCase("n")) {
+ *                 bancarrota = false;
+ *                 System.out.println("El jugador " + jugActual.getNombre() + " no se ha declarado en bancarrota.");
+ *                 return;
+ *             } else {
+ *                 System.out.println("Respuesta no válida. Introduzca 's' para sí o 'n' para no.");
+ *             }
+ *         }while(!respuesta.equalsIgnoreCase("s") && !respuesta.equalsIgnoreCase("n"));
+ */

@@ -121,7 +121,7 @@ public class Baraja {
      * @param tablero       El tablero del juego.
      * @param jugadores     La lista de jugadores.
      */
-    public void evaluarComunidad(Jugador banca, Jugador jugadorActual, Tablero tablero, ArrayList<Jugador> jugadores) {
+    public void evaluarComunidad(Jugador banca, Jugador jugadorActual, Tablero tablero, ArrayList<Jugador> jugadores, Menu menu) {
         Casilla bote;
 
         ArrayList<Carta> barajaComunidad = new ArrayList<>();
@@ -147,10 +147,15 @@ public class Baraja {
 
         int idCarta = barajaComunidad.get(numCarta-1).getIdCarta(), dinero=0;
         switch(idCarta) {
-            case 1: /*Cobra 500000*/
+            case 1: /*Paga 500000*/
                 dinero = 500000;
-                banca.sumarFortuna(-dinero);
-                jugadorActual.sumarFortuna(dinero);
+                if (jugadorActual.getFortuna() >= dinero) {
+                    banca.sumarFortuna(-dinero);
+                    jugadorActual.sumarFortuna(dinero);
+                } else {
+                    float restante = dinero - jugadorActual.getFortuna();
+                    menu.conseguirDinero(restante);
+                }
                 break;
             case 2: /*Ve a la Cárcel*/
                 jugadorActual.encarcelar(tablero.getPosiciones());
@@ -165,21 +170,30 @@ public class Baraja {
                 jugadorActual.sumarPremiosInversionesOBote(dinero);
                 break;
             case 5: /*Paga 1000000€ (se paga a la banca)*/
-                bote = tablero.encontrar_casilla("Parking");
-                bote.sumarValor(1000000);
-                banca.sumarFortuna(1000000);
-
-                jugadorActual.sumarFortuna(-1000000);
-                jugadorActual.sumarGastos(1000000);
+                dinero = 1000000;
+                if (jugadorActual.getFortuna() >= dinero) {
+                    bote = tablero.encontrar_casilla("Parking");
+                    bote.sumarValor(dinero);
+                    banca.sumarFortuna(dinero);
+                    jugadorActual.sumarFortuna(-dinero);
+                    jugadorActual.sumarGastos(dinero);
+                } else {
+                    float restante = dinero - jugadorActual.getFortuna();
+                    menu.conseguirDinero(restante);
+                }
                 break;
             case 6: /*200000€ pagar a cada jugador*/
-                float gastoTotal = 0;
-                for (Jugador jugador: jugadores) {
-                    jugador.sumarFortuna(200000);
-                    gastoTotal += 200000;
+                float gastoTotal = 200000 * jugadores.size();
+                if (jugadorActual.getFortuna() >= gastoTotal) {
+                    for (Jugador jugador: jugadores) {
+                        jugador.sumarFortuna(200000);
+                    }
+                    jugadorActual.sumarFortuna(-gastoTotal);
+                    jugadorActual.sumarGastos(gastoTotal);
+                } else {
+                    float restante = gastoTotal - jugadorActual.getFortuna();
+                    menu.conseguirDinero(restante);
                 }
-                jugadorActual.sumarFortuna(-gastoTotal);
-                jugadorActual.sumarGastos(gastoTotal);
                 break;
         }
     }
