@@ -414,6 +414,7 @@ public class Menu {
             avatarActual.moverAvatar(tablero.getPosiciones(), -valorTirada);
             jugadorActual.setNoPuedeTirarDados(2);
             saltoMovimiento = 0;
+            tirado = true;
             if (jugadorActual.getEnCarcel()) {
                 saltoMovimiento = 0;
                 return;
@@ -608,11 +609,16 @@ public class Menu {
                     acabarTurno();
                     return;
                 } else {
-                    System.out.println("Puedes lanzar otra vez.");
-                    tirado = false;
+                    if(avatar.isAvanzado() && (valor1 + valor2) <= 4) {
+                        System.out.println("Con dobles menores que 4 no se " +
+                                "puede volver a tirar en el modo avanzado Coche");
+                        dadosDobles = false;
+                    } else {
+                        System.out.println("Puedes lanzar otra vez.");
+                        tirado = false;
+                    }
                 }
-            }
-            else {
+            } else {
                 dadosDobles = false;
             }
 
