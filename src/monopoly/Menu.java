@@ -913,6 +913,9 @@ public class Menu {
             float dineroNecesario = casillaActual.calcularDineroNecesarioCasilla(jugadores.get(turno), banca, dado1.getValor() + dado2.getValor());
             //Manejmaos o caso de que se teña que declarar en bancarrota dentro de conseguir dinero
             conseguirDinero(dineroNecesario);
+            if(jugadorActual.getFortuna() == 0) {
+                return;
+            }
         }
         //Comprobar que hay en la casilla en la que se cae hay que pagar
         switch (casillaActual.getTipo()) {
