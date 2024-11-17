@@ -421,6 +421,27 @@ public class Jugador {
             // Transferir la fortuna del jugador this a la banca
             banca.sumarFortuna(this.fortuna);
             this.fortuna = 0;
+        } else if (motivo.equals("Voluntario")) {
+            System.out.println("El jugador " + nombre + " se ha declarado en bancarrota voluntariamente.");
+            System.out.println("Se transfieren la fortuna y las propiedades a la banca");
+
+            // Vender todos los edificios del jugador
+            for (Casilla propiedad : propiedades) {
+                propiedad.venderEdificios("Casa", propiedad.getNumEdificios(propiedad.getEdificios(), "Casa"));
+                propiedad.venderEdificios("Hotel", propiedad.getNumEdificios(propiedad.getEdificios(), "Hotel"));
+                propiedad.venderEdificios("Piscina", propiedad.getNumEdificios(propiedad.getEdificios(), "Piscina"));
+                propiedad.venderEdificios("PistaDeporte", propiedad.getNumEdificios(propiedad.getEdificios(), "PistaDeporte"));
+            }
+
+            // Transferir todas las propiedades a la banca
+            for (Casilla propiedad : propiedades) {
+                propiedad.setDuenho(banca);
+            }
+            propiedades.clear();
+
+            // Transferir la fortuna del jugador this a la banca
+            banca.sumarFortuna(this.fortuna);
+            this.fortuna = 0;
         }
     }
 }

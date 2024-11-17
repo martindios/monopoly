@@ -313,6 +313,10 @@ public class Menu {
                         estadisticasJugador(palabrasArray[1]);
                     }
                     break;
+
+                case "bancarrota":
+                    bancarrota(true);
+                    break;
                 default:
                     System.out.println("Comando no válido");
                     break;
@@ -406,11 +410,7 @@ public class Menu {
             }
             saltoMovimiento--;
             if(saltoMovimiento == 0) {
-                if(dadosDobles) {
-                    tirado = false;
-                } else {
-                    tirado = true;
-                }
+                tirado = !dadosDobles;
             }
         }
 
@@ -1505,7 +1505,7 @@ public class Menu {
             //Si no puede hacer ninguna de las dos, se declara en bancarrota
             if (jugadorActual.getEdificios().isEmpty() && jugadorActual.getPropiedades().isEmpty()) {
                 System.out.println("El jugador no tiene propiedades ni edificios para vender. Se declara en bancarrota.");
-                bancarrota();
+                bancarrota(false);
             } else {
                 System.out.println("El jugador tiene propiedades y/o edificios. ¿Qué desea hipotecar/vender? (propiedades[1]/edificios[2]) ");
                 int opcion;
@@ -1610,7 +1610,7 @@ public class Menu {
                 else {
                     if(contadorEdificios == 0 && contadorPropiedades == 0) {
                         System.out.println("El jugador no ha conseguido dinero suficiente y no le quedan propiedades ni edificios para vender. Se declara en bancarrota.");
-                        bancarrota();
+                        bancarrota(false);
                     }
                     else {
                         System.out.println("El jugador no ha conseguido suficiente dinero para pagar. Debe seguir vendiendo propiedades.");
@@ -1650,13 +1650,10 @@ public class Menu {
         return num;
     }
 
-    private void bancarrota() {
+    private void bancarrota(boolean voluntario) {
         Jugador jugActual = jugadores.get(turno);
         Avatar avActual = jugActual.getAvatar();
         String motivo;
-        if(solvente) {
-            return;
-        }
         if (avActual.getLugar().getTipo().equals("Solar") ||
                 avActual.getLugar().getTipo().equals("Servicios") ||
                 avActual.getLugar().getTipo().equals("Transporte")) {
@@ -1665,8 +1662,9 @@ public class Menu {
                 return;
             }
             motivo = "Alquiler";
-        }
-        else {
+        } else if (voluntario) {
+            motivo = "Voluntario";
+        } else {
             motivo = "Banca";
         }
         jugActual.bancarrota(motivo, banca);
