@@ -1057,7 +1057,6 @@ public class Menu {
     /**
      * Metodo que permite listar los edificios construídos en un grupo de solares
      */
-    //!!!Comprobar que funciona + añadir qué edificios se poden construír!!!
     private void listarEdificiosGrupo(String color) {
         Casilla casillaGrupo = null;
         boolean existenEdificios = false;
