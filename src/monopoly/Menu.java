@@ -406,7 +406,11 @@ public class Menu {
             }
             saltoMovimiento--;
             if(saltoMovimiento == 0) {
-                tirado = true;
+                if(dadosDobles) {
+                    tirado = false;
+                } else {
+                    tirado = true;
+                }
             }
         }
 
@@ -599,27 +603,40 @@ public class Menu {
             System.out.println("Dado 1: " + valor1);
             System.out.println("Dado 2: " + valor2);
 
-            if (valor1 == valor2) {
-                System.out.println("¡Has sacado dobles!");
-                dadosDobles = true;
-                if(lanzamientos == 3) {
-                    System.out.println("¡Tres dobles consecutivos! El jugador va a la cárcel.");
-                    jugador.encarcelar(tablero.getPosiciones());
-                    dadosDobles = false;
-                    acabarTurno();
-                    return;
-                } else {
-                    if(avatar.isAvanzado() && (valor1 + valor2) <= 4) {
-                        System.out.println("Con dobles menores que 4 no se " +
-                                "puede volver a tirar en el modo avanzado Coche");
+            //Sin modo avanzado o con pelota
+            if(!avatar.isAvanzado() || avatar.getTipo().equals("Pelota")) {
+                if (valor1 == valor2) {
+                    System.out.println("¡Has sacado dobles!");
+                    dadosDobles = true;
+                    if (lanzamientos == 3) {
+                        System.out.println("¡Tres dobles consecutivos! El jugador va a la cárcel.");
+                        jugador.encarcelar(tablero.getPosiciones());
                         dadosDobles = false;
+                        acabarTurno();
+                        return;
                     } else {
                         System.out.println("Puedes lanzar otra vez.");
                         tirado = false;
                     }
+                } else {
+                    dadosDobles = false;
                 }
-            } else {
-                dadosDobles = false;
+            } else if (avatar.getTipo().equals("Coche")){ //Modo avanzado con coche
+                if(lanzamientos >= 4 && (valor1 == valor2)) {
+                    System.out.println("Puede lanzar otra vez.");
+                    dadosDobles = true;
+                    tirado = false;
+                } else if(lanzamientos < 4 && (valor1 + valor2) < 4) {
+                    System.out.println("Has sacado un valor menor que 4, no puedes lanzar otra vez");
+                    dadosDobles = false;
+                }
+                if(lanzamientos >= 5) {
+                    System.out.println("El jugador va a la cárcel");
+                    jugador.encarcelar(tablero.getPosiciones());
+                    dadosDobles = false;
+                    acabarTurno();
+                    return;
+                }
             }
 
             seHaMovido = true;
@@ -640,6 +657,7 @@ public class Menu {
             System.out.println("Ya has lanzado el dado en este turno.");
         }
     }
+
 
     /**
      * Método que maneja las posibles acciones al lanzar los dados cuando un jugador está encarcelado,
@@ -694,6 +712,17 @@ public class Menu {
             System.out.println("El jugador no tiene dinero suficiente para comprar la casilla.");
             return;
         }
+        if(comprador.getAvatar().isAvanzado()) {
+            if (compraMovimientoCoche) {
+                System.out.println("El jugador ya ha comprado una propiedad en este turno.");
+                return ;
+            } else {
+                compraMovimientoCoche = true;
+                casillaDeseada.comprarCasilla(comprador, banca);
+                return ;
+            }
+        }
+
         casillaDeseada.comprarCasilla(comprador, banca);
     }
 
