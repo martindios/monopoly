@@ -3,6 +3,7 @@ package monopoly;
 import java.util.*;
 import partida.*;
 import java.util.Scanner;
+import static monopoly.Valor.FORTUNA_INICIAL;
 
 /*En esta clase no se necesitan getters, setters ya que solo llama a métodos de otras clases*/
 public class Menu {
@@ -150,12 +151,18 @@ public class Menu {
                     }
                     if (palabrasArray.length == 2 && palabrasArray[1].equals("dados")) {
                         lanzarDados(0, 0);
+                        if(jugadores.get(turno).getAvatar().getConseguirDinero()) {
+                            conseguirDinero(FORTUNA_INICIAL - jugadores.get(turno).getFortuna());
+                        }
                         System.out.println(tablero.toString());
                         evaluacion();
                         VueltasTablero();
 
                     } else if (palabrasArray.length == 4 && palabrasArray[1].equals("dados")) { //Dados trucados
                         lanzarDados(Integer.parseInt(palabrasArray[2]), Integer.parseInt(palabrasArray[3]));
+                        if(jugadores.get(turno).getAvatar().getConseguirDinero()) {
+                            conseguirDinero(FORTUNA_INICIAL - jugadores.get(turno).getFortuna());
+                        }
                         System.out.println(tablero.toString());
                         evaluacion();
                         VueltasTablero();
@@ -1606,6 +1613,7 @@ public class Menu {
                 if(dineroConseguido > dineroAConseguir) {
                     System.out.println("El jugador ha conseguido suficiente dinero para pagar. Se ha vuelto solvente.");
                     solvente = true;
+                    jugadorActual.getAvatar().setConseguirDinero(false);
                 }
                 else {
                     if(contadorEdificios == 0 && contadorPropiedades == 0) {
