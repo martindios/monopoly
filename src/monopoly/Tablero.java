@@ -26,13 +26,6 @@ public class Tablero {
         this.generarCasillas();
     }
 
-    //TEMPORAL
-    public Tablero(){
-        this.posiciones = new ArrayList<>(4);
-        this.grupos = new HashMap<String, Grupo>(8);
-        this.generarCasillas();
-    }
-
     /**********Getter**********/
     /*Getter hecho para auxiliar a descCasilla, para verificar la existencia de la casilla*/
     public ArrayList<ArrayList<Casilla>> getPosiciones() {
@@ -381,18 +374,13 @@ public class Tablero {
      * @return La casilla que coincide con el nombre proporcionado, o null si no se encuentra.
      */
     public Casilla encontrar_casilla(String nombre){
-        //return null;
-        // Recorremos cada lado del tablero
         for (ArrayList<Casilla> lado : posiciones) {
-            // Recorremos cada Casilla dentro de cada lado
             for (Casilla casilla : lado) {
-                // Si el nombre de la casilla coincide con el nombre buscado, retornamos la casilla
                 if (casilla.getNombre().equals(nombre)) {
                     return casilla;
                 }
             }
         }
-        // Si no encontramos la casilla, devolvemos null
         return null;
     }
 
