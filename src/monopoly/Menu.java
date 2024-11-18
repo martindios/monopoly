@@ -1736,7 +1736,10 @@ public class Menu {
         Jugador jugActual = jugadores.get(turno);
         Avatar avActual = jugActual.getAvatar();
         String motivo;
-        if (avActual.getLugar().getTipo().equals("Solar") ||
+        if (voluntario) {
+            motivo = "Voluntario";
+        }
+        else if (avActual.getLugar().getTipo().equals("Solar") ||
                 avActual.getLugar().getTipo().equals("Servicios") ||
                 avActual.getLugar().getTipo().equals("Transporte")) {
             if (avActual.getLugar().getDuenho().equals(banca) ||
@@ -1744,8 +1747,6 @@ public class Menu {
                 return;
             }
             motivo = "Alquiler";
-        } else if (voluntario) {
-            motivo = "Voluntario";
         } else {
             motivo = "Banca";
         }
