@@ -212,6 +212,10 @@ public class Casilla {
         this.hipotecado = hipotecado;
     }
 
+    public void setContador(int contador) {
+        this.contador = contador;
+    }
+
     /**********Métodos**********/
 
     //Método utilizado para añadir un avatar al array de avatares en casilla.
@@ -452,13 +456,13 @@ public class Casilla {
                         "valor casa: " + this.valor * 0.6 + ",\n" +
                         "valor piscina: " + this.valor * 0.4 + ",\n" +
                         "pista de deporte: " + this.valor * 1.25 + ",\n" +
-                        "alquiler una casa: " + this.impuesto * 5 + ",\n" +
-                        "alquiler dos casas: " + this.impuesto * 15 + ",\n" +
-                        "alquiler tres casas: " + this.impuesto * 35 + ",\n" +
-                        "alquiler cuatro casas: " + this.impuesto * 50 + ",\n" +
-                        "alquiler hotel: " + this.impuesto * 70 + ",\n" +
-                        "alquiler piscina: " + this.impuesto * 25 + ",\n" +
-                        "alquiler pista de deporte: " + this.impuesto * 25 + ",\n" +
+                        "alquiler una casa: " + this.impuestoInicial * 5 + ",\n" +
+                        "alquiler dos casas: " + this.impuestoInicial * 15 + ",\n" +
+                        "alquiler tres casas: " + this.impuestoInicial * 35 + ",\n" +
+                        "alquiler cuatro casas: " + this.impuestoInicial * 50 + ",\n" +
+                        "alquiler hotel: " + this.impuestoInicial * 70 + ",\n" +
+                        "alquiler piscina: " + this.impuestoInicial * 25 + ",\n" +
+                        "alquiler pista de deporte: " + this.impuestoInicial * 25 + ",\n" +
                         "Edificios construídos: " + this.listaArray(edificios);
 
             case "Servicios":
@@ -819,16 +823,21 @@ public class Casilla {
 
     public void venderEdificios(String tipo, int cantidad) {
         Jugador propietario = this.getDuenho();
-        for(Edificio edificio : edificios) {
-            if(edificio.getTipo().equals(tipo) && cantidad > 0) {
-                edificios.remove(edificio);
+        Iterator<Edificio> iterator = edificios.iterator();
+        while (iterator.hasNext() && cantidad > 0) {
+            Edificio edificio = iterator.next();
+            if (edificio.getTipo().equals(tipo)) {
+                iterator.remove();
                 ArrayList<Edificio> aux = propietario.getEdificios();
                 aux.remove(edificio);
                 propietario.setEdificios(aux);
                 propietario.sumarFortuna(edificio.getValor() / 2);
                 edificio.setCasilla(null);
+                System.out.println("Se ha vendido un/una " + tipo + " por " + edificio.getValor() / 2 + "€.");
+                cantidad--;
             }
         }
+        this.modificarAlquiler();
     }
 
     public void sumarVecesFrecuentada() {

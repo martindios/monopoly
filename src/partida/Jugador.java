@@ -391,6 +391,8 @@ public class Jugador {
 
             // Transferir todas las propiedades al jugador beneficiado
             for (Casilla propiedad : propiedades) {
+                propiedad.setHipotecado(false);
+                propiedad.setContador(0);
                 propiedad.setDuenho(jugBeneficiado);
                 jugBeneficiado.anhadirPropiedad(propiedad);
             }

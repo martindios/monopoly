@@ -139,7 +139,7 @@ public class Avatar {
                         jugador.encarcelar(tablero);
                         return;
                     }
-                    if(casilla.getNombre().equals("Solar") && casilla.getDuenho().equals(jugador)){
+                    if(casilla.getTipo().equals("Solar") && casilla.getDuenho().equals(jugador)){
                         casilla.sumarContadorDuenho();
                     }
                     if (casilla.getNombre().equals("Parking")) {
