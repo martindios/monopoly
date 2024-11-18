@@ -881,6 +881,6 @@ public class Casilla {
             factorAlquiler = 1;
         }
         // Calculamos el impuesto actualizado
-        impuesto = impuestoInicial * factorAlquiler;
+        impuesto = impuestoInicial + (impuestoInicial * factorAlquiler);
     }
 }
