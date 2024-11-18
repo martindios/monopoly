@@ -225,6 +225,8 @@ public class Menu {
                 case "salir":
                     if (palabrasArray.length == 2 && palabrasArray[1].equals("carcel")) {
                             salirCarcel();
+                            evaluacion();
+                            VueltasTablero();
                         } else {
                             System.out.println("Comando no válido.");
                         }
@@ -282,12 +284,13 @@ public class Menu {
                     break;
 
                 case "moveraux":
-                    if (palabrasArray.length == 2) {
-                        MoverAux(palabrasArray[1]);
+                    if (palabrasArray.length == 1) {
+                        MoverAux();
+                        System.out.println(tablero.toString());
                         evaluacion();
                         VueltasTablero();
                     } else {
-                        System.out.println("El formato correcto es: moveraux numPosiciones");
+                        System.out.println("El formato correcto es: moveraux");
                     }
                     break;
 
@@ -691,6 +694,7 @@ public class Menu {
             System.out.println("No han salido dobles... El jugador pierde el turno");
             dadosDobles = false;
             jugador.setTiradasCarcel(jugador.getTiradasCarcel() + 1);
+            acabarTurno();
         }
     }
 
@@ -739,21 +743,20 @@ public class Menu {
      * dependiendo de sus opciones y recursos disponibles.
      */
     private void salirCarcel() {
-        Jugador JugActual = jugadores.get(turno);
+        Jugador jugActual = jugadores.get(turno);
         Casilla carcel = tablero.encontrar_casilla("Cárcel");
 
         // Verificar si el jugador está en la cárcel
-        if (!JugActual.getEnCarcel()) {
+        if (!jugActual.getEnCarcel()) {
             System.out.println("El jugador no está en la cárcel. No puede usar el comando.");
             return;
         }
 
-        boolean TiradasCarcel = JugActual.getTiradasCarcel() < 3;
         float fianza = carcel.getImpuesto();
-        boolean Presupuesto = JugActual.getFortuna() >= fianza;
+        boolean puedePagarFianza = jugActual.getFortuna() >= fianza;
 
-        // Caso 1: Puede tirar los dados o pagar la fianza
-        if (TiradasCarcel && Presupuesto) {
+        // Siempre ofrecer la opción de pagar la fianza si puede tirar dados
+        if (jugActual.getTiradasCarcel() < 3) {
             System.out.println("El jugador puede tirar los dados o pagar la fianza (1/2)");
             int respuesta;
             do {
@@ -769,42 +772,47 @@ public class Menu {
                     scanner.next();
                 }
             } while (true);
-            if (respuesta == 1) {
-                // Lógica para tirar los dados
-                System.out.println("El jugador decide lanzar los dados");
-                lanzarDados(JugActual);
-            } else {
-                // Pagar la fianza
-                System.out.println("El jugador paga la fianza. Tiene derecho a usar su turno");
-                tirado = false;
-                JugActual.setEnCarcel(false);
-                JugActual.setTiradasCarcel(0);
-                JugActual.sumarFortuna(-fianza);
-                JugActual.sumarGastos(fianza);
-                JugActual.sumarTasasEImpuestos(fianza);
-                banca.sumarFortuna(fianza);
 
+            if (respuesta == 1) {
+                lanzarDados(jugActual);
+            } else if (puedePagarFianza) {
+                jugActual.sumarFortuna(-fianza);
+                banca.sumarFortuna(fianza);
+                jugActual.setEnCarcel(false);
+                jugActual.setTiradasCarcel(0);
+                System.out.println("El jugador ha pagado la fianza y ha salido de la cárcel. Puede tirar los dados.");
+                tirado = false;
+            } else {
+                System.out.println("El jugador no tiene suficiente dinero para pagar la fianza.");
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                }
+                conseguirDinero(fianza - jugActual.getFortuna());
+                if(jugActual.getTiradasCarcel() < 3) {
+                    solvente = true;
+                }
             }
-        }
-        // Caso 2: Solo puede tirar los dados
-        else if (TiradasCarcel) {
-            System.out.println("El jugador solo puede tirar los dados.");
-            lanzarDados(JugActual);
-            System.out.println(JugActual.getTiradasCarcel());
-        }
-        // Caso 3: Solo puede pagar la fianza
-        else if (Presupuesto) {
-            System.out.println("El jugador solo puede pagar la fianza");
-            tirado = false;
-            JugActual.setEnCarcel(false);
-            JugActual.setTiradasCarcel(0);
-            JugActual.sumarFortuna(-fianza);
-            JugActual.sumarGastos(fianza);
+        } else if (puedePagarFianza) {
+            System.out.println("El jugador puede pagar la fianza para salir de la cárcel.");
+            jugActual.sumarFortuna(-fianza);
             banca.sumarFortuna(fianza);
-        }
-        else {
-            System.out.println("El jugador no tiene dinero suficiente para pagar la fianza. Debe vender edificaciones o hipotecar propiedades.");
-            conseguirDinero(fianza);
+            jugActual.setEnCarcel(false);
+            jugActual.setTiradasCarcel(0);
+            System.out.println("El jugador ha pagado la fianza y ha salido de la cárcel. Puede tirar los dados.");
+            tirado = false;
+        } else {
+            System.out.println("El jugador no tiene suficiente dinero para pagar la fianza ni puede tirar los dados.");
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            }
+            conseguirDinero(fianza - jugActual.getFortuna());
+            if(jugActual.getTiradasCarcel() < 3) {
+                solvente = true;
+            }
         }
     }
 
@@ -1136,15 +1144,77 @@ public class Menu {
      * Método auxiliar que permite mover el avatar de un jugador a una posición específica en el tablero.
      * Se utiliza para realizar comprobaciones en el juego relacionadas con el movimiento del jugador.
      *
-     * @param pos La posición a la que se quiere mover el avatar (en formato de cadena, que será convertida a entero).
      */
-    private void MoverAux(String pos) {
+    private void MoverAux() {
         lanzamientos = 1;
         tirado = true;
+        if (saltoMovimiento != 0 && jugadores.get(turno).getAvatar().getTipo().equals("Pelota")) {
+            System.out.println("El jugador está en modo avanzado, no puede lanzar los dados.");
+            return;
+        }
         Jugador jugador = jugadores.get(turno);
-        Avatar av = jugador.getAvatar();
-        int posicion = Integer.parseInt(pos);
-        av.moverAvatar(tablero.getPosiciones(), posicion);
+        Avatar avatar = jugador.getAvatar();
+        if(jugador.getEnCarcel()) {
+            System.out.println("El jugador está en la cárcel, no puede lanzar los dados para moverse.");
+            return;
+        }
+        int valor1, valor2;
+        System.out.println("Introduce el valor del dado 1: ");
+        valor1 = scanner.nextInt();
+        System.out.println("Introduce el valor del dado 2: ");
+        valor2 = scanner.nextInt();
+        scanner.nextLine();
+
+        jugador.sumarVecesTiradasDados();
+
+        //Sin modo avanzado o con pelota
+        if(!avatar.isAvanzado() || avatar.getTipo().equals("Pelota")) {
+            if (valor1 == valor2) {
+                System.out.println("¡Has sacado dobles!");
+                dadosDobles = true;
+                if (lanzamientos == 3) {
+                    System.out.println("¡Tres dobles consecutivos! El jugador va a la cárcel.");
+                    jugador.encarcelar(tablero.getPosiciones());
+                    dadosDobles = false;
+                    acabarTurno();
+                    return;
+                } else {
+                    System.out.println("Puedes lanzar otra vez.");
+                    tirado = false;
+                }
+            } else {
+                dadosDobles = false;
+            }
+        } else if (avatar.getTipo().equals("Coche")){ //Modo avanzado con coche
+            if(lanzamientos >= 4 && (valor1 == valor2)) {
+                System.out.println("Puede lanzar otra vez.");
+                dadosDobles = true;
+                tirado = false;
+            } else if(lanzamientos < 4 && (valor1 + valor2) < 4) {
+                System.out.println("Has sacado un valor menor que 4, no puedes lanzar otra vez");
+                dadosDobles = false;
+            }
+            if(lanzamientos >= 5) {
+                System.out.println("El jugador va a la cárcel");
+                jugador.encarcelar(tablero.getPosiciones());
+                dadosDobles = false;
+                acabarTurno();
+                return;
+            }
+        }
+
+        seHaMovido = true;
+        if (avatar.isAvanzado()) {
+            if(avatar.getTipo().equals("Pelota")){
+                moverJugadorPelota(valor1 + valor2);
+            } else if (avatar.getTipo().equals("Coche")){
+                moverJugadorCoche(valor1 + valor2);
+            }
+        } else avatar.moverAvatar(tablero.getPosiciones(), (valor1 + valor2));
+
+        if(jugador.getEnCarcel()) {
+            acabarTurno();
+        }
     }
 
     private void ventaEdificio(String tipo, String nombreCasilla, String cantidad) {
@@ -1172,6 +1242,7 @@ public class Menu {
         }
         if(contador != Integer.parseInt(cantidad)) {
             System.out.println("No hay " + Integer.parseInt(cantidad) + " edificios del tipo " + tipo + " en la casilla.");
+            return;
         }
         casilla.venderEdificios(tipo, contador);
         casilla.modificarAlquiler();
@@ -1503,129 +1574,132 @@ public class Menu {
     public void conseguirDinero(float dineroAConseguir) {
         float dineroConseguido = 0;
         int contadorPropiedades = 0;
+        ArrayList<Casilla> solares = new ArrayList<>();
         int contadorEdificios = 0;
+        ArrayList<Edificio> edificiosLista = new ArrayList<>();
         Jugador jugadorActual = jugadores.get(turno);
+        for (Casilla propiedad : jugadorActual.getPropiedades()) {
+            if(propiedad.getEdificios().isEmpty() && !propiedad.isHipotecado()) {
+                contadorPropiedades++;
+                solares.add(propiedad);
+            }
+        }
+        for (Edificio edificio : jugadorActual.getEdificios()) {
+            contadorEdificios++;
+        }
         Scanner scanner = new Scanner(System.in);
-        if (jugadorActual.getFortuna() < dineroAConseguir) {
-            System.out.println("El jugador no tiene suficiente dinero para pagar. Debe vender edificios y/o hipotecar propiedades.");
-            //Si el jugador no tiene suficiente dinero, se le pide que venda edificios y/o hipoteque propiedades
-            //Si no puede hacer ninguna de las dos, se declara en bancarrota
-            if (jugadorActual.getEdificios().isEmpty() && jugadorActual.getPropiedades().isEmpty()) {
-                System.out.println("El jugador no tiene propiedades ni edificios para vender. Se declara en bancarrota.");
-                bancarrota(false);
-            } else {
-                System.out.println("El jugador tiene propiedades y/o edificios. ¿Qué desea hipotecar/vender? (propiedades[1]/edificios[2]) ");
-                int opcion;
-                do {
-                    opcion = scanner.nextInt();
-                    if (opcion != 1 && opcion != 2) {
-                        System.out.println("Opción no válida. Introduzca 1 para propiedades o 2 para edificios.");
-                    }
-                } while (opcion != 1 && opcion != 2);
-                if (opcion == 1) { //Hipotecar propiedades
-                    contadorPropiedades = 0;
-                    //Si el jugador tiene propiedades, se le pide que las hipoteque
-                    System.out.println("Propiedades hipotecables:");
-                    for (Casilla propiedad : jugadorActual.getPropiedades()) {
-                        if(propiedad.getEdificios().isEmpty() && !propiedad.isHipotecado()) {
-                            contadorPropiedades++;
-                            System.out.println(propiedad.getNombre());
-                        }
-                    }
-                    if(contadorPropiedades != 0) {
-                        dineroConseguido = 0;
-                        while((dineroConseguido < dineroAConseguir)) {
-                            if(contadorPropiedades == 0) {
-                                break;
-                            }
-                            //Se le pide que introduzca el nombre de la propiedad que quiere hipotecar
-                            System.out.println("Introduce el nombre de la propiedad que quieres hipotecar:");
-                            String nombrePropiedad = scanner.next();
-                            //Se busca la propiedad con el nombre introducido
-                            Casilla propiedadHipotecar = null;
-                            for (Casilla propiedad : jugadorActual.getPropiedades()) {
-                                if (propiedad.getNombre().equalsIgnoreCase(nombrePropiedad)) {
-                                    propiedadHipotecar = propiedad;
-                                }
-                            }
-                            //Si la propiedad no existe, se le pide que introduzca un nombre válido
-                            while (propiedadHipotecar == null) {
-                                System.out.println("El nombre introducido no es válido. Introduce un nombre válido:");
-                                nombrePropiedad = scanner.next();
-                                for (Casilla propiedad : jugadorActual.getPropiedades()) {
-                                    if (propiedad.getNombre().equalsIgnoreCase(nombrePropiedad)) {
-                                        propiedadHipotecar = propiedad;
-                                    }
-                                }
-                            }
-                            contadorPropiedades--;
-                            dineroConseguido += propiedadHipotecar.getHipoteca();
-                            hipotecar(propiedadHipotecar.getNombre());
-                        }
-                    }
-                    else {
-                        System.out.println("El jugador no tiene propiedades sin edificar. Debe vender los edificios antes de hipotecar una propiedad.");
-                    }
+        System.out.println("El jugador no tiene suficiente dinero para pagar. Debe vender edificios y/o hipotecar propiedades.");
+        if (jugadorActual.getEdificios().isEmpty() && contadorPropiedades == 0) {
+            System.out.println("El jugador no tiene propiedades ni edificios para vender. Se declara en bancarrota.");
+            bancarrota(false);
+        } else {
+            System.out.println("El jugador tiene propiedades y/o edificios. ¿Qué desea hipotecar/vender? (propiedades[1]/edificios[2]) ");
+            int opcion;
+            do {
+                opcion = scanner.nextInt();
+                if (opcion != 1 && opcion != 2) {
+                    System.out.println("Opción no válida. Introduzca 1 para propiedades o 2 para edificios.");
                 }
-                else {
-                    contadorEdificios = 0;
+            } while (opcion != 1 && opcion != 2);
+            if (opcion == 1) { //Hipotecar propiedades
+                System.out.println("Propiedades hipotecables:");
+                for(Casilla casilla : solares) {
+                    System.out.println(casilla.getNombre());
+                }
+                if(contadorPropiedades != 0) {
                     dineroConseguido = 0;
-                    //Si el jugador tiene edificios, se le pide que los venda
-                    System.out.println("Edificios:");
-                    for (Edificio edificio : jugadorActual.getEdificios()) {
-                        contadorEdificios++;
-                        System.out.println(edificio.infoEdificio());
-                    }
-                    if(contadorEdificios != 0) {
-                        while(dineroConseguido < dineroAConseguir) {
-                            if(contadorEdificios == 0) {
+                    while((dineroConseguido < dineroAConseguir)) {
+                        if(contadorPropiedades == 0) {
+                            break;
+                        }
+                        System.out.println("Introduce el nombre de la propiedad que quieres hipotecar:");
+                        String nombrePropiedad = scanner.next();
+                        Casilla propiedadHipotecar = null;
+                        for (Casilla propiedad : jugadorActual.getPropiedades()) {
+                            if (propiedad.getNombre().equals(nombrePropiedad) && !propiedad.isHipotecado()) {
+                                propiedadHipotecar = propiedad;
                                 break;
                             }
-                            //Se le pide que introduzca el nombre del edificio que quiere vender
-                            System.out.println("Introduce el nombre del edificio que quieres vender:");
-                            String nombreEdificio = scanner.next();
-                            //Se busca el edificio con el nombre introducido
-                            Edificio edificioVender = null;
+                        }
+                        while (propiedadHipotecar == null) {
+                            System.out.println("Propiedad no válida. Introduce un nombre válido:");
+                            nombrePropiedad = scanner.next();
+                            for (Casilla propiedad : jugadorActual.getPropiedades()) {
+                                if (propiedad.getNombre().equals(nombrePropiedad) && !propiedad.isHipotecado()) {
+                                    propiedadHipotecar = propiedad;
+                                    break;
+                                }
+                            }
+                        }
+                        contadorPropiedades--;
+                        dineroConseguido += propiedadHipotecar.getHipoteca();
+                        hipotecar(propiedadHipotecar.getNombre());
+                    }
+                } else {
+                    System.out.println("El jugador no tiene propiedades sin edificar. Debe vender los edificios antes de hipotecar una propiedad.");
+                }
+            } else {
+                dineroConseguido = 0;
+                System.out.println("Edificios:");
+                for(Edificio edificio : jugadorActual.getEdificios()) {
+                    System.out.println(edificio.getIdEdificio());
+                }
+                if(contadorEdificios != 0) {
+                    while((dineroConseguido < dineroAConseguir)) {
+                        if(contadorEdificios == 0) {
+                            break;
+                        }
+                        System.out.println("Introduce el ID del edificio que quieres vender:");
+                        String idEdificio = scanner.next();
+                        Edificio edificioVender = null;
+                        for (Edificio edificio : jugadorActual.getEdificios()) {
+                            if (edificio.getIdEdificio().equals(idEdificio)) {
+                                edificioVender = edificio;
+                                break;
+                            }
+                        }
+                        while (edificioVender == null) {
+                            System.out.println("Edificio no válido. Introduce un ID válido:");
+                            idEdificio = scanner.next();
                             for (Edificio edificio : jugadorActual.getEdificios()) {
-                                if (edificio.getIdEdificio().equalsIgnoreCase(nombreEdificio)) {
+                                if (edificio.getIdEdificio().equals(idEdificio)) {
                                     edificioVender = edificio;
+                                    break;
                                 }
                             }
-                            //Si el edificio no existe, se le pide que introduzca un nombre válido
-                            while (edificioVender == null) {
-                                System.out.println("El nombre introducido no es válido. Introduce un nombre válido:");
-                                nombreEdificio = scanner.next();
-                                for (Edificio edificio : jugadorActual.getEdificios()) {
-                                    if (edificio.getIdEdificio().equalsIgnoreCase(nombreEdificio)) {
-                                        edificioVender = edificio;
-                                    }
-                                }
-                            }
-                            contadorEdificios--;
-                            dineroConseguido += edificioVender.getValor() * 0.5f;
-                            ventaEdificio(edificioVender.getTipo(), edificioVender.getCasilla().getNombre(), "1");
+                        }
+                        Casilla casilla = edificioVender.getCasilla();
+                        casilla.venderEdificios(edificioVender.getTipo(), 1);
+                        dineroConseguido += edificioVender.getValor() / 2;
+                        contadorEdificios--;
+                        if (casilla.getEdificios().isEmpty() && !casilla.isHipotecado()) {
+                            solares.add(casilla);
+                            contadorPropiedades++;
                         }
                     }
-                    else {
-                        System.out.println("El jugador no tiene edificios para vender.");
-                    }
-                }
-                if(dineroConseguido > dineroAConseguir) {
-                    System.out.println("El jugador ha conseguido suficiente dinero para pagar. Se ha vuelto solvente.");
-                    solvente = true;
-                    jugadorActual.getAvatar().setConseguirDinero(false);
-                }
-                else {
-                    if(contadorEdificios == 0 && contadorPropiedades == 0) {
-                        System.out.println("El jugador no ha conseguido dinero suficiente y no le quedan propiedades ni edificios para vender. Se declara en bancarrota.");
-                        bancarrota(false);
-                    }
-                    else {
-                        System.out.println("El jugador no ha conseguido suficiente dinero para pagar. Debe seguir vendiendo propiedades.");
-                        conseguirDinero(dineroAConseguir - dineroConseguido);
-                    }
+                } else {
+                    System.out.println("El jugador no tiene edificios para vender.");
                 }
             }
+            if(dineroConseguido > dineroAConseguir) {
+                System.out.println("El jugador ha conseguido suficiente dinero para pagar. Se ha vuelto solvente.");
+                if(jugadorActual.getAvatar().getLugar().getNombre().equals("Cárcel")) {
+                    System.out.println("Solicite de nuevo salir de la cárcel.");
+                }
+                solvente = true;
+                jugadorActual.getAvatar().setConseguirDinero(false);
+            }
+            else {
+                if(contadorEdificios == 0 && contadorPropiedades == 0) {
+                    System.out.println("El jugador no ha conseguido dinero suficiente y no le quedan propiedades ni edificios para vender. Se declara en bancarrota.");
+                    bancarrota(false);
+                }
+                else {
+                    System.out.println("El jugador no ha conseguido suficiente dinero para pagar. Debe seguir vendiendo propiedades.");
+                    conseguirDinero(dineroAConseguir - dineroConseguido);
+                }
+            }
+
         }
     }
 
@@ -1677,9 +1751,17 @@ public class Menu {
         }
         jugActual.bancarrota(motivo, banca);
         jugadores.remove(jugActual);
+        avActual.getLugar().eliminarAvatar(avActual);
         avatares.remove(avActual);
+        turno = turno % jugadores.size();
+        lanzamientos  = 0;
+        tirado = false;
+        solvente = true;
         jugActual = null;
         avActual = null;
+        //Aqueí falta eliminar o avatar do tablero
     }
 
 }
+
+
