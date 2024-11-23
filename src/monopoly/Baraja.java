@@ -121,7 +121,7 @@ public class Baraja {
      * @param tablero       El tablero del juego.
      * @param jugadores     La lista de jugadores.
      */
-    public void evaluarComunidad(Jugador banca, Jugador jugadorActual, Tablero tablero, ArrayList<Jugador> jugadores, Menu menu) {
+    public void evaluarComunidad(Jugador banca, Jugador jugadorActual, Tablero tablero, ArrayList<Jugador> jugadores) {
         Casilla bote;
 
         ArrayList<Carta> barajaComunidad = new ArrayList<>();
