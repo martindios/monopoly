@@ -1,9 +1,10 @@
 package partida;
 
 import java.util.ArrayList;
-import java.util.Scanner;
 
 import monopoly.*;
+import monopoly.casilla.Casilla;
+
 import static monopoly.Valor.FORTUNA_BANCA;
 import static monopoly.Valor.FORTUNA_INICIAL;
 

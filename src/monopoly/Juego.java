@@ -1,10 +1,10 @@
 package monopoly;
 
+import monopoly.casilla.Casilla;
 import partida.Avatar;
 import partida.Dado;
 import partida.Jugador;
 
-import java.lang.reflect.Array;
 import java.util.*;
 
 import static monopoly.Valor.FORTUNA_INICIAL;
