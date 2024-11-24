@@ -357,7 +357,7 @@ public class Casilla {
                         alquiler = this.getImpuesto();
                     }
                     System.out.println("El jugador " + actual.getNombre() + " ha pagado a " + duenhoSolar.getNombre()
-                            + " por el alquiler de " + this.getNombre());
+                            + " " + alquiler + " por el alquiler de " + this.getNombre());
                     break;
                 case "Servicios":
                     Jugador duenhoServicios = this.getDuenho();
@@ -405,7 +405,7 @@ public class Casilla {
             System.out.println("La casilla ya pertenece a un jugador.");
             return;
         }
-        System.out.println("El jugador ha comprado la casilla.");
+        System.out.println("El jugador ha comprado la casilla por " + this.valor + ".");
         switch (this.getTipo()) {
             case "Transporte":
                 solicitante.setNumTransportes(solicitante.getNumTransportes() + 1);
@@ -876,11 +876,9 @@ public class Casilla {
         factorAlquiler += 25 * numPiscinas;
         // Cálculo para Pistas de Deporte
         factorAlquiler += 25 * numPistaDeporte;
-        // Si no hay edificios, el factor es 1 (no se modifica el alquiler)
-        if (factorAlquiler == 0) {
-            factorAlquiler = 1;
-        }
+
+        // Si no hay edificios, el factor es 0 (no se modifica el alquiler)
         // Calculamos el impuesto actualizado
-        impuesto = impuestoInicial + (impuestoInicial * factorAlquiler);
+        impuesto = impuestoInicial + (impuestoInicial * factorAlquiler); //QUE MIERDA ES ESTA
     }
 }
