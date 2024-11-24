@@ -4,6 +4,7 @@ import partida.Avatar;
 import partida.Dado;
 import partida.Jugador;
 
+import java.lang.reflect.Array;
 import java.util.*;
 
 import static monopoly.Valor.FORTUNA_INICIAL;
@@ -87,7 +88,7 @@ public class Juego {
             seHaMovido = false;
             System.out.print("Introduce el comando: ");
             String comando = scanner.nextLine();
-            //analizarComando(comando);
+            analizarComando(comando);
         }
         System.out.println(tablero.toString());
         System.out.println("Partida finalizada. El jugador ha caído en una casilla y no es solvente.");
@@ -625,35 +626,53 @@ public class Juego {
      * Método que imprime las estadísticas del juego.
      */
     private void estadisticas() {
+        ArrayList<Jugador> jugadoresMasVueltas = new ArrayList<>();
+        ArrayList<Jugador> jugadoresMasTiradasDados = new ArrayList<>();
+        ArrayList<Jugador> jugadoresEnCabeza = new ArrayList<>();
+        jugadoresEstadisticasGenerales(jugadoresMasVueltas, jugadoresMasTiradasDados, jugadoresEnCabeza);
+
+        ArrayList<Casilla> casillasMasRentables = new ArrayList<>();
+        ArrayList<Casilla> casillasMasFrecuentadas = new ArrayList<>();
+        casillasEstadisticasGenerales(casillasMasRentables, casillasMasFrecuentadas);
+
         System.out.println("{");
         System.out.print("\tcasillaMasRentable: ");
-        imprimirNombresCasillas(casillasMasRentables());
+        imprimirNombres(casillasMasRentables);
         System.out.print("\tgrupoMasRentable: ");
-        imprimirNombresGrupos(calcularGruposMasRentables());
+        imprimirNombres(calcularGruposMasRentables());
         System.out.print("\tcasillaMasFrecuentada: ");
-        imprimirNombresCasillas(casillasMasFrecuentadas());
+        imprimirNombres(casillasMasFrecuentadas);
         System.out.print("\tjugadorMasVueltas: ");
-        imprimirNombresJugadores(jugadoresConMasVueltas());
+        imprimirNombres(jugadoresMasVueltas);
         System.out.print("\tjugadorMasVecesDados: ");
-        imprimirNombresJugadores(jugadoresConMasTiradasDados());
+        imprimirNombres(jugadoresMasTiradasDados);
         System.out.print("\tjugadorEnCabeza: ");
-        imprimirNombresJugadores(jugadoresEnCabeza());
+        imprimirNombres(jugadoresEnCabeza);
         System.out.println("}");
     }
 
     /**
-     * Método que imprime los nombres de los jugadores.
-     * Si la lista de jugadores está vacía, imprime un guion ("-").
+     * Método genérico que imprime los nombres de una lista de objetos.
+     * Si la lista está vacía, imprime un guion ("-").
      *
-     * @param jugadores La lista de jugadores cuyos nombres se van a imprimir.
+     * @param lista La lista de objetos cuyos nombres se van a imprimir.
      */
-    private void imprimirNombresJugadores(ArrayList<Jugador> jugadores) {
-        if (jugadores.isEmpty()) {
+    private void imprimirNombres(List<?> lista) {
+        if (lista.isEmpty()) {
             System.out.println("-");
         } else {
-            for (Jugador jugador : jugadores) {
-                System.out.print(jugador.getNombre());
-                if (!jugador.equals(jugadores.getLast())) {
+            for (int i = 0; i < lista.size(); i++) {
+                Object elemento = lista.get(i);
+
+                if (elemento instanceof Jugador) {
+                    System.out.print(((Jugador) elemento).getNombre());
+                } else if (elemento instanceof Casilla) {
+                    System.out.print(((Casilla) elemento).getNombre());
+                } else if (elemento instanceof Grupo) {
+                    System.out.print(((Grupo) elemento).getNombreGrupo());
+                }
+
+                if (i < lista.size() - 1) {
                     System.out.print(", ");
                 }
             }
@@ -662,144 +681,85 @@ public class Juego {
     }
 
     /**
-     * Método que imprime los nombres de las casillas.
-     * Si la lista de casillas está vacía, imprime un guion ("-").
-     *
-     * @param casillas La lista de casillas cuyos nombres se van a imprimir.
+     * Método que calcula las estadísticas generales de los jugadores.
      */
-    private void imprimirNombresCasillas(ArrayList<Casilla> casillas) {
-        if (casillas.isEmpty()) {
-            System.out.println("-");
-        } else {
-            for (Casilla casilla : casillas) {
-                System.out.print(casilla.getNombre());
-                if (!casilla.equals(casillas.getLast())) {
-                    System.out.print(", ");
-                }
-            }
-            System.out.println();
-        }
-    }
-
-    /**
-     * Método que imprime los nombres de los grupos.
-     * Si la lista de grupos está vacía, imprime un guion ("-").
-     *
-     * @param grupos La lista de grupos cuyos nombres se van a imprimir.
-     */
-    private void imprimirNombresGrupos(ArrayList<Grupo> grupos) {
-        if (grupos.isEmpty()) {
-            System.out.println("-");
-        } else {
-            for (Grupo grupo : grupos) {
-                System.out.print(grupo.getNombreGrupo());
-                if (!grupo.equals(grupos.getLast())) {
-                    System.out.print(", ");
-                }
-            }
-            System.out.println();
-        }
-    }
-
-    private ArrayList<Jugador> jugadoresConMasVueltas() {
-        ArrayList<Jugador> jugadoresMasVueltas = new ArrayList<>();
+    private void jugadoresEstadisticasGenerales(ArrayList<Jugador> jugadoresMasVueltas,
+                                                    ArrayList<Jugador> jugadoresMasTiradasDados,
+                                                    ArrayList<Jugador> jugadoresEnCabeza) {
         int maxVueltas = 0;
+        int maxTiradasDados = 0;
+        float maxFortunaTotal = 0;
 
-        // Recorre la lista de jugadores para encontrar el número máximo de vueltas
-        for (Jugador jugador : jugadores) {
-            if (jugador.getVueltas() > maxVueltas) {
-                // Si el jugador actual tiene más vueltas que el máximo actual, actualiza el máximo y reinicia la lista
+        for(Jugador jugador : jugadores) {
+            //Verificar las vueltas
+            if(jugador.getVueltas() > maxVueltas) {
                 maxVueltas = jugador.getVueltas();
                 jugadoresMasVueltas.clear();
                 jugadoresMasVueltas.add(jugador);
-            } else if (jugador.getVueltas() == maxVueltas) {
-                // Si el jugador actual tiene el mismo número de vueltas que el máximo, añádelo a la lista
+            } else if(jugador.getVueltas() == maxVueltas) {
                 jugadoresMasVueltas.add(jugador);
             }
-        }
 
-        return jugadoresMasVueltas;
-    }
-
-    /**
-     * Método que devuelve una lista de los jugadores con más tiradas de dados.
-     *
-     * @return Una lista de jugadores con el mayor número de tiradas de dados.
-     */
-    private ArrayList<Jugador> jugadoresConMasTiradasDados() {
-        ArrayList<Jugador> jugadoresMasTiradasDados = new ArrayList<>();
-        int maxTiradasDados = 0;
-
-        // Recorre la lista de jugadores para encontrar el número máximo de tiradas de dados
-        for (Jugador jugador : jugadores) {
-            if (jugador.getVecesTiradasDados() > maxTiradasDados) {
-                // Si el jugador actual tiene más tiradas que el máximo actual, actualiza el máximo y reinicia la lista
+            //Verificar las tiradas de dados
+            if(jugador.getVecesTiradasDados() > maxTiradasDados) {
                 maxTiradasDados = jugador.getVecesTiradasDados();
                 jugadoresMasTiradasDados.clear();
                 jugadoresMasTiradasDados.add(jugador);
-            } else if (jugador.getVecesTiradasDados() == maxTiradasDados) {
-                // Si el jugador actual tiene el mismo número de tiradas que el máximo, añádelo a la lista
+            } else if(jugador.getVecesTiradasDados() == maxTiradasDados) {
                 jugadoresMasTiradasDados.add(jugador);
             }
-        }
 
-        return jugadoresMasTiradasDados;
-    }
-
-    /**
-     * Método que devuelve una lista de los jugadores en cabeza.
-     *
-     * @return Una lista de jugadores con la mayor fortuna total.
-     */
-    private ArrayList<Jugador> jugadoresEnCabeza() {
-        ArrayList<Jugador> jugadoresEnCabeza = new ArrayList<>();
-        float maxFortunaTotal = 0;
-
-        // Recorre la lista de jugadores para encontrar la mayor fortuna total
-        for (Jugador jugador : jugadores) {
-            if (jugador.calcularFortunaTotal() > maxFortunaTotal) {
-                // Si el jugador actual tiene más fortuna que el máximo actual, actualiza el máximo y reinicia la lista
+            //Verificar la fortuna total
+            if(jugador.calcularFortunaTotal() > maxFortunaTotal) {
                 maxFortunaTotal = jugador.calcularFortunaTotal();
                 jugadoresEnCabeza.clear();
                 jugadoresEnCabeza.add(jugador);
-            } else if (jugador.calcularFortunaTotal() == maxFortunaTotal) {
-                // Si el jugador actual tiene la misma fortuna que el máximo, añádelo a la lista
+            } else if(jugador.calcularFortunaTotal() == maxFortunaTotal) {
                 jugadoresEnCabeza.add(jugador);
             }
         }
-
-        return jugadoresEnCabeza;
     }
 
     /**
-     * Método que devuelve una lista de las casillas más rentables.
-     *
-     * @return Una lista de casillas con el mayor total de alquileres pagados.
+     * Método que calcula las estadísticas generales de las casillas.
      */
-    private ArrayList<Casilla> casillasMasRentables() {
-        ArrayList<Casilla> casillasMasRentables = new ArrayList<>();
+    private void casillasEstadisticasGenerales(ArrayList<Casilla> casillasMasRentables,
+                                                ArrayList<Casilla> casillasMasFrecuentadas) {
         float maxAlquileresPagados = 0;
+        int maxVecesVisitada = 0;
 
-        // Recorre el tablero para encontrar la casilla con el mayor total de alquileres pagados
-        for (ArrayList<Casilla> fila : tablero.getPosiciones()) {
-            for (Casilla casilla : fila) {
-                if (casilla.getTotalAlquileresPagados() > maxAlquileresPagados) {
-                    // Si la casilla actual tiene más alquileres pagados que el máximo actual, actualiza el máximo y reinicia la lista
+        for(ArrayList<Casilla> fila : tablero.getPosiciones()) {
+            for(Casilla casilla : fila) {
+                //Verificar las casillas más rentables
+                if(casilla.getTotalAlquileresPagados() > maxAlquileresPagados) {
                     maxAlquileresPagados = casilla.getTotalAlquileresPagados();
                     casillasMasRentables.clear();
                     casillasMasRentables.add(casilla);
-                } else if (casilla.getTotalAlquileresPagados() == maxAlquileresPagados) {
-                    // Si la casilla actual tiene el mismo total de alquileres pagados que el máximo, añádela a la lista
+                } else if(casilla.getTotalAlquileresPagados() == maxAlquileresPagados) {
                     casillasMasRentables.add(casilla);
+                }
+
+                //Verificar las casillas más frecuentadas
+                if(casilla.getTotalVecesFrecuentada() > maxVecesVisitada) {
+                    maxVecesVisitada = casilla.getTotalVecesFrecuentada();
+                    casillasMasFrecuentadas.clear();
+                    casillasMasFrecuentadas.add(casilla);
+                } else if(casilla.getTotalVecesFrecuentada() == maxVecesVisitada) {
+                    casillasMasFrecuentadas.add(casilla);
                 }
             }
         }
 
         // Si todas las casillas tienen el mismo total de alquileres pagados, devuelve una lista vacía
         if (casillasMasRentables.size() == 40) {
-            return new ArrayList<>();
+            casillasMasRentables.clear();
         }
-        return casillasMasRentables;
+
+        // Si todas las casillas han sido frecuentadas el mismo número de veces, devuelve una lista vacía
+        if (casillasMasFrecuentadas.size() == 40) {
+            casillasMasFrecuentadas.clear();
+        }
+
     }
 
     /**
@@ -841,37 +801,6 @@ public class Juego {
             return new ArrayList<>();
         }
         return gruposMasRentables;
-    }
-
-    /**
-     * Método que devuelve una lista de las casillas más frecuentadas.
-     *
-     * @return Una lista de casillas con el mayor número de veces frecuentada.
-     */
-    private ArrayList<Casilla> casillasMasFrecuentadas() {
-        ArrayList<Casilla> casillasMasFrecuentadas = new ArrayList<>();
-        float maxTotalVecesFrecuentada = 0;
-
-        // Recorre el tablero para encontrar la casilla con el mayor número de veces frecuentada
-        for (ArrayList<Casilla> fila : tablero.getPosiciones()) {
-            for (Casilla casilla : fila) {
-                if (casilla.getTotalVecesFrecuentada() > maxTotalVecesFrecuentada) {
-                    // Si la casilla actual ha sido frecuentada más veces que el máximo actual, actualiza el máximo y reinicia la lista
-                    maxTotalVecesFrecuentada = casilla.getTotalVecesFrecuentada();
-                    casillasMasFrecuentadas.clear();
-                    casillasMasFrecuentadas.add(casilla);
-                } else if (casilla.getTotalVecesFrecuentada() == maxTotalVecesFrecuentada) {
-                    // Si la casilla actual ha sido frecuentada el mismo número de veces que el máximo, añádela a la lista
-                    casillasMasFrecuentadas.add(casilla);
-                }
-            }
-        }
-
-        // Si todas las casillas han sido frecuentadas el mismo número de veces, devuelve una lista vacía
-        if (casillasMasFrecuentadas.size() == 40) {
-            return new ArrayList<>();
-        }
-        return casillasMasFrecuentadas;
     }
 
     /*************************/
@@ -1404,7 +1333,10 @@ public class Juego {
         }
 
         System.out.println("El jugador " + jugadorActual.getNombre() + " paga " + precioDeshipotecar + " por deshipotecar "
-                + nombreCasilla + ". Ahora puede recibir alquileres y edificar en el grupo " + casilla.getGrupo().getNombreGrupo());
+                + nombreCasilla + ". Ahora puede recibir alquileres.");
+
+
+
         jugadorActual.sumarFortuna(-precioDeshipotecar);
         jugadorActual.sumarGastos(precioDeshipotecar);
         banca.sumarFortuna(precioDeshipotecar);
