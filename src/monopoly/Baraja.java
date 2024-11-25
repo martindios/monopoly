@@ -121,7 +121,7 @@ public class Baraja {
      * @param tablero       El tablero del juego.
      * @param jugadores     La lista de jugadores.
      */
-    public void evaluarComunidad(Jugador banca, Jugador jugadorActual, Tablero tablero, ArrayList<Jugador> jugadores, Menu menu) {
+    public void evaluarComunidad(Jugador banca, Jugador jugadorActual, Tablero tablero, ArrayList<Jugador> jugadores) {
         Casilla bote;
 
         ArrayList<Carta> barajaComunidad = new ArrayList<>();
@@ -154,7 +154,7 @@ public class Baraja {
                     jugadorActual.sumarFortuna(dinero);
                 } else {
                     float restante = dinero - jugadorActual.getFortuna();
-                    menu.conseguirDinero(restante);
+                    //menu.conseguirDinero(restante); //CAMBIAR ESTO
                 }
                 break;
             case 2: /*Ve a la Cárcel*/
@@ -179,7 +179,7 @@ public class Baraja {
                     jugadorActual.sumarGastos(dinero);
                 } else {
                     float restante = dinero - jugadorActual.getFortuna();
-                    menu.conseguirDinero(restante);
+                    //menu.conseguirDinero(restante); //CAMBIAR ESTO
                 }
                 break;
             case 6: /*200000€ pagar a cada jugador*/
@@ -192,7 +192,7 @@ public class Baraja {
                     jugadorActual.sumarGastos(gastoTotal);
                 } else {
                     float restante = gastoTotal - jugadorActual.getFortuna();
-                    menu.conseguirDinero(restante);
+                    //menu.conseguirDinero(restante); //CAMBIAR ESTO
                 }
                 break;
         }

@@ -63,7 +63,7 @@ public class Avatar {
         return avanzado;
     }
 
-    public boolean isConseguirDinero() {
+    public boolean getConseguirDinero() {
         return conseguirDinero;
     }
 
@@ -125,7 +125,6 @@ public class Avatar {
                 posicionNueva = posicionNueva % max;
                 if (posicionNueva == 0) posicionNueva = max;  // Si el resultado es 0, en realidad estamos en la casilla 40
         }
-
         for (ArrayList<Casilla> fila : tablero) {
             for (Casilla casilla : fila) {
 
@@ -140,7 +139,7 @@ public class Avatar {
                         jugador.encarcelar(tablero);
                         return;
                     }
-                    if(casilla.getNombre().equals("Solar") && casilla.getDuenho().equals(jugador)){
+                    if(casilla.getTipo().equals("Solar") && casilla.getDuenho().equals(jugador)){
                         casilla.sumarContadorDuenho();
                     }
                     if (casilla.getNombre().equals("Parking")) {
@@ -176,7 +175,6 @@ public class Avatar {
                         }
 
                     }
-
                     return ;
                 }
             }
