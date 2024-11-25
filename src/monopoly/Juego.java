@@ -684,8 +684,8 @@ public class Juego implements Comando{
      * Método que calcula las estadísticas generales de los jugadores.
      */
     public void jugadoresEstadisticasGenerales(ArrayList<Jugador> jugadoresMasVueltas,
-                                                    ArrayList<Jugador> jugadoresMasTiradasDados,
-                                                    ArrayList<Jugador> jugadoresEnCabeza) {
+                                               ArrayList<Jugador> jugadoresMasTiradasDados,
+                                               ArrayList<Jugador> jugadoresEnCabeza) {
         int maxVueltas = 0;
         int maxTiradasDados = 0;
         float maxFortunaTotal = 0;
@@ -724,7 +724,7 @@ public class Juego implements Comando{
      * Método que calcula las estadísticas generales de las casillas.
      */
     public void casillasEstadisticasGenerales(ArrayList<Casilla> casillasMasRentables,
-                                                ArrayList<Casilla> casillasMasFrecuentadas) {
+                                              ArrayList<Casilla> casillasMasFrecuentadas) {
         float maxAlquileresPagados = 0;
         int maxVecesVisitada = 0;
 
