@@ -9,7 +9,7 @@ import java.util.*;
 
 import static monopoly.Valor.FORTUNA_INICIAL;
 
-public class Juego {
+public class Juego implements Comando{
 
     /**********Atributos**********/
     static Scanner scanner = new Scanner(System.in); //scanner para leer lo que se pone por teclado
@@ -65,7 +65,7 @@ public class Juego {
     /******************************/
 
     /*Método para mostrar la pantalla de inicio y crear los jugadores*/
-    private void preIniciarPartida() {
+    public void preIniciarPartida() {
         imprimirLogo();
 
         /*establece el número de jugadores que van a jugar la partida*/
@@ -80,7 +80,7 @@ public class Juego {
     }
 
     /*Método en el que se desarrolla la partida hasta que un jugador es no solvente*/
-    private void iniciarPartida() {
+    public void iniciarPartida() {
         if (jugadores.get(turno).getAvatar().getTipo().equals("Coche")) {
             saltoMovimiento = 4;
         }
@@ -97,7 +97,7 @@ public class Juego {
     }
 
     /*Método que imprime el logo mediante un for con un efecto visual*/
-    private void imprimirLogo() {
+    public void imprimirLogo() {
         ArrayList<String> array = new ArrayList<>();
         array.add("*************************************************************************************\n");
         array.add(".___  ___.   ______   .__   __.   ______   .______     ______    __      ____    ____ \n");
@@ -125,7 +125,7 @@ public class Juego {
     /**********************************/
 
     /*Método que crea a todos los jugadores que van a jugar*/
-    private void crearJugadores() {
+    public void crearJugadores() {
         scanner.nextLine(); //Limpiar buffer
         /*Comprobación para que no se exceda el número de jugadores establecido*/
         while (jugadoresActuales < maxJugadores) {
@@ -158,7 +158,7 @@ public class Juego {
     }
 
     /*Método auxiliar para el método 'crearJugadores', saber si el nombre del jugador es repetido o no*/
-    private boolean esJugadorRepetido(String nombre) {
+    public boolean esJugadorRepetido(String nombre) {
         if (jugadores.isEmpty()) {
             return false;
         } else {
@@ -170,7 +170,7 @@ public class Juego {
     }
 
     /*Método auxiliar para el método 'crearJugadores', saber si el avatar es del tipo correcto*/
-    private boolean esAvatarCorrecto(String tipoAvatar) {
+    public boolean esAvatarCorrecto(String tipoAvatar) {
         ArrayList<String> tipoAvatarArray = new ArrayList<>(Arrays.asList("Coche", "Esfinge", "Sombrero", "Pelota"));
         return tipoAvatarArray.contains(tipoAvatar);
     }
@@ -182,7 +182,7 @@ public class Juego {
      * @param nombre Nombre del jugador a crear.
      * @param tipoAvatar Tipo de avatar que representará al jugador.
      */
-    private void darAltaJugador(String nombre, String tipoAvatar){
+    public void darAltaJugador(String nombre, String tipoAvatar){
         Casilla casillaInicio = tablero.encontrar_casilla("Salida"); //Se busca la casilla correspondiente a la salida
         //Se crea el jugador y se añade al array que contiene a todos los participantes de la partida
         Jugador jugadorCreado = new Jugador(nombre, tipoAvatar, casillaInicio, avatares);
@@ -402,7 +402,7 @@ public class Juego {
     /*******************************/
 
     /*Método para activar el modo avanzado del jugador*/
-    private void modoAvanzado() {
+    public void modoAvanzado() {
         Avatar avatarActual = jugadores.get(turno).getAvatar();
         avatarActual.setAvanzado(true);
         System.out.println("A partir de ahora el avatar " + avatarActual.getId() + ", de tipo " + avatarActual.getTipo() + ", se moverá en modo avanzado.");
@@ -474,7 +474,7 @@ public class Juego {
     }
 
     /*Método para avanzar con el modo avanzado Pelota*/
-    private void avanzar() {
+    public void avanzar() {
         Jugador jugadorActual = jugadores.get(turno);
         Avatar avatarActual = jugadorActual.getAvatar();
         if(saltoMovimiento == 0) {
@@ -513,7 +513,7 @@ public class Juego {
     /*Método que realiza las acciones asociadas al comando 'describir jugador'.
      * Parámetro: comando introducido
      */
-    private void descJugador(String nombre) {
+    public void descJugador(String nombre) {
         //Comprobar jugador
         for (Jugador jugador : jugadores) {
             if (jugador.getNombre().equalsIgnoreCase(nombre)) { //getter de getNombre de jugador
@@ -527,7 +527,7 @@ public class Juego {
     /*Método que realiza las acciones asociadas al comando 'describir avatar'.
      * Parámetro: id del avatar a describir.
      */
-    private void descAvatar(String ID) {
+    public void descAvatar(String ID) {
         //Comprueba que el ID que se pide describir es uno existente
         for (Avatar avatar : avatares) {
             if (avatar.getId().equalsIgnoreCase(ID)) {
@@ -556,7 +556,7 @@ public class Juego {
     /*******************/
 
     /*Método que realiza las acciones asociadas al comando 'listar enventa'*/
-    private void listarVenta() {
+    public void listarVenta() {
         for(ArrayList<Casilla> fila : tablero.getPosiciones()) {
             for(Casilla casilla : fila) {
                 if((casilla.getTipo().equals("Solar") || casilla.getTipo().equals("Transporte")
@@ -568,7 +568,7 @@ public class Juego {
     }
 
     /* Método que realiza las acciones asociadas al comando 'listar jugadores'*/
-    private void listarJugadores() {
+    public void listarJugadores() {
         System.out.println("Jugadores:");
         StringBuilder str = new StringBuilder();
         for (Jugador jugador : jugadores) {
@@ -583,7 +583,7 @@ public class Juego {
     }
 
     /* Método que realiza las acciones asociadas al comando 'listar avatares' */
-    private void listarAvatares() {
+    public void listarAvatares() {
         System.out.println("Avatares:");
         StringBuilder str = new StringBuilder();
         for (Avatar avatar : avatares) {
@@ -604,7 +604,7 @@ public class Juego {
     /* Método que realiza las acciones asociadas al comando 'estadisticas jugador'.
      * Parámetro: nombre del jugador a describir.
      */
-    private void estadisticasJugador(String jugadorStr) {
+    public void estadisticasJugador(String jugadorStr) {
         for(Jugador jugador : jugadores) {
             if(jugador.getNombre().equals(jugadorStr)) {
                 System.out.println("{");
@@ -625,7 +625,7 @@ public class Juego {
     /**
      * Método que imprime las estadísticas del juego.
      */
-    private void estadisticas() {
+    public void estadisticas() {
         ArrayList<Jugador> jugadoresMasVueltas = new ArrayList<>();
         ArrayList<Jugador> jugadoresMasTiradasDados = new ArrayList<>();
         ArrayList<Jugador> jugadoresEnCabeza = new ArrayList<>();
@@ -657,7 +657,7 @@ public class Juego {
      *
      * @param lista La lista de objetos cuyos nombres se van a imprimir.
      */
-    private void imprimirNombres(List<?> lista) {
+    public void imprimirNombres(List<?> lista) {
         if (lista.isEmpty()) {
             System.out.println("-");
         } else {
@@ -683,7 +683,7 @@ public class Juego {
     /**
      * Método que calcula las estadísticas generales de los jugadores.
      */
-    private void jugadoresEstadisticasGenerales(ArrayList<Jugador> jugadoresMasVueltas,
+    public void jugadoresEstadisticasGenerales(ArrayList<Jugador> jugadoresMasVueltas,
                                                     ArrayList<Jugador> jugadoresMasTiradasDados,
                                                     ArrayList<Jugador> jugadoresEnCabeza) {
         int maxVueltas = 0;
@@ -723,7 +723,7 @@ public class Juego {
     /**
      * Método que calcula las estadísticas generales de las casillas.
      */
-    private void casillasEstadisticasGenerales(ArrayList<Casilla> casillasMasRentables,
+    public void casillasEstadisticasGenerales(ArrayList<Casilla> casillasMasRentables,
                                                 ArrayList<Casilla> casillasMasFrecuentadas) {
         float maxAlquileresPagados = 0;
         int maxVecesVisitada = 0;
@@ -767,7 +767,7 @@ public class Juego {
      *
      * @return Una lista de los grupos más rentables.
      */
-    private ArrayList<Grupo> calcularGruposMasRentables() {
+    public ArrayList<Grupo> calcularGruposMasRentables() {
         HashMap<Grupo, Float> rentabilidadPorGrupo = new HashMap<>();
         ArrayList<Grupo> gruposMasRentables = new ArrayList<>();
         float maxRentabilidad = 0;
@@ -812,7 +812,7 @@ public class Juego {
      * Realiza la tirada de dados, maneja el movimiento del avatar, y controla las reglas especiales
      * como los dobles y la encarcelación tras tres dobles consecutivos.
      */
-    private void lanzarDados(int tirada1, int tirada2) {
+    public void lanzarDados(int tirada1, int tirada2) {
         if(!solvente) {
             System.out.println("El jugador no es solvente, no puede lanzar los dados.");
             return;
@@ -907,7 +907,7 @@ public class Juego {
      *
      * @param jugador El jugador que está encarcelado y realiza la tirada.
      */
-    private void lanzarDados(Jugador jugador) {
+    public void lanzarDados(Jugador jugador) {
         int valor1 = dado1.hacerTirada();
         int valor2 = dado2.hacerTirada();
         tirado = true;
@@ -943,7 +943,7 @@ public class Juego {
      * En el caso de que el jugador caiga en una casilla de Impuestos, se deduce el impuesto
      * de la fortuna del jugador y se suma al bote del Parking.
      */
-    private void evaluacion() {
+    public void evaluacion() {
         Jugador jugadorActual = jugadores.get(turno);
         Casilla casillaActual = jugadorActual.getAvatar().getLugar();
         solvente = casillaActual.evaluarCasilla(jugadores.get(turno), banca, dado1.getValor() + dado2.getValor());
@@ -997,7 +997,7 @@ public class Juego {
      * si todos los jugadores han completado al menos 4 vueltas al tablero.
      * El valor de estas casillas aumenta un 5% cada vez que un jugador complete un múltiplo de 4 vueltas.
      */
-    private void VueltasTablero() {
+    public void VueltasTablero() {
         boolean sumarSolares = false;
         int menosVueltas = Integer.MAX_VALUE;
         Jugador jugadorMenosVueltas = null;
@@ -1031,7 +1031,7 @@ public class Juego {
     /*SECCIÓN DE EDIFICIOS*/
     /**********************/
 
-    private void edificar(String palabra) {
+    public void edificar(String palabra) {
         Jugador jugador = jugadores.get(turno);
         Casilla casilla = jugador.getAvatar().getLugar();
         switch (palabra) {
@@ -1068,7 +1068,7 @@ public class Juego {
     /**
      * Metodo que permite listar los edificios que han sido construídos.
      */
-    private void listarEdificios() {
+    public void listarEdificios() {
         boolean existenEdificios = false;
         for(Jugador jugador : jugadores) {
             if(!jugador.getEdificios().isEmpty()) {
@@ -1099,7 +1099,7 @@ public class Juego {
     /**
      * Metodo que permite listar los edificios construídos en un grupo de solares
      */
-    private void listarEdificiosGrupo(String color) {
+    public void listarEdificiosGrupo(String color) {
         Casilla casillaGrupo = null;
         boolean existenEdificios = false;
 
@@ -1173,7 +1173,7 @@ public class Juego {
         System.out.println("Pistas deportivas: " + pistasDisponibles + " disponibles de " + numCasillasGrupo + " máximas");
     }
 
-    private void ventaEdificio(String tipo, String nombreCasilla, String cantidad) {
+    public void ventaEdificio(String tipo, String nombreCasilla, String cantidad) {
         int contador = 0;
         Casilla casilla = tablero.encontrar_casilla(nombreCasilla);
         if(casilla == null) {
@@ -1209,7 +1209,7 @@ public class Juego {
     /**********************************/
 
     /* Método que realiza las acciones asociadas al comando 'acabar turno' */
-    private void acabarTurno() {
+    public void acabarTurno() {
         if(!solvente) {
             System.out.println("El jugador no es solvente, no puede acabar turno.");
             return;
@@ -1249,7 +1249,7 @@ public class Juego {
      * @param jugador El jugador del cual se generará la información.
      * @return Una cadena formateada que contiene la fortuna, los gastos y las propiedades del jugador.
      */
-    private String infoTrasTurno(Jugador jugador) {
+    public String infoTrasTurno(Jugador jugador) {
         ArrayList<Casilla> props = jugador.getPropiedades();
         System.out.println("El estado financiero de " + jugador.getNombre() + " es:");
         StringBuilder propiedades = new StringBuilder();
@@ -1308,7 +1308,7 @@ public class Juego {
         banca.sumarFortuna(-casilla.getHipoteca());
     }
 
-    private void deshipotecar(String nombreCasilla) {
+    public void deshipotecar(String nombreCasilla) {
         Jugador jugadorActual = jugadores.get(turno);
         Casilla casilla = tablero.encontrar_casilla(nombreCasilla);
 
@@ -1478,7 +1478,7 @@ public class Juego {
         }
     }
 
-    private void bancarrota(boolean voluntario) {
+    public void bancarrota(boolean voluntario) {
         Jugador jugActual = jugadores.get(turno);
         Avatar avActual = jugActual.getAvatar();
         String motivo;
@@ -1518,7 +1518,7 @@ public class Juego {
      * Permite al jugador intentar salir de la cárcel, ya sea tirando los dados o pagando la fianza,
      * dependiendo de sus opciones y recursos disponibles.
      */
-    private void salirCarcel() {
+    public void salirCarcel() {
         Jugador jugActual = jugadores.get(turno);
         Casilla carcel = tablero.encontrar_casilla("Cárcel");
 
@@ -1598,7 +1598,7 @@ public class Juego {
      *
      * @param nombre El nombre de la casilla que el jugador desea comprar.
      */
-    private void comprar(String nombre) {
+    public void comprar(String nombre) {
         if(lanzamientos == 0) {
             System.out.println("No puedes comprar la casilla en la que estabas, debes lanzar.");
             return;
@@ -1640,7 +1640,7 @@ public class Juego {
      * @param max El valor máximo permitido para la entrada.
      * @return El número introducido por el usuario, dentro del rango especificado.
      */
-    private static int introducirNum(int min, int max){
+    public static int introducirNum(int min, int max){
         int num = -1;
         while (num < min || num > max) {
             System.out.print("Introduce un número del " + min + " al " + max + ": ");

@@ -3,6 +3,7 @@ package monopoly;
 import partida.Jugador;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public interface Comando {
     void preIniciarPartida();
@@ -34,23 +35,20 @@ public interface Comando {
     void VueltasTablero();
     void listarEdificios();
     void listarEdificiosGrupo(String color);
-    void MoverAux(String pos);
     void ventaEdificio(String tipo, String nombreCasilla, String cantidad);
     void estadisticas();
-    void imprimirNombresJugadores(ArrayList<Jugador> jugadores);
-    void imprimirNombresCasillas(ArrayList<Casilla> casillas);
-    void imprimirNombresGrupos(ArrayList<Grupo> grupos);
-    ArrayList<Jugador> jugadoresConMasVueltas();
-    ArrayList<Jugador> jugadoresConMasTiradasDados();
-    ArrayList<Jugador> jugadoresEnCabeza();
-    ArrayList<Casilla> casillasMasRentables();
+    void imprimirNombres(List<?> lista);
+    void jugadoresEstadisticasGenerales(ArrayList<Jugador> jugadoresMasVueltas,
+                                        ArrayList<Jugador> jugadoresMasTiradasDados,
+                                        ArrayList<Jugador> jugadoresEnCabeza);
+    void casillasEstadisticasGenerales(ArrayList<Casilla> casillasMasRentables,
+                                              ArrayList<Casilla> casillasMasFrecuentadas);
+
     ArrayList<Grupo> calcularGruposMasRentables();
-    ArrayList<Casilla> casillasMasFrecuentadas();
     void hipotecar(String nombreCasilla);
     void deshipotecar(String nombreCasilla);
     void conseguirDinero(float dineroAConseguir);
-    int introducirNum(int min, int max);
-    void bancarrota();
+    void bancarrota(boolean voluntario);
 
 
 }
