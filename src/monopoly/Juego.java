@@ -9,7 +9,7 @@ import java.util.*;
 
 import static monopoly.Valor.FORTUNA_INICIAL;
 
-public class Juego {
+public class Juego implements Comando{
 
     /**********Atributos**********/
     static Scanner scanner = new Scanner(System.in); //scanner para leer lo que se pone por teclado
@@ -110,7 +110,7 @@ public class Juego {
     /******************************/
 
     /*Método para mostrar la pantalla de inicio y crear los jugadores*/
-    private void preIniciarPartida() {
+    public void preIniciarPartida() {
         imprimirLogo();
 
         /*establece el número de jugadores que van a jugar la partida*/
@@ -118,12 +118,12 @@ public class Juego {
 
         maxJugadores = introducirNum(2, 6);
 
-
         crearJugadores();
     }
+  
 
     /*Método que imprime el logo mediante un for con un efecto visual*/
-    private void imprimirLogo() {
+    public void imprimirLogo() {
         ArrayList<String> array = new ArrayList<>();
         array.add("*************************************************************************************\n");
         array.add(".___  ___.   ______   .__   __.   ______   .______     ______    __      ____    ____ \n");
@@ -151,7 +151,7 @@ public class Juego {
     /**********************************/
 
     /*Método que crea a todos los jugadores que van a jugar*/
-    private void crearJugadores() {
+    public void crearJugadores() {
         scanner.nextLine(); //Limpiar buffer
         /*Comprobación para que no se exceda el número de jugadores establecido*/
         while (jugadoresActuales < maxJugadores) {
@@ -184,7 +184,7 @@ public class Juego {
     }
 
     /*Método auxiliar para el método 'crearJugadores', saber si el nombre del jugador es repetido o no*/
-    private boolean esJugadorRepetido(String nombre) {
+    public boolean esJugadorRepetido(String nombre) {
         if (jugadores.isEmpty()) {
             return false;
         } else {
@@ -196,7 +196,7 @@ public class Juego {
     }
 
     /*Método auxiliar para el método 'crearJugadores', saber si el avatar es del tipo correcto*/
-    private boolean esAvatarCorrecto(String tipoAvatar) {
+    public boolean esAvatarCorrecto(String tipoAvatar) {
         ArrayList<String> tipoAvatarArray = new ArrayList<>(Arrays.asList("Coche", "Esfinge", "Sombrero", "Pelota"));
         return tipoAvatarArray.contains(tipoAvatar);
     }
@@ -208,7 +208,7 @@ public class Juego {
      * @param nombre Nombre del jugador a crear.
      * @param tipoAvatar Tipo de avatar que representará al jugador.
      */
-    private void darAltaJugador(String nombre, String tipoAvatar){
+    public void darAltaJugador(String nombre, String tipoAvatar){
         Casilla casillaInicio = tablero.encontrar_casilla("Salida"); //Se busca la casilla correspondiente a la salida
         //Se crea el jugador y se añade al array que contiene a todos los participantes de la partida
         Jugador jugadorCreado = new Jugador(nombre, tipoAvatar, casillaInicio, avatares);
@@ -480,7 +480,7 @@ public class Juego {
      *
      * @param lista La lista de objetos cuyos nombres se van a imprimir.
      */
-    private void imprimirNombres(List<?> lista) {
+    public void imprimirNombres(List<?> lista) {
         if (lista.isEmpty()) {
             System.out.println("-");
         } else {
@@ -506,9 +506,9 @@ public class Juego {
     /**
      * Método que calcula las estadísticas generales de los jugadores.
      */
-    private void jugadoresEstadisticasGenerales(ArrayList<Jugador> jugadoresMasVueltas,
-                                                    ArrayList<Jugador> jugadoresMasTiradasDados,
-                                                    ArrayList<Jugador> jugadoresEnCabeza) {
+    public void jugadoresEstadisticasGenerales(ArrayList<Jugador> jugadoresMasVueltas,
+                                               ArrayList<Jugador> jugadoresMasTiradasDados,
+                                               ArrayList<Jugador> jugadoresEnCabeza) {
         int maxVueltas = 0;
         int maxTiradasDados = 0;
         float maxFortunaTotal = 0;
@@ -546,8 +546,8 @@ public class Juego {
     /**
      * Método que calcula las estadísticas generales de las casillas.
      */
-    private void casillasEstadisticasGenerales(ArrayList<Casilla> casillasMasRentables,
-                                                ArrayList<Casilla> casillasMasFrecuentadas) {
+    public void casillasEstadisticasGenerales(ArrayList<Casilla> casillasMasRentables,
+                                              ArrayList<Casilla> casillasMasFrecuentadas) {
         float maxAlquileresPagados = 0;
         int maxVecesVisitada = 0;
 
@@ -590,7 +590,7 @@ public class Juego {
      *
      * @return Una lista de los grupos más rentables.
      */
-    private ArrayList<Grupo> calcularGruposMasRentables() {
+    public ArrayList<Grupo> calcularGruposMasRentables() {
         HashMap<Grupo, Float> rentabilidadPorGrupo = new HashMap<>();
         ArrayList<Grupo> gruposMasRentables = new ArrayList<>();
         float maxRentabilidad = 0;
@@ -730,7 +730,7 @@ public class Juego {
      *
      * @param jugador El jugador que está encarcelado y realiza la tirada.
      */
-    private void lanzarDados(Jugador jugador) {
+    public void lanzarDados(Jugador jugador) {
         int valor1 = dado1.hacerTirada();
         int valor2 = dado2.hacerTirada();
         tirado = true;
@@ -1072,7 +1072,7 @@ public class Juego {
      * @param jugador El jugador del cual se generará la información.
      * @return Una cadena formateada que contiene la fortuna, los gastos y las propiedades del jugador.
      */
-    private String infoTrasTurno(Jugador jugador) {
+    public String infoTrasTurno(Jugador jugador) {
         ArrayList<Casilla> props = jugador.getPropiedades();
         System.out.println("El estado financiero de " + jugador.getNombre() + " es:");
         StringBuilder propiedades = new StringBuilder();
@@ -1463,7 +1463,7 @@ public class Juego {
      * @param max El valor máximo permitido para la entrada.
      * @return El número introducido por el usuario, dentro del rango especificado.
      */
-    private static int introducirNum(int min, int max){
+    public static int introducirNum(int min, int max){
         int num = -1;
         while (num < min || num > max) {
             System.out.print("Introduce un número del " + min + " al " + max + ": ");

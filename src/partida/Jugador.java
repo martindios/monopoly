@@ -8,7 +8,7 @@ import monopoly.casilla.Casilla;
 import static monopoly.Valor.FORTUNA_BANCA;
 import static monopoly.Valor.FORTUNA_INICIAL;
 
-public class Jugador {
+public class Jugador{
 
     /**********Atributos**********/
     private String nombre; //Nombre del jugador
