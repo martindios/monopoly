@@ -1,10 +1,10 @@
 package monopoly;
 
+import monopoly.casilla.Casilla;
 import partida.Avatar;
 import partida.Dado;
 import partida.Jugador;
 
-import java.lang.reflect.Array;
 import java.util.*;
 
 import static monopoly.Valor.FORTUNA_INICIAL;
@@ -37,6 +37,8 @@ public class Juego implements Comando{
     private boolean compraMovimientoCoche;
     private boolean dadosDobles;
 
+    //Instancias la consola en esta clase
+
     /**********Constructor**********/
     public Juego() {
         this.jugadores = new ArrayList<>();
@@ -58,6 +60,49 @@ public class Juego implements Comando{
 
     }
 
+    /*Getters*/
+    public boolean isFinalizarPartida() {
+        return finalizarPartida;
+    }
+
+    public boolean isSeHaMovido() {
+        return seHaMovido;
+    }
+
+    public Tablero getTablero() {
+        return tablero;
+    }
+
+    public ArrayList<Jugador> getJugadores() {
+        return jugadores;
+    }
+
+    public int getTurno() {
+        return turno;
+    }
+
+    public boolean isTirado() {
+        return tirado;
+    }
+
+    /*Setters*/
+
+    public void setSeHaMovido(boolean seHaMovido) {
+        this.seHaMovido = seHaMovido;
+    }
+
+    public void setTirado(boolean tirado) {
+        this.tirado = tirado;
+    }
+
+    public void setSaltoMovimiento(int saltoMovimiento) {
+        this.saltoMovimiento = saltoMovimiento;
+    }
+
+    public void setDadosDobles(boolean dadosDobles) {
+        this.dadosDobles = dadosDobles;
+    }
+
     /**********Métodos**********/
 
     /******************************/
@@ -73,28 +118,9 @@ public class Juego implements Comando{
 
         maxJugadores = introducirNum(2, 6);
 
-
         crearJugadores();
-
-        iniciarPartida();
     }
-
-    /*Método en el que se desarrolla la partida hasta que un jugador es no solvente*/
-    public void iniciarPartida() {
-        if (jugadores.get(turno).getAvatar().getTipo().equals("Coche")) {
-            saltoMovimiento = 4;
-        }
-        while(!finalizarPartida) {
-            seHaMovido = false;
-            System.out.print("Introduce el comando: ");
-            String comando = scanner.nextLine();
-            analizarComando(comando);
-        }
-        System.out.println(tablero.toString());
-        System.out.println("Partida finalizada. El jugador ha caído en una casilla y no es solvente.");
-        scanner.close();
-        System.exit(0);
-    }
+  
 
     /*Método que imprime el logo mediante un for con un efecto visual*/
     public void imprimirLogo() {
@@ -192,209 +218,6 @@ public class Juego implements Comando{
         System.out.println("    nombre: " + jugadorCreado.getNombre() + ",");
         System.out.println("    avatar: " + jugadorCreado.getAvatar().getId());
         System.out.println("}");
-    }
-
-
-
-    /*Método que interpreta el comando introducido y toma la accion correspondiente
-     * Parámetro: cadena de caracteres (el comando)
-     */
-    public void analizarComando(String comando) {
-        String[] palabrasArray = comando.split(" ");
-        if(palabrasArray.length > 0) {
-            switch(palabrasArray[0]) {
-                case "crear":
-                    System.out.println("Todos los jugadores están registrados");
-                    break;
-
-                case "jugador":
-                    System.out.println("Tiene el turno: " + (jugadores.get(turno)).getNombre());
-                    break;
-
-                case "lanzar":
-                    if(tirado){
-                        System.out.println("Ya has lanzado los dados en este turno.");
-                        break;
-                    }
-                    if(jugadores.get(turno).getNoPuedeTirarDados() > 0) {
-                        System.out.println("No puedes lanzar los dados en este turno.");
-                        jugadores.get(turno).setNoPuedeTirarDados(jugadores.get(turno).getNoPuedeTirarDados() - 1);
-                        tirado = true;
-                        acabarTurno();
-                        break;
-                    }
-                    if (palabrasArray.length == 2 && palabrasArray[1].equals("dados")) {
-                        lanzarDados(0, 0);
-                        if(jugadores.get(turno).getAvatar().getConseguirDinero()) {
-                            conseguirDinero(FORTUNA_INICIAL - jugadores.get(turno).getFortuna());
-                        }
-                        System.out.println(tablero.toString());
-                        evaluacion();
-                        VueltasTablero();
-
-                    } else if (palabrasArray.length == 4 && palabrasArray[1].equals("dados")) { //Dados trucados
-                        lanzarDados(Integer.parseInt(palabrasArray[2]), Integer.parseInt(palabrasArray[3]));
-                        if(jugadores.get(turno).getAvatar().getConseguirDinero()) {
-                            conseguirDinero(FORTUNA_INICIAL - jugadores.get(turno).getFortuna());
-                        }
-                        System.out.println(tablero.toString());
-                        evaluacion();
-                        VueltasTablero();
-
-
-                    } else {
-                        System.out.println("El formato correcto es: lanzar dados o lanzar dados (núm primer dado) (núm segundo dado)");
-                    }
-                    if(jugadores.get(turno).getEnCarcel()) {
-                        dadosDobles = false;
-                    }
-                    break;
-
-                case "avanzar":
-                    avanzar();
-                    System.out.println(tablero.toString());
-                    evaluacion();
-                    VueltasTablero();
-                    break;
-
-                case "acabar":
-                    if (palabrasArray.length == 2 && palabrasArray[1].equals("turno")) {
-                        acabarTurno();
-                        break;
-                    } else {
-                        System.out.println("El formato correcto es: acabar turno");
-                        break;
-                    }
-
-                case "listar":
-                    if (palabrasArray.length == 2) {
-                        switch (palabrasArray[1]){
-                            case "jugadores":
-                                listarJugadores();
-                                break;
-                            case "avatares":
-                                listarAvatares();
-                                break;
-                            case "enventa":
-                                listarVenta();
-                                break;
-                            case "edificios":
-                                listarEdificios();
-                                break;
-                            default:
-                                System.out.println("Comando no válido");
-                                break;
-                        }
-                    } else if(palabrasArray.length == 3) {
-                        if(palabrasArray[1].equals("edificios")) {
-                            listarEdificiosGrupo(palabrasArray[2]);
-                        } else {
-                            System.out.println("El formato correcto es: listar edificios [colorGrupo]");
-                        }
-                    } else {
-                        System.out.println("El formato correcto es: listar [jugadores, avatares, enventa, edificios]");
-                        break;
-                    }
-                    break;
-                case "salir":
-                    if (palabrasArray.length == 2 && palabrasArray[1].equals("carcel")) {
-                        salirCarcel();
-                        evaluacion();
-                        VueltasTablero();
-                    } else {
-                        System.out.println("Comando no válido.");
-                    }
-                    break;
-
-                case "describir":
-                    if(palabrasArray.length == 3) {
-                        switch (palabrasArray[1]) {
-                            case "jugador":
-                                descJugador(palabrasArray[2]);
-                                break;
-                            case "avatar":
-                                descAvatar(palabrasArray[2]);
-                                break;
-                            default:
-                                System.out.println("Comando no válido");
-                                break;
-                        }
-                    }
-                    else {
-                        descCasilla(palabrasArray[1]);
-                    }
-                    break;
-
-                case "comprar":
-                    if (palabrasArray.length == 2) {
-                        comprar(palabrasArray[1]);
-                    } else {
-                        System.out.println("El formato correcto es: comprar nombrePropiedad");
-                    }
-                    break;
-
-                case "hipotecar":
-                    if (palabrasArray.length == 2) {
-                        hipotecar(palabrasArray[1]);
-                    } else {
-                        System.out.println("El formato correcto es: hipotecar nombrePropiedad");
-                    }
-                    break;
-
-                case "deshipotecar":
-                    if (palabrasArray.length == 2) {
-                        deshipotecar(palabrasArray[1]);
-                    } else {
-                        System.out.println("El formato correcto es: deshipotecar nombrePropiedad");
-                    }
-                    break;
-
-                case "ver":
-                    if (palabrasArray.length == 2 && palabrasArray[1].equals("tablero")) {
-                        System.out.println(tablero.toString());
-                    } else {
-                        System.out.println("Comando no válido");
-                    }
-                    break;
-
-                case "edificar":
-                    if (palabrasArray.length == 2) {
-                        edificar(palabrasArray[1]);
-                    } else {
-                        System.out.println("El formato correcto es: edificar [Casa, Hotel, Piscina, PistaDeporte]");
-                    }
-                    break;
-
-                case "cambiar":
-                    if (palabrasArray.length == 2 && palabrasArray[1].equals("modo")){
-                        modoAvanzado();
-                    } else {
-                        System.out.println("El formato correcto es: cambiar modo");
-                    }
-                    break;
-
-                case "vender":
-                    if(palabrasArray.length == 4) {
-                        ventaEdificio(palabrasArray[1], palabrasArray[2], palabrasArray[3]);
-                    }
-                    break;
-
-                case "estadisticas":
-                    if (palabrasArray.length == 1) {
-                        estadisticas();
-                    } else if (palabrasArray.length == 2) {
-                        estadisticasJugador(palabrasArray[1]);
-                    }
-                    break;
-
-                case "bancarrota":
-                    bancarrota(true);
-                    break;
-                default:
-                    System.out.println("Comando no válido");
-                    break;
-            }
-        }
     }
 
     /*******************************/
