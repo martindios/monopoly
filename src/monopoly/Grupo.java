@@ -8,6 +8,7 @@ import java.util.ArrayList;
 public class Grupo {
 
     /**********Atributos**********/
+    //private ArrayList<Propiedad> miembros; //CAMBIAR A ESTO
     private ArrayList<Casilla> miembros; //Casillas miembros del grupo.
     private String colorGrupo; //Color del grupo
     private String nombreGrupo; //Nombre del grupo
