@@ -11,8 +11,9 @@ public class Servicio extends Propiedad {
         this.setImpuesto(SUMA_VUELTA / 200);
     }
 
-    public boolean evaluarServicio(Jugador jugador, Jugador banca, int tirada) {
-        if (this.getDuenho().equals(banca)) {
+    @Override
+    public boolean evaluarCasilla(Jugador jugador, Jugador banca, int tirada) {
+        if (this.getDuenho().equals(banca) || jugador.equals(getDuenho())) {
             return true;
         } else {
             return switch (this.getDuenho().getNumServicios()) {
@@ -32,6 +33,16 @@ public class Servicio extends Propiedad {
             default -> alquiler;
         };
         return alquiler;
+    }
+
+    @Override
+    public String casillaEnVenta() {
+        return """
+                {
+                    Nombre: %s,
+                    Tipo: %s,
+                    Valor: %.2f.
+                }""".formatted(getNombre(), getTipo(), getValor());
     }
 
 

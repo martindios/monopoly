@@ -9,11 +9,14 @@ public class Impuesto extends Casilla {
         this.setImpuesto(impuesto);
     }
 
-    public boolean evaluarImpuesto(Jugador jugador, Jugador banca) {
+    @Override
+    public boolean evaluarCasilla(Jugador jugador, Jugador banca, int tirada) {
         return jugador.getFortuna() > this.getImpuesto();
     }
 
-    public String infoCasillaImpuesto() {
+    @Override
+    public String infoCasilla() {
+        System.out.println(super.infoCasilla());
         return "Tipo: " + this.getTipo().toLowerCase() + ",\n" +
                 "impuesto: " + this.getImpuesto();
     }
