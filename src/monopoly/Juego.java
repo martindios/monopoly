@@ -7,8 +7,6 @@ import partida.Jugador;
 
 import java.util.*;
 
-import static monopoly.Valor.FORTUNA_INICIAL;
-
 public class Juego implements Comando{
 
     /**********Atributos**********/
@@ -384,7 +382,7 @@ public class Juego implements Comando{
             for(Casilla casilla : fila) {
                 if((casilla.getTipo().equals("Solar") || casilla.getTipo().equals("Transporte")
                         || casilla.getTipo().equals("Servicios")) && casilla.getDuenho().equals(banca)) {
-                    System.out.println(casilla.casEnVenta());
+                    System.out.println(casilla.casillaEnVenta());
                 }
             }
         }
@@ -393,6 +391,8 @@ public class Juego implements Comando{
     /* Método que realiza las acciones asociadas al comando 'listar jugadores'*/
     public void listarJugadores() {
         System.out.println("Jugadores:");
+        listaArray(jugadores);
+        /*
         StringBuilder str = new StringBuilder();
         for (Jugador jugador : jugadores) {
             str.append(jugador.info());
@@ -402,12 +402,14 @@ public class Juego implements Comando{
                 str.append("\n");
             }
         }
-        System.out.println(str);
+        System.out.println(str); */
     }
 
     /* Método que realiza las acciones asociadas al comando 'listar avatares' */
     public void listarAvatares() {
         System.out.println("Avatares:");
+        listaArray(avatares);
+        /*
         StringBuilder str = new StringBuilder();
         for (Avatar avatar : avatares) {
             str.append(avatar.infoAvatar());
@@ -417,7 +419,7 @@ public class Juego implements Comando{
                 str.append("\n");
             }
         }
-        System.out.println(str);
+        System.out.println(str); */
     }
 
     /*************************/
@@ -1480,6 +1482,50 @@ public class Juego implements Comando{
             }
         }
         return num;
+    }
+
+    /**
+     * Metodo que convierte una lista de elementos en una representación de cadena.
+     * Si la lista contiene cadenas, se devuelven como una lista de cadenas.
+     * Si la lista contiene objetos de tipo Casilla, se devuelven sus nombres.
+     * Si la lista contiene objetos de tipo Edificios, se devuelven sus id's.
+     *
+     * @param array La lista de elementos a convertir en cadena. Puede contener
+     *              objetos de tipo String o Casilla.
+     * @return Una representación de cadena de la lista, con los elementos
+     *         separados por comas y encerrados entre corchetes. Si la lista está
+     *         vacía, se devuelve un guion ("-").
+     */
+    public static String listaArray(ArrayList<?> array) {
+        StringBuilder listaArray = new StringBuilder();
+
+        if (!array.isEmpty()) {
+            Object firstElement = array.getFirst();
+
+            if (firstElement instanceof String) {
+                listaArray.append("[").append((String) firstElement);
+            } else if (firstElement instanceof Casilla) {
+                listaArray.append("[").append(((Casilla) firstElement).getNombre());
+            } else if (firstElement instanceof Edificio) {
+                listaArray.append("[").append(((Edificio) firstElement).getIdEdificio());
+            }
+
+            for (int i = 1; i < array.size(); ++i) {
+                Object element = array.get(i);
+                if (element instanceof String) {
+                    listaArray.append(", ").append((String) element);
+                } else if (element instanceof Casilla) {
+                    listaArray.append(", ").append(((Casilla) element).getNombre());
+                } else if (element instanceof Edificio) {
+                    listaArray.append(", ").append(((Edificio) element).getIdEdificio());
+                }
+            }
+
+            listaArray.append("]");
+        } else {
+            listaArray = new StringBuilder("-");
+        }
+        return listaArray.toString();
     }
 
 
