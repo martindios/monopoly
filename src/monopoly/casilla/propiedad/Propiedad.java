@@ -65,6 +65,13 @@ public abstract class Propiedad extends Casilla {
     /**********Métodos**********/
 
     /**
+     * Método abstracto que proporciona información sobre una casilla está en venta.
+     *
+     * @return Una cadena que indica si la casilla está en venta.
+     */
+    public abstract String casillaEnVenta();
+
+    /**
      * Incrementa el contador del dueño de la propiedad.
      */
     public void sumarContadorDuenho() {
@@ -89,7 +96,7 @@ public abstract class Propiedad extends Casilla {
      * @param banca El jugador que representa la banca.
      * @param tirada El valor de la tirada de dados.
      */
-    public void pagarAlquiler(Jugador jugadorActual, Jugador banca, int tirada) {
+    public void pagarAlquiler(Jugador jugadorActual, Jugador banca, int tirada) { //SEPARAR LÓGICA MEDIANTE OVERRIDE EN LAS 3 SUBCLASES
         float alquiler = 0;
         if(this.getDuenho().equals(banca)) {
             return;
@@ -130,13 +137,6 @@ public abstract class Propiedad extends Casilla {
         }
     }
 
-    /**
-     * Método abstracto que proporciona información sobre una casilla está en venta.
-     *
-     * @return Una cadena que indica si la casilla está en venta.
-     */
-    public abstract String casillaEnVenta();
-
     /*Método usado para comprar una casilla determinada. Parámetros:
      * - Jugador que solicita la compra de la casilla.
      * - Banca  (es el dueño de las casillas no compradas aún).*/
@@ -167,6 +167,11 @@ public abstract class Propiedad extends Casilla {
         System.out.println("El jugador ha comprado la casilla por " + valorCasilla + ".");
     }
 
+    /**
+     * Proporciona información detallada sobre la casilla.
+     *
+     * @return Una cadena con el tipo, dueño, valor y hipoteca de la casilla.
+     */
     @Override
     public String infoCasilla() {
         System.out.println(super.infoCasilla());
