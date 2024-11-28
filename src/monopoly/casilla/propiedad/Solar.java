@@ -1,9 +1,10 @@
 package monopoly.casilla.propiedad;
 
-import monopoly.Edificio;
+import monopoly.Edificio.Edificio;
 import partida.Jugador;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
 public class Solar extends Propiedad{
     private ArrayList<Edificio> edificios; //Edificios construidos en la casilla
@@ -251,6 +252,25 @@ public class Solar extends Propiedad{
                 """.formatted(this.getNombre(), getNumEdificios(edificios, "Casa"),
                 getNumEdificios(edificios, "Hotel"), getNumEdificios(edificios, "Piscina"),
                 getNumEdificios(edificios, "Deporte"), this.getGrupo().getNumCasillas());
+    }
+
+    public void venderEdificios(String tipo, int cantidad) {
+        Jugador propietario = this.getDuenho();
+        Iterator<Edificio> iterator = edificios.iterator();
+        while (iterator.hasNext() && cantidad > 0) {
+            Edificio edificio = iterator.next();
+            if (edificio.getTipo().equals(tipo)) {
+                iterator.remove();
+                ArrayList<Edificio> aux = propietario.getEdificios();
+                aux.remove(edificio);
+                propietario.setEdificios(aux);
+                propietario.sumarFortuna(edificio.getValor() / 2);
+                edificio.setCasilla(null);
+                System.out.println("Se ha vendido un/una " + tipo + " por " + edificio.getValor() / 2 + "€.");
+                cantidad--;
+            }
+        }
+        this.modificarAlquiler();
     }
 
 }

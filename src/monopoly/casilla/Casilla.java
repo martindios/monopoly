@@ -1,6 +1,6 @@
 package monopoly.casilla;
 
-import monopoly.Edificio;
+import monopoly.Edificio.Edificio;
 import monopoly.Grupo;
 import monopoly.casilla.propiedad.*;
 import partida.*;
@@ -8,9 +8,6 @@ import partida.*;
 import java.util.ArrayList;
 import java.lang.String;
 import java.util.Iterator;
-import java.util.Objects;
-
-import static monopoly.Valor.SUMA_VUELTA;
 
 //Cando se vende un solar por bancarrota, o precio reiníciase. Sin embargo, o precio incrementa cando non compras, entonces simplemente se da que o solar volve ao precio
 //No que se compru, dado que nn se debería actualizar
@@ -421,28 +418,6 @@ public abstract class Casilla {
                 """.formatted(this.getNombre(), Casas.isEmpty() ? '-' : Casas, Hoteles.isEmpty() ? '-' : Hoteles, Piscinas.isEmpty() ? '-' : Piscinas,
                 Deporte.isEmpty() ? '-' : Deporte, this.getImpuesto());
     }
-
-    public void venderEdificios(String tipo, int cantidad) {
-        Jugador propietario = this.getDuenho();
-        Iterator<Edificio> iterator = edificios.iterator();
-        while (iterator.hasNext() && cantidad > 0) {
-            Edificio edificio = iterator.next();
-            if (edificio.getTipo().equals(tipo)) {
-                iterator.remove();
-                ArrayList<Edificio> aux = propietario.getEdificios();
-                aux.remove(edificio);
-                propietario.setEdificios(aux);
-                propietario.sumarFortuna(edificio.getValor() / 2);
-                edificio.setCasilla(null);
-                System.out.println("Se ha vendido un/una " + tipo + " por " + edificio.getValor() / 2 + "€.");
-                cantidad--;
-            }
-        }
-        this.modificarAlquiler();
-    }
-
-
-
 
 
     public void modificarAlquiler() {

@@ -1,5 +1,6 @@
 package monopoly;
 
+import monopoly.Edificio.Edificio;
 import monopoly.casilla.Casilla;
 import partida.*;
 import java.util.ArrayList;
