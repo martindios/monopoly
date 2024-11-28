@@ -50,15 +50,16 @@ public class Servicio extends Propiedad {
                 }""".formatted(getNombre(), getTipo(), getValor());
     }
 
-    /**
-     * Calcula el alquiler que debe pagar el jugador actual por caer en un servicio.
-     *
-     * @param jugadorActual El jugador que ha caído en la casilla.
-     * @param banca El jugador que representa la banca.
-     * @param tirada El valor de la tirada de dados.
-     * @return El valor del alquiler que debe pagar el jugador.
-     */
-    public float pagarAlquilerServicio(Jugador jugadorActual, Jugador banca, int tirada) {
+
+    @Override
+    public void pagarAlquiler(Jugador jugadorActual, Jugador banca, int tirada) {
+        if (this.getDuenho().equals(banca)) {
+            return;
+        }
+        if (this.isHipotecado()) {
+            System.out.println("La casilla está hipotecada, no se paga alquiler.");
+            return;
+        }
         float alquiler = 0;
         Jugador duenhoServicios = this.getDuenho();
         alquiler = switch (duenhoServicios.getNumServicios()) {
@@ -66,6 +67,7 @@ public class Servicio extends Propiedad {
             case 2 -> this.getImpuesto() * 10 * tirada;
             default -> alquiler;
         };
-        return alquiler;
+        super.pagarAlquiler(jugadorActual, banca, alquiler);
     }
+
 }
