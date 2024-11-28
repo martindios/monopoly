@@ -19,7 +19,8 @@ public class Especial extends Casilla{
         }
     }
 
-    public boolean evaluarEspecial(Jugador jugador, Jugador banca) {
+    @Override
+    public boolean evaluarCasilla(Jugador jugador, Jugador banca, int tirada) {
         if (this.getNombre().equals("Cárcel")) {
             return (jugador.getFortuna() > this.getImpuesto()) || (jugador.getTiradasCarcel() < 3);
         } else {
@@ -27,7 +28,9 @@ public class Especial extends Casilla{
         }
     }
 
-    public String infoCasillaEspecial() {
+    @Override
+    public String infoCasilla() {
+        System.out.println(super.infoCasilla());
         if (Objects.equals(this.getNombre(), "Cárcel")) {
             StringBuilder carcel = new StringBuilder();
             carcel.append("Tipo: ").append(this.getTipo().toLowerCase()).append(",\n");

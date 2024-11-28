@@ -11,8 +11,9 @@ public class Transporte extends Propiedad{
         this.setImpuesto(SUMA_VUELTA);
     }
 
-    public boolean evaluarTransporte(Jugador jugador, Jugador banca) {
-        if(this.getDuenho().equals(banca)) {
+    @Override
+    public boolean evaluarCasilla(Jugador jugador, Jugador banca, int tirada) {
+        if(this.getDuenho().equals(banca) || jugador.equals(getDuenho())) {
             return true;
         }
         return switch (this.getDuenho().getNumTransportes()) {
@@ -35,6 +36,16 @@ public class Transporte extends Propiedad{
             default -> alquiler;
         };
         return alquiler;
+    }
+
+    @Override
+    public String casillaEnVenta() {
+        return """
+                {
+                    Nombre: %s,
+                    Tipo: %s,
+                    Valor: %.2f.
+                }""".formatted(getNombre(), getTipo(), getValor());
     }
 
 }

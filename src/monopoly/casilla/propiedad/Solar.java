@@ -1,14 +1,22 @@
 package monopoly.casilla.propiedad;
 
-import monopoly.Edificio.Edificio;
+import monopoly.Edificio;
+import monopoly.Grupo;
 import partida.Jugador;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 
-public class Solar extends Propiedad{
-    private ArrayList<Edificio> edificios; //Edificios construidos en la casilla
+import static monopoly.Juego.listaArray;
 
+
+public class Solar extends Propiedad{
+
+    /**********Atributos**********/
+    private ArrayList<Edificio> edificios; //Edificios construidos en la casilla
+    private Grupo grupo; //Grupo al que pertenece la casilla (si es solar).
+
+    /**********Constructor**********/
     public Solar(String nombre, int posicion, float valor, Jugador duenho){
         super(nombre, "Solar", posicion, valor, duenho);
         this.setImpuesto(valor * 0.1f);
@@ -16,14 +24,28 @@ public class Solar extends Propiedad{
         this.edificios = new ArrayList<Edificio>();
     }
 
+    /**********Getters**********/
+
     //getter para devolver la lista de los edificios construídos en la casilla
     public ArrayList<Edificio> getEdificios() {
         return edificios;
     }
 
+    public Grupo getGrupo() {
+        return grupo;
+    }
+
+    /**********Setters**********/
+
     public void setEdificios(ArrayList<Edificio> edificios) {
         this.edificios = edificios;
     }
+
+    public void setGrupo(Grupo grupo) {
+        this.grupo = grupo;
+    }
+
+    /**********Métodos**********/
 
     /**
      * Obtiene el número de edificios de un tipo específico en la lista de edificios.
@@ -42,8 +64,9 @@ public class Solar extends Propiedad{
         return numEdificios;
     }
 
-    public boolean evaluarSolar(Jugador jugador, Jugador banca) {
-        if (this.getDuenho().equals(banca)) {
+    @Override
+    public boolean evaluarCasilla(Jugador jugador, Jugador banca, int tirada) {
+        if (this.getDuenho().equals(banca) || jugador.equals(this.getDuenho())) {
             return true;
         } else {
             return (jugador.getFortuna() > this.getImpuesto());
@@ -69,7 +92,8 @@ public class Solar extends Propiedad{
         return alquiler;
     }
 
-    public String infoCasillaPropiedad() {
+    @Override
+    public String infoCasilla() {
         float valor = this.getValor();
         float impuestoInicial = this.getImpuestoInicial();
         return "Tipo: " + this.getTipo().toLowerCase() + ",\n" +
@@ -91,6 +115,21 @@ public class Solar extends Propiedad{
                 "alquiler pista de deporte: " + impuestoInicial * 25 + ",\n" +
                 "Edificios construídos: " + listaArray(this.getEdificios());
     }
+
+    @Override
+    public String casillaEnVenta() {
+        return """
+                {
+                    Nombre: %s,
+                    Tipo: %s,
+                    Grupo: %s,
+                    Valor: %.2f.
+                }""".formatted(getNombre(), getTipo(), getGrupo().getNombreGrupo(), getValor());
+    }
+
+    /**************************/
+    /*SECCIÓN DE EDIFICACIONES*/
+    /**************************/
 
     public boolean edificarCasa(Jugador jugador, int contadorCasa) {
         if(!jugador.getAvatar().getLugar().getTipo().equals("Solar")) {
@@ -254,6 +293,40 @@ public class Solar extends Propiedad{
                 getNumEdificios(edificios, "Deporte"), this.getGrupo().getNumCasillas());
     }
 
+    public String edificiosGrupo() {
+        ArrayList<String> Casas = new ArrayList<>();
+        ArrayList<String> Hoteles = new ArrayList<>();
+        ArrayList<String> Piscinas = new ArrayList<>();
+        ArrayList<String> Deporte = new ArrayList<>();
+        for(Edificio edificio : edificios){
+            switch (edificio.getTipo()) {
+                case "Casa":
+                    Casas.add(edificio.getIdEdificio());
+                    break;
+                case "Hotel":
+                    Hoteles.add(edificio.getIdEdificio());
+                    break;
+                case "Piscina":
+                    Piscinas.add(edificio.getIdEdificio());
+                    break;
+                case "Deporte":
+                    Deporte.add(edificio.getIdEdificio());
+                    break;
+            }
+        }
+        return """
+                {
+                Propiedad: %s,
+                Casas: %s,
+                Hoteles: %s,
+                Piscinas: %s,
+                Pistas de deporte: %s,
+                Alquiler: %.2f
+                }
+                """.formatted(this.getNombre(), Casas.isEmpty() ? '-' : Casas, Hoteles.isEmpty() ? '-' : Hoteles, Piscinas.isEmpty() ? '-' : Piscinas,
+                Deporte.isEmpty() ? '-' : Deporte, this.getImpuesto());
+    }
+
     public void venderEdificios(String tipo, int cantidad) {
         Jugador propietario = this.getDuenho();
         Iterator<Edificio> iterator = edificios.iterator();
@@ -273,4 +346,28 @@ public class Solar extends Propiedad{
         this.modificarAlquiler();
     }
 
+    public void modificarAlquiler() {
+        int numCasas = getNumEdificios(edificios, "Casa");
+        int numHoteles = getNumEdificios(edificios, "Hotel");
+        int numPiscinas = getNumEdificios(edificios, "Piscina");
+        int numPistaDeporte = getNumEdificios(edificios, "Deporte");
+        float factorAlquiler = 0;
+        // Cálculo para Casas
+        if (numCasas > 0) {
+            if (numCasas == 1) factorAlquiler += 5;
+            else if (numCasas == 2) factorAlquiler += 15;
+            else if (numCasas == 3) factorAlquiler += 35;
+            else if (numCasas == 4) factorAlquiler += 50;
+        }
+        // Cálculo para Hoteles
+        factorAlquiler += 70 * numHoteles;
+        // Cálculo para Piscinas
+        factorAlquiler += 25 * numPiscinas;
+        // Cálculo para Pistas de Deporte
+        factorAlquiler += 25 * numPistaDeporte;
+
+        // Si no hay edificios, el factor es 0 (no se modifica el alquiler)
+        // Calculamos el impuesto actualizado
+        this.setImpuesto(this.getImpuestoInicial() + (this.getImpuestoInicial() * factorAlquiler));
+    }
 }
