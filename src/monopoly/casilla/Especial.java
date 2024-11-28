@@ -1,10 +1,8 @@
 package monopoly.casilla;
 
-import monopoly.Edificio;
 import partida.Avatar;
 import partida.Jugador;
 
-import java.util.ArrayList;
 import java.util.Objects;
 
 import static monopoly.Valor.SUMA_VUELTA;

@@ -9,6 +9,7 @@ import java.util.Iterator;
 
 import static monopoly.Juego.listaArray;
 
+
 public class Solar extends Propiedad{
 
     /**********Atributos**********/
@@ -369,5 +370,4 @@ public class Solar extends Propiedad{
         // Calculamos el impuesto actualizado
         this.setImpuesto(this.getImpuestoInicial() + (this.getImpuestoInicial() * factorAlquiler));
     }
-
 }

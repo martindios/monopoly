@@ -2,8 +2,10 @@ package partida;
 
 import java.util.ArrayList;
 
-import monopoly.*;
+import monopoly.Edificio.Edificio;
 import monopoly.casilla.Casilla;
+import monopoly.casilla.propiedad.Propiedad;
+import monopoly.casilla.propiedad.Solar;
 
 import static monopoly.Valor.FORTUNA_BANCA;
 import static monopoly.Valor.FORTUNA_INICIAL;
@@ -20,7 +22,7 @@ public class Jugador{
     private int vueltas; //Cuenta las vueltas dadas al tablero.
     private int numTransportes; //Cuenta la cantidad de transportes que tiene el jugador
     private int numServicios; //Cuenta la cantidad de servicios que tiene el jugador
-    private ArrayList<Casilla> propiedades; //Propiedades que posee el jugador.
+    private ArrayList<Propiedad> propiedades; //Propiedades que posee el jugador.
     private ArrayList<String> hipotecas;
     private ArrayList<Edificio> edificios; //Propiedades que posee el jugador.
 
@@ -115,7 +117,7 @@ public class Jugador{
         return enCarcel;
     }
 
-    public ArrayList<Casilla> getPropiedades() {
+    public ArrayList<Propiedad> getPropiedades() {
         return propiedades;
     }
 
@@ -213,12 +215,12 @@ public class Jugador{
     /**********Métodos**********/
 
     //Método para añadir una propiedad al jugador. Como parámetro, la casilla a añadir.
-    public void anhadirPropiedad(Casilla casilla) {
+    public void anhadirPropiedad(Propiedad casilla) {
         propiedades.add(casilla);
     }
 
     //Método para eliminar una propiedad del arraylist de propiedades de jugador.
-    public void eliminarPropiedad(Casilla casilla) {
+    public void eliminarPropiedad(Propiedad casilla) {
         propiedades.remove(casilla);
     }
 
@@ -383,15 +385,18 @@ public class Jugador{
             Jugador jugBeneficiado = avatar.getLugar().getDuenho();
 
             // Vender todos los edificios del jugador this
-            for (Casilla propiedad : propiedades) {
-                propiedad.venderEdificios("Casa", propiedad.getNumEdificios(propiedad.getEdificios(), "Casa"));
-                propiedad.venderEdificios("Hotel", propiedad.getNumEdificios(propiedad.getEdificios(), "Hotel"));
-                propiedad.venderEdificios("Piscina", propiedad.getNumEdificios(propiedad.getEdificios(), "Piscina"));
-                propiedad.venderEdificios("PistaDeporte", propiedad.getNumEdificios(propiedad.getEdificios(), "PistaDeporte"));
+            for (Propiedad propiedad : propiedades) {
+                if(propiedad instanceof Solar) {
+                    Solar solar = (Solar) propiedad;
+                    solar.venderEdificios("Casa", solar.getNumEdificios(solar.getEdificios(), "Casa"));
+                    solar.venderEdificios("Hotel", solar.getNumEdificios(solar.getEdificios(), "Hotel"));
+                    solar.venderEdificios("Piscina", solar.getNumEdificios(solar.getEdificios(), "Piscina"));
+                    solar.venderEdificios("PistaDeporte", solar.getNumEdificios(solar.getEdificios(), "PistaDeporte"));
+                }
             }
 
             // Transferir todas las propiedades al jugador beneficiado
-            for (Casilla propiedad : propiedades) {
+            for (Propiedad propiedad : propiedades) {
                 propiedad.setHipotecado(false);
                 propiedad.setContador(0);
                 propiedad.setDuenho(jugBeneficiado);
@@ -408,15 +413,18 @@ public class Jugador{
             System.out.println("Se transfieren la fortuna y las propiedades a la banca");
 
             // Vender todos los edificios del jugador this
-            for (Casilla propiedad : propiedades) {
-                propiedad.venderEdificios("Casa", propiedad.getNumEdificios(propiedad.getEdificios(), "Casa"));
-                propiedad.venderEdificios("Hotel", propiedad.getNumEdificios(propiedad.getEdificios(), "Hotel"));
-                propiedad.venderEdificios("Piscina", propiedad.getNumEdificios(propiedad.getEdificios(), "Piscina"));
-                propiedad.venderEdificios("PistaDeporte", propiedad.getNumEdificios(propiedad.getEdificios(), "PistaDeporte"));
+            for (Propiedad propiedad : propiedades) {
+                if(propiedad instanceof Solar) {
+                    Solar solar = (Solar) propiedad;
+                    solar.venderEdificios("Casa", solar.getNumEdificios(solar.getEdificios(), "Casa"));
+                    solar.venderEdificios("Hotel", solar.getNumEdificios(solar.getEdificios(), "Hotel"));
+                    solar.venderEdificios("Piscina", solar.getNumEdificios(solar.getEdificios(), "Piscina"));
+                    solar.venderEdificios("PistaDeporte", solar.getNumEdificios(solar.getEdificios(), "PistaDeporte"));
+                }
             }
 
             // Transferir todas las propiedades a la banca
-            for (Casilla propiedad : propiedades) {
+            for (Propiedad propiedad : propiedades) {
                 propiedad.setDuenho(banca);
             }
             propiedades.clear();
@@ -429,15 +437,19 @@ public class Jugador{
             System.out.println("Se transfieren la fortuna y las propiedades a la banca");
 
             // Vender todos los edificios del jugador
-            for (Casilla propiedad : propiedades) {
-                propiedad.venderEdificios("Casa", propiedad.getNumEdificios(propiedad.getEdificios(), "Casa"));
-                propiedad.venderEdificios("Hotel", propiedad.getNumEdificios(propiedad.getEdificios(), "Hotel"));
-                propiedad.venderEdificios("Piscina", propiedad.getNumEdificios(propiedad.getEdificios(), "Piscina"));
-                propiedad.venderEdificios("PistaDeporte", propiedad.getNumEdificios(propiedad.getEdificios(), "PistaDeporte"));
+            // Vender todos los edificios del jugador this
+            for (Propiedad propiedad : propiedades) {
+                if(propiedad instanceof Solar) {
+                    Solar solar = (Solar) propiedad;
+                    solar.venderEdificios("Casa", solar.getNumEdificios(solar.getEdificios(), "Casa"));
+                    solar.venderEdificios("Hotel", solar.getNumEdificios(solar.getEdificios(), "Hotel"));
+                    solar.venderEdificios("Piscina", solar.getNumEdificios(solar.getEdificios(), "Piscina"));
+                    solar.venderEdificios("PistaDeporte", solar.getNumEdificios(solar.getEdificios(), "PistaDeporte"));
+                }
             }
 
             // Transferir todas las propiedades a la banca
-            for (Casilla propiedad : propiedades) {
+            for (Propiedad propiedad : propiedades) {
                 propiedad.setDuenho(banca);
             }
             propiedades.clear();

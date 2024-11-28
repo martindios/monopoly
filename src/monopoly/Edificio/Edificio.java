@@ -1,6 +1,8 @@
-package monopoly;
+package monopoly.Edificio;
 
 import monopoly.casilla.Casilla;
+import monopoly.casilla.propiedad.Propiedad;
+import monopoly.casilla.propiedad.Solar;
 import partida.Jugador;
 
 public class Edificio {
@@ -9,12 +11,12 @@ public class Edificio {
     private String tipo; //Tipo de edificio (Casa, Hotel, Piscina, Deporte).
     private String idEdificio; //Variable para almacenar el id del edificio, servirá como nombre.
     private float valor; //Valor del edificio (valor de compra).
-    private Casilla casilla; //Casilla en la que está construído el edificio
+    private Solar casilla; //Casilla en la que está construído el edificio
     private float impuesto; //Factor que multiplica el valor de la casilla (Me refiero, se a casa incrementa un 5% (por ej) o alquiler do solar, aquí almacenamos 0.05)
     private Jugador propietario; //Almacenamos el propietario del edificio
 
     /**********Constructor**********/
-    public Edificio(String tipo, Casilla casilla, int contador) {
+    public Edificio(String tipo, Solar casilla, int contador) {
         this.tipo = tipo;
         this.idEdificio = generarIdEdificio(this.tipo, contador);
         this.casilla = casilla;
@@ -39,7 +41,7 @@ public class Edificio {
         return idEdificio;
     }
 
-    public Casilla getCasilla() {
+    public Solar getCasilla() {
         return casilla;
     }
 
@@ -49,7 +51,7 @@ public class Edificio {
 
     /**********Setters**********/
 
-    public void setCasilla(Casilla casilla) {
+    public void setCasilla(Solar casilla) {
         this.casilla = casilla;
 
     }

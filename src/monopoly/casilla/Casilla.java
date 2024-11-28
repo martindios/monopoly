@@ -1,6 +1,6 @@
 package monopoly.casilla;
 
-import monopoly.Edificio;
+import monopoly.Edificio.Edificio;
 import monopoly.Grupo;
 import monopoly.casilla.propiedad.*;
 import partida.*;
@@ -197,5 +197,4 @@ public abstract class Casilla {
     public String infoCasilla() {
         return("Descripción de la casilla: " + this.getNombre() + ". Posición " + this.getPosicion() + ".");
     }
-
 }
