@@ -66,6 +66,8 @@ public abstract class Propiedad extends Casilla {
      */
     public abstract String casillaEnVenta();
 
+    public abstract float calcularAlquiler(Jugador jugadorActual, Jugador banca, int tirada);
+
     /**
      * Incrementa el contador del dueño de la propiedad.
      */
@@ -82,8 +84,6 @@ public abstract class Propiedad extends Casilla {
     public boolean perteneceAJugador(Jugador jugador) {
         return this.getDuenho().equals(jugador);
     }
-
-    public abstract float calcularAlquiler(Jugador jugadorActual, Jugador banca, int tirada);
 
     public void pagarAlquiler(Jugador jugadorActual, Jugador banca, int tirada) {
         if (this.getDuenho().equals(banca)) {
