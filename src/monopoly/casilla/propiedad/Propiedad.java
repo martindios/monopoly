@@ -11,8 +11,6 @@ public abstract class Propiedad extends Casilla {
     private float totalAlquileresPagados;
     private int contador; //Contador de veces que el dueño ha caído en la casilla
 
-
-
     /**********Constructor**********/
     public Propiedad(String nombre, String tipo, int posicion, float valor, Jugador duenho) {
         super(nombre, tipo, posicion, duenho);
@@ -85,48 +83,18 @@ public abstract class Propiedad extends Casilla {
         return this.getDuenho().equals(jugador);
     }
 
+    public abstract float calcularAlquiler(Jugador jugadorActual, Jugador banca, int tirada);
 
-    public abstract void pagarAlquiler(Jugador jugadorActual, Jugador banca, int tirada);
-    public void pagarAlquiler(Jugador jugadorActual, Jugador banca, float alquiler) {
-        jugadorActual.sumarFortuna(-alquiler);
-        jugadorActual.sumarGastos(alquiler);
-        jugadorActual.sumarPagoDeAlquileres(alquiler);
-        this.getDuenho().sumarFortuna(alquiler);
-        this.getDuenho().sumarCobroDeAlquileres(alquiler);
-        this.totalAlquileresPagados += alquiler;
-    }
-
-    /*
-    public void pagarAlquiler(Jugador jugadorActual, Jugador banca, int tirada) { //SEPARAR LÓGICA MEDIANTE OVERRIDE EN LAS 3 SUBCLASES
-        float alquiler = 0;
-        if(this.getDuenho().equals(banca)) {
+    public void pagarAlquiler(Jugador jugadorActual, Jugador banca, int tirada) {
+        if (this.getDuenho().equals(banca)) {
             return;
-        } */
-        /*Comprobar que el dueño de la casilla no es él mismo*/ /*
+        }
+        if (this.isHipotecado()) {
+            System.out.println("La casilla está hipotecada, no se paga alquiler.");
+            return;
+        }
         if (!jugadorActual.equals(this.getDuenho())) {
-            if(this.hipotecado) { // Comprobar si la casilla está hipotecada
-                System.out.println("La casilla está hipotecada, no se paga alquiler.");
-                return;
-            }
-            
-            switch (this) {
-                case Solar solar -> {
-                    alquiler = solar.pagarAlquilerSolar(jugadorActual, banca);
-                    System.out.println("El jugador " + jugadorActual.getNombre() + " ha pagado a " + this.getDuenho().getNombre()
-                            + " " + alquiler + " por el alquiler de " + this.getNombre());
-                }
-                case Servicio servicio -> {
-                    alquiler = servicio.pagarAlquilerServicio(jugadorActual, banca, tirada);
-                    System.out.println("El jugador " + jugadorActual.getNombre() + " ha pagado a " + this.getDuenho().getNombre()
-                            + " " + alquiler + " por el servicio de " + this.getNombre());
-                }
-                case Transporte transporte -> {
-                    alquiler = transporte.pagarAlquilerTransporte(jugadorActual, banca);
-                    System.out.println("El jugador " + jugadorActual.getNombre() + " ha pagado a " + this.getDuenho().getNombre()
-                            + " " + alquiler + " por el transporte de " + this.getNombre());
-                }
-                default -> System.out.println("Error pagando el alquiler, no es solar, servicio o transporte");
-            }
+            float alquiler = calcularAlquiler(jugadorActual, banca, tirada);
 
             jugadorActual.sumarFortuna(-alquiler);
             jugadorActual.sumarGastos(alquiler);
@@ -134,9 +102,9 @@ public abstract class Propiedad extends Casilla {
             this.getDuenho().sumarFortuna(alquiler);
             this.getDuenho().sumarCobroDeAlquileres(alquiler);
             this.totalAlquileresPagados += alquiler;
-
         }
-    }  */
+    }
+
 
 
     /*Método usado para comprar una casilla determinada. Parámetros:

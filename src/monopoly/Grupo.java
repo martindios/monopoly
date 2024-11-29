@@ -2,6 +2,7 @@ package monopoly;
 
 import monopoly.Edificio.Edificio;
 import monopoly.casilla.Casilla;
+import monopoly.casilla.propiedad.Solar;
 import partida.*;
 import java.util.ArrayList;
 
@@ -9,24 +10,22 @@ import java.util.ArrayList;
 public class Grupo {
 
     /**********Atributos**********/
-    //private ArrayList<Propiedad> miembros; //CAMBIAR A ESTO
-    private ArrayList<Casilla> miembros; //Casillas miembros del grupo.
+    private ArrayList<Solar> miembros; //Casillas miembros del grupo.
     private String colorGrupo; //Color del grupo
     private String nombreGrupo; //Nombre del grupo
     private int numCasillas; //Número de casillas del grupo.
     private ArrayList<Edificio> edificiosGrupo;
-
 
     /**********Constructores**********/
 
     /*Constructor para cuando el grupo está formado por DOS CASILLAS:
     * Requiere como parámetros las dos casillas miembro y el color del grupo.
      */
-    public Grupo(Casilla cas1, Casilla cas2, String colorGrupo, String nombreGrupo) {
+    public Grupo(Solar cas1, Solar cas2, String colorGrupo, String nombreGrupo) {
         this.numCasillas = 2;
         this.colorGrupo = colorGrupo;
         this.nombreGrupo = nombreGrupo;
-        this.miembros = new ArrayList<Casilla>();
+        this.miembros = new ArrayList<Solar>();
         this.edificiosGrupo = new ArrayList<>();
         anhadirCasilla(cas1);
         anhadirCasilla(cas2);
@@ -35,11 +34,11 @@ public class Grupo {
     /*Constructor para cuando el grupo está formado por TRES CASILLAS:
     * Requiere como parámetros las tres casillas miembro y el color del grupo.
      */
-    public Grupo(Casilla cas1, Casilla cas2, Casilla cas3, String colorGrupo, String nombreGrupo) {
+    public Grupo(Solar cas1, Solar cas2, Solar cas3, String colorGrupo, String nombreGrupo) {
         this.numCasillas = 3;
         this.colorGrupo = colorGrupo;
         this.nombreGrupo = nombreGrupo;
-        this.miembros = new ArrayList<Casilla>();
+        this.miembros = new ArrayList<Solar>();
         this.edificiosGrupo = new ArrayList<>();
         anhadirCasilla(cas1);
         anhadirCasilla(cas2);
@@ -49,7 +48,7 @@ public class Grupo {
     /**********Getters**********/
 
     //getter para devolver los miembros que pertenecen a un grupo
-    public ArrayList<Casilla> getMiembros() {
+    public ArrayList<Solar> getMiembros() {
         return miembros;
     }
 
@@ -78,7 +77,7 @@ public class Grupo {
      *
      * @param miembro La casilla que se quiere añadir al grupo.
      */
-    public void anhadirCasilla(Casilla miembro) {
+    public void anhadirCasilla(Solar miembro) {
         if(!this.miembros.contains(miembro)) {
             this.miembros.add(miembro);
             miembro.setGrupo(this);

@@ -1,6 +1,6 @@
 package monopoly.casilla.propiedad;
 
-import monopoly.Edificio;
+import monopoly.Edificio.Edificio;
 import monopoly.Grupo;
 import partida.Jugador;
 
@@ -73,26 +73,16 @@ public class Solar extends Propiedad{
         }
     }
 
-
     @Override
-    public void pagarAlquiler(Jugador jugadorActual, Jugador banca, int tirada) {
-        if (this.getDuenho().equals(banca)) {
-            return;
+    public float calcularAlquiler(Jugador jugadorActual, Jugador banca, int tirada) {
+        float alquiler = 0;
+        Jugador duenhoSolar = this.getDuenho();
+        if (this.getGrupo().esDuenhoGrupo(duenhoSolar)) { // Comprobar si el dueño del solar es dueño de todo el grupo de color
+            alquiler = 2 * this.getImpuesto();
+        } else {
+            alquiler = this.getImpuesto();
         }
-        if (this.isHipotecado()) {
-            System.out.println("La casilla está hipotecada, no se paga alquiler.");
-            return;
-        }
-        if (!jugadorActual.equals(this.getDuenho())) {
-            float alquiler = 0;
-            Jugador duenhoSolar = this.getDuenho();
-            if (this.getGrupo().esDuenhoGrupo(duenhoSolar)) { // Comprobar si el dueño del solar es dueño de todo el grupo de color
-                alquiler = 2 * this.getImpuesto();
-            } else {
-                alquiler = this.getImpuesto();
-            }
-            super.pagarAlquiler(jugadorActual, banca, alquiler);
-        }
+        return alquiler;
     }
 
     @Override

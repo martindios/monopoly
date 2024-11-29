@@ -2,6 +2,9 @@ package monopoly;
 
 import monopoly.Edificio.Edificio;
 import monopoly.casilla.Casilla;
+import monopoly.casilla.Impuesto;
+import monopoly.casilla.accion.AccionCajaComunidad;
+import monopoly.casilla.accion.AccionSuerte;
 import monopoly.casilla.propiedad.Propiedad;
 import monopoly.casilla.propiedad.Servicio;
 import monopoly.casilla.propiedad.Solar;
@@ -10,6 +13,7 @@ import partida.Avatar;
 import partida.Dado;
 import partida.Jugador;
 
+import java.sql.SQLData;
 import java.util.*;
 
 public class Juego implements Comando{
@@ -396,9 +400,10 @@ public class Juego implements Comando{
     public void listarVenta() {
         for(ArrayList<Casilla> fila : tablero.getPosiciones()) {
             for(Casilla casilla : fila) {
-                if((casilla.getTipo().equals("Solar") || casilla.getTipo().equals("Transporte")
-                        || casilla.getTipo().equals("Servicios")) && casilla.getDuenho().equals(banca)) {
-                    System.out.println(casilla.casillaEnVenta());
+                if(casilla instanceof Solar solar || casilla instanceof Transporte || casilla instanceof Servicio
+                        && casilla.getDuenho().equals(banca)) {
+                    Propiedad propiedad = (Propiedad) casilla;
+                    System.out.println(propiedad.casillaEnVenta());
                 }
             }
         }
@@ -572,13 +577,16 @@ public class Juego implements Comando{
         for(ArrayList<Casilla> fila : tablero.getPosiciones()) {
             for(Casilla casilla : fila) {
                 //Verificar las casillas más rentables
-                if(casilla.getTotalAlquileresPagados() > maxAlquileresPagados) {
-                    maxAlquileresPagados = casilla.getTotalAlquileresPagados();
-                    casillasMasRentables.clear();
-                    casillasMasRentables.add(casilla);
-                } else if(casilla.getTotalAlquileresPagados() == maxAlquileresPagados) {
-                    casillasMasRentables.add(casilla);
+                if(casilla instanceof Solar solar) {
+                    if(solar.getTotalAlquileresPagados() > maxAlquileresPagados) {
+                        maxAlquileresPagados = solar.getTotalAlquileresPagados();
+                        casillasMasRentables.clear();
+                        casillasMasRentables.add(solar);
+                    } else if(solar.getTotalAlquileresPagados() == maxAlquileresPagados) {
+                        casillasMasRentables.add(solar);
+                    }
                 }
+
 
                 //Verificar las casillas más frecuentadas
                 if(casilla.getTotalVecesFrecuentada() > maxVecesVisitada) {
@@ -616,10 +624,10 @@ public class Juego implements Comando{
         // Recorre el tablero para calcular la rentabilidad de cada grupo
         for (ArrayList<Casilla> fila : tablero.getPosiciones()) {
             for (Casilla casilla : fila) {
-                Grupo grupo = casilla.getGrupo();
-                if (grupo != null) {
+                if(casilla instanceof Solar solar) {
+                    Grupo grupo = solar.getGrupo();
                     rentabilidadPorGrupo.put(grupo, rentabilidadPorGrupo.getOrDefault(grupo, 0f)
-                            + casilla.getTotalAlquileresPagados());
+                            + solar.getTotalAlquileresPagados());
                 }
             }
         }
@@ -797,11 +805,12 @@ public class Juego implements Comando{
                 return;
             }
         }
+
         //Comprobar que hay en la casilla en la que se cae hay que pagar
-        switch (casillaActual.getTipo()) {
-            case "Solar", "Servicios", "Transporte" ->
-                    casillaActual.pagarAlquiler(jugadores.get(turno), banca, dado1.getValor() + dado2.getValor());
-            case "Impuestos" -> {
+        switch (casillaActual) {
+            case Propiedad propiedad ->
+                    propiedad.pagarAlquiler(jugadores.get(turno), banca, dado1.getValor() + dado2.getValor());
+            case Impuesto _ -> {
                 jugadorActual.sumarFortuna(-casillaActual.getImpuesto());
                 jugadorActual.sumarGastos(casillaActual.getImpuesto());
                 jugadorActual.sumarTasasEImpuestos(casillaActual.getImpuesto());
@@ -811,7 +820,7 @@ public class Juego implements Comando{
                 System.out.println("El jugador " + jugadorActual.getNombre() + " ha pagado en impuestos " + casillaActual.getImpuesto());
                 banca.sumarFortuna(casillaActual.getImpuesto());
             }
-            case "Suerte" -> {
+            case AccionSuerte _ -> {
                 if(seHaMovido || !jugadorActual.getAvatar().isAvanzado()) {
                     barajas.evaluarSuerte(banca, jugadorActual, tablero);
                 }
@@ -820,7 +829,7 @@ public class Juego implements Comando{
                     acabarTurno();
                 }
             }
-            case "Comunidad" -> {
+            case AccionCajaComunidad _ -> {
                 if(seHaMovido || !jugadorActual.getAvatar().isAvanzado()) {
                     //CAMBIAR
                     //barajas.evaluarComunidad(banca, jugadorActual, tablero, jugadores, this);
@@ -830,6 +839,7 @@ public class Juego implements Comando{
                     acabarTurno();
                 }
             }
+            default -> System.out.println("Error en la evaluación de casilla");
         }
     }
 
@@ -875,30 +885,34 @@ public class Juego implements Comando{
     public void edificar(String palabra) {
         Jugador jugador = jugadores.get(turno);
         Casilla casilla = jugador.getAvatar().getLugar();
+        if(!(casilla instanceof Solar solar)) {
+            System.out.println("La casilla actual no es un solar");
+            return;
+        }
         switch (palabra) {
             case "Casa":
-                if(casilla.edificarCasa(jugador, contadorCasa)){
+                if(solar.edificarCasa(jugador, contadorCasa)){
                     contadorCasa++;
                 }
-                casilla.modificarAlquiler();
+                solar.modificarAlquiler();
                 break;
             case "Hotel":
-                if(casilla.edificarHotel(jugador, contadorHotel)){
+                if(solar.edificarHotel(jugador, contadorHotel)){
                     contadorHotel++;
                 }
-                casilla.modificarAlquiler();
+                solar.modificarAlquiler();
                 break;
             case "Piscina":
-                if(casilla.edificarPiscina(jugador, contadorPiscina)){
+                if(solar.edificarPiscina(jugador, contadorPiscina)){
                     contadorPiscina++;
                 }
-                casilla.modificarAlquiler();
+                solar.modificarAlquiler();
                 break;
             case "PistaDeporte":
-                if(casilla.edificarPistaDeporte(jugador, contadorPistaDeporte)){
+                if(solar.edificarPistaDeporte(jugador, contadorPistaDeporte)){
                     contadorPistaDeporte++;
                 }
-                casilla.modificarAlquiler();
+                solar.modificarAlquiler();
                 break;
             default:
                 System.out.println("Edificio no válido.");
@@ -1095,7 +1109,7 @@ public class Juego implements Comando{
      * @return Una cadena formateada que contiene la fortuna, los gastos y las propiedades del jugador.
      */
     public String infoTrasTurno(Jugador jugador) {
-        ArrayList<Casilla> props = jugador.getPropiedades();
+        ArrayList<Propiedad> props = jugador.getPropiedades();
         System.out.println("El estado financiero de " + jugador.getNombre() + " es:");
         StringBuilder propiedades = new StringBuilder();
         for (Casilla casilla : props) {
