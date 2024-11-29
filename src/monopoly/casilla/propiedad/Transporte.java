@@ -25,7 +25,7 @@ public class Transporte extends Propiedad{
         };
     }
 
-    public float pagarAlquilerTransporte(Jugador jugadorActual, Jugador banca) {
+    public float calcularAlquiler(Jugador jugadorActual, Jugador banca, int tirada) {
         float alquiler = 0;
         Jugador duenhoTransporte = this.getDuenho();
         alquiler = switch (duenhoTransporte.getNumTransportes()) {

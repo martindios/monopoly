@@ -50,16 +50,8 @@ public class Servicio extends Propiedad {
                 }""".formatted(getNombre(), getTipo(), getValor());
     }
 
-
     @Override
-    public void pagarAlquiler(Jugador jugadorActual, Jugador banca, int tirada) {
-        if (this.getDuenho().equals(banca)) {
-            return;
-        }
-        if (this.isHipotecado()) {
-            System.out.println("La casilla está hipotecada, no se paga alquiler.");
-            return;
-        }
+    public float calcularAlquiler(Jugador jugadorActual, Jugador banca, int tirada) {
         float alquiler = 0;
         Jugador duenhoServicios = this.getDuenho();
         alquiler = switch (duenhoServicios.getNumServicios()) {
@@ -67,7 +59,7 @@ public class Servicio extends Propiedad {
             case 2 -> this.getImpuesto() * 10 * tirada;
             default -> alquiler;
         };
-        super.pagarAlquiler(jugadorActual, banca, alquiler);
+        return alquiler;
     }
 
 }
