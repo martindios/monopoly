@@ -21,7 +21,7 @@ public interface Comando {
     void listarJugadores();
     void listarAvatares();
     void listarEdificios();
-    void listarEdificiosGrupo(String color);
+    //void listarEdificiosGrupo(String color);
     void salirCarcel();
     void descJugador(String nombre);
     void descAvatar(String ID);
@@ -36,24 +36,6 @@ public interface Comando {
     void estadisticasJugador(String jugadorStr);
     void bancarrota(boolean voluntario);
 
-
-    //Funciones auxiliares que complementan los métodos de los comandos
-    void moverJugadorPelota(int valorTirada);
-    void moverJugadorCoche(int valorTirada);
-    void imprimirLogo();
-    boolean esJugadorRepetido(String nombre);
-    boolean esAvatarCorrecto(String tipoAvatar);
-    void darAltaJugador(String nombre, String tipoAvatar);
-    String infoTrasTurno(Jugador jugador);
-    void imprimirNombres(List<?> lista);
-    void jugadoresEstadisticasGenerales(ArrayList<Jugador> jugadoresMasVueltas,
-                                        ArrayList<Jugador> jugadoresMasTiradasDados,
-                                        ArrayList<Jugador> jugadoresEnCabeza);
-    void casillasEstadisticasGenerales(ArrayList<Casilla> casillasMasRentables,
-                                              ArrayList<Casilla> casillasMasFrecuentadas);
-
-    ArrayList<Grupo> calcularGruposMasRentables();
-    void conseguirDinero(float dineroAConseguir);
 
 
 }

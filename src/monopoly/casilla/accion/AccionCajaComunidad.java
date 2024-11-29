@@ -8,4 +8,7 @@ public class AccionCajaComunidad extends Accion{
         super(nombre, "Comunidad", posicion, duenho);
     }
 
+    @Override
+    public boolean evaluarCasilla(Jugador jugador, Jugador banca, int tirada) {return true;}
+
 }

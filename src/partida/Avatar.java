@@ -1,6 +1,7 @@
 package partida;
 
 import monopoly.casilla.Casilla;
+import monopoly.casilla.propiedad.Solar;
 
 import static monopoly.Valor.*;
 import java.util.ArrayList;
@@ -139,8 +140,8 @@ public class Avatar {
                         jugador.encarcelar(tablero);
                         return;
                     }
-                    if(casilla.getTipo().equals("Solar") && casilla.getDuenho().equals(jugador)){
-                        casilla.sumarContadorDuenho();
+                    if(casilla instanceof Solar solar && casilla.getDuenho().equals(jugador)) {
+                        solar.sumarContadorDuenho();
                     }
                     if (casilla.getNombre().equals("Parking")) {
                         if(casilla.getValor() > 0) {
@@ -191,8 +192,8 @@ public class Avatar {
             }
         }
 
-        if(casilla.getNombre().equals("Solar") && casilla.getDuenho().equals(jugador)){
-            casilla.sumarContadorDuenho();
+        if(casilla instanceof Solar solar && casilla.getDuenho().equals(jugador)) {
+            solar.sumarContadorDuenho();
         }
 
         Casilla casillaOld = this.getLugar();

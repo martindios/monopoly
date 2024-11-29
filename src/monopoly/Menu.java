@@ -131,7 +131,7 @@ public class Menu {
                         }
                     } else if(palabrasArray.length == 3) {
                         if(palabrasArray[1].equals("edificios")) {
-                            juego.listarEdificiosGrupo(palabrasArray[2]);
+                            //juego.listarEdificiosGrupo(palabrasArray[2]);
                         } else {
                             System.out.println("El formato correcto es: listar edificios [colorGrupo]");
                         }

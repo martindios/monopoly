@@ -156,21 +156,21 @@ public abstract class Casilla {
                 if (this.getDuenho().equals(banca)) {
                     return 0;
                 } else {
-                    return (solar.pagarAlquilerSolar(jugadorActual, banca) - jugadorActual.getFortuna());
+                    return (solar.calcularAlquiler(jugadorActual, banca, tirada) - jugadorActual.getFortuna());
                 }
             }
             case Servicio servicio -> {
                 if (this.getDuenho().equals(banca)) {
                     return 0;
                 } else {
-                    return (servicio.pagarAlquilerServicio(jugadorActual, banca, tirada) - jugadorActual.getFortuna());
+                    return (servicio.calcularAlquiler(jugadorActual, banca, tirada) - jugadorActual.getFortuna());
                 }
             }
             case Transporte transporte -> {
                 if(this.getDuenho().equals(banca)) {
                     return 0;
                 } else {
-                    return (transporte.pagarAlquilerTransporte(jugadorActual, banca) - jugadorActual.getFortuna());
+                    return (transporte.calcularAlquiler(jugadorActual, banca, tirada) - jugadorActual.getFortuna());
                 }
             }
             case Especial especial -> {
