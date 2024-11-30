@@ -61,11 +61,11 @@ public class Edificio {
     public String infoEdificio() {
         return """
                 {
-                id: %s,
-                Propietario: %s,
-                Casilla: %s,
-                Grupo: %s,
-                Coste: %.2f
+                \tid: %s,
+                \tPropietario: %s,
+                \tCasilla: %s,
+                \tGrupo: %s,
+                \tCoste: %.2f
                 }
                 """.formatted(idEdificio, propietario.getNombre(), casilla.getNombre(), casilla.getGrupo().getNombreGrupo(), valor);
     }
