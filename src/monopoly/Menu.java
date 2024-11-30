@@ -16,10 +16,11 @@ public class Menu {
 
     public Menu() {
         this.juego = new Juego();
+        iniciarPartida();
     }
 
     /*Método en el que se desarrolla la partida hasta que un jugador es no solvente*/
-    private void iniciarPartida() {
+    public void iniciarPartida() {
         //SE DEBERÍA DE QUITAR ESTE IF
         if (juego.getJugadores().get(juego.getTurno()).getAvatar().getTipo().equals("Coche")) {
             juego.setSaltoMovimiento(4);
@@ -131,7 +132,7 @@ public class Menu {
                         }
                     } else if(palabrasArray.length == 3) {
                         if(palabrasArray[1].equals("edificios")) {
-                            //juego.listarEdificiosGrupo(palabrasArray[2]);
+                            juego.listarEdificiosGrupo(palabrasArray[2]);
                         } else {
                             System.out.println("El formato correcto es: listar edificios [colorGrupo]");
                         }

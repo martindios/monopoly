@@ -126,6 +126,8 @@ public class Juego implements Comando{
         maxJugadores = introducirNum(2, 6);
 
         crearJugadores();
+
+
     }
   
 
@@ -954,56 +956,93 @@ public class Juego implements Comando{
     /**
      * Metodo que permite listar los edificios construídos en un grupo de solares
      */
-    /*
-    public void listarEdificiosGrupo(String color) {
-        Casilla casillaGrupo = null;
-        boolean existenEdificios = false;
+    public void listarEdificiosGrupo(String nombreGrupo) {
+            ArrayList<Solar> solaresGrupo = new ArrayList<>();
 
-
-        for (Jugador jugador : jugadores) {
-            for (Edificio edificio : jugador.getEdificios()) {
-                if (edificio.getCasilla().getGrupo().getNombreGrupo().equals(color)) {
-                    existenEdificios = true;
-                    casillaGrupo = edificio.getCasilla();
-                    break;
-                }
-            }
-            if (casillaGrupo != null) break;
-        }
-
-
-        if (casillaGrupo == null) {
-            for (ArrayList<Casilla> fila : tablero.getPosiciones()) {
-                for (Casilla casilla : fila) {
-                    if (casilla.getTipo().equals("Solar") && casilla.getGrupo().getNombreGrupo().equals(color)) {
-                        casillaGrupo = casilla;
+            // Guardar todos los solares en un grupo específico
+            for (Jugador jugador : jugadores) {
+                for (Propiedad propiedad : jugador.getPropiedades()) {
+                    if (propiedad instanceof Solar solar && solar.getGrupo().getNombreGrupo().equals(nombreGrupo)) {
+                        solaresGrupo.add(solar);
                     }
                 }
             }
-        }
 
+            // Imprimir los edificios
+            for (Solar solar : solaresGrupo) {
+                ArrayList<String> hoteles = new ArrayList<>();
+                ArrayList<String> casas = new ArrayList<>();
+                ArrayList<String> piscinas = new ArrayList<>();
+                ArrayList<String> pistasDeDeporte = new ArrayList<>();
+
+                for (Edificio edificio : solar.getEdificios()) {
+                    switch (edificio.getTipo()) {
+                        case "Hotel":
+                            hoteles.add(edificio.getIdEdificio());
+                            break;
+                        case "Casa":
+                            casas.add(edificio.getIdEdificio());
+                            break;
+                        case "Piscina":
+                            piscinas.add(edificio.getIdEdificio());
+                            break;
+                        case "Deporte":
+                            pistasDeDeporte.add(edificio.getIdEdificio());
+                            break;
+                    }
+                }
+
+                System.out.println("{");
+                System.out.println("\tpropiedad: " + solar.getNombre() + ",");
+                System.out.println("\thoteles: " + (hoteles.isEmpty() ? "-" : hoteles) + ",");
+                System.out.println("\tcasas: " + (casas.isEmpty() ? "-" : casas) + ",");
+                System.out.println("\tpiscinas: " + (piscinas.isEmpty() ? "-" : piscinas) + ",");
+                System.out.println("\tpistasDeDeporte: " + (pistasDeDeporte.isEmpty() ? "-" : pistasDeDeporte) + ",");
+                System.out.println("\talquiler: " + solar.getImpuesto());
+
+                if(solar.equals(solaresGrupo.getLast())) System.out.println("}");
+                else System.out.println("},");
+
+                // Determine what can be built
+                Grupo grupo = solar.getGrupo();
+                int maxEdificios = grupo.getNumCasillas();
+                int numHoteles = grupo.getNumEdificios(grupo.getEdificiosGrupo(), "Hotel");
+                int numCasas = grupo.getNumEdificios(grupo.getEdificiosGrupo(), "Casa");
+                int numPiscinas = grupo.getNumEdificios(grupo.getEdificiosGrupo(), "Piscina");
+                int numPistas = grupo.getNumEdificios(grupo.getEdificiosGrupo(), "Deporte");
+
+                System.out.println("\tconstruccionesDisponibles: {");
+                //diferenciar entre casas.size (casas de la casilla) y numCasas (casas del grupo)
+                if(casas.size() < 4 && hoteles.size() < maxEdificios) {
+                    System.out.println("\t\tCasa: puede construir " + (4 - casas.size()) + " casas");
+                }
+
+                if (casas.size() >= 4 && numHoteles < maxEdificios) {
+                    System.out.println("\t\tHotel: Puede construir un hotel (reemplazando 4 casas)");
+                }
+
+                if(hoteles.size() > 0 && numHoteles < maxEdificios && casas.size() < 4)  {
+                    System.out.println("\t\tCasa: ");
+                }
+
+                if (hoteles.size() >= 1 && casas.size() >= 2 && numPiscinas < maxEdificios) {
+                    System.out.println("\t\tPiscina: Puede construir una piscina");
+                }
+                if (hoteles.size() >= 2 && numPistas < maxEdificios) {
+                    System.out.println("\t\tPista de Deporte: Puede construir una pista de deporte");
+                }
+                System.out.println("\t}");
+
+            }
+
+
+
+    /*
         int numCasillasGrupo = casillaGrupo.getGrupo().getNumCasillas();
         int numHotelesActuales = casillaGrupo.getGrupo().getNumEdificios(casillaGrupo.getGrupo().getEdificiosGrupo(), "Hotel");
         int numCasasActuales = casillaGrupo.getGrupo().getNumEdificios(casillaGrupo.getGrupo().getEdificiosGrupo(), "Casa");
         int numPiscinasActuales = casillaGrupo.getGrupo().getNumEdificios(casillaGrupo.getGrupo().getEdificiosGrupo(), "Piscina");
         int numPistasActuales = casillaGrupo.getGrupo().getNumEdificios(casillaGrupo.getGrupo().getEdificiosGrupo(), "Pista");
-
-        System.out.println("\n=== Estado actual del grupo " + color + " ===");
-
-        if (existenEdificios) {
-            System.out.println("Edificios construidos:");
-            StringBuilder str = new StringBuilder();
-            for (Jugador jugador : jugadores) {
-                for (Casilla casilla : jugador.getPropiedades()) {
-                    if (casilla.getGrupo().getNombreGrupo().equals(color) && !casilla.getGrupo().getEdificiosGrupo().isEmpty()) {
-                        str.append(casilla.edificiosGrupo());
-                    }
-                }
-            }
-            System.out.println(str);
-        } else {
-            System.out.println("No hay edificios construidos actualmente.");
-        }
 
         System.out.println("\n=== Edificios disponibles para construcción ===");
 
@@ -1026,8 +1065,8 @@ public class Juego implements Comando{
 
 
         int pistasDisponibles = numCasillasGrupo - numPistasActuales;
-        System.out.println("Pistas deportivas: " + pistasDisponibles + " disponibles de " + numCasillasGrupo + " máximas");
-    } */
+        System.out.println("Pistas deportivas: " + pistasDisponibles + " disponibles de " + numCasillasGrupo + " máximas"); */
+    }
 
 
 
