@@ -986,7 +986,7 @@ public class Juego implements Comando{
                         case "Piscina":
                             piscinas.add(edificio.getIdEdificio());
                             break;
-                        case "Deporte":
+                        case "PistaDeporte":
                             pistasDeDeporte.add(edificio.getIdEdificio());
                             break;
                     }
@@ -999,73 +999,38 @@ public class Juego implements Comando{
                 System.out.println("\tpiscinas: " + (piscinas.isEmpty() ? "-" : piscinas) + ",");
                 System.out.println("\tpistasDeDeporte: " + (pistasDeDeporte.isEmpty() ? "-" : pistasDeDeporte) + ",");
                 System.out.println("\talquiler: " + solar.getImpuesto());
+                System.out.println(" ");
+                System.out.println("\tEdificios disponibles para edificar:");
+
+                /*Comprobar qué se puede construir*/
+                Grupo grupo = solar.getGrupo();
+                int maxEdificios = grupo.getNumCasillas();
+
+                if(hoteles.size() < maxEdificios) { //Si la cantidad de hoteles es menor a la permitida
+                    if(casas.size() < 4) {
+                        System.out.println("\t\tCasa: puede construir " + (4 - casas.size()) + " casas");
+                    } else if (casas.size() == 4) {
+                        System.out.println("\t\tHotel: Puede construir un hotel (reemplazando 4 casas)");
+                    }
+                }
+
+                if(!hoteles.isEmpty() && casas.size() >= 2 && piscinas.size() < maxEdificios) {
+                    System.out.println("\t\tPiscina: Puede construir una piscina");
+                }
+
+                if(hoteles.size() >= 2 && pistasDeDeporte.size() < maxEdificios) {
+                    System.out.println("\t\tPista de Deporte: Puede construir una pista de deporte");
+                }
+
+                if(casas.size() >= maxEdificios && hoteles.size() >= maxEdificios &&
+                        piscinas.size() >= maxEdificios && pistasDeDeporte.size() >= maxEdificios) {
+                    System.out.println("\t\tNo se puede edificar más en la casilla");
+                }
 
                 if(solar.equals(solaresGrupo.getLast())) System.out.println("}");
                 else System.out.println("},");
 
-                // Determine what can be built
-                Grupo grupo = solar.getGrupo();
-                int maxEdificios = grupo.getNumCasillas();
-                int numHoteles = grupo.getNumEdificios(grupo.getEdificiosGrupo(), "Hotel");
-                int numCasas = grupo.getNumEdificios(grupo.getEdificiosGrupo(), "Casa");
-                int numPiscinas = grupo.getNumEdificios(grupo.getEdificiosGrupo(), "Piscina");
-                int numPistas = grupo.getNumEdificios(grupo.getEdificiosGrupo(), "Deporte");
-
-                System.out.println("\tconstruccionesDisponibles: {");
-                //diferenciar entre casas.size (casas de la casilla) y numCasas (casas del grupo)
-                if(casas.size() < 4 && hoteles.size() < maxEdificios) {
-                    System.out.println("\t\tCasa: puede construir " + (4 - casas.size()) + " casas");
-                }
-
-                if (casas.size() >= 4 && numHoteles < maxEdificios) {
-                    System.out.println("\t\tHotel: Puede construir un hotel (reemplazando 4 casas)");
-                }
-
-                if(hoteles.size() > 0 && numHoteles < maxEdificios && casas.size() < 4)  {
-                    System.out.println("\t\tCasa: ");
-                }
-
-                if (hoteles.size() >= 1 && casas.size() >= 2 && numPiscinas < maxEdificios) {
-                    System.out.println("\t\tPiscina: Puede construir una piscina");
-                }
-                if (hoteles.size() >= 2 && numPistas < maxEdificios) {
-                    System.out.println("\t\tPista de Deporte: Puede construir una pista de deporte");
-                }
-                System.out.println("\t}");
-
             }
-
-
-
-    /*
-        int numCasillasGrupo = casillaGrupo.getGrupo().getNumCasillas();
-        int numHotelesActuales = casillaGrupo.getGrupo().getNumEdificios(casillaGrupo.getGrupo().getEdificiosGrupo(), "Hotel");
-        int numCasasActuales = casillaGrupo.getGrupo().getNumEdificios(casillaGrupo.getGrupo().getEdificiosGrupo(), "Casa");
-        int numPiscinasActuales = casillaGrupo.getGrupo().getNumEdificios(casillaGrupo.getGrupo().getEdificiosGrupo(), "Piscina");
-        int numPistasActuales = casillaGrupo.getGrupo().getNumEdificios(casillaGrupo.getGrupo().getEdificiosGrupo(), "Pista");
-
-        System.out.println("\n=== Edificios disponibles para construcción ===");
-
-
-        int hotelesDisponibles = numCasillasGrupo - numHotelesActuales;
-        System.out.println("Hoteles: " + hotelesDisponibles + " disponibles de " + numCasillasGrupo + " máximos");
-
-
-        if (numHotelesActuales < numCasillasGrupo) {
-            int casasMaximasPorSolar = 4;
-            int casasTotalesDisponibles = (numCasillasGrupo * casasMaximasPorSolar) - numCasasActuales;
-            System.out.println("Casas: " + casasTotalesDisponibles + " disponibles (máximo 4 por solar)");
-        } else {
-            System.out.println("Casas: No se pueden construir más (máximo de hoteles alcanzado)");
-        }
-
-
-        int piscinasDisponibles = numCasillasGrupo - numPiscinasActuales;
-        System.out.println("Piscinas: " + piscinasDisponibles + " disponibles de " + numCasillasGrupo + " máximas");
-
-
-        int pistasDisponibles = numCasillasGrupo - numPistasActuales;
-        System.out.println("Pistas deportivas: " + pistasDisponibles + " disponibles de " + numCasillasGrupo + " máximas"); */
     }
 
 
