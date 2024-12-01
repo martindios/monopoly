@@ -9,11 +9,10 @@ import monopoly.casilla.propiedad.Propiedad;
 import monopoly.casilla.propiedad.Servicio;
 import monopoly.casilla.propiedad.Solar;
 import monopoly.casilla.propiedad.Transporte;
-import partida.Avatar;
+import partida.avatar.Avatar;
 import partida.Dado;
 import partida.Jugador;
 
-import java.sql.SQLData;
 import java.util.*;
 
 public class Juego implements Comando{
@@ -1033,9 +1032,13 @@ public class Juego implements Comando{
             }
     }
 
-
-
-
+    /**
+     * Método que permite vender edificios de un tipo específico en una casilla determinada.
+     *
+     * @param tipo El tipo de edificio a vender.
+     * @param nombreCasilla El nombre de la casilla donde se encuentran los edificios.
+     * @param cantidad La cantidad de edificios a vender.
+     */
     public void ventaEdificio(String tipo, String nombreCasilla, String cantidad) {
         int contador = 0;
         Casilla casilla = tablero.encontrar_casilla(nombreCasilla);

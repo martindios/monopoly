@@ -1,13 +1,11 @@
 package monopoly.casilla;
 
-import monopoly.Edificio.Edificio;
-import monopoly.Grupo;
 import monopoly.casilla.propiedad.*;
 import partida.*;
+import partida.avatar.Avatar;
 
 import java.util.ArrayList;
 import java.lang.String;
-import java.util.Iterator;
 
 //Cando se vende un solar por bancarrota, o precio reiníciase. Sin embargo, o precio incrementa cando non compras, entonces simplemente se da que o solar volve ao precio
 //No que se compru, dado que nn se debería actualizar
