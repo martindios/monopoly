@@ -1,6 +1,6 @@
 package monopoly.casilla;
 
-import partida.Avatar;
+import partida.avatar.Avatar;
 import partida.Jugador;
 
 import java.util.Objects;

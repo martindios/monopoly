@@ -9,6 +9,8 @@ import monopoly.casilla.propiedad.Servicio;
 import monopoly.casilla.propiedad.Solar;
 import monopoly.casilla.propiedad.Transporte;
 import partida.*;
+import partida.avatar.Avatar;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 

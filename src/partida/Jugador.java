@@ -6,6 +6,7 @@ import monopoly.Edificio.Edificio;
 import monopoly.casilla.Casilla;
 import monopoly.casilla.propiedad.Propiedad;
 import monopoly.casilla.propiedad.Solar;
+import partida.avatar.Avatar;
 
 import static monopoly.Valor.FORTUNA_BANCA;
 import static monopoly.Valor.FORTUNA_INICIAL;
