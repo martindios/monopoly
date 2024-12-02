@@ -4,7 +4,10 @@ import java.util.ArrayList;
 
 public interface Consola {
     void imprimir(String mensaje);
-    void imprimirArray(ArrayList<String> mensaje);
-    String leer(String descripcion);
+    public void imprimirSinSalto(char mensaje);
+    void imprimirStrBuilder(StringBuilder mensaje);
+    String leer();
+    String leerPalabra();
+    int leerInt();
 
 }
