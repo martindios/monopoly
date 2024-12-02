@@ -8,11 +8,20 @@ public class ConsolaNormal implements Consola{
     public void imprimir(String mensaje){
         System.out.println(mensaje);
     }
-    public void imprimirArray(ArrayList<String> mensaje){
+    public void imprimirSinSalto(char mensaje){System.out.print(mensaje);}
+    public void imprimirSinSalto(String mensaje){System.out.print(mensaje);}
+
+    public void imprimirStrBuilder(StringBuilder mensaje){
         System.out.println(mensaje);
     }
-    public String leer(String descripcion){
-        imprimir(descripcion);
+
+    public String leer(){
         return scanner.nextLine();
+    }
+    public String leerPalabra(){
+        return scanner.next();
+    }
+    public int leerInt(){
+        return scanner.nextInt();
     }
 }
