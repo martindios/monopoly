@@ -2,7 +2,7 @@ package partida;
 
 import java.util.ArrayList;
 
-import monopoly.Edificio.Edificio;
+import monopoly.edificio.*;
 import monopoly.casilla.Casilla;
 import monopoly.casilla.propiedad.Propiedad;
 import monopoly.casilla.propiedad.Solar;
@@ -389,10 +389,10 @@ public class Jugador{
             for (Propiedad propiedad : propiedades) {
                 if(propiedad instanceof Solar) {
                     Solar solar = (Solar) propiedad;
-                    solar.venderEdificios("Casa", solar.getNumEdificios(solar.getEdificios(), "Casa"));
-                    solar.venderEdificios("Hotel", solar.getNumEdificios(solar.getEdificios(), "Hotel"));
-                    solar.venderEdificios("Piscina", solar.getNumEdificios(solar.getEdificios(), "Piscina"));
-                    solar.venderEdificios("PistaDeporte", solar.getNumEdificios(solar.getEdificios(), "PistaDeporte"));
+                    solar.venderEdificios(Casa.class, solar.getNumEdificios(solar.getEdificios(), Casa.class));
+                    solar.venderEdificios(Hotel.class, solar.getNumEdificios(solar.getEdificios(), Hotel.class));
+                    solar.venderEdificios(Piscina.class, solar.getNumEdificios(solar.getEdificios(), Piscina.class));
+                    solar.venderEdificios(Piscina.class, solar.getNumEdificios(solar.getEdificios(), PistaDeporte.class));
                 }
             }
 
@@ -417,10 +417,10 @@ public class Jugador{
             for (Propiedad propiedad : propiedades) {
                 if(propiedad instanceof Solar) {
                     Solar solar = (Solar) propiedad;
-                    solar.venderEdificios("Casa", solar.getNumEdificios(solar.getEdificios(), "Casa"));
-                    solar.venderEdificios("Hotel", solar.getNumEdificios(solar.getEdificios(), "Hotel"));
-                    solar.venderEdificios("Piscina", solar.getNumEdificios(solar.getEdificios(), "Piscina"));
-                    solar.venderEdificios("PistaDeporte", solar.getNumEdificios(solar.getEdificios(), "PistaDeporte"));
+                    solar.venderEdificios(Casa.class, solar.getNumEdificios(solar.getEdificios(), Casa.class));
+                    solar.venderEdificios(Hotel.class, solar.getNumEdificios(solar.getEdificios(), Hotel.class));
+                    solar.venderEdificios(Piscina.class, solar.getNumEdificios(solar.getEdificios(), Piscina.class));
+                    solar.venderEdificios(Piscina.class, solar.getNumEdificios(solar.getEdificios(), PistaDeporte.class));
                 }
             }
 
@@ -442,10 +442,10 @@ public class Jugador{
             for (Propiedad propiedad : propiedades) {
                 if(propiedad instanceof Solar) {
                     Solar solar = (Solar) propiedad;
-                    solar.venderEdificios("Casa", solar.getNumEdificios(solar.getEdificios(), "Casa"));
-                    solar.venderEdificios("Hotel", solar.getNumEdificios(solar.getEdificios(), "Hotel"));
-                    solar.venderEdificios("Piscina", solar.getNumEdificios(solar.getEdificios(), "Piscina"));
-                    solar.venderEdificios("PistaDeporte", solar.getNumEdificios(solar.getEdificios(), "PistaDeporte"));
+                    solar.venderEdificios(Casa.class, solar.getNumEdificios(solar.getEdificios(), Casa.class));
+                    solar.venderEdificios(Hotel.class, solar.getNumEdificios(solar.getEdificios(), Hotel.class));
+                    solar.venderEdificios(Piscina.class, solar.getNumEdificios(solar.getEdificios(), Piscina.class));
+                    solar.venderEdificios(PistaDeporte.class, solar.getNumEdificios(solar.getEdificios(), PistaDeporte.class));
                 }
             }
 

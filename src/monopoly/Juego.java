@@ -1,6 +1,6 @@
 package monopoly;
 
-import monopoly.Edificio.Edificio;
+import monopoly.edificio.*;
 import monopoly.casilla.Casilla;
 import monopoly.casilla.Impuesto;
 import monopoly.casilla.accion.AccionCajaComunidad;
@@ -975,19 +975,14 @@ public class Juego implements Comando{
                 ArrayList<String> pistasDeDeporte = new ArrayList<>();
 
                 for (Edificio edificio : solar.getEdificios()) {
-                    switch (edificio.getTipo()) {
-                        case "Hotel":
-                            hoteles.add(edificio.getIdEdificio());
-                            break;
-                        case "Casa":
-                            casas.add(edificio.getIdEdificio());
-                            break;
-                        case "Piscina":
-                            piscinas.add(edificio.getIdEdificio());
-                            break;
-                        case "PistaDeporte":
-                            pistasDeDeporte.add(edificio.getIdEdificio());
-                            break;
+                    if (edificio instanceof Hotel) {
+                        hoteles.add(edificio.getIdEdificio());
+                    } else if (edificio instanceof Casa) {
+                        casas.add(edificio.getIdEdificio());
+                    } else if (edificio instanceof Piscina) {
+                        piscinas.add(edificio.getIdEdificio());
+                    } else if (edificio instanceof PistaDeporte) {
+                        pistasDeDeporte.add(edificio.getIdEdificio());
                     }
                 }
 
@@ -1058,8 +1053,20 @@ public class Juego implements Comando{
             System.out.println("No hay edificios en la casilla.");
             return;
         }
+
+
+        //Declaramos una clase que no sabemos cuál es, solo sabemos que es derivada de Edificio
+        Class<? extends Edificio> tipoDeseado = null;
+
+        tipoDeseado = convertirStrClase(tipo, tipoDeseado);
+        while(tipoDeseado == null) {
+            System.out.print("Tipo de edificio no válido. Introduzca un tipo válido: ");
+            tipo = scanner.nextLine();
+            tipoDeseado = convertirStrClase(tipo, tipoDeseado);
+        }
+
         for(Edificio edificio : solar.getEdificios()) {
-            if(edificio.getTipo().equals(tipo)) {
+            if(tipoDeseado.isInstance(edificio)) {
                 contador++;
                 if(contador == Integer.parseInt(cantidad)) {
                     break;
@@ -1070,8 +1077,27 @@ public class Juego implements Comando{
             System.out.println("No hay " + Integer.parseInt(cantidad) + " edificios del tipo " + tipo + " en la casilla.");
             return;
         }
-        solar.venderEdificios(tipo, contador);
+        solar.venderEdificios(tipoDeseado, contador);
         solar.modificarAlquiler();
+    }
+
+    private Class<? extends Edificio> convertirStrClase(String str, Class<? extends Edificio> tipoDeseado) {
+        try {
+            //En tipo almacenamos el paquete donde está la clase (edificio) y la clase que queremos
+            str = "monopoly.edificio." + str;
+            //Hacemos que la clase tome el nombre de la clase que queremos
+            Class<?> claseGeneral = Class.forName(str);
+            //Si la clase que queremos no es derivada de Edificio
+            if (!Edificio.class.isAssignableFrom(claseGeneral)) {
+                System.out.println("El tipo de edificio " + str + " no es válido.");
+                return null;
+            }
+            tipoDeseado = (Class<? extends Edificio>) claseGeneral;
+            return tipoDeseado;
+        } catch (ClassNotFoundException e) {
+            System.out.println("Clase no encontrada para el tipo: " + str);
+            return null;
+        }
     }
 
     /**********************************/
@@ -1360,8 +1386,14 @@ public class Juego implements Comando{
             } else {
                 dineroConseguido = 0;
                 System.out.println("Edificios:");
-                for(Edificio edificio : jugadorActual.getEdificios()) {
-                    System.out.println(edificio.getIdEdificio());
+                for (Propiedad propiedad : jugadorActual.getPropiedades()) {
+                    if (propiedad instanceof Solar solar && !solar.getEdificios().isEmpty()) {
+                        System.out.print(propiedad.getNombre() + ": ");
+                        for (Edificio edificio : solar.getEdificios()) {
+                            System.out.print(edificio.getIdEdificio() + " ");
+                        }
+                        System.out.println();
+                    }
                 }
                 if(contadorEdificios != 0) {
                     while((dineroConseguido < dineroAConseguir)) {
@@ -1369,22 +1401,45 @@ public class Juego implements Comando{
                             break;
                         }
 
-                        Edificio edificioVender = null;
-
-                        while (edificioVender == null) {
-                            System.out.println("Introduce el ID del edificio que quieres vender:");
-                            String idEdificio = scanner.next();
-                            //Buscamos el edificio deseado, si se introduce mal, se hace un bucle hasta que se introduzca bien
-                            edificioVender = buscarEdificio(jugadorActual, idEdificio);
+                        System.out.println("Introduce la casilla de la que quieres vender un edificio: ");
+                        String nombreCasilla = scanner.next();
+                        Casilla casilla = tablero.encontrar_casilla(nombreCasilla);
+                        Solar solar = null;
+                        int tamanho = 0;
+                        //Con la segunda condición nos aseguramos de que; si introduce un Solar que no es del jugador, a pesar de encontrarlo y ser instancia de Solar,
+                        //el dueño no coincidirá, condición que tiene que ser verdadera para que pueda vender.
+                        if (casilla instanceof Solar && casilla.getDuenho().equals(jugadorActual)) {
+                            solar = (Solar) casilla;
+                            tamanho = solar.getEdificios().size();
                         }
 
-                        Solar casilla = edificioVender.getCasilla();
-                        casilla.venderEdificios(edificioVender.getTipo(), 1);
-                        dineroConseguido += edificioVender.getValor() / 2;
-                        contadorEdificios--;
-                        if (casilla.getEdificios().isEmpty() && !casilla.isHipotecado()) {
-                            propiedades.add(casilla);
-                            contadorPropiedades++;
+                        System.out.println("Introduce el tipo de edificio que quieres vender: ");
+                        String tipo = scanner.next();
+                        float valor = 0;
+                        switch (tipo) {
+                            case "Casa", "Hotel" -> valor = casilla.getValor() * 0.6f;
+                            case "Piscina" -> valor = casilla.getValor() * 0.4f;
+                            case "PistaDeporte" -> valor = casilla.getValor() * 1.25f;
+                            default -> valor = 0;
+                        }
+
+                        System.out.println("introduce la cantidad de edificios que quieres vender: ");
+                        String cantidadStr = scanner.next();
+
+                        ventaEdificio(tipo, nombreCasilla, cantidadStr);
+
+                        if(solar != null) {
+                            //Si vendió los edificios, el tamaño anterior menos la cantidad de edificios que vendió es igual al tamaño actual. Entonces entra.
+                            //Si no los vendió, el tamaño no será igual, no entra. Da igual que el nombre la casilla esté bien o no.
+                            if(tamanho - Integer.parseInt(cantidadStr) == solar.getEdificios().size()) {
+                                dineroConseguido += valor / 2;
+                                contadorEdificios -= Integer.parseInt(cantidadStr);
+                            }
+
+                            if (solar.getEdificios().isEmpty() && !solar.isHipotecado() && solar.getNombre().equals(nombreCasilla)) {
+                                propiedades.add((Propiedad) solar);
+                                contadorPropiedades++;
+                            }
                         }
                     }
                 } else {
@@ -1426,7 +1481,7 @@ public class Juego implements Comando{
     }
 
     /**************************************************/
-    /*SECCIÓN DE SALIR CÁRCEL, COMPRAR Y INTRODUCIRNUM*/
+    /*SECCIÓN DE SALIR CÁRCEL, COMPRAR E INTRODUCIRNUM*/
     /**************************************************/
 
     /**
