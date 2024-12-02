@@ -1,6 +1,8 @@
 package monopoly;
 
 import monopoly.Edificio.Edificio;
+import monopoly.carta.CartaSuerte;
+import monopoly.carta.CartaCajaComunidad;
 import monopoly.casilla.Casilla;
 import monopoly.casilla.Impuesto;
 import monopoly.casilla.accion.AccionCajaComunidad;
@@ -43,6 +45,7 @@ public class Juego implements Comando{
     private boolean dadosDobles;
     private static final ConsolaNormal consolaNormal = new ConsolaNormal();
 
+
     //Instancias la consola en esta clase
 
     /**********Constructor**********/
@@ -61,6 +64,7 @@ public class Juego implements Comando{
         this.seHaMovido = false;
         this.compraMovimientoCoche = false;
         this.tablero = new Tablero(banca);
+
 
         preIniciarPartida();
 
@@ -795,6 +799,8 @@ public class Juego implements Comando{
     public void evaluacion() {
         Jugador jugadorActual = jugadores.get(turno);
         Casilla casillaActual = jugadorActual.getAvatar().getLugar();
+        CartaSuerte cartaSuerte = new CartaSuerte();
+        CartaCajaComunidad cartaCajaComunidad = new CartaCajaComunidad();
         solvente = casillaActual.evaluarCasilla(jugadores.get(turno), banca, dado1.getValor() + dado2.getValor());
         if (!solvente) {
             consolaNormal.imprimir("El jugador " + jugadorActual.getNombre() + " no es solvente. Necesita conseguir dinero");
@@ -822,7 +828,7 @@ public class Juego implements Comando{
             }
             case AccionSuerte _ -> {
                 if(seHaMovido || !jugadorActual.getAvatar().isAvanzado()) {
-                    barajas.evaluarSuerte(banca, jugadorActual, tablero);
+                    cartaSuerte.accion(banca, jugadorActual, tablero, jugadores);
                 }
                 if(jugadorActual.getEnCarcel()) {
                     dadosDobles = false;
@@ -832,7 +838,7 @@ public class Juego implements Comando{
             case AccionCajaComunidad _ -> {
                 if(seHaMovido || !jugadorActual.getAvatar().isAvanzado()) {
                     //CAMBIAR
-                    //barajas.evaluarComunidad(banca, jugadorActual, tablero, jugadores, this);
+                    //cartaCajaComunidad.accion(banca, jugadorActual, tablero, jugadores, this);
                 }
                 if(jugadorActual.getEnCarcel()) {
                     dadosDobles = false;
@@ -1616,6 +1622,8 @@ public class Juego implements Comando{
         }
         return listaArray.toString();
     }
+
+
 
 
 
