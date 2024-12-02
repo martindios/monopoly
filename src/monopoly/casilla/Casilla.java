@@ -13,7 +13,6 @@ public abstract class Casilla {
 
     /**********Atributos**********/
     private String nombre; //Nombre de la casilla
-    private String tipo; //Tipo de casilla (Solar, Especial, Transporte, Servicios, Comunidad, Impuestos).
     private float valor; //Valor de esa casilla (en la mayoría será valor de compra, en la casilla parking se usará como el bote).
     private int posicion; //Posición que ocupa la casilla en el tablero (entero entre 1 y 40).
     private Jugador duenho; //Dueño de la casilla (por defecto sería la banca).
@@ -24,9 +23,8 @@ public abstract class Casilla {
 
     /**********Constructores**********/
 
-    public Casilla(String nombre, String tipo, int posicion, Jugador duenho) {
+    public Casilla(String nombre, int posicion, Jugador duenho) {
         this.nombre = nombre;
-        this.tipo = tipo;
         this.posicion = posicion;
         this.duenho = duenho;
         this.totalVecesFrecuentada = 0;
@@ -37,10 +35,6 @@ public abstract class Casilla {
 
     public String getNombre() {
         return nombre;
-    }
-
-    public String getTipo() {
-        return tipo;
     }
 
     public float getValor() {

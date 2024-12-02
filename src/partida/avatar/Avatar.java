@@ -1,6 +1,7 @@
 package partida.avatar;
 
 import monopoly.casilla.Casilla;
+import monopoly.casilla.Especial;
 import monopoly.casilla.propiedad.Solar;
 import partida.Jugador;
 
@@ -105,87 +106,65 @@ public class Avatar {
 
     /**********Métodos**********/
 
-    //MOVER EN BÁSICO Y MOVER EN AVANZADO
-
-    /*Método que permite mover a un avatar a una casilla concreta. Parámetros:
-    * - Un array con las casillas del tablero. Se trata de un arrayList de arrayList de casillas (uno por lado).
-    * - Un entero que indica el numero de casillas a moverse (será el valor sacado en la tirada de los dados).
-    * EN ESTA VERSIÓN SUPONEMOS QUE valorTirada siemrpe es positivo.
+    /**
+     * Mueve el avatar de manera básica (no avanzada) en el tablero.
+     *
+     * @param tablero El tablero de juego representado como una lista de listas de casillas.
+     * @param valorTirada El valor de la tirada de dados que determina el número de posiciones a mover.
      */
-    public void moverAvatar(ArrayList<ArrayList<Casilla>> tablero, int valorTirada) {
-        boolean pasaPorSalidaReves = false, pasaPorSalidaDerecho = false;
-        Casilla casillaOld = this.lugar;
-        casillaOld.eliminarAvatar(this);
+    public void moverBasico(ArrayList<ArrayList<Casilla>> tablero, int valorTirada) {
+        boolean pasaPorSalida = false;
         int max = 40;
-        int posicionNueva = (casillaOld.getPosicion() + valorTirada);
-        if(posicionNueva == 0) {
-            posicionNueva = 40;
+        Casilla casillaAntigua = this.lugar;
+        casillaAntigua.eliminarAvatar(this);
+        if((casillaAntigua.getPosicion() + valorTirada) > max) {
+            pasaPorSalida = true;
         }
-        if(posicionNueva < 0) { /*Pasa por salida al revés*/
-            pasaPorSalidaReves = true;
-            posicionNueva = max + posicionNueva;
-        } else if (posicionNueva > max) { /*Pasa por salida del derecho*/
-                pasaPorSalidaDerecho = true;
-                posicionNueva = posicionNueva % max;
-                if (posicionNueva == 0) posicionNueva = max;  // Si el resultado es 0, en realidad estamos en la casilla 40
-        }
+        int posicionNueva = (casillaAntigua.getPosicion() + valorTirada) % 40;
+        if (posicionNueva == 0) posicionNueva = 40;
+
         for (ArrayList<Casilla> fila : tablero) {
             for (Casilla casilla : fila) {
-
                 if (casilla.getPosicion() == posicionNueva) {
-
                     casilla.anhadirAvatar(this);
                     this.lugar = casilla;  // Actualiza la casilla actual del avatar
                     casilla.sumarVecesFrecuentada();
                     System.out.println("El avatar se mueve a la casilla " + casilla.getNombre() + ". Posición: " + casilla.getPosicion());
 
-                    if (casilla.getNombre().equals("IrCarcel")) {
-                        jugador.encarcelar(tablero);
-                        return;
-                    }
-                    if(casilla instanceof Solar solar && casilla.getDuenho().equals(jugador)) {
-                        solar.sumarContadorDuenho();
-                    }
-                    if (casilla.getNombre().equals("Parking")) {
-                        if(casilla.getValor() > 0) {
-                            //Súmaselle ao xogador o que hai no parking
-                            jugador.sumarFortuna(casilla.getValor());
-                            jugador.sumarPremiosInversionesOBote(casilla.getValor());
-                            System.out.println("El jugador " + jugador.getNombre() + " ha recibido " + casilla.getValor() + " de la banca, como bote del Parking.");
-                            Jugador banca = casilla.getDuenho();
-                            //Réstaselle á banca o que hai que pagar
-                            banca.sumarFortuna(-casilla.getValor());
-                            //o valor do parking ponse a 0. este valor é SIMBÓLICO
-                            casilla.setValor(0);
+                    /*Comprobaciones de casillas especiales*/
+                    if (casilla instanceof Especial especial) {
+                        if (especial.getNombre().equals("IrCarcel")) {
+                            jugador.encarcelar(tablero);
+                            return;
                         }
-                        else {
-                            System.out.println("El bote está vacío. No se entrega nada.");
+                        if (especial.getNombre().equals("Parking")) {
+                            especial.evaluarParking(jugador);
                         }
                     }
 
-                    if (pasaPorSalidaDerecho) {
+                    if (casilla instanceof Solar solar && casilla.getDuenho().equals(jugador)) {
+                        solar.sumarContadorDuenho();
+                    }
+
+                    if(pasaPorSalida) {
                         jugador.setVueltas(jugador.getVueltas() + 1);
                         jugador.sumarFortuna(SUMA_VUELTA);
                         jugador.sumarPasarPorCasillaDeSalida(SUMA_VUELTA);
                         System.out.println("El jugador ha completado una vuelta y recibe " + SUMA_VUELTA);
                     }
-                    if (pasaPorSalidaReves) {
-                        jugador.setVueltas(jugador.getVueltas() - 1);
-                        if (jugador.getFortuna() < SUMA_VUELTA) {
-                            System.out.println("El jugador no tiene suficiente dinero para pagar la vuelta. " +
-                                    "Debe vender edificio, hipotecar propiedades o declarse en bancarrota.");
-                            conseguirDinero = true;
-                            return;
-                        }
-
-                    }
-                    return ;
                 }
             }
         }
     }
 
-    public void moverAvatar(ArrayList<ArrayList<Casilla>> tablero, Casilla casilla, boolean cobraSalida) {
+    /**
+     * Mueve el avatar a una casilla específica en el tablero de manera básica (no avanzada).
+     *
+     * @param tablero El tablero de juego representado como una lista de listas de casillas.
+     * @param casilla La casilla a la que se moverá el avatar.
+     * @param cobraSalida Indica si el jugador cobra al pasar por la casilla de salida.
+     */
+    public void moverBasico(ArrayList<ArrayList<Casilla>> tablero, Casilla casilla, boolean cobraSalida) {
         if (cobraSalida) {
             if((casilla.getPosicion() - this.getLugar().getPosicion()) < 0) { //Pasa por la salida
                 jugador.setVueltas(jugador.getVueltas() + 1);
@@ -214,16 +193,79 @@ public class Avatar {
         }
     }
 
+    /**
+     * Mueve el avatar de manera avanzada en el tablero.
+     *
+     * @param tablero El tablero de juego representado como una lista de listas de casillas.
+     * @param valorTirada El valor de la tirada de dados que determina el número de posiciones a mover.
+     */
+    public void moverAvanzado(ArrayList<ArrayList<Casilla>> tablero, int valorTirada) {
+        boolean pasaPorSalidaReves = false, pasaPorSalidaDerecho = false;
+        int max = 40;
+        Casilla casillaOld = this.lugar;
+        casillaOld.eliminarAvatar(this);
+        int posicionNueva = (casillaOld.getPosicion() + valorTirada);
+        if(posicionNueva == 0) {
+            posicionNueva = 40;
+        }
+        if(posicionNueva < 0) { /*Pasa por salida al revés*/
+            pasaPorSalidaReves = true;
+            posicionNueva = max + posicionNueva;
+        } else if (posicionNueva > max) { /*Pasa por salida del derecho*/
+            pasaPorSalidaDerecho = true;
+            posicionNueva = posicionNueva % max;
+            if (posicionNueva == 0) posicionNueva = max;  // Si el resultado es 0, en realidad estamos en la casilla 40
+        }
 
+        for (ArrayList<Casilla> fila : tablero) {
+            for (Casilla casilla : fila) {
+                if (casilla.getPosicion() == posicionNueva) {
+                    casilla.anhadirAvatar(this);
+                    this.lugar = casilla;  // Actualiza la casilla actual del avatar
+                    casilla.sumarVecesFrecuentada();
+                    System.out.println("El avatar se mueve a la casilla " + casilla.getNombre() + ". Posición: " + casilla.getPosicion());
 
+                    /*Comprobaciones de casillas especiales*/
+                    if (casilla instanceof Especial especial) {
+                        if (especial.getNombre().equals("IrCarcel")) {
+                            jugador.encarcelar(tablero);
+                            return;
+                        }
+                        if (especial.getNombre().equals("Parking")) {
+                            especial.evaluarParking(jugador);
+                        }
+                    }
 
+                    if (casilla instanceof Solar solar && casilla.getDuenho().equals(jugador)) {
+                        solar.sumarContadorDuenho();
+                    }
+
+                    if(pasaPorSalidaDerecho) {
+                        jugador.setVueltas(jugador.getVueltas() + 1);
+                        jugador.sumarFortuna(SUMA_VUELTA);
+                        jugador.sumarPasarPorCasillaDeSalida(SUMA_VUELTA);
+                        System.out.println("El jugador ha completado una vuelta y recibe " + SUMA_VUELTA);
+                    }
+                    if (pasaPorSalidaReves) {
+                        jugador.setVueltas(jugador.getVueltas() - 1);
+                        if (jugador.getFortuna() < SUMA_VUELTA) {
+                            System.out.println("El jugador no tiene suficiente dinero para pagar la vuelta. " +
+                                    "Debe vender edificio, hipotecar propiedades o declarse en bancarrota.");
+                            conseguirDinero = true;
+                        }
+                    }
+                    return;
+                }
+            }
+        }
+
+    }
 
     /*Método que permite generar un ID para un avatar. Sólo lo usamos en esta clase (por ello es privado).
     * El ID generado será una letra mayúscula. Parámetros:
     * - Un arraylist de los avatares ya creados, con el objetivo de evitar que se generen dos ID iguales.
      */
     private void generarId(ArrayList<Avatar> avCreados) {
-
         Random random = new Random();
         int numeroAleatorio = random.nextInt(26) + 65;  // Genera un número entre 65 y 90
         String idCreado = String.valueOf((char) numeroAleatorio);;  // Convierte el número a su valor de String correspondiente
