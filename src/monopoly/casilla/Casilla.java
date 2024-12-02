@@ -13,6 +13,7 @@ public abstract class Casilla {
 
     /**********Atributos**********/
     private String nombre; //Nombre de la casilla
+    //QUITAR ATRIBUTO TIPO, NO ES NECESARIO
     private String tipo; //Tipo de casilla (Solar, Especial, Transporte, Servicios, Comunidad, Impuestos).
     private float valor; //Valor de esa casilla (en la mayoría será valor de compra, en la casilla parking se usará como el bote).
     private int posicion; //Posición que ocupa la casilla en el tablero (entero entre 1 y 40).

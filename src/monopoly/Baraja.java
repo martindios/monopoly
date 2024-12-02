@@ -88,10 +88,10 @@ public class Baraja {
         int idCarta = barajaSuerte.get(numCarta-1).getIdCarta(), dinero=0;
         switch(idCarta) {
             case 1: /*Ir a Transportes1*/
-                jugadorActual.getAvatar().moverAvatar(tablero.getPosiciones(), tablero.encontrar_casilla("Trans1"), true);
+                jugadorActual.getAvatar().moverBasico(tablero.getPosiciones(), tablero.encontrar_casilla("Trans1"), true);
                 break;
             case 2: /*Ir a Solar15, sin cobrar salida*/
-                jugadorActual.getAvatar().moverAvatar(tablero.getPosiciones(), tablero.encontrar_casilla("Solar15"), false);
+                jugadorActual.getAvatar().moverBasico(tablero.getPosiciones(), tablero.encontrar_casilla("Solar15"), false);
                 break;
             case 3: /*Cobra 500000€*/
                 dinero = 500000;
@@ -100,7 +100,7 @@ public class Baraja {
                 jugadorActual.sumarPremiosInversionesOBote(dinero);
                 break;
             case 4: /*Ir a Solar3*/
-                jugadorActual.getAvatar().moverAvatar(tablero.getPosiciones(), tablero.encontrar_casilla("Solar3"), true);
+                jugadorActual.getAvatar().moverBasico(tablero.getPosiciones(), tablero.encontrar_casilla("Solar3"), true);
                 break;
             case 5: /*Ve a la Cárcel*/
                 jugadorActual.encarcelar(tablero.getPosiciones());
@@ -162,7 +162,7 @@ public class Baraja {
                 jugadorActual.encarcelar(tablero.getPosiciones());
                 break;
             case 3: /*Ir a Salida*/
-                jugadorActual.getAvatar().moverAvatar(tablero.getPosiciones(), tablero.encontrar_casilla("Salida"), true);
+                jugadorActual.getAvatar().moverBasico(tablero.getPosiciones(), tablero.encontrar_casilla("Salida"), true);
                 break;
             case 4: /*Cobra 2000000*/
                 dinero = 2000000;

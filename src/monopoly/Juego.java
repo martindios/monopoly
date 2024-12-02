@@ -261,7 +261,7 @@ public class Juego implements Comando{
         }
 
         if (valorTirada > 4) {
-            avatarActual.moverAvatar(tablero.getPosiciones(), 5);
+            avatarActual.moverAvanzado(tablero.getPosiciones(), 5);
             if (jugadorActual.getEnCarcel()) {
                 saltoMovimiento = 0;
                 return;
@@ -270,7 +270,7 @@ public class Juego implements Comando{
             saltoMovimiento = valorTirada - 5;
 
         } else {
-            avatarActual.moverAvatar(tablero.getPosiciones(), -1);
+            avatarActual.moverAvanzado(tablero.getPosiciones(), -1);
             if (jugadorActual.getEnCarcel()) {
                 saltoMovimiento = 0;
                 return;
@@ -292,7 +292,7 @@ public class Juego implements Comando{
 
         if(valorTirada > 4 && saltoMovimiento > 0) {
             tirado = false;
-            avatarActual.moverAvatar(tablero.getPosiciones(), valorTirada);
+            avatarActual.moverAvanzado(tablero.getPosiciones(), valorTirada);
             if (jugadorActual.getEnCarcel()) {
                 saltoMovimiento = 0;
                 return;
@@ -304,7 +304,7 @@ public class Juego implements Comando{
         }
 
         if (valorTirada <= 4) {
-            avatarActual.moverAvatar(tablero.getPosiciones(), -valorTirada);
+            avatarActual.moverAvanzado(tablero.getPosiciones(), -valorTirada);
             jugadorActual.setNoPuedeTirarDados(2);
             saltoMovimiento = 0;
             tirado = true;
@@ -326,10 +326,10 @@ public class Juego implements Comando{
         seHaMovido = true;
         if(saltoMovimiento > 0) {
             if(saltoMovimiento == 1) {
-                avatarActual.moverAvatar(tablero.getPosiciones(), 1);
+                avatarActual.moverAvanzado(tablero.getPosiciones(), 1);
                 saltoMovimiento = 0;
             } else {
-                avatarActual.moverAvatar(tablero.getPosiciones(), 2);
+                avatarActual.moverAvanzado(tablero.getPosiciones(), 2);
                 if(jugadorActual.getEnCarcel()) {
                     saltoMovimiento = 0;
                 } else {
@@ -338,11 +338,11 @@ public class Juego implements Comando{
             }
         } else {
             if(saltoMovimiento == -1) {
-                avatarActual.moverAvatar(tablero.getPosiciones(), -1);
+                avatarActual.moverAvanzado(tablero.getPosiciones(), -1);
                 saltoMovimiento = 0;
             }
             else {
-                avatarActual.moverAvatar(tablero.getPosiciones(), -2);
+                avatarActual.moverAvanzado(tablero.getPosiciones(), -2);
                 saltoMovimiento += 2;
             }
         }
@@ -587,7 +587,6 @@ public class Juego implements Comando{
                     }
                 }
 
-
                 //Verificar las casillas más frecuentadas
                 if(casilla.getTotalVecesFrecuentada() > maxVecesVisitada) {
                     maxVecesVisitada = casilla.getTotalVecesFrecuentada();
@@ -738,7 +737,7 @@ public class Juego implements Comando{
                 } else if (avatar.getTipo().equals("Coche")){
                     moverJugadorCoche(valor1 + valor2);
                 }
-            } else avatar.moverAvatar(tablero.getPosiciones(), (valor1 + valor2));
+            } else avatar.moverBasico(tablero.getPosiciones(), (valor1 + valor2));
 
             if(jugador.getEnCarcel()) {
                 acabarTurno();
