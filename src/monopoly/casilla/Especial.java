@@ -65,4 +65,20 @@ public class Especial extends Casilla{
             return "";
         }
     }
+
+    public void evaluarParking(Jugador jugador) {
+        if (this.getValor() > 0) {
+            //Súmaselle ao xogador o que hai no parking
+            jugador.sumarFortuna(this.getValor());
+            jugador.sumarPremiosInversionesOBote(this.getValor());
+            System.out.println("El jugador " + jugador.getNombre() + " ha recibido " + this.getValor() + " de la banca, como bote del Parking.");
+            Jugador banca = this.getDuenho();
+            //Réstaselle á banca o que hai que pagar
+            banca.sumarFortuna(-this.getValor());
+            //o valor do parking ponse a 0. este valor é SIMBÓLICO
+            this.setValor(0);
+        } else {
+            System.out.println("El bote está vacío. No se entrega nada.");
+        }
+    }
 }
