@@ -765,7 +765,7 @@ public class Juego implements Comando{
         consolaNormal.imprimir("Dado 2: " + valor2);
         if (valor1 == valor2) {
             consolaNormal.imprimir("¡Dobles! El jugador avanza " + (valor1 + valor2) + " casillas y tiene derecho a otro lanzamiento.");
-            jugador.getAvatar().moverAvatar(tablero.getPosiciones(), valor1 + valor2); // Mover el avatar
+            jugador.getAvatar().moverBasico(tablero.getPosiciones(), valor1 + valor2); // Mover el avatar
             jugador.setTiradasCarcel(0); // Salir de la cárcel
             jugador.setEnCarcel(false);
             tirado = false; // Permitimos otro lanzamiento
@@ -867,7 +867,7 @@ public class Juego implements Comando{
         if (sumarSolares) {
             for (ArrayList<Casilla> fila : tablero.getPosiciones()) {
                 for (Casilla casilla : fila) {
-                    if (casilla.getTipo().equals("Solar") && casilla.getDuenho().equals(banca)) {
+                    if (casilla instanceof Solar && casilla.getDuenho().equals(banca)) {
                         casilla.sumarValor(casilla.getValor() * 0.05f); // Aumenta el valor de la casilla
                     }
                 }
@@ -1399,9 +1399,9 @@ public class Juego implements Comando{
         if (voluntario) {
             motivo = "Voluntario";
         }
-        else if (avActual.getLugar().getTipo().equals("Solar") ||
-                avActual.getLugar().getTipo().equals("Servicios") ||
-                avActual.getLugar().getTipo().equals("Transporte")) {
+        else if (avActual.getLugar() instanceof Solar ||
+                avActual.getLugar() instanceof Servicio ||
+                avActual.getLugar() instanceof Transporte) {
             if (avActual.getLugar().getDuenho().equals(banca) ||
                     avActual.getLugar().getDuenho().equals(jugActual)) {
                 return;

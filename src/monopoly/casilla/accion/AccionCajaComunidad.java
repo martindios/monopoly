@@ -5,7 +5,7 @@ import partida.Jugador;
 public class AccionCajaComunidad extends Accion{
 
     public AccionCajaComunidad(String nombre, int posicion, Jugador duenho) {
-        super(nombre, "Comunidad", posicion, duenho);
+        super(nombre, posicion, duenho);
     }
 
     @Override
