@@ -11,7 +11,7 @@ import static monopoly.Valor.SUMA_VUELTA;
 public class Especial extends Casilla{
 
     public Especial(String nombre, int posicion, Jugador duenho) {
-        super(nombre, "Especiales", posicion, duenho);
+        super(nombre, posicion, duenho);
 
         switch(nombre) {
             case "Cárcel" -> this.setImpuesto(SUMA_VUELTA * 0.25f);
@@ -33,7 +33,7 @@ public class Especial extends Casilla{
         System.out.println(super.infoCasilla());
         if (Objects.equals(this.getNombre(), "Cárcel")) {
             StringBuilder carcel = new StringBuilder();
-            carcel.append("Tipo: ").append(this.getTipo().toLowerCase()).append(",\n");
+            carcel.append("Tipo: Especial,\n");
             carcel.append("salir: ").append(this.getImpuesto()).append(",\n");
             carcel.append("jugadores: ");
             for(Avatar avatar : this.getAvatares()) {
@@ -48,7 +48,7 @@ public class Especial extends Casilla{
             return carcel.toString();
         } else if (Objects.equals(this.getNombre(), "Parking")) {
             StringBuilder parking = new StringBuilder();
-            parking.append("Tipo: ").append(this.getTipo().toLowerCase()).append(",\n");
+            parking.append("Tipo: Especial,\n");
             parking.append("bote: ").append(this.getValor()).append(",\n");
             parking.append("jugadores: [");
             for(Avatar avatar : this.getAvatares()) {

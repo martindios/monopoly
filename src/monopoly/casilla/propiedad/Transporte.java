@@ -7,7 +7,7 @@ import static monopoly.Valor.SUMA_VUELTA;
 public class Transporte extends Propiedad{
 
     public Transporte(String nombre, int posicion, float valor, Jugador duenho) {
-        super(nombre, "Transporte", posicion, valor, duenho);
+        super(nombre, posicion, valor, duenho);
         this.setImpuesto(SUMA_VUELTA);
     }
 
@@ -43,9 +43,9 @@ public class Transporte extends Propiedad{
         return """
                 {
                     Nombre: %s,
-                    Tipo: %s,
+                    Tipo: Transporte,
                     Valor: %.2f.
-                }""".formatted(getNombre(), getTipo(), getValor());
+                }""".formatted(getNombre(), getValor());
     }
 
 }

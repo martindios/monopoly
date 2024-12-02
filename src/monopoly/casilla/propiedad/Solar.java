@@ -18,7 +18,7 @@ public class Solar extends Propiedad{
 
     /**********Constructor**********/
     public Solar(String nombre, int posicion, float valor, Jugador duenho){
-        super(nombre, "Solar", posicion, valor, duenho);
+        super(nombre, posicion, valor, duenho);
         this.setImpuesto(valor * 0.1f);
         this.setImpuestoInicial(this.getImpuesto());
         this.edificios = new ArrayList<Edificio>();
@@ -89,7 +89,7 @@ public class Solar extends Propiedad{
     public String infoCasilla() {
         float valor = this.getValor();
         float impuestoInicial = this.getImpuestoInicial();
-        return "Tipo: " + this.getTipo().toLowerCase() + ",\n" +
+        return "Tipo: Solar,\n" +
                 "grupo: " + this.getGrupo().getNombreGrupo() + ",\n" +
                 "propietario: " + this.getDuenho().getNombre() + ",\n" +
                 "valor: " + valor + ",\n" +
@@ -114,10 +114,10 @@ public class Solar extends Propiedad{
         return """
                 {
                     Nombre: %s,
-                    Tipo: %s,
+                    Tipo: Solar,
                     Grupo: %s,
                     Valor: %.2f.
-                }""".formatted(getNombre(), getTipo(), getGrupo().getNombreGrupo(), getValor());
+                }""".formatted(getNombre(), getGrupo().getNombreGrupo(), getValor());
     }
 
     /**************************/
@@ -125,7 +125,7 @@ public class Solar extends Propiedad{
     /**************************/
 
     public boolean edificarCasa(Jugador jugador, int contadorCasa) {
-        if(!jugador.getAvatar().getLugar().getTipo().equals("Solar")) {
+        if(!(jugador.getAvatar().getLugar() instanceof Solar)) {
             System.out.println("El jugador no está en una casilla edificable.");
             return false;
         }
@@ -163,7 +163,7 @@ public class Solar extends Propiedad{
     }
 
     public boolean edificarHotel(Jugador jugador, int contadorHotel) {
-        if(!jugador.getAvatar().getLugar().getTipo().equals("Solar")) {
+        if(!(jugador.getAvatar().getLugar() instanceof Solar)) {
             System.out.println("El jugador no está en una casilla edificable.");
             return false;
         }
@@ -190,7 +190,7 @@ public class Solar extends Propiedad{
     }
 
     public boolean edificarPiscina(Jugador jugador, int contadorPiscina){
-        if(!jugador.getAvatar().getLugar().getTipo().equals("Solar")) {
+        if(!(jugador.getAvatar().getLugar() instanceof Solar)) {
             System.out.println("El jugador no está en una casilla edificable.");
             return false;
         }
@@ -216,7 +216,7 @@ public class Solar extends Propiedad{
     }
 
     public boolean edificarPistaDeporte(Jugador jugador, int contadorPistaDeporte){
-        if(!jugador.getAvatar().getLugar().getTipo().equals("Solar")) {
+        if(!(jugador.getAvatar().getLugar() instanceof Solar)) {
             System.out.println("El jugador no está en una casilla edificable.");
             return false;
         }

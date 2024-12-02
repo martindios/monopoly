@@ -8,7 +8,7 @@ public class Servicio extends Propiedad {
 
     /**********Constructor**********/
     public Servicio(String nombre, int posicion, float valor, Jugador duenho) {
-        super(nombre, "Servicios", posicion, valor, duenho);
+        super(nombre, posicion, valor, duenho);
         this.setImpuesto(SUMA_VUELTA / 200);
     }
 
@@ -45,9 +45,9 @@ public class Servicio extends Propiedad {
         return """
                 {
                     Nombre: %s,
-                    Tipo: %s,
+                    Tipo: Servicio,
                     Valor: %.2f.
-                }""".formatted(getNombre(), getTipo(), getValor());
+                }""".formatted(getNombre(), getValor());
     }
 
     @Override
