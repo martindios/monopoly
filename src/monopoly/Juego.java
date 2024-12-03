@@ -1,5 +1,7 @@
 package monopoly;
 
+import monopoly.carta.CartaCajaComunidad;
+import monopoly.carta.CartaSuerte;
 import monopoly.edificio.*;
 import monopoly.casilla.Casilla;
 import monopoly.casilla.Impuesto;
@@ -813,7 +815,7 @@ public class Juego implements Comando{
             }
             case AccionSuerte _ -> {
                 if(seHaMovido || !jugadorActual.getAvatar().isAvanzado()) {
-                    barajas.evaluarSuerte(banca, jugadorActual, tablero);
+                    barajas.evaluarSuerte(banca, jugadorActual, tablero, jugadores);
                 }
                 if(jugadorActual.getEnCarcel()) {
                     dadosDobles = false;
@@ -824,6 +826,7 @@ public class Juego implements Comando{
                 if(seHaMovido || !jugadorActual.getAvatar().isAvanzado()) {
                     //CAMBIAR
                     //barajas.evaluarComunidad(banca, jugadorActual, tablero, jugadores, this);
+                    barajas.evaluarCajaComunidad(banca, jugadorActual, tablero, jugadores);
                 }
                 if(jugadorActual.getEnCarcel()) {
                     dadosDobles = false;
