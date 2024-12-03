@@ -21,7 +21,7 @@ public interface Comando {
     void listarJugadores();
     void listarAvatares();
     void listarEdificios();
-    //void listarEdificiosGrupo(String color);
+    void listarEdificiosGrupo(String color);
     void salirCarcel();
     void descJugador(String nombre);
     void descAvatar(String ID);

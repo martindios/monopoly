@@ -16,7 +16,7 @@ public class ConsolaNormal implements Consola{
     }
 
     public String leer(){
-        return scanner.nextLine();
+        return scanner.next();
     }
     public String leerPalabra(){
         return scanner.next();
@@ -24,4 +24,5 @@ public class ConsolaNormal implements Consola{
     public int leerInt(){
         return scanner.nextInt();
     }
+
 }
