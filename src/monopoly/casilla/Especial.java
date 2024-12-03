@@ -11,7 +11,7 @@ import static monopoly.Valor.SUMA_VUELTA;
 public class Especial extends Casilla{
 
     public Especial(String nombre, int posicion, Jugador duenho) {
-        super(nombre, "Especiales", posicion, duenho);
+        super(nombre, posicion, duenho);
 
         switch(nombre) {
             case "Cárcel" -> this.setImpuesto(SUMA_VUELTA * 0.25f);
@@ -33,7 +33,7 @@ public class Especial extends Casilla{
         System.out.println(super.infoCasilla());
         if (Objects.equals(this.getNombre(), "Cárcel")) {
             StringBuilder carcel = new StringBuilder();
-            carcel.append("Tipo: ").append(this.getTipo().toLowerCase()).append(",\n");
+            carcel.append("Tipo: Especial,\n");
             carcel.append("salir: ").append(this.getImpuesto()).append(",\n");
             carcel.append("jugadores: ");
             for(Avatar avatar : this.getAvatares()) {
@@ -48,7 +48,7 @@ public class Especial extends Casilla{
             return carcel.toString();
         } else if (Objects.equals(this.getNombre(), "Parking")) {
             StringBuilder parking = new StringBuilder();
-            parking.append("Tipo: ").append(this.getTipo().toLowerCase()).append(",\n");
+            parking.append("Tipo: Especial,\n");
             parking.append("bote: ").append(this.getValor()).append(",\n");
             parking.append("jugadores: [");
             for(Avatar avatar : this.getAvatares()) {
@@ -63,6 +63,22 @@ public class Especial extends Casilla{
         } else {
             System.out.println("Esta casilla no necesita descripción");
             return "";
+        }
+    }
+
+    public void evaluarParking(Jugador jugador) {
+        if (this.getValor() > 0) {
+            //Súmaselle ao xogador o que hai no parking
+            jugador.sumarFortuna(this.getValor());
+            jugador.sumarPremiosInversionesOBote(this.getValor());
+            System.out.println("El jugador " + jugador.getNombre() + " ha recibido " + this.getValor() + " de la banca, como bote del Parking.");
+            Jugador banca = this.getDuenho();
+            //Réstaselle á banca o que hai que pagar
+            banca.sumarFortuna(-this.getValor());
+            //o valor do parking ponse a 0. este valor é SIMBÓLICO
+            this.setValor(0);
+        } else {
+            System.out.println("El bote está vacío. No se entrega nada.");
         }
     }
 }

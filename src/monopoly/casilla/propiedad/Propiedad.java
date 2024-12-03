@@ -12,8 +12,8 @@ public abstract class Propiedad extends Casilla {
     private int contador; //Contador de veces que el dueño ha caído en la casilla
 
     /**********Constructor**********/
-    public Propiedad(String nombre, String tipo, int posicion, float valor, Jugador duenho) {
-        super(nombre, tipo, posicion, duenho);
+    public Propiedad(String nombre, int posicion, float valor, Jugador duenho) {
+        super(nombre, posicion, duenho);
         this.setValor(valor);
         this.totalAlquileresPagados = 0;
         this.hipoteca = valor * 0.5f;
@@ -145,7 +145,7 @@ public abstract class Propiedad extends Casilla {
     @Override
     public String infoCasilla() {
         System.out.println(super.infoCasilla());
-        return "Tipo: " + this.getTipo().toLowerCase() + ",\n" +
+        return "Tipo: Propiedad,\n" +
                 "dueño: " + this.getDuenho().getNombre() + ",\n" +
                 "valor: " + this.getValor() + ",\n" +
                 "hipoteca: " + this.getHipoteca();

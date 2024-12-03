@@ -5,7 +5,7 @@ import partida.Jugador;
 public class Impuesto extends Casilla {
 
     public Impuesto(String nombre, int posicion, float impuesto, Jugador duenho) {
-        super(nombre, "Impuestos", posicion, duenho);
+        super(nombre, posicion, duenho);
         this.setImpuesto(impuesto);
     }
 
@@ -17,7 +17,7 @@ public class Impuesto extends Casilla {
     @Override
     public String infoCasilla() {
         System.out.println(super.infoCasilla());
-        return "Tipo: " + this.getTipo().toLowerCase() + ",\n" +
+        return "Tipo: Impuestos,\n" +
                 "impuesto: " + this.getImpuesto();
     }
 
