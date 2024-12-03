@@ -1,6 +1,6 @@
 package monopoly.casilla.propiedad;
 
-import monopoly.Edificio.Edificio;
+import monopoly.edificio.*;
 import monopoly.Grupo;
 import partida.Jugador;
 
@@ -54,10 +54,11 @@ public class Solar extends Propiedad{
      * @param tipoEdificio El tipo de edificio a contar.
      * @return El número de edificios del tipo especificado.
      */
-    public int getNumEdificios(ArrayList<Edificio> edificios, String tipoEdificio) {
+    public int getNumEdificios(ArrayList<Edificio> edificios, Class<? extends Edificio> tipoEdificio) {
         int numEdificios = 0;
         for (Edificio edificio : edificios) {
-            if (edificio.getTipo().contains(tipoEdificio)) {
+            //Comproba se o objeto "edificio" (De tipo Edificio) é instancia de tipo "tipoEdificio"
+            if (tipoEdificio.isInstance(edificio)) {
                 numEdificios++;
             }
         }
@@ -142,9 +143,9 @@ public class Solar extends Propiedad{
             return false;
         }
         //Si el número de hoteles no llega al máximo, se pueden construír 4 casas por solar
-        if(this.getGrupo().getNumEdificios(this.getGrupo().getEdificiosGrupo(), "Hotel") < this.getGrupo().getNumCasillas()) {
+        if(this.getGrupo().getNumEdificios(this.getGrupo().getEdificiosGrupo(), Hotel.class) < this.getGrupo().getNumCasillas()) {
             System.out.println("No tienes el número máximo de hoteles construídos en el grupo, puedes construír hasta 4 casas por solar.");
-            if(!(this.getNumEdificios(edificios, "Casa") < 4)) {
+            if(!(this.getNumEdificios(edificios, Casa.class) < 4)) {
                 System.out.println("Has alcanzado el número máximo de casas en este solar (sin el máximo de hoteles).");
                 return false;
             }
@@ -152,12 +153,12 @@ public class Solar extends Propiedad{
         else {
             System.out.println("Tienes el número máximo de hoteles construídos en el grupo (" + this.getGrupo().getNumCasillas()
                     + "), solo puedes construír " + this.getGrupo().getNumCasillas() + " casas en el grupo.");
-            if(!(this.getGrupo().getNumEdificios(this.getGrupo().getEdificiosGrupo(), "Casa") < this.getGrupo().getNumCasillas())) {
+            if(!(this.getGrupo().getNumEdificios(this.getGrupo().getEdificiosGrupo(), Casa.class) < this.getGrupo().getNumCasillas())) {
                 System.out.println("Tienes el número máximo de casas construídas en el grupo (" + this.getGrupo().getNumCasillas() + "), con el máximo de hoteles.");
                 return false;
             }
         }
-        crearEdificio("Casa", jugador, contadorCasa, 0.6f);
+        crearEdificio("Casa", jugador, contadorCasa);
         infoTrasEdificiar();
         return true;
     }
@@ -175,16 +176,16 @@ public class Solar extends Propiedad{
             System.out.println("El jugador no tiene dinero suficiente para edificar un hotel.");
             return false;
         }
-        if((this.getGrupo().getNumEdificios(this.getGrupo().getEdificiosGrupo(), "Hotel") == this.getGrupo().getNumCasillas())) {
+        if((this.getGrupo().getNumEdificios(this.getGrupo().getEdificiosGrupo(), Hotel.class) == this.getGrupo().getNumCasillas())) {
             System.out.println("Tienes el número máximo de hoteles construídos en el grupo (" + this.getGrupo().getNumCasillas() + ").");
             return false;
         }
-        if((this.getNumEdificios(edificios, "Casa")) != 4){
+        if((this.getNumEdificios(edificios, Casa.class)) != 4){
             System.out.println("No tienes el mínimo de casas en la casilla para poder edificar un hotel (4 casas).");
             return false;
         }
         quitarCasas(4, jugador);
-        crearEdificio("Hotel", jugador, contadorHotel, 0.6f);
+        crearEdificio("Hotel", jugador, contadorHotel);
         infoTrasEdificiar();
         return true;
     }
@@ -202,15 +203,15 @@ public class Solar extends Propiedad{
             System.out.println("El jugador no tiene dinero suficiente para edificar una casa.");
             return false;
         }
-        if((this.getGrupo().getNumEdificios(this.getGrupo().getEdificiosGrupo(), "Piscina") == this.getGrupo().getNumCasillas())) {
+        if((this.getGrupo().getNumEdificios(this.getGrupo().getEdificiosGrupo(), Piscina.class) == this.getGrupo().getNumCasillas())) {
             System.out.println("Tienes el número máximo de piscinas construídas en el grupo (" + this.getGrupo().getNumCasillas() + ").");
             return false;
         }
-        if(!((this.getNumEdificios(edificios, "Hotel") >= 1) && (this.getNumEdificios(edificios, "Casa") >= 2))){
+        if(!((this.getNumEdificios(edificios, Hotel.class) >= 1) && (this.getNumEdificios(edificios, Casa.class) >= 2))){
             System.out.println("En el solar no se han construido al menos 1 hotel y 2 casas.");
             return false;
         }
-        crearEdificio("Piscina", jugador, contadorPiscina, 0.4f);
+        crearEdificio("Piscina", jugador, contadorPiscina);
         infoTrasEdificiar();
         return true;
     }
@@ -228,30 +229,52 @@ public class Solar extends Propiedad{
             System.out.println("El jugador no tiene dinero suficiente para edificar una casa.");
             return false;
         }
-        if((this.getGrupo().getNumEdificios(this.getGrupo().getEdificiosGrupo(), "PistaDeporte") == this.getGrupo().getNumCasillas())) {
+        if((this.getGrupo().getNumEdificios(this.getGrupo().getEdificiosGrupo(), PistaDeporte.class) == this.getGrupo().getNumCasillas())) {
             System.out.println("Tienes el número máximo de pistas de deporte construídas en el grupo (" + this.getGrupo().getNumCasillas() + ").");
             return false;
         }
-        if(!(this.getNumEdificios(edificios, "Hotel") >= 2)){
+        if(!(this.getNumEdificios(edificios, Hotel.class) >= 2)){
             System.out.println("En el solar no se han construido al menos 2 hoteles.");
             return false;
         }
-        crearEdificio("PistaDeporte", jugador, contadorPistaDeporte, 1.25f);
+        crearEdificio("PistaDeporte", jugador, contadorPistaDeporte);
         infoTrasEdificiar();
         return true;
     }
 
-    public void crearEdificio(String tipoEdificio, Jugador jugador, int contador, float v){
-        Edificio edificio = new Edificio(tipoEdificio, this, contador);
+    public void crearEdificio(String tipoEdificio, Jugador jugador, int contador){
+        Edificio edificio;
+        switch(tipoEdificio) {
+            case "Casa":
+                Casa casa = new Casa(this, contador);
+                edificio = (Edificio) casa;
+                break;
+            case "Hotel":
+                Hotel hotel = new Hotel(this, contador);
+                edificio = (Edificio) hotel;
+                break;
+            case "Piscina":
+                Piscina piscina = new Piscina(this, contador);
+                edificio = (Edificio) piscina;
+                break;
+            case "PistaDeporte":
+                PistaDeporte pistaDeporte = new PistaDeporte(this, contador);
+                edificio = (Edificio) pistaDeporte;
+                break;
+            default:
+                System.out.println("Tipo de edificio no válido.");
+                return;
+        }
         edificios.add(edificio);
         jugador.getEdificios().add(edificio);
         this.getGrupo().getEdificiosGrupo().add(edificio);
-        float precio = this.getValor() * v;
+        float precio = edificio.getValor();
         jugador.sumarDineroInvertido(precio);
         jugador.sumarFortuna(-precio);
         jugador.sumarGastos(precio);
         System.out.println("El jugador " + jugador.getNombre() + " ha edificado un/una " + tipoEdificio + " en " + this.getNombre() + " por un precio de " + precio + ".");
     }
+
     public void quitarCasas(int numCasas, Jugador jugador){
         ArrayList<Edificio> edificiosBorrar = new ArrayList<>();
         for(Edificio casa: this.getEdificios()){
@@ -281,57 +304,24 @@ public class Solar extends Propiedad{
                 - Piscinas: %d,
                 - Deporte: %d.
                 Máximo de cada edificio en el grupo: %d.
-                """.formatted(this.getNombre(), getNumEdificios(edificios, "Casa"),
-                getNumEdificios(edificios, "Hotel"), getNumEdificios(edificios, "Piscina"),
-                getNumEdificios(edificios, "Deporte"), this.getGrupo().getNumCasillas());
+                """.formatted(this.getNombre(), getNumEdificios(edificios, Casa.class),
+                getNumEdificios(edificios, Hotel.class), getNumEdificios(edificios, Piscina.class),
+                getNumEdificios(edificios, PistaDeporte.class), this.getGrupo().getNumCasillas());
     }
 
-    public String edificiosGrupo() {
-        ArrayList<String> Casas = new ArrayList<>();
-        ArrayList<String> Hoteles = new ArrayList<>();
-        ArrayList<String> Piscinas = new ArrayList<>();
-        ArrayList<String> Deporte = new ArrayList<>();
-        for(Edificio edificio : edificios){
-            switch (edificio.getTipo()) {
-                case "Casa":
-                    Casas.add(edificio.getIdEdificio());
-                    break;
-                case "Hotel":
-                    Hoteles.add(edificio.getIdEdificio());
-                    break;
-                case "Piscina":
-                    Piscinas.add(edificio.getIdEdificio());
-                    break;
-                case "Deporte":
-                    Deporte.add(edificio.getIdEdificio());
-                    break;
-            }
-        }
-        return """
-                {
-                Propiedad: %s,
-                Casas: %s,
-                Hoteles: %s,
-                Piscinas: %s,
-                Pistas de deporte: %s,
-                Alquiler: %.2f
-                }
-                """.formatted(this.getNombre(), Casas.isEmpty() ? '-' : Casas, Hoteles.isEmpty() ? '-' : Hoteles, Piscinas.isEmpty() ? '-' : Piscinas,
-                Deporte.isEmpty() ? '-' : Deporte, this.getImpuesto());
-    }
-
-    public void venderEdificios(String tipo, int cantidad) {
+    public void venderEdificios(Class<? extends Edificio> tipoEdificio, int cantidad) {
         Jugador propietario = this.getDuenho();
         Iterator<Edificio> iterator = edificios.iterator();
         while (iterator.hasNext() && cantidad > 0) {
             Edificio edificio = iterator.next();
-            if (edificio.getTipo().equals(tipo)) {
+            if (tipoEdificio.isInstance(edificio)) {
                 iterator.remove();
                 ArrayList<Edificio> aux = propietario.getEdificios();
                 aux.remove(edificio);
                 propietario.setEdificios(aux);
                 propietario.sumarFortuna(edificio.getValor() / 2);
                 edificio.setCasilla(null);
+                String tipo = edificio.getClass().getSimpleName();
                 System.out.println("Se ha vendido un/una " + tipo + " por " + edificio.getValor() / 2 + "€.");
                 cantidad--;
             }
@@ -340,10 +330,10 @@ public class Solar extends Propiedad{
     }
 
     public void modificarAlquiler() {
-        int numCasas = getNumEdificios(edificios, "Casa");
-        int numHoteles = getNumEdificios(edificios, "Hotel");
-        int numPiscinas = getNumEdificios(edificios, "Piscina");
-        int numPistaDeporte = getNumEdificios(edificios, "Deporte");
+        int numCasas = getNumEdificios(edificios, Casa.class);
+        int numHoteles = getNumEdificios(edificios, Hotel.class);
+        int numPiscinas = getNumEdificios(edificios, Piscina.class);
+        int numPistaDeporte = getNumEdificios(edificios, PistaDeporte.class);
         float factorAlquiler = 0;
         // Cálculo para Casas
         if (numCasas > 0) {

@@ -24,4 +24,5 @@ public class ConsolaNormal implements Consola{
     public int leerInt(){
         return scanner.nextInt();
     }
+
 }

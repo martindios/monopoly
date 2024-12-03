@@ -1,6 +1,6 @@
 package monopoly;
 
-import monopoly.Edificio.Edificio;
+import monopoly.edificio.Edificio;
 import monopoly.casilla.Casilla;
 import monopoly.casilla.propiedad.Solar;
 import partida.*;
@@ -100,10 +100,10 @@ public class Grupo {
         return contador == this.numCasillas;
     }
 
-    public int getNumEdificios(ArrayList<Edificio> edificios, String tipoEdificio) {
+    public int getNumEdificios(ArrayList<Edificio> edificios, Class<? extends Edificio> tipoEdificio) {
         int numEdificios = 0;
         for (Edificio edificio : edificios) {
-            if (edificio.getTipo().contains(tipoEdificio)) {
+            if (tipoEdificio.isInstance(edificio) && edificio.getCasilla().getGrupo().equals(this)) {
                 numEdificios++;
             }
         }
