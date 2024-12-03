@@ -1,39 +1,41 @@
 package monopoly;
 
-import monopoly.casilla.Casilla;
+import monopoly.excepcion.ExcepcionEntidadNoExistente;
+import monopoly.excepcion.excepcionCarcel.ExcepcionCarcel;
+import monopoly.excepcion.excepcionCarcel.ExcepcionJugadorEnCarcel;
+import monopoly.excepcion.ExcepcionMovimientosAvanzados;
+import monopoly.excepcion.ExcepcionNoHayPropiedadesVenta;
+import monopoly.excepcion.excepcionEntradaUsuario.ExcepcionEntradaUsuario;
 import partida.Jugador;
-
-import java.util.ArrayList;
-import java.util.List;
 
 
 public interface Comando {
 
     //Funciones que se llaman al reconocer un comando
-    void crearJugadores();
-    void lanzarDados(int tirada1, int tirada2);
+    void crearJugadores() throws ExcepcionEntradaUsuario;
+    void lanzarDados(int tirada1, int tirada2) throws Exception;
     void lanzarDados(Jugador jugador);
     void evaluacion();
     void VueltasTablero();
-    void avanzar();
+    void avanzar() throws ExcepcionMovimientosAvanzados;
     void acabarTurno();
-    void listarVenta();
+    void listarVenta() throws ExcepcionNoHayPropiedadesVenta;
     void listarJugadores();
     void listarAvatares();
-    void listarEdificios();
+    void listarEdificios() throws Exception;
     void listarEdificiosGrupo(String color);
     void salirCarcel();
-    void descJugador(String nombre);
-    void descAvatar(String ID);
-    void descCasilla(String NombreCasilla);
+    void descJugador(String nombre) throws ExcepcionEntidadNoExistente;
+    void descAvatar(String ID) throws ExcepcionEntidadNoExistente;
+    void descCasilla(String NombreCasilla) throws ExcepcionEntidadNoExistente;
     void comprar(String nombre);
     void hipotecar(String nombreCasilla);
     void deshipotecar(String nombreCasilla);
-    void edificar(String palabra);
-    void modoAvanzado();
-    void ventaEdificio(String tipo, String nombreCasilla, String cantidad);
+    void edificar(String palabra) throws Exception;
+    void modoAvanzado() throws ExcepcionMovimientosAvanzados;
+    void ventaEdificio(String tipo, String nombreCasilla, String cantidad) throws ExcepcionEntidadNoExistente;
     void estadisticas();
-    void estadisticasJugador(String jugadorStr);
+    void estadisticasJugador(String jugadorStr) throws ExcepcionEntidadNoExistente;
     void bancarrota(boolean voluntario);
 
 

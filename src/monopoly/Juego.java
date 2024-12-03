@@ -9,6 +9,16 @@ import monopoly.casilla.propiedad.Propiedad;
 import monopoly.casilla.propiedad.Servicio;
 import monopoly.casilla.propiedad.Solar;
 import monopoly.casilla.propiedad.Transporte;
+import monopoly.excepcion.ExcepcionEntidadNoExistente;
+import monopoly.excepcion.excepcionCarcel.ExcepcionCarcel;
+import monopoly.excepcion.excepcionCarcel.ExcepcionIrACarcel;
+import monopoly.excepcion.excepcionCarcel.ExcepcionJugadorEnCarcel;
+import monopoly.excepcion.ExcepcionMovimientosAvanzados;
+import monopoly.excepcion.ExcepcionNoHayPropiedadesVenta;
+import monopoly.excepcion.excepcionDados.ExcepcionDados;
+import monopoly.excepcion.excepcionDados.ExcepcionDadosCoche;
+import monopoly.excepcion.excepcionEntradaUsuario.ExcepcionEntradaUsuario;
+import monopoly.excepcion.excepcionEntradaUsuario.ExcepcionFormatoIncorrecto;
 import partida.avatar.Avatar;
 import partida.Dado;
 import partida.Jugador;
@@ -46,7 +56,7 @@ public class Juego implements Comando{
     //Instancias la consola en esta clase
 
     /**********Constructor**********/
-    public Juego() {
+    public Juego() throws ExcepcionEntradaUsuario {
         this.jugadores = new ArrayList<>();
         this.avatares = new ArrayList<>();
         this.barajas = new Baraja();
@@ -62,11 +72,17 @@ public class Juego implements Comando{
         this.compraMovimientoCoche = false;
         this.tablero = new Tablero(banca);
 
+
         preIniciarPartida();
 
     }
 
     /*Getters*/
+
+    public boolean isDadosDobles() {
+        return dadosDobles;
+    }
+
     public boolean isFinalizarPartida() {
         return finalizarPartida;
     }
@@ -93,6 +109,8 @@ public class Juego implements Comando{
 
     /*Setters*/
 
+
+
     public void setSeHaMovido(boolean seHaMovido) {
         this.seHaMovido = seHaMovido;
     }
@@ -116,7 +134,7 @@ public class Juego implements Comando{
     /******************************/
 
     /*Método para mostrar la pantalla de inicio y crear los jugadores*/
-    public void preIniciarPartida() {
+    public void preIniciarPartida() throws ExcepcionEntradaUsuario {
         imprimirLogo();
 
         /*establece el número de jugadores que van a jugar la partida*/
@@ -159,7 +177,7 @@ public class Juego implements Comando{
     /**********************************/
 
     /*Método que crea a todos los jugadores que van a jugar*/
-    public void crearJugadores() {
+    public void crearJugadores() throws ExcepcionEntradaUsuario {
         consolaNormal.leer();//Limpiar buffer
         /*Comprobación para que no se exceda el número de jugadores establecido*/
         while (jugadoresActuales < maxJugadores) {
@@ -176,16 +194,16 @@ public class Juego implements Comando{
                                 darAltaJugador(palabrasArray[2], palabrasArray[3]);
                                 jugadoresActuales++;
                             } else {
-                                consolaNormal.imprimir("El avatar introducido no está disponible [Coche, Esfinge, Sombrero, Pelota]");
+                                throw new ExcepcionEntradaUsuario("El avatar introducido no está disponible [Coche, Esfinge, Sombrero, Pelota]");
                             }
                         } else {
-                            consolaNormal.imprimir("Jugador ya existente");
+                            throw new ExcepcionEntradaUsuario("Jugador ya existente");
                         }
                     } else {
-                        consolaNormal.imprimir("El formato correcto es: crear jugador nombre tipoAvatar");
+                        throw new ExcepcionFormatoIncorrecto("crear jugador nombre tipoAvatar");
                     }
                 } else {
-                    consolaNormal.imprimir("Debe primero crear los jugadores para poder jugar");
+                    throw new ExcepcionEntradaUsuario("Debe primero crear los jugadores para poder jugar");
                 }
             }
         }
@@ -204,7 +222,7 @@ public class Juego implements Comando{
     }
 
     /*Método auxiliar para el método 'crearJugadores', saber si el avatar es del tipo correcto*/
-    public boolean esAvatarCorrecto(String tipoAvatar) {
+    private boolean esAvatarCorrecto(String tipoAvatar) {
         ArrayList<String> tipoAvatarArray = new ArrayList<>(Arrays.asList("Coche", "Esfinge", "Sombrero", "Pelota"));
         return tipoAvatarArray.contains(tipoAvatar);
     }
@@ -233,7 +251,7 @@ public class Juego implements Comando{
     /*******************************/
 
     /*Método para activar el modo avanzado del jugador*/
-    public void modoAvanzado() {
+    public void modoAvanzado() throws ExcepcionMovimientosAvanzados {
         Avatar avatarActual = jugadores.get(turno).getAvatar();
         if(!tirado) {
             if(avatarActual.isAvanzado()) {
@@ -246,18 +264,17 @@ public class Juego implements Comando{
             }
         }
         else {
-            consolaNormal.imprimir("El jugador debe esperar al inicio del siguiente turno para volver a cambiar el modo de movimiento.");
+            throw new ExcepcionMovimientosAvanzados("El jugador debe esperar al inicio del siguiente turno para volver a cambiar el modo de movimiento.");
         }
     }
 
     /*Método con la lógica del movimiento avanzado Pelota*/
-    public void moverJugadorPelota(int valorTirada) {
+    public void moverJugadorPelota(int valorTirada) throws ExcepcionJugadorEnCarcel {
         Jugador jugadorActual = jugadores.get(turno);
         Avatar avatarActual = jugadorActual.getAvatar();
 
         if (jugadorActual.getEnCarcel()) {
-            consolaNormal.imprimir("El jugador está en la cárcel, no puede avanzar.");
-            return;
+            throw new ExcepcionJugadorEnCarcel(", no puede avanzar.");
         }
 
         if (valorTirada > 4) {
@@ -281,13 +298,12 @@ public class Juego implements Comando{
     }
 
     /*Método con la lógica del movimiento avanzado Coche*/
-    public void moverJugadorCoche(int valorTirada){
+    public void moverJugadorCoche(int valorTirada) throws ExcepcionJugadorEnCarcel {
         Jugador jugadorActual = jugadores.get(turno);
         Avatar avatarActual = jugadorActual.getAvatar();
 
         if (jugadorActual.getEnCarcel()) {
-            consolaNormal.imprimir("El jugador está en la cárcel, no puede avanzar.");
-            return;
+            throw new ExcepcionJugadorEnCarcel(", no puede avanzar.");
         }
 
         if(valorTirada > 4 && saltoMovimiento > 0) {
@@ -316,12 +332,11 @@ public class Juego implements Comando{
     }
 
     /*Método para avanzar con el modo avanzado Pelota*/
-    public void avanzar() {
+    public void avanzar() throws ExcepcionMovimientosAvanzados {
         Jugador jugadorActual = jugadores.get(turno);
         Avatar avatarActual = jugadorActual.getAvatar();
         if(saltoMovimiento == 0) {
-            consolaNormal.imprimir("No hay ningún movimiento pendiente.");
-            return;
+            throw new ExcepcionMovimientosAvanzados("No hay ningún movimiento pendiente.");
         }
         seHaMovido = true;
         if(saltoMovimiento > 0) {
@@ -355,7 +370,7 @@ public class Juego implements Comando{
     /*Método que realiza las acciones asociadas al comando 'describir jugador'.
      * Parámetro: comando introducido
      */
-    public void descJugador(String nombre) {
+    public void descJugador(String nombre) throws ExcepcionEntidadNoExistente {
         //Comprobar jugador
         for (Jugador jugador : jugadores) {
             if (jugador.getNombre().equalsIgnoreCase(nombre)) { //getter de getNombre de jugador
@@ -363,13 +378,13 @@ public class Juego implements Comando{
                 return;
             }
         }
-        consolaNormal.imprimir("Error. El jugador no existe.");
+        throw new ExcepcionEntidadNoExistente("jugador");
     }
 
     /*Método que realiza las acciones asociadas al comando 'describir avatar'.
      * Parámetro: id del avatar a describir.
      */
-    public void descAvatar(String ID) {
+    public void descAvatar(String ID) throws ExcepcionEntidadNoExistente {
         //Comprueba que el ID que se pide describir es uno existente
         for (Avatar avatar : avatares) {
             if (avatar.getId().equalsIgnoreCase(ID)) {
@@ -377,16 +392,16 @@ public class Juego implements Comando{
                 return;
             }
         }
-        consolaNormal.imprimir("Error. El avatar no existe.");
+        throw new ExcepcionEntidadNoExistente("avatar");
     }
 
     /* Método que realiza las acciones asociadas al comando 'describir nombre_casilla'.
      * Parámetros: nombre de la casilla a describir.
      */
-    public void descCasilla(String NombreCasilla) {
+    public void descCasilla(String NombreCasilla) throws ExcepcionEntidadNoExistente {
         Casilla casillaBuscada = tablero.encontrar_casilla(NombreCasilla);
         if(casillaBuscada == null) {
-            consolaNormal.imprimir("La casilla no existe.");
+            throw new ExcepcionEntidadNoExistente("casilla");
         }
         else {
             consolaNormal.imprimir(casillaBuscada.infoCasilla());
@@ -398,50 +413,36 @@ public class Juego implements Comando{
     /*******************/
 
     /*Método que realiza las acciones asociadas al comando 'listar enventa'*/
-    public void listarVenta() {
+    public void listarVenta() throws ExcepcionNoHayPropiedadesVenta {
+        boolean hayPropiedadesEnVenta = false;
+
         for(ArrayList<Casilla> fila : tablero.getPosiciones()) {
             for(Casilla casilla : fila) {
                 if(casilla instanceof Solar solar || casilla instanceof Transporte || casilla instanceof Servicio
                         && casilla.getDuenho().equals(banca)) {
+                    hayPropiedadesEnVenta = true;
                     Propiedad propiedad = (Propiedad) casilla;
                     consolaNormal.imprimir(propiedad.casillaEnVenta());
                 }
             }
         }
+
+        if(!hayPropiedadesEnVenta) {
+            throw new ExcepcionNoHayPropiedadesVenta("No hay propiedades en venta");
+        }
+
     }
 
     /* Método que realiza las acciones asociadas al comando 'listar jugadores'*/
     public void listarJugadores() {
         consolaNormal.imprimir("Jugadores:");
         listaArray(jugadores);
-        /*
-        StringBuilder str = new StringBuilder();
-        for (Jugador jugador : jugadores) {
-            str.append(jugador.info());
-            if (!jugador.equals(jugadores.getLast())) {
-                str.append(",\n");
-            } else {
-                str.append("\n");
-            }
-        }
-        consolaNormal.imprimir();(str); */
     }
 
     /* Método que realiza las acciones asociadas al comando 'listar avatares' */
     public void listarAvatares() {
         consolaNormal.imprimir("Avatares:");
         listaArray(avatares);
-        /*
-        StringBuilder str = new StringBuilder();
-        for (Avatar avatar : avatares) {
-            str.append(avatar.infoAvatar());
-            if (!avatar.equals(avatares.getLast())) {
-                str.append(",\n");
-            } else {
-                str.append("\n");
-            }
-        }
-        consolaNormal.imprimir();(str); */
     }
 
     /*************************/
@@ -451,7 +452,7 @@ public class Juego implements Comando{
     /* Método que realiza las acciones asociadas al comando 'estadisticas jugador'.
      * Parámetro: nombre del jugador a describir.
      */
-    public void estadisticasJugador(String jugadorStr) {
+    public void estadisticasJugador(String jugadorStr) throws ExcepcionEntidadNoExistente {
         for(Jugador jugador : jugadores) {
             if(jugador.getNombre().equals(jugadorStr)) {
                 consolaNormal.imprimir("{");
@@ -466,7 +467,7 @@ public class Juego implements Comando{
                 return ;
             }
         }
-        consolaNormal.imprimir("El jugador no existe");
+        throw new ExcepcionEntidadNoExistente("jugador");
     }
 
     /**
@@ -607,7 +608,6 @@ public class Juego implements Comando{
         if (casillasMasFrecuentadas.size() == 40) {
             casillasMasFrecuentadas.clear();
         }
-
     }
 
     /**
@@ -660,23 +660,20 @@ public class Juego implements Comando{
      * Realiza la tirada de dados, maneja el movimiento del avatar, y controla las reglas especiales
      * como los dobles y la encarcelación tras tres dobles consecutivos.
      */
-    public void lanzarDados(int tirada1, int tirada2) {
+    public void lanzarDados(int tirada1, int tirada2) throws Exception {
         if(!solvente) {
-            consolaNormal.imprimir("El jugador no es solvente, no puede lanzar los dados.");
-            return;
+            throw new Exception("El jugador no es solvente, no puede lanzar los dados.");
         }
         if (!tirado || dadosDobles) {
             if (saltoMovimiento != 0 && jugadores.get(turno).getAvatar().getTipo().equals("Pelota")) {
-                consolaNormal.imprimir("El jugador está en modo avanzado, no puede lanzar los dados.");
-                return;
+                throw new Exception("El jugador está en modo avanzado, no puede lanzar los dados.");
             }
 
             Jugador jugador = jugadores.get(turno);
             Avatar avatar = avatares.get(turno);
 
             if(jugador.getEnCarcel()) {
-                consolaNormal.imprimir("El jugador está en la cárcel, no puede lanzar los dados para moverse.");
-                return;
+                throw new ExcepcionJugadorEnCarcel(", no puede lanzar los dados para moverse.");
             }
 
             int valor1, valor2;
@@ -700,11 +697,7 @@ public class Juego implements Comando{
                     consolaNormal.imprimir("¡Has sacado dobles!");
                     dadosDobles = true;
                     if (lanzamientos == 3) {
-                        consolaNormal.imprimir("¡Tres dobles consecutivos! El jugador va a la cárcel.");
-                        jugador.encarcelar(tablero.getPosiciones());
-                        dadosDobles = false;
-                        acabarTurno();
-                        return;
+                        throw new ExcepcionIrACarcel("¡Tres dobles consecutivos! El jugador va a la cárcel.");
                     } else {
                         consolaNormal.imprimir("Puedes lanzar otra vez.");
                         tirado = false;
@@ -718,15 +711,10 @@ public class Juego implements Comando{
                     dadosDobles = true;
                     tirado = false;
                 } else if(lanzamientos < 4 && (valor1 + valor2) < 4) {
-                    consolaNormal.imprimir("Has sacado un valor menor que 4, no puedes lanzar otra vez");
-                    dadosDobles = false;
+                    throw new ExcepcionDadosCoche("Has sacado un valor menor que 4, no puedes lanzar otra vez");
                 }
                 if(lanzamientos >= 5) {
-                    consolaNormal.imprimir("El jugador va a la cárcel");
-                    jugador.encarcelar(tablero.getPosiciones());
-                    dadosDobles = false;
-                    acabarTurno();
-                    return;
+                    throw new ExcepcionIrACarcel("El jugador va a la cárcel");
                 }
             }
 
@@ -745,7 +733,7 @@ public class Juego implements Comando{
 
         }
         else {
-            consolaNormal.imprimir("Ya has lanzado el dado en este turno.");
+            throw new ExcepcionDados("Ya has lanzado el dado en este turno.");
         }
     }
 
@@ -881,12 +869,11 @@ public class Juego implements Comando{
     /*SECCIÓN DE EDIFICIOS*/
     /**********************/
 
-    public void edificar(String palabra) {
+    public void edificar(String palabra) throws Exception {
         Jugador jugador = jugadores.get(turno);
         Casilla casilla = jugador.getAvatar().getLugar();
         if(!(casilla instanceof Solar solar)) {
-            consolaNormal.imprimir("La casilla actual no es un solar");
-            return;
+            throw new Exception("La casilla actual no es un solar");
         }
         switch (palabra) {
             case "Casa":
@@ -914,15 +901,14 @@ public class Juego implements Comando{
                 solar.modificarAlquiler();
                 break;
             default:
-                consolaNormal.imprimir("Edificio no válido.");
-                break;
+                throw new Exception("Edificio no válido.");
         }
     }
 
     /**
      * Metodo que permite listar los edificios que han sido construídos.
      */
-    public void listarEdificios() {
+    public void listarEdificios() throws Exception {
         boolean existenEdificios = false;
         for(Jugador jugador : jugadores) {
             if(!jugador.getEdificios().isEmpty()) {
@@ -946,7 +932,7 @@ public class Juego implements Comando{
             consolaNormal.imprimirStrBuilder(str);
         }
         else {
-            consolaNormal.imprimir("No existen edificios construídos actualmente.");
+            throw new Exception("No existen edificios construídos actualmente.");
         }
     }
 
@@ -1032,12 +1018,11 @@ public class Juego implements Comando{
      * @param nombreCasilla El nombre de la casilla donde se encuentran los edificios.
      * @param cantidad La cantidad de edificios a vender.
      */
-    public void ventaEdificio(String tipo, String nombreCasilla, String cantidad) {
+    public void ventaEdificio(String tipo, String nombreCasilla, String cantidad) throws ExcepcionEntidadNoExistente {
         int contador = 0;
         Casilla casilla = tablero.encontrar_casilla(nombreCasilla);
         if(casilla == null) {
-            consolaNormal.imprimir("Casilla no encontrada");
-            return;
+            throw new ExcepcionEntidadNoExistente("casilla");
         }
         if(!(casilla instanceof Solar solar)) {
             consolaNormal.imprimir("La casilla no es un solar, no se pueden vender edificios.");
@@ -1424,7 +1409,7 @@ public class Juego implements Comando{
                             consolaNormal.imprimir("introduce la cantidad de edificios que quieres vender: ");
                             String cantidadStr = consolaNormal.leer();
 
-                            ventaEdificio(tipo, nombreCasilla, cantidadStr);
+                            //ventaEdificio(tipo, nombreCasilla, cantidadStr);
 
                             if (solar != null) {
                                 //Si vendió los edificios, el tamaño anterior menos la cantidad de edificios que vendió es igual al tamaño actual. Entonces entra.
