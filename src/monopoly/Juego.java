@@ -1059,7 +1059,7 @@ public class Juego implements Comando{
         tipoDeseado = convertirStrClase(tipo, tipoDeseado);
         while(tipoDeseado == null) {
             System.out.print("Tipo de edificio no válido. Introduzca un tipo válido: ");
-            tipo = scanner.nextLine();
+            tipo = consolaNormal.leer();
             tipoDeseado = convertirStrClase(tipo, tipoDeseado);
         }
 
@@ -1390,7 +1390,7 @@ public class Juego implements Comando{
                         for (Edificio edificio : solar.getEdificios()) {
                             consolaNormal.imprimirSinSalto(edificio.getIdEdificio() + " ");
                         }
-                        consolaNormal.imprimir();
+                        consolaNormal.imprimir(" ");
                     }
 
                 }

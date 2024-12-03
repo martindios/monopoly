@@ -1,4 +1,4 @@
-package monopoly.excepcion;
+package monopoly.excepcion.excepcionEntradaUsuario;
 
 public class ExcepcionEntradaUsuario extends Exception{
     public ExcepcionEntradaUsuario(String message) {

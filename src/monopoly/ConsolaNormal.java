@@ -16,7 +16,7 @@ public class ConsolaNormal implements Consola{
     }
 
     public String leer(){
-        return scanner.next();
+        return scanner.nextLine();
     }
     public String leerPalabra(){
         return scanner.next();

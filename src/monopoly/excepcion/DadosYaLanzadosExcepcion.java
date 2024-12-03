@@ -1,6 +1,8 @@
 package monopoly.excepcion;
 
-public class DadosYaLanzadosExcepcion extends ExcepcionEntradaUsuario{
+import monopoly.excepcion.excepcionEntradaUsuario.ExcepcionEntradaUsuario;
+
+public class DadosYaLanzadosExcepcion extends ExcepcionEntradaUsuario {
 
     public DadosYaLanzadosExcepcion(String message) {
         super(message);
