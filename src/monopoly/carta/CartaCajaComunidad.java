@@ -15,11 +15,10 @@ public class CartaCajaComunidad extends Carta{
         super(descripcion, tipo, idCarta);
     }
 
-    @Override
-    public void accion(Jugador banca, Jugador jugadorActual, Tablero tablero, ArrayList<Jugador> jugadores) {
+
+    public void accion(Jugador banca, Jugador jugadorActual, Tablero tablero, ArrayList<Jugador> jugadores, int idCarta) {
         Casilla bote;
-        int dinero = 0;
-        int idCarta = baraja.escogerCartaCajaComunidad();
+        int dinero=0;
 
         switch(idCarta) {
             case 1: /*Paga 500000*/
@@ -36,7 +35,7 @@ public class CartaCajaComunidad extends Carta{
                 jugadorActual.encarcelar(tablero.getPosiciones());
                 break;
             case 3: /*Ir a Salida*/
-                jugadorActual.getAvatar().moverAvatar(tablero.getPosiciones(), tablero.encontrar_casilla("Salida"), true);
+                jugadorActual.getAvatar().moverBasico(tablero.getPosiciones(), tablero.encontrar_casilla("Salida"), true);
                 break;
             case 4: /*Cobra 2000000*/
                 dinero = 2000000;

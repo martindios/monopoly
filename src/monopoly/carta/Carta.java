@@ -2,6 +2,7 @@ package monopoly.carta;
 
 
 import monopoly.Baraja;
+import monopoly.ConsolaNormal;
 import monopoly.Tablero;
 import partida.Jugador;
 import java.util.ArrayList;
@@ -12,7 +13,8 @@ public abstract class Carta {
     private String descripcion;
     private String tipo;
     private int idCarta;
-    public Baraja baraja = new Baraja();
+    public static final ConsolaNormal consolaNormal = new ConsolaNormal();
+
 
 
     /**
@@ -32,7 +34,7 @@ public abstract class Carta {
     public Carta() {
     }
 
-    public abstract void accion(Jugador banca, Jugador jugadorActual, Tablero tablero, ArrayList<Jugador> jugadores);
+    public abstract void accion(Jugador banca, Jugador jugadorActual, Tablero tablero, ArrayList<Jugador> jugadores, int idCarta);
 
     /**********Getters**********/
     public String getDescripcion() {

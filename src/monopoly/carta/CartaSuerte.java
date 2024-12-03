@@ -17,17 +17,15 @@ public class CartaSuerte extends Carta{
         super(descripcion, tipo, idCarta);
     }
 
-    @Override
-    public void accion(Jugador banca, Jugador jugadorActual, Tablero tablero, ArrayList<Jugador> jugadores) {
-        int dinero = 0;
-        int idCarta = baraja.escogerCartaSuerte();
-
+    public void accion(Jugador banca, Jugador jugadorActual, Tablero tablero, ArrayList<Jugador> jugadores, int idCarta) {
+        Casilla bote;
+        int dinero=0;
         switch(idCarta) {
             case 1: /*Ir a Transportes1*/
-                jugadorActual.getAvatar().moverAvatar(tablero.getPosiciones(), tablero.encontrar_casilla("Trans1"), true);
+                jugadorActual.getAvatar().moverBasico(tablero.getPosiciones(), tablero.encontrar_casilla("Trans1"), true);
                 break;
             case 2: /*Ir a Solar15, sin cobrar salida*/
-                jugadorActual.getAvatar().moverAvatar(tablero.getPosiciones(), tablero.encontrar_casilla("Solar15"), false);
+                jugadorActual.getAvatar().moverBasico(tablero.getPosiciones(), tablero.encontrar_casilla("Solar15"), false);
                 break;
             case 3: /*Cobra 500000€*/
                 dinero = 500000;
@@ -36,7 +34,7 @@ public class CartaSuerte extends Carta{
                 jugadorActual.sumarPremiosInversionesOBote(dinero);
                 break;
             case 4: /*Ir a Solar3*/
-                jugadorActual.getAvatar().moverAvatar(tablero.getPosiciones(), tablero.encontrar_casilla("Solar3"), true);
+                jugadorActual.getAvatar().moverBasico(tablero.getPosiciones(), tablero.encontrar_casilla("Solar3"), true);
                 break;
             case 5: /*Ve a la Cárcel*/
                 jugadorActual.encarcelar(tablero.getPosiciones());
