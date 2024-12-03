@@ -15,7 +15,7 @@ public interface Comando {
     void crearJugadores() throws ExcepcionEntradaUsuario;
     void lanzarDados(int tirada1, int tirada2) throws Exception;
     void lanzarDados(Jugador jugador);
-    void evaluacion();
+    void evaluacion() throws ExcepcionEntidadNoExistente;
     void VueltasTablero();
     void avanzar() throws ExcepcionMovimientosAvanzados;
     void acabarTurno();
@@ -24,7 +24,7 @@ public interface Comando {
     void listarAvatares();
     void listarEdificios() throws Exception;
     void listarEdificiosGrupo(String color);
-    void salirCarcel();
+    void salirCarcel() throws ExcepcionEntidadNoExistente;
     void descJugador(String nombre) throws ExcepcionEntidadNoExistente;
     void descAvatar(String ID) throws ExcepcionEntidadNoExistente;
     void descCasilla(String NombreCasilla) throws ExcepcionEntidadNoExistente;
