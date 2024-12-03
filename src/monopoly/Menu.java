@@ -1,9 +1,11 @@
 package monopoly;
 
+import monopoly.excepcion.excepcionCarcel.ExcepcionIrACarcel;
+import monopoly.excepcion.excepcionDados.ExcepcionDadosCoche;
 import monopoly.excepcion.excepcionEntradaUsuario.ExcepcionEntradaUsuario;
 import monopoly.excepcion.excepcionEntradaUsuario.ExcepcionFormatoIncorrecto;
 import monopoly.excepcion.excepcionEntradaUsuario.ExcepcionJugadoresYaRegistrados;
-import monopoly.excepcion.excepcionEntradaUsuario.ExcepcionNoPuedeTirarDados;
+import monopoly.excepcion.excepcionDados.ExcepcionNoPuedeTirarDados;
 import partida.Jugador;
 
 import java.util.ArrayList;
@@ -18,7 +20,12 @@ public class Menu {
     private static final ConsolaNormal consolaNormal = new ConsolaNormal();
 
     public Menu() {
-        this.juego = new Juego();
+        try{
+            this.juego = new Juego();
+        } catch (ExcepcionEntradaUsuario e) {
+            consolaNormal.imprimir(e.getMessage());
+        }
+
         iniciarPartida();
     }
 
@@ -235,10 +242,17 @@ public class Menu {
                         throw new ExcepcionEntradaUsuario("Comando no válido");
                 }
             }
-        } catch (ExcepcionEntradaUsuario e) {
+        } catch (Exception e) {
             if(e instanceof ExcepcionNoPuedeTirarDados) {
                 jugadores.get(turno).setNoPuedeTirarDados(jugadores.get(turno).getNoPuedeTirarDados() - 1);
                 juego.setTirado(true);
+                juego.acabarTurno();
+            } else if (e instanceof ExcepcionDadosCoche) {
+                juego.setDadosDobles(false);
+            }
+            else if (e instanceof ExcepcionIrACarcel) {
+                juego.getJugadores().get(turno).encarcelar(tablero.getPosiciones());
+                juego.setDadosDobles(false);
                 juego.acabarTurno();
             }
             consolaNormal.imprimir(e.getMessage());
