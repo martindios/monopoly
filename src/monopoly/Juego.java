@@ -21,6 +21,9 @@ import monopoly.excepcion.ExcepcionNoHayPropiedadesVenta;
 import monopoly.excepcion.excepcionDados.ExcepcionDados;
 import monopoly.excepcion.excepcionDados.ExcepcionDadosCoche;
 import monopoly.excepcion.excepcionEdificar.ExcepcionEdificar;
+import monopoly.excepcion.excepcionEdificar.ExcepcionEdificarNoDinero;
+import monopoly.excepcion.excepcionEdificar.ExcepcionEdificarNoEdificable;
+import monopoly.excepcion.excepcionEdificar.ExcepcionEdificarNoPropietario;
 import monopoly.excepcion.excepcionEntradaUsuario.ExcepcionEntradaUsuario;
 import monopoly.excepcion.excepcionEntradaUsuario.ExcepcionFormatoIncorrecto;
 import partida.avatar.Avatar;
@@ -878,38 +881,78 @@ public class Juego implements Comando{
     /**********************/
 
     public void edificar(String palabra) throws Exception {
+        float factor = 1;
         Jugador jugador = jugadores.get(turno);
         Casilla casilla = jugador.getAvatar().getLugar();
+
         if(!(casilla instanceof Solar solar)) {
-            throw new Exception("La casilla actual no es un solar");
+            throw new ExcepcionEdificarNoEdificable();
         }
+
+        if(!casilla.getDuenho().equals(jugador)) {
+            throw new ExcepcionEdificarNoPropietario();
+        }
+
+
+
+        /*        if(!(jugador.getAvatar().getLugar() instanceof Solar)) {
+            throw new ExcepcionEdificarNoEdificable();
+        }
+        if (!this.getDuenho().equals(jugador)) {
+            throw new ExcepcionEdificarNoPropietario();
+        }
+        if (jugador.getFortuna() < this.getValor() * 0.6) {
+            throw new ExcepcionEdificarNoDinero("hotel");
+        }
+        if((this.getGrupo().getNumEdificios(this.getGrupo().getEdificiosGrupo(), Hotel.class) == this.getGrupo().getNumCasillas())) {
+            throw new ExcepcionEdificar("Tienes el número máximo de hoteles construídos en el grupo (" + this.getGrupo().getNumCasillas() + ").");
+        }
+        if((this.getNumEdificios(edificios, Casa.class)) != 4){
+            throw new ExcepcionEdificar("No tienes el mínimo de casas en la casilla para poder edificar un hotel (4 casas).");
+        }*/
         switch (palabra) {
             case "Casa":
+                factor = 0.6f;
+                if (jugador.getFortuna() < casilla.getValor() * factor) {
+                    throw new ExcepcionEdificarNoDinero(palabra);
+                }
                 if(solar.edificarCasa(jugador, contadorCasa)){
                     contadorCasa++;
                 }
                 solar.modificarAlquiler();
                 break;
             case "Hotel":
+                factor = 0.6f;
+                if (jugador.getFortuna() < casilla.getValor() * factor) {
+                    throw new ExcepcionEdificarNoDinero(palabra);
+                }
                 if(solar.edificarHotel(jugador, contadorHotel)){
                     contadorHotel++;
                 }
                 solar.modificarAlquiler();
                 break;
             case "Piscina":
+                factor = 0.4f;
+                if (jugador.getFortuna() < casilla.getValor() * factor) {
+                    throw new ExcepcionEdificarNoDinero(palabra);
+                }
                 if(solar.edificarPiscina(jugador, contadorPiscina)){
                     contadorPiscina++;
                 }
                 solar.modificarAlquiler();
                 break;
             case "PistaDeporte":
+                factor = 1.25f;
+                if (jugador.getFortuna() < casilla.getValor() * factor) {
+                    throw new ExcepcionEdificarNoDinero(palabra);
+                }
                 if(solar.edificarPistaDeporte(jugador, contadorPistaDeporte)){
                     contadorPistaDeporte++;
                 }
                 solar.modificarAlquiler();
                 break;
             default:
-                throw new Exception("Edificio no válido.");
+                throw new ExcepcionEdificar("Edificio no válido.");
         }
     }
 
