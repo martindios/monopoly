@@ -17,9 +17,9 @@ public class CartaSuerte extends Carta{
         super(descripcion, tipo, idCarta);
     }
 
+    @Override
     public void accion(Jugador banca, Jugador jugadorActual, Tablero tablero, ArrayList<Jugador> jugadores, int idCarta) {
-        Casilla bote;
-        int dinero=0;
+        int dinero;
         switch(idCarta) {
             case 1: /*Ir a Transportes1*/
                 jugadorActual.getAvatar().moverBasico(tablero.getPosiciones(), tablero.encontrar_casilla("Trans1"), true);

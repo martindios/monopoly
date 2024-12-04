@@ -30,7 +30,7 @@ public class Especial extends Casilla{
 
     @Override
     public String infoCasilla() throws Exception {
-        System.out.println(super.infoCasilla());
+        consolaNormal.imprimir(super.infoCasilla());
         if (Objects.equals(this.getNombre(), "Cárcel")) {
             StringBuilder carcel = new StringBuilder();
             carcel.append("Tipo: Especial,\n");
@@ -70,7 +70,7 @@ public class Especial extends Casilla{
             //Súmaselle ao xogador o que hai no parking
             jugador.sumarFortuna(this.getValor());
             jugador.sumarPremiosInversionesOBote(this.getValor());
-            System.out.println("El jugador " + jugador.getNombre() + " ha recibido " + this.getValor() + " de la banca, como bote del Parking.");
+            consolaNormal.imprimir("El jugador " + jugador.getNombre() + " ha recibido " + this.getValor() + " de la banca, como bote del Parking.");
             Jugador banca = this.getDuenho();
             //Réstaselle á banca o que hai que pagar
             banca.sumarFortuna(-this.getValor());

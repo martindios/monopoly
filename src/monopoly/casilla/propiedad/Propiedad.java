@@ -90,7 +90,7 @@ public abstract class Propiedad extends Casilla {
             return;
         }
         if (this.isHipotecado()) {
-            System.out.println("La casilla está hipotecada, no se paga alquiler.");
+            consolaNormal.imprimir("La casilla está hipotecada, no se paga alquiler.");
             return;
         }
         if (!jugadorActual.equals(this.getDuenho())) {
@@ -132,7 +132,7 @@ public abstract class Propiedad extends Casilla {
         this.setDuenho(solicitante);
         solicitante.anhadirPropiedad(this);
 
-        System.out.println("El jugador ha comprado la casilla por " + valorCasilla + ".");
+        consolaNormal.imprimir("El jugador ha comprado la casilla por " + valorCasilla + ".");
     }
 
     /**
@@ -142,7 +142,7 @@ public abstract class Propiedad extends Casilla {
      */
     @Override
     public String infoCasilla() throws Exception {
-        System.out.println(super.infoCasilla());
+        consolaNormal.imprimir(super.infoCasilla());
         return "Tipo: Propiedad,\n" +
                 "dueño: " + this.getDuenho().getNombre() + ",\n" +
                 "valor: " + this.getValor() + ",\n" +

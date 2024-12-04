@@ -1051,7 +1051,7 @@ public class Juego implements Comando{
 
         tipoDeseado = convertirStrClase(tipo, tipoDeseado);
         while(tipoDeseado == null) {
-            System.out.print("Tipo de edificio no válido. Introduzca un tipo válido: ");
+            consolaNormal.imprimirSinSalto("Tipo de edificio no válido. Introduzca un tipo válido: ");
             tipo = consolaNormal.leer();
             tipoDeseado = convertirStrClase(tipo, tipoDeseado);
         }
@@ -1080,13 +1080,13 @@ public class Juego implements Comando{
             Class<?> claseGeneral = Class.forName(str);
             //Si la clase que queremos no es derivada de Edificio
             if (!Edificio.class.isAssignableFrom(claseGeneral)) {
-                System.out.println("El tipo de edificio " + str + " no es válido.");
+                consolaNormal.imprimir("El tipo de edificio " + str + " no es válido.");
                 return null;
             }
             tipoDeseado = (Class<? extends Edificio>) claseGeneral;
             return tipoDeseado;
         } catch (ClassNotFoundException e) {
-            System.out.println("Clase no encontrada para el tipo: " + str);
+            consolaNormal.imprimir("Clase no encontrada para el tipo: " + str);
             return null;
         }
     }
@@ -1331,16 +1331,15 @@ public class Juego implements Comando{
         edificiosVender(jugadorActual, edificiosLista);
         contadorEdificios = edificiosLista.size();
 
-        Scanner scanner = new Scanner(System.in);
         consolaNormal.imprimir("El jugador no tiene suficiente dinero para pagar. Debe vender edificios y/o hipotecar propiedades.");
 
         if (jugadorActual.getEdificios().isEmpty() && contadorPropiedades == 0) {
             throw new ExcepcionBancarrota("El jugador no tiene propiedades ni edificios para vender. Se declara en bancarrota.");
         } else {
-            System.out.println("El jugador tiene propiedades y/o edificios. ¿Qué desea hipotecar/vender? (propiedades[1]/edificios[2]) ");
+            consolaNormal.imprimir("El jugador tiene propiedades y/o edificios. ¿Qué desea hipotecar/vender? (propiedades[1]/edificios[2]) ");
             int opcion;
             do {
-                opcion = scanner.nextInt();
+                opcion = consolaNormal.leerInt();
                 if (opcion != 1 && opcion != 2) {
                     throw new ExcepcionEdificar("Opción no válida. Introduzca 1 para propiedades o 2 para edificios.");
                 }
@@ -1360,8 +1359,8 @@ public class Juego implements Comando{
                         Propiedad propiedadHipotecar = null;
 
                         while(propiedadHipotecar == null) {
-                            System.out.println("Introduce el nombre de la propiedad que quieres hipotecar:");
-                            String nombrePropiedad = scanner.next();
+                            consolaNormal.imprimir("Introduce el nombre de la propiedad que quieres hipotecar:");
+                            String nombrePropiedad = consolaNormal.leerPalabra();
                             //Pasamos el jugAct para el array de props y el nombre de la propiedad.
                             propiedadHipotecar = buscarHipotecable(jugadorActual, nombrePropiedad);
                         }
@@ -1391,8 +1390,8 @@ public class Juego implements Comando{
                             break;
                         }
 
-                        System.out.println("Introduce la casilla de la que quieres vender un edificio: ");
-                        String nombreCasilla = scanner.next();
+                        consolaNormal.imprimir("Introduce la casilla de la que quieres vender un edificio: ");
+                        String nombreCasilla = consolaNormal.leerPalabra();
                         Casilla casilla = tablero.encontrar_casilla(nombreCasilla);
                         Solar solar = null;
                         int tamanho = 0;
@@ -1403,8 +1402,8 @@ public class Juego implements Comando{
                             tamanho = solar.getEdificios().size();
                         }
 
-                        System.out.println("Introduce el tipo de edificio que quieres vender: ");
-                        String tipo = scanner.next();
+                        consolaNormal.imprimir("Introduce el tipo de edificio que quieres vender: ");
+                        String tipo = consolaNormal.leerPalabra();
                         float valor = 0;
                         switch (tipo) {
                             case "Casa", "Hotel" -> valor = casilla.getValor() * 0.6f;
@@ -1413,8 +1412,8 @@ public class Juego implements Comando{
                             default -> valor = 0;
                         }
 
-                        System.out.println("Introduce la cantidad de edificios que quieres vender: ");
-                        String cantidadStr = scanner.next();
+                        consolaNormal.imprimir("Introduce la cantidad de edificios que quieres vender: ");
+                        String cantidadStr = consolaNormal.leerPalabra();
 
                         ventaEdificio(tipo, nombreCasilla, cantidadStr);
 

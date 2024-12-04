@@ -10,16 +10,16 @@ import monopoly.carta.CartaSuerte;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.InputMismatchException;
-import java.util.Scanner;
 
 public class Baraja {
     /**********Atributos**********/
     //private final ArrayList<Carta> baraja;
     private final ArrayList<CartaSuerte> barajaSuerte;
     private final ArrayList<CartaCajaComunidad> barajaCajaComunidad;
-    Scanner scanner = new Scanner(System.in);
-    private CartaSuerte cartaSuerte = new CartaSuerte();
-    private CartaCajaComunidad cartaCajaComunidad = new CartaCajaComunidad();
+    private final CartaSuerte cartaSuerte = new CartaSuerte();
+    private final CartaCajaComunidad cartaCajaComunidad = new CartaCajaComunidad();
+    private static final ConsolaNormal consolaNormal = new ConsolaNormal();
+
 
 
     /**********Constructor**********/
@@ -61,7 +61,7 @@ public class Baraja {
 
     /**********Métodos**********/
 
-    public void barajar(ArrayList<?> baraja) {
+    public void barajar(ArrayList<? extends Carta> baraja) {
         Collections.shuffle(baraja);
     }
 
@@ -70,18 +70,19 @@ public class Baraja {
         barajar(barajaSuerte);
 
         //DEPURACIÓN (poder ver las cartas mezcladas para poder elegir a conveniencia)
-        System.out.println("Cartas de suerte mezcladas: ");
+        consolaNormal.imprimir("Cartas de suerte mezcladas: ");
         for(CartaSuerte carta : barajaSuerte) {
-            System.out.println(carta.getDescripcion() + carta.getIdCarta());
+            consolaNormal.imprimir(carta.getDescripcion() + carta.getIdCarta());
         }
 
-        System.out.println("-----Número a elegir de carta-----");
+        consolaNormal.imprimir("-----Número a elegir de carta-----");
         int numCarta = introducirNum(1, 6);
-        scanner.nextLine(); //Limpiar buffer
+        consolaNormal.leer(); //Limpiar buffer
 
-        System.out.println(barajaSuerte.get(numCarta-1).getDescripcion());
 
-        int idCarta = barajaSuerte.get(numCarta-1).getIdCarta(), dinero=0;
+        consolaNormal.imprimir(barajaSuerte.get(numCarta-1).getDescripcion());
+
+        int idCarta = barajaSuerte.get(numCarta-1).getIdCarta();
 
         cartaSuerte.accion(banca, jugadorActual, tablero, jugadores, idCarta);
 
@@ -93,18 +94,18 @@ public class Baraja {
         barajar(barajaCajaComunidad);
 
         //DEPURACIÓN (poder ver las cartas mezcladas para poder elegir a conveniencia)
-        System.out.println("Cartas de suerte mezcladas: ");
+        consolaNormal.imprimir("Cartas de suerte mezcladas: ");
         for(CartaCajaComunidad carta : barajaCajaComunidad) {
-            System.out.println(carta.getDescripcion() + carta.getIdCarta());
+            consolaNormal.imprimir(carta.getDescripcion() + carta.getIdCarta());
         }
 
-        System.out.println("-----Número a elegir de carta-----");
+        consolaNormal.imprimir("-----Número a elegir de carta-----");
         int numCarta = introducirNum(1, 6);
-        scanner.nextLine(); //Limpiar buffer
+        consolaNormal.leer(); //Limpiar buffer
 
-        System.out.println(barajaCajaComunidad.get(numCarta-1).getDescripcion());
+        consolaNormal.imprimir(barajaCajaComunidad.get(numCarta-1).getDescripcion());
 
-        int idCarta = barajaCajaComunidad.get(numCarta-1).getIdCarta(), dinero=0;
+        int idCarta = barajaCajaComunidad.get(numCarta-1).getIdCarta();
 
         cartaCajaComunidad.accion(banca, jugadorActual, tablero, jugadores, idCarta);
     }
@@ -121,18 +122,17 @@ public class Baraja {
     public int introducirNum(int min, int max){
         int num = -1;
         while (num < min || num > max) {
-            System.out.print("Introduce un número del " + min + " al " + max + ": ");
+            consolaNormal.imprimirSinSalto("Introduce un número del " + min + " al " + max + ": ");
             try {
-                num = scanner.nextInt();
+                num = consolaNormal.leerInt();
                 if (num < min || num > max) {
-                    System.out.println("Introduzca un número dentro del rango");
+                    consolaNormal.imprimir("Introduzca un número dentro del rango");
                 } else {
                     return num;
                 }
             } catch (InputMismatchException e) {
-                System.out.println("Entrada inválida, introduzca un número");
-                scanner.next();
-            }
+                consolaNormal.imprimir("Entrada inválida, introduzca un número");
+                consolaNormal.leerPalabra();            }
         }
         return num;
     }

@@ -1,5 +1,6 @@
 package monopoly.casilla;
 
+import monopoly.ConsolaNormal;
 import monopoly.casilla.propiedad.*;
 import partida.*;
 import partida.avatar.Avatar;
@@ -20,6 +21,8 @@ public abstract class Casilla {
     private float impuestoInicial;
     private ArrayList<Avatar> avatares; //Avatares que están situados en la casilla.
     private int totalVecesFrecuentada;
+    public static final ConsolaNormal consolaNormal = new ConsolaNormal();
+
 
     /**********Constructores**********/
 
