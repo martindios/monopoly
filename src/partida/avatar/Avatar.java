@@ -112,7 +112,7 @@ public class Avatar {
      * @param tablero El tablero de juego representado como una lista de listas de casillas.
      * @param valorTirada El valor de la tirada de dados que determina el número de posiciones a mover.
      */
-    public void moverBasico(ArrayList<ArrayList<Casilla>> tablero, int valorTirada) {
+    public void moverBasico(ArrayList<ArrayList<Casilla>> tablero, int valorTirada) throws Exception {
         boolean pasaPorSalida = false;
         int max = 40;
         Casilla casillaAntigua = this.lugar;
@@ -199,7 +199,7 @@ public class Avatar {
      * @param tablero El tablero de juego representado como una lista de listas de casillas.
      * @param valorTirada El valor de la tirada de dados que determina el número de posiciones a mover.
      */
-    public void moverAvanzado(ArrayList<ArrayList<Casilla>> tablero, int valorTirada) {
+    public void moverAvanzado(ArrayList<ArrayList<Casilla>> tablero, int valorTirada) throws Exception {
         boolean pasaPorSalidaReves = false, pasaPorSalidaDerecho = false;
         int max = 40;
         Casilla casillaOld = this.lugar;
