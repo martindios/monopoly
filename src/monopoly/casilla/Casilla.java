@@ -186,7 +186,7 @@ public abstract class Casilla {
      *
      * @return Una cadena con la descripción de la casilla.
      */
-    public String infoCasilla() {
+    public String infoCasilla() throws Exception {
         return("Descripción de la casilla: " + this.getNombre() + ". Posición " + this.getPosicion() + ".");
     }
 }

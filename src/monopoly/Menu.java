@@ -1,5 +1,6 @@
 package monopoly;
 
+import monopoly.excepcion.ExcepcionBancarrota;
 import monopoly.excepcion.excepcionCarcel.ExcepcionIrACarcel;
 import monopoly.excepcion.excepcionDados.ExcepcionDadosCoche;
 import monopoly.excepcion.excepcionEntradaUsuario.ExcepcionEntradaUsuario;
@@ -254,6 +255,8 @@ public class Menu {
                 juego.getJugadores().get(turno).encarcelar(tablero.getPosiciones());
                 juego.setDadosDobles(false);
                 juego.acabarTurno();
+            } else if (e instanceof ExcepcionBancarrota) {
+                juego.bancarrota(false);
             }
             consolaNormal.imprimir(e.getMessage());
         }

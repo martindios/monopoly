@@ -11,6 +11,7 @@ import monopoly.casilla.propiedad.Propiedad;
 import monopoly.casilla.propiedad.Servicio;
 import monopoly.casilla.propiedad.Solar;
 import monopoly.casilla.propiedad.Transporte;
+import monopoly.excepcion.ExcepcionBancarrota;
 import monopoly.excepcion.ExcepcionEntidadNoExistente;
 import monopoly.excepcion.excepcionCarcel.ExcepcionCarcel;
 import monopoly.excepcion.excepcionCarcel.ExcepcionIrACarcel;
@@ -19,6 +20,7 @@ import monopoly.excepcion.ExcepcionMovimientosAvanzados;
 import monopoly.excepcion.ExcepcionNoHayPropiedadesVenta;
 import monopoly.excepcion.excepcionDados.ExcepcionDados;
 import monopoly.excepcion.excepcionDados.ExcepcionDadosCoche;
+import monopoly.excepcion.excepcionEdificar.ExcepcionEdificar;
 import monopoly.excepcion.excepcionEntradaUsuario.ExcepcionEntradaUsuario;
 import monopoly.excepcion.excepcionEntradaUsuario.ExcepcionFormatoIncorrecto;
 import partida.avatar.Avatar;
@@ -110,7 +112,6 @@ public class Juego implements Comando{
     }
 
     /*Setters*/
-
 
 
     public void setSeHaMovido(boolean seHaMovido) {
@@ -271,7 +272,7 @@ public class Juego implements Comando{
     }
 
     /*Método con la lógica del movimiento avanzado Pelota*/
-    public void moverJugadorPelota(int valorTirada) throws ExcepcionJugadorEnCarcel {
+    public void moverJugadorPelota(int valorTirada) throws Exception {
         Jugador jugadorActual = jugadores.get(turno);
         Avatar avatarActual = jugadorActual.getAvatar();
 
@@ -300,7 +301,7 @@ public class Juego implements Comando{
     }
 
     /*Método con la lógica del movimiento avanzado Coche*/
-    public void moverJugadorCoche(int valorTirada) throws ExcepcionJugadorEnCarcel {
+    public void moverJugadorCoche(int valorTirada) throws Exception {
         Jugador jugadorActual = jugadores.get(turno);
         Avatar avatarActual = jugadorActual.getAvatar();
 
@@ -334,7 +335,7 @@ public class Juego implements Comando{
     }
 
     /*Método para avanzar con el modo avanzado Pelota*/
-    public void avanzar() throws ExcepcionMovimientosAvanzados {
+    public void avanzar() throws Exception {
         Jugador jugadorActual = jugadores.get(turno);
         Avatar avatarActual = jugadorActual.getAvatar();
         if(saltoMovimiento == 0) {
@@ -400,7 +401,7 @@ public class Juego implements Comando{
     /* Método que realiza las acciones asociadas al comando 'describir nombre_casilla'.
      * Parámetros: nombre de la casilla a describir.
      */
-    public void descCasilla(String NombreCasilla) throws ExcepcionEntidadNoExistente {
+    public void descCasilla(String NombreCasilla) throws Exception {
         Casilla casillaBuscada = tablero.encontrar_casilla(NombreCasilla);
         if(casillaBuscada == null) {
             throw new ExcepcionEntidadNoExistente("casilla");
@@ -749,7 +750,7 @@ public class Juego implements Comando{
      *
      * @param jugador El jugador que está encarcelado y realiza la tirada.
      */
-    public void lanzarDados(Jugador jugador) {
+    public void lanzarDados(Jugador jugador) throws Exception {
         int valor1 = dado1.hacerTirada();
         int valor2 = dado2.hacerTirada();
         tirado = true;
@@ -785,7 +786,7 @@ public class Juego implements Comando{
      * En el caso de que el jugador caiga en una casilla de Impuestos, se deduce el impuesto
      * de la fortuna del jugador y se suma al bote del Parking.
      */
-    public void evaluacion() throws ExcepcionEntidadNoExistente {
+    public void evaluacion() throws ExcepcionEntidadNoExistente, ExcepcionBancarrota, ExcepcionEdificar {
         Jugador jugadorActual = jugadores.get(turno);
         Casilla casillaActual = jugadorActual.getAvatar().getLugar();
         solvente = casillaActual.evaluarCasilla(jugadores.get(turno), banca, dado1.getValor() + dado2.getValor());
@@ -1289,7 +1290,7 @@ public class Juego implements Comando{
         return null;
     }
 
-    private void evaluarRecoleccionDinero(Jugador jugadorActual, int contadorPropiedades, int contadorEdificios, float dineroAConseguir, float dineroConseguido) throws ExcepcionEntidadNoExistente {
+    private void evaluarRecoleccionDinero(Jugador jugadorActual, int contadorPropiedades, int contadorEdificios, float dineroAConseguir, float dineroConseguido) throws ExcepcionEntidadNoExistente, ExcepcionBancarrota, ExcepcionEdificar {
         if(dineroConseguido > dineroAConseguir) {
             consolaNormal.imprimir("El jugador ha conseguido suficiente dinero para pagar. Se ha vuelto solvente.");
             if(jugadorActual.getAvatar().getLugar().getNombre().equals("Cárcel")) {
@@ -1313,7 +1314,7 @@ public class Juego implements Comando{
     /*
     /*Método que se llama cuando el jugador tiene que conseguir dinero vendiendo edificios, hipotecando propiedades y sino
      *debe declararse en bancarrota*/
-    public void conseguirDinero(float dineroAConseguir) throws ExcepcionEntidadNoExistente {
+    public void conseguirDinero(float dineroAConseguir) throws ExcepcionEntidadNoExistente, ExcepcionBancarrota, ExcepcionEdificar {
         //Declaramos las variables necesarias
         float dineroConseguido = 0;
         int contadorPropiedades = 0;
@@ -1334,15 +1335,14 @@ public class Juego implements Comando{
         consolaNormal.imprimir("El jugador no tiene suficiente dinero para pagar. Debe vender edificios y/o hipotecar propiedades.");
 
         if (jugadorActual.getEdificios().isEmpty() && contadorPropiedades == 0) {
-            consolaNormal.imprimir("El jugador no tiene propiedades ni edificios para vender. Se declara en bancarrota.");
-            bancarrota(false);
+            throw new ExcepcionBancarrota("El jugador no tiene propiedades ni edificios para vender. Se declara en bancarrota.");
         } else {
             System.out.println("El jugador tiene propiedades y/o edificios. ¿Qué desea hipotecar/vender? (propiedades[1]/edificios[2]) ");
             int opcion;
             do {
                 opcion = scanner.nextInt();
                 if (opcion != 1 && opcion != 2) {
-                    System.out.println("Opción no válida. Introduzca 1 para propiedades o 2 para edificios.");
+                    throw new ExcepcionEdificar("Opción no válida. Introduzca 1 para propiedades o 2 para edificios.");
                 }
             } while (opcion != 1 && opcion != 2);
             if (opcion == 1) { //Hipotecar propiedades
@@ -1371,7 +1371,7 @@ public class Juego implements Comando{
                         hipotecar(propiedadHipotecar.getNombre());
                     }
                 } else {
-                    System.out.println("El jugador no tiene propiedades sin edificar. Debe vender los edificios antes de hipotecar una propiedad.");
+                    throw new ExcepcionEdificar("El jugador no tiene propiedades sin edificar. Debe vender los edificios antes de hipotecar una propiedad.");
                 }
             } else {
                 dineroConseguido = 0;
@@ -1413,7 +1413,7 @@ public class Juego implements Comando{
                             default -> valor = 0;
                         }
 
-                        System.out.println("introduce la cantidad de edificios que quieres vender: ");
+                        System.out.println("Introduce la cantidad de edificios que quieres vender: ");
                         String cantidadStr = scanner.next();
 
                         ventaEdificio(tipo, nombreCasilla, cantidadStr);
@@ -1433,7 +1433,7 @@ public class Juego implements Comando{
                         }
                     }
                 } else {
-                    System.out.println("El jugador no tiene edificios para vender.");
+                    throw new ExcepcionEdificar("El jugador no tiene edificios para vender.");
                 }
             }
             evaluarRecoleccionDinero(jugadorActual, contadorPropiedades, contadorEdificios, dineroAConseguir, dineroConseguido);
@@ -1479,7 +1479,7 @@ public class Juego implements Comando{
      * Permite al jugador intentar salir de la cárcel, ya sea tirando los dados o pagando la fianza,
      * dependiendo de sus opciones y recursos disponibles.
      */
-    public void salirCarcel() throws ExcepcionEntidadNoExistente {
+    public void salirCarcel() throws Exception {
         Jugador jugActual = jugadores.get(turno);
         Casilla carcel = tablero.encontrar_casilla("Cárcel");
 
@@ -1559,29 +1559,25 @@ public class Juego implements Comando{
      *
      * @param nombre El nombre de la casilla que el jugador desea comprar.
      */
-    public void comprar(String nombre) {
+    public void comprar(String nombre) throws Exception {
         if(lanzamientos == 0) {
-            consolaNormal.imprimir("No puedes comprar la casilla en la que estabas, debes lanzar.");
-            return;
+            throw new Exception("No puedes comprar la casilla en la que estabas, debes lanzar.");
         }
         Jugador comprador = jugadores.get(turno);
         Casilla casillaDeseada = tablero.encontrar_casilla(nombre);
         if(casillaDeseada == null) {
-            consolaNormal.imprimir("La casilla deseada no existe.");
-            return;
+            throw new ExcepcionEntidadNoExistente("casilla");
         }
         if(!(casillaDeseada instanceof Propiedad propiedad)) {
-            consolaNormal.imprimir("Casilla sin opción de compra, no es una propiedad.");
-            return;
+            throw new Exception("Casilla sin opción de compra, no es una propiedad.");
         }
 
         if(comprador.getFortuna() < propiedad.getValor()) {
-            consolaNormal.imprimir("El jugador no tiene dinero suficiente para comprar la casilla.");
-            return;
+            throw new Exception("El jugador no tiene dinero suficiente para comprar la casilla.");
         }
         if(comprador.getAvatar().isAvanzado()) {
             if (compraMovimientoCoche) {
-                consolaNormal.imprimir("El jugador ya ha comprado una propiedad en este turno.");
+                throw new Exception("El jugador ya ha comprado una propiedad en este turno.");
             } else {
                 compraMovimientoCoche = true;
                 propiedad.comprarCasilla(comprador, banca);
