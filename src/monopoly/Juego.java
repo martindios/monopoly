@@ -14,6 +14,7 @@ import monopoly.casilla.propiedad.Transporte;
 import monopoly.excepcion.ExcepcionBancarrota;
 import monopoly.excepcion.ExcepcionEntidadNoExistente;
 import monopoly.excepcion.excepcionCarcel.ExcepcionCarcel;
+import monopoly.excepcion.excepcionCarcel.ExcepcionCarcelTirarDados;
 import monopoly.excepcion.excepcionCarcel.ExcepcionIrACarcel;
 import monopoly.excepcion.excepcionCarcel.ExcepcionJugadorEnCarcel;
 import monopoly.excepcion.ExcepcionMovimientosAvanzados;
@@ -63,7 +64,7 @@ public class Juego implements Comando{
     //Instancias la consola en esta clase
 
     /**********Constructor**********/
-    public Juego() throws ExcepcionEntradaUsuario {
+    public Juego() throws Exception {
         this.jugadores = new ArrayList<>();
         this.avatares = new ArrayList<>();
         this.barajas = new Baraja();
@@ -140,7 +141,7 @@ public class Juego implements Comando{
     /******************************/
 
     /*Método para mostrar la pantalla de inicio y crear los jugadores*/
-    public void preIniciarPartida() throws ExcepcionEntradaUsuario {
+    public void preIniciarPartida() throws Exception {
         imprimirLogo();
 
         /*establece el número de jugadores que van a jugar la partida*/
@@ -155,7 +156,7 @@ public class Juego implements Comando{
   
 
     /*Método que imprime el logo mediante un for con un efecto visual*/
-    public void imprimirLogo() {
+    public void imprimirLogo() throws Exception {
         ArrayList<String> array = new ArrayList<>();
         array.add("*************************************************************************************\n");
         array.add(".___  ___.   ______   .__   __.   ______   .______     ______    __      ____    ____ \n");
@@ -172,7 +173,7 @@ public class Juego implements Comando{
                 try {
                     Thread.sleep(2);
                 } catch (InterruptedException e) {
-                    consolaNormal.imprimir("Error en la impresión del logo");
+                    throw new Exception("Error en la impresión del logo");
                 }
             }
         }
@@ -769,10 +770,7 @@ public class Juego implements Comando{
             tirado = false; // Permitimos otro lanzamiento
             dadosDobles = true;
         } else {
-            consolaNormal.imprimir("No han salido dobles... El jugador pierde el turno");
-            dadosDobles = false;
-            jugador.setTiradasCarcel(jugador.getTiradasCarcel() + 1);
-            acabarTurno();
+            throw new ExcepcionCarcelTirarDados();
         }
     }
 
@@ -789,7 +787,7 @@ public class Juego implements Comando{
      * En el caso de que el jugador caiga en una casilla de Impuestos, se deduce el impuesto
      * de la fortuna del jugador y se suma al bote del Parking.
      */
-    public void evaluacion() throws ExcepcionEntidadNoExistente, ExcepcionBancarrota, ExcepcionEdificar {
+    public void evaluacion() throws Exception {
         Jugador jugadorActual = jugadores.get(turno);
         Casilla casillaActual = jugadorActual.getAvatar().getLugar();
         solvente = casillaActual.evaluarCasilla(jugadores.get(turno), banca, dado1.getValor() + dado2.getValor());
@@ -837,7 +835,7 @@ public class Juego implements Comando{
                     acabarTurno();
                 }
             }
-            default -> consolaNormal.imprimir("Error en la evaluación de casilla");
+            default -> throw new Exception("Error en la evaluación de casilla");
         }
     }
 
@@ -893,23 +891,6 @@ public class Juego implements Comando{
             throw new ExcepcionEdificarNoPropietario();
         }
 
-
-
-        /*        if(!(jugador.getAvatar().getLugar() instanceof Solar)) {
-            throw new ExcepcionEdificarNoEdificable();
-        }
-        if (!this.getDuenho().equals(jugador)) {
-            throw new ExcepcionEdificarNoPropietario();
-        }
-        if (jugador.getFortuna() < this.getValor() * 0.6) {
-            throw new ExcepcionEdificarNoDinero("hotel");
-        }
-        if((this.getGrupo().getNumEdificios(this.getGrupo().getEdificiosGrupo(), Hotel.class) == this.getGrupo().getNumCasillas())) {
-            throw new ExcepcionEdificar("Tienes el número máximo de hoteles construídos en el grupo (" + this.getGrupo().getNumCasillas() + ").");
-        }
-        if((this.getNumEdificios(edificios, Casa.class)) != 4){
-            throw new ExcepcionEdificar("No tienes el mínimo de casas en la casilla para poder edificar un hotel (4 casas).");
-        }*/
         switch (palabra) {
             case "Casa":
                 factor = 0.6f;
@@ -1069,23 +1050,20 @@ public class Juego implements Comando{
      * @param nombreCasilla El nombre de la casilla donde se encuentran los edificios.
      * @param cantidad La cantidad de edificios a vender.
      */
-    public void ventaEdificio(String tipo, String nombreCasilla, String cantidad) throws ExcepcionEntidadNoExistente {
+    public void ventaEdificio(String tipo, String nombreCasilla, String cantidad) throws ExcepcionEntidadNoExistente, ExcepcionEdificar {
         int contador = 0;
         Casilla casilla = tablero.encontrar_casilla(nombreCasilla);
         if(casilla == null) {
             throw new ExcepcionEntidadNoExistente("casilla");
         }
         if(!(casilla instanceof Solar solar)) {
-            consolaNormal.imprimir("La casilla no es un solar, no se pueden vender edificios.");
-            return;
+            throw new ExcepcionEdificar("La casilla no es un solar, no se pueden vender edificios.");
         }
         if(solar.getDuenho() != jugadores.get(turno)) {
-            consolaNormal.imprimir("No eres propietario de la casilla, no puedes vender edificios.");
-            return;
+            throw new ExcepcionEdificar("No eres propietario de la casilla, no puedes vender edificios.");
         }
         if(solar.getEdificios().isEmpty()) {
-            consolaNormal.imprimir("No hay edificios en la casilla.");
-            return;
+            throw new ExcepcionEdificar("No hay edificios en la casilla.");
         }
 
 
@@ -1108,8 +1086,7 @@ public class Juego implements Comando{
             }
         }
         if(contador != Integer.parseInt(cantidad)) {
-            consolaNormal.imprimir("No hay " + Integer.parseInt(cantidad) + " edificios del tipo " + tipo + " en la casilla.");
-            return;
+            throw new ExcepcionEdificar("No hay " + Integer.parseInt(cantidad) + " edificios del tipo " + tipo + " en la casilla.");
         }
         solar.venderEdificios(tipoDeseado, contador);
         solar.modificarAlquiler();
@@ -1139,10 +1116,9 @@ public class Juego implements Comando{
     /**********************************/
 
     /* Método que realiza las acciones asociadas al comando 'acabar turno' */
-    public void acabarTurno() {
+    public void acabarTurno() throws Exception {
         if(!solvente) {
-            consolaNormal.imprimir("El jugador no es solvente, no puede acabar turno.");
-            return;
+            throw new Exception("El jugador no es solvente, no puede acabar turno.");
         }
         //Tiradas carcel xa axustadas na funcion SaliCarcel
         //if(!tirado || dado1.getValor() == dado2.getValor()) {
@@ -1151,8 +1127,7 @@ public class Juego implements Comando{
             tirado = true;
         }
         if(!tirado || dadosDobles) {
-            consolaNormal.imprimir("No puedes acabar turno sin haber lanzado los dados.");
-            return;
+            throw new Exception("No puedes acabar turno sin haber lanzado los dados.");
         }
         consolaNormal.imprimir(infoTrasTurno(jugadores.get(turno)));
         Jugador anterior = jugadores.get(turno);
@@ -1210,33 +1185,28 @@ public class Juego implements Comando{
      *
      * @param nombreCasilla El nombre de la casilla a hipotecar.
      */
-    public void hipotecar(String nombreCasilla) {
+    public void hipotecar(String nombreCasilla) throws Exception {
         Casilla casilla = tablero.encontrar_casilla(nombreCasilla);
         Jugador jugadorActual = jugadores.get(turno);
 
         if (casilla == null) {
-            consolaNormal.imprimir("Casilla no encontrada");
-            return;
+            throw new Exception("Casilla no encontrada");
         }
 
         if(!(casilla instanceof Propiedad propiedad)) {
-            consolaNormal.imprimir("La casilla no es una propiedad");
-            return;
+            throw new Exception("La casilla no es una propiedad");
         }
 
         if (!propiedad.getDuenho().equals(jugadorActual)) {
-            consolaNormal.imprimir(jugadorActual.getNombre() + " no puede hipotecar " + nombreCasilla + ". No es una propiedad que le pertenece");
-            return;
+            throw new Exception(jugadorActual.getNombre() + " no puede hipotecar " + nombreCasilla + ". No es una propiedad que le pertenece");
         }
 
         if(propiedad instanceof Solar solar && !(solar.getEdificios().isEmpty())) {
-            consolaNormal.imprimir(jugadorActual.getNombre() + " no puede hipotecar " + nombreCasilla + ". Tiene edificios construidos");
-            return;
+            throw new Exception(jugadorActual.getNombre() + " no puede hipotecar " + nombreCasilla + ". Tiene edificios construidos");
         }
 
         if (propiedad.isHipotecado()) {
-            consolaNormal.imprimir(jugadorActual.getNombre() + " no puede hipotecar " + nombreCasilla + ". Ya está hipotecada");
-            return;
+            throw new Exception(jugadorActual.getNombre() + " no puede hipotecar " + nombreCasilla + ". Ya está hipotecada");
         }
 
         consolaNormal.imprimir("El jugador " + jugadorActual.getNombre() + " hipoteca " + nombreCasilla + " por " + propiedad.getHipoteca());
@@ -1252,33 +1222,28 @@ public class Juego implements Comando{
      *
      * @param nombreCasilla El nombre de la casilla a deshipotecar.
      */
-    public void deshipotecar(String nombreCasilla) {
+    public void deshipotecar(String nombreCasilla) throws Exception {
         Jugador jugadorActual = jugadores.get(turno);
         Casilla casilla = tablero.encontrar_casilla(nombreCasilla);
 
         if (casilla == null) {
-            consolaNormal.imprimir("Casilla no encontrada");
-            return;
+            throw new Exception("Casilla no encontrada");
         }
 
         if(!(casilla instanceof Propiedad propiedad)) {
-            consolaNormal.imprimir("La casilla no es una propiedad");
-            return;
+            throw new Exception("La casilla no es una propiedad");
         }
 
         if (!propiedad.getDuenho().equals(jugadorActual)) {
-            consolaNormal.imprimir(jugadorActual.getNombre() + " no puede deshipotecar " + nombreCasilla + ". No es una propiedad que le pertenece");
-            return;
+            throw new Exception(jugadorActual.getNombre() + " no puede deshipotecar " + nombreCasilla + ". No es una propiedad que le pertenece");
         }
         if (!propiedad.isHipotecado()) {
-            consolaNormal.imprimir(jugadorActual.getNombre() + " no puede deshipotecar " + nombreCasilla + ". No está hipotecada");
-            return;
+            throw new Exception(jugadorActual.getNombre() + " no puede deshipotecar " + nombreCasilla + ". No está hipotecada");
         }
 
         float precioDeshipotecar = propiedad.getHipoteca() * 1.1f;
         if(precioDeshipotecar > jugadorActual.getFortuna()) {
-            consolaNormal.imprimir(jugadorActual.getNombre() + " no puede deshipotecar " + nombreCasilla + ". No tiene suficiente dinero");
-            return;
+            throw new Exception(jugadorActual.getNombre() + " no puede deshipotecar " + nombreCasilla + ". No tiene suficiente dinero");
         }
 
         consolaNormal.imprimir("El jugador " + jugadorActual.getNombre() + " paga " + precioDeshipotecar + " por deshipotecar "
@@ -1290,7 +1255,7 @@ public class Juego implements Comando{
         propiedad.setHipotecado(false);
     }
 
-    private void propiedadesHipotecables(Jugador jugadorActual, ArrayList<Propiedad> propiedades) {
+    private void propiedadesHipotecables(Jugador jugadorActual, ArrayList<Propiedad> propiedades) throws Exception {
         for(Propiedad propiedad : jugadorActual.getPropiedades()) {
             if(!propiedad.isHipotecado()) {
                 switch (propiedad) {
@@ -1302,38 +1267,36 @@ public class Juego implements Comando{
             }
         }
         if(propiedades.isEmpty()) {
-            consolaNormal.imprimir("El jugador " + jugadorActual.getNombre() + " no tiene propiedades hipotecables");
+            throw new Exception("El jugador " + jugadorActual.getNombre() + " no tiene propiedades hipotecables");
         }
     }
 
-    private void edificiosVender(Jugador jugadorActual, ArrayList<Edificio> edificiosLista) {
+    private void edificiosVender(Jugador jugadorActual, ArrayList<Edificio> edificiosLista) throws Exception {
         edificiosLista.addAll(jugadorActual.getEdificios());
         if(edificiosLista.isEmpty()) {
-            consolaNormal.imprimir("El jugador " + jugadorActual.getNombre() + " no tiene edificios");
+            throw new Exception("El jugador " + jugadorActual.getNombre() + " no tiene edificios");
         }
     }
 
-    private Propiedad buscarHipotecable(Jugador JugadorActual, String nombrePropiedad) {
+    private Propiedad buscarHipotecable(Jugador JugadorActual, String nombrePropiedad) throws Exception {
         for(Propiedad propiedad : JugadorActual.getPropiedades()) {
             if(propiedad.getNombre().equals(nombrePropiedad) && !propiedad.isHipotecado()) {
                 return propiedad;
             }
         }
-        consolaNormal.imprimir("Propiedad no válida.");
-        return null;
+        throw new Exception("Propiedad no válida.");
     }
 
-    private Edificio buscarEdificio(Jugador jugadorActual, String idEdificio) {
+    private Edificio buscarEdificio(Jugador jugadorActual, String idEdificio) throws Exception {
         for (Edificio edificio : jugadorActual.getEdificios()) {
             if (edificio.getIdEdificio().equals(idEdificio)) {
                 return edificio;
             }
         }
-        consolaNormal.imprimir("Edificio no válido.");
-        return null;
+        throw new Exception("Edificio no válido.");
     }
 
-    private void evaluarRecoleccionDinero(Jugador jugadorActual, int contadorPropiedades, int contadorEdificios, float dineroAConseguir, float dineroConseguido) throws ExcepcionEntidadNoExistente, ExcepcionBancarrota, ExcepcionEdificar {
+    private void evaluarRecoleccionDinero(Jugador jugadorActual, int contadorPropiedades, int contadorEdificios, float dineroAConseguir, float dineroConseguido) throws Exception {
         if(dineroConseguido > dineroAConseguir) {
             consolaNormal.imprimir("El jugador ha conseguido suficiente dinero para pagar. Se ha vuelto solvente.");
             if(jugadorActual.getAvatar().getLugar().getNombre().equals("Cárcel")) {
@@ -1344,8 +1307,7 @@ public class Juego implements Comando{
         }
         else {
             if(contadorEdificios == 0 && contadorPropiedades == 0) {
-                consolaNormal.imprimir("El jugador no ha conseguido dinero suficiente y no le quedan propiedades ni edificios para vender. Se declara en bancarrota.");
-                bancarrota(false);
+                throw new ExcepcionBancarrota("El jugador no ha conseguido dinero suficiente y no le quedan propiedades ni edificios para vender. Se declara en bancarrota.");
             }
             else {
                 consolaNormal.imprimir("El jugador no ha conseguido suficiente dinero para pagar. Debe seguir vendiendo propiedades.");
@@ -1357,7 +1319,7 @@ public class Juego implements Comando{
     /*
     /*Método que se llama cuando el jugador tiene que conseguir dinero vendiendo edificios, hipotecando propiedades y sino
      *debe declararse en bancarrota*/
-    public void conseguirDinero(float dineroAConseguir) throws ExcepcionEntidadNoExistente, ExcepcionBancarrota, ExcepcionEdificar {
+    public void conseguirDinero(float dineroAConseguir) throws Exception {
         //Declaramos las variables necesarias
         float dineroConseguido = 0;
         int contadorPropiedades = 0;
@@ -1527,8 +1489,7 @@ public class Juego implements Comando{
 
         // Verificar si el jugador está en la cárcel
         if (!jugActual.getEnCarcel()) {
-            consolaNormal.imprimir("El jugador no está en la cárcel. No puede usar el comando.");
-            return;
+            throw new ExcepcionCarcel("El jugador no está en la cárcel. No puede usar el comando.");
         }
 
         float fianza = carcel.getImpuesto();

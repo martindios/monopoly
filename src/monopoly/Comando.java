@@ -17,10 +17,10 @@ public interface Comando {
     void crearJugadores() throws ExcepcionEntradaUsuario;
     void lanzarDados(int tirada1, int tirada2) throws Exception;
     void lanzarDados(Jugador jugador) throws Exception;
-    void evaluacion() throws ExcepcionEntidadNoExistente, ExcepcionBancarrota, ExcepcionEdificar;
+    void evaluacion() throws Exception;
     void VueltasTablero();
     void avanzar() throws Exception;
-    void acabarTurno();
+    void acabarTurno() throws Exception;
     void listarVenta() throws ExcepcionNoHayPropiedadesVenta;
     void listarJugadores();
     void listarAvatares();
@@ -31,11 +31,11 @@ public interface Comando {
     void descAvatar(String ID) throws ExcepcionEntidadNoExistente;
     void descCasilla(String NombreCasilla) throws Exception;
     void comprar(String nombre) throws Exception;
-    void hipotecar(String nombreCasilla);
-    void deshipotecar(String nombreCasilla);
+    void hipotecar(String nombreCasilla) throws Exception;
+    void deshipotecar(String nombreCasilla) throws Exception;
     void edificar(String palabra) throws Exception;
     void modoAvanzado() throws ExcepcionMovimientosAvanzados;
-    void ventaEdificio(String tipo, String nombreCasilla, String cantidad) throws ExcepcionEntidadNoExistente;
+    void ventaEdificio(String tipo, String nombreCasilla, String cantidad) throws ExcepcionEntidadNoExistente, ExcepcionEdificar;
     void estadisticas();
     void estadisticasJugador(String jugadorStr) throws ExcepcionEntidadNoExistente;
     void bancarrota(boolean voluntario);

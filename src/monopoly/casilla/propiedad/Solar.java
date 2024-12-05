@@ -130,15 +130,6 @@ public class Solar extends Propiedad{
     /**************************/
 
     public boolean edificarCasa(Jugador jugador, int contadorCasa) throws ExcepcionEdificar {
-        if(!(jugador.getAvatar().getLugar() instanceof Solar)) {
-            throw new ExcepcionEdificarNoEdificable();
-        }
-        if(!this.getDuenho().equals(jugador)){
-            throw new ExcepcionEdificarNoPropietario();
-        }
-        if(jugador.getFortuna() < this.getValor() * 0.6) {
-            throw new ExcepcionEdificarNoDinero("casa");
-        }
         if(!(this.getContador() > 2 || this.getGrupo().esDuenhoGrupo(this.getDuenho()))){
             throw new ExcepcionEdificar("El jugador no ha caído en la casilla más de dos veces o no posee el grupo de casillas a la que pertenece dicha casilla.");
         }
@@ -162,15 +153,6 @@ public class Solar extends Propiedad{
     }
 
     public boolean edificarHotel(Jugador jugador, int contadorHotel) throws ExcepcionEdificar {
-        if(!(jugador.getAvatar().getLugar() instanceof Solar)) {
-            throw new ExcepcionEdificarNoEdificable();
-        }
-        if (!this.getDuenho().equals(jugador)) {
-            throw new ExcepcionEdificarNoPropietario();
-        }
-        if (jugador.getFortuna() < this.getValor() * 0.6) {
-            throw new ExcepcionEdificarNoDinero("hotel");
-        }
         if((this.getGrupo().getNumEdificios(this.getGrupo().getEdificiosGrupo(), Hotel.class) == this.getGrupo().getNumCasillas())) {
             throw new ExcepcionEdificar("Tienes el número máximo de hoteles construídos en el grupo (" + this.getGrupo().getNumCasillas() + ").");
         }
@@ -184,15 +166,6 @@ public class Solar extends Propiedad{
     }
 
     public boolean edificarPiscina(Jugador jugador, int contadorPiscina) throws ExcepcionEdificar {
-        if(!(jugador.getAvatar().getLugar() instanceof Solar)) {
-            throw new ExcepcionEdificarNoEdificable();
-        }
-        if (!this.getDuenho().equals(jugador)) {
-            throw new ExcepcionEdificarNoPropietario();
-        }
-        if (jugador.getFortuna() < this.getValor() * 0.4) {
-            throw new ExcepcionEdificarNoDinero("piscina");
-        }
         if((this.getGrupo().getNumEdificios(this.getGrupo().getEdificiosGrupo(), Piscina.class) == this.getGrupo().getNumCasillas())) {
             throw new ExcepcionEdificar("Tienes el número máximo de piscinas construídas en el grupo (" + this.getGrupo().getNumCasillas() + ").");
         }
@@ -205,15 +178,6 @@ public class Solar extends Propiedad{
     }
 
     public boolean edificarPistaDeporte(Jugador jugador, int contadorPistaDeporte) throws ExcepcionEdificar {
-        if(!(jugador.getAvatar().getLugar() instanceof Solar)) {
-            throw new ExcepcionEdificarNoEdificable();
-        }
-        if (!this.getDuenho().equals(jugador)) {
-            throw new ExcepcionEdificarNoPropietario();
-        }
-        if (jugador.getFortuna() < this.getValor() * 1.25) {
-            throw new ExcepcionEdificarNoDinero("pista de deporte");
-        }
         if((this.getGrupo().getNumEdificios(this.getGrupo().getEdificiosGrupo(), PistaDeporte.class) == this.getGrupo().getNumCasillas())) {
             throw new ExcepcionEdificar("Tienes el número máximo de pistas de deporte construídas en el grupo (" + this.getGrupo().getNumCasillas() + ").");
         }
@@ -225,7 +189,7 @@ public class Solar extends Propiedad{
         return true;
     }
 
-    public void crearEdificio(String tipoEdificio, Jugador jugador, int contador){
+    public void crearEdificio(String tipoEdificio, Jugador jugador, int contador) throws ExcepcionEdificar {
         Edificio edificio;
         switch(tipoEdificio) {
             case "Casa":
@@ -245,8 +209,7 @@ public class Solar extends Propiedad{
                 edificio = (Edificio) pistaDeporte;
                 break;
             default:
-                consolaNormal.imprimir("Tipo de edificio no válido.");
-                return;
+                throw new ExcepcionEdificar("Tipo de edificio no válido.");
         }
         edificios.add(edificio);
         jugador.getEdificios().add(edificio);

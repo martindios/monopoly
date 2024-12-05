@@ -2,6 +2,7 @@ package monopoly.carta;
 
 import monopoly.Tablero;
 import monopoly.casilla.Casilla;
+import monopoly.excepcion.excepcionCarcel.ExcepcionCarcel;
 import partida.Jugador;
 
 import java.util.ArrayList;
@@ -16,7 +17,7 @@ public class CartaCajaComunidad extends Carta{
     }
 
     @Override
-    public void accion(Jugador banca, Jugador jugadorActual, Tablero tablero, ArrayList<Jugador> jugadores, int idCarta) {
+    public void accion(Jugador banca, Jugador jugadorActual, Tablero tablero, ArrayList<Jugador> jugadores, int idCarta) throws ExcepcionCarcel {
         Casilla bote;
         int dinero;
 

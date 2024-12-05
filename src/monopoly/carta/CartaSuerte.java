@@ -2,6 +2,7 @@ package monopoly.carta;
 
 import monopoly.Tablero;
 import monopoly.casilla.Casilla;
+import monopoly.excepcion.excepcionCarcel.ExcepcionCarcel;
 import partida.Jugador;
 import monopoly.Baraja;
 
@@ -18,7 +19,7 @@ public class CartaSuerte extends Carta{
     }
 
     @Override
-    public void accion(Jugador banca, Jugador jugadorActual, Tablero tablero, ArrayList<Jugador> jugadores, int idCarta) {
+    public void accion(Jugador banca, Jugador jugadorActual, Tablero tablero, ArrayList<Jugador> jugadores, int idCarta) throws ExcepcionCarcel {
         int dinero;
         switch(idCarta) {
             case 1: /*Ir a Transportes1*/

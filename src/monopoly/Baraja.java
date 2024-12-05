@@ -1,6 +1,7 @@
 package monopoly;
 
 import monopoly.casilla.Casilla;
+import monopoly.excepcion.excepcionCarcel.ExcepcionCarcel;
 import partida.Jugador;
 import monopoly.carta.Carta;
 import monopoly.carta.CartaCajaComunidad;
@@ -65,7 +66,7 @@ public class Baraja {
         Collections.shuffle(baraja);
     }
 
-    public void evaluarSuerte(Jugador banca, Jugador jugadorActual, Tablero tablero, ArrayList<Jugador> jugadores){
+    public void evaluarSuerte(Jugador banca, Jugador jugadorActual, Tablero tablero, ArrayList<Jugador> jugadores) throws ExcepcionCarcel {
 
         barajar(barajaSuerte);
 
@@ -89,7 +90,7 @@ public class Baraja {
     }
 
 
-    public void evaluarCajaComunidad(Jugador banca, Jugador jugadorActual, Tablero tablero, ArrayList<Jugador> jugadores){
+    public void evaluarCajaComunidad(Jugador banca, Jugador jugadorActual, Tablero tablero, ArrayList<Jugador> jugadores) throws ExcepcionCarcel {
 
         barajar(barajaCajaComunidad);
 
@@ -132,7 +133,8 @@ public class Baraja {
                 }
             } catch (InputMismatchException e) {
                 consolaNormal.imprimir("Entrada inválida, introduzca un número");
-                consolaNormal.leerPalabra();            }
+                consolaNormal.leerPalabra();
+            }
         }
         return num;
     }
