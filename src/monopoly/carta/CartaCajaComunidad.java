@@ -15,10 +15,10 @@ public class CartaCajaComunidad extends Carta{
         super(descripcion, tipo, idCarta);
     }
 
-
+    @Override
     public void accion(Jugador banca, Jugador jugadorActual, Tablero tablero, ArrayList<Jugador> jugadores, int idCarta) {
         Casilla bote;
-        int dinero=0;
+        int dinero;
 
         switch(idCarta) {
             case 1: /*Paga 500000*/

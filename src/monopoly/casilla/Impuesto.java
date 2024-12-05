@@ -16,7 +16,7 @@ public class Impuesto extends Casilla {
 
     @Override
     public String infoCasilla() throws Exception {
-        System.out.println(super.infoCasilla());
+        consolaNormal.imprimir(super.infoCasilla());
         return "Tipo: Impuestos,\n" +
                 "impuesto: " + this.getImpuesto();
     }
