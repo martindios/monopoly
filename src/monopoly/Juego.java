@@ -11,14 +11,11 @@ import monopoly.casilla.propiedad.Propiedad;
 import monopoly.casilla.propiedad.Servicio;
 import monopoly.casilla.propiedad.Solar;
 import monopoly.casilla.propiedad.Transporte;
-import monopoly.excepcion.ExcepcionBancarrota;
-import monopoly.excepcion.ExcepcionEntidadNoExistente;
+import monopoly.excepcion.*;
 import monopoly.excepcion.excepcionCarcel.ExcepcionCarcel;
 import monopoly.excepcion.excepcionCarcel.ExcepcionCarcelTirarDados;
 import monopoly.excepcion.excepcionCarcel.ExcepcionIrACarcel;
 import monopoly.excepcion.excepcionCarcel.ExcepcionJugadorEnCarcel;
-import monopoly.excepcion.ExcepcionMovimientosAvanzados;
-import monopoly.excepcion.ExcepcionNoHayPropiedadesVenta;
 import monopoly.excepcion.excepcionDados.ExcepcionDados;
 import monopoly.excepcion.excepcionDados.ExcepcionDadosCoche;
 import monopoly.excepcion.excepcionEdificar.ExcepcionEdificar;
@@ -1668,7 +1665,7 @@ public class Juego implements Comando{
     /*SECCIÓN DE TRATOS*/
     /*******************/
 
-    public void clasificarTrato(String jugadorOfertado, String objeto1, String objeto2, String objeto3) {
+    public void clasificarTrato(String jugadorOfertado, String objeto1, String objeto2, String objeto3) throws Exception {
         Jugador jugadorOfrece = jugadores.get(turno);
         Jugador jugadorRecibe = null;
         for(Jugador jugador : jugadores) {
@@ -1678,12 +1675,10 @@ public class Juego implements Comando{
             }
         }
         if(jugadorRecibe == null) {
-            consolaNormal.imprimir("Jugador no encontrado.");
-            return;
+            throw new Exception("Jugador no encontrado.");
         }
         if(jugadorOfrece.equals(jugadorRecibe)) {
-            consolaNormal.imprimir("No puedes hacer tratos contigo mismo.");
-            return;
+            throw new Exception("No puedes hacer tratos contigo mismo.");
         }
 
         if(objeto3 == null) {
@@ -1709,14 +1704,13 @@ public class Juego implements Comando{
         }
     }
 
-    private void creacionTrato(Jugador jugadorOfrece, Jugador jugadorRecibe, String objeto1, String objeto2, String objeto3, int trato) {
+    private void creacionTrato(Jugador jugadorOfrece, Jugador jugadorRecibe, String objeto1, String objeto2, String objeto3, int trato) throws Exception {
         switch (trato) {
             case 1:
                 Propiedad propiedad1 = obtenerPropiedad(jugadorOfrece, objeto1);
                 Propiedad propiedad2 = obtenerPropiedad(jugadorRecibe, objeto2);
                 if(propiedad1 == null || propiedad2 == null) {
-                    consolaNormal.imprimir("Una de las propiedades no pertenece a un jugador. No se formaliza el trato.");
-                    return;
+                    throw new Exception("Una de las propiedades no pertenece a un jugador. No se formaliza el trato.");
                 }
 
                 Trato tratoCreado = new Trato(jugadorOfrece, jugadorRecibe, propiedad1, propiedad2, contadorTratos);
@@ -1727,8 +1721,7 @@ public class Juego implements Comando{
             case 2:
                 Propiedad propiedad3 = obtenerPropiedad(jugadorOfrece, objeto1);
                 if(propiedad3 == null) {
-                    consolaNormal.imprimir("La propiedad no pertenece al jugador que inicia el trato. No se formaliza el mismo.");
-                    return;
+                    throw new ExcepcionTratoNoPropiedad("inicia");
                 }
 
                 Trato tratoCreado2 = new Trato(jugadorOfrece, jugadorRecibe, propiedad3, Float.parseFloat(objeto2), contadorTratos);
@@ -1739,8 +1732,7 @@ public class Juego implements Comando{
             case 3:
                 Propiedad propiedad4 = obtenerPropiedad(jugadorRecibe, objeto2);
                 if(propiedad4 == null) {
-                    consolaNormal.imprimir("La propiedad no pertenece al jugador que recibe el trato. No se formaliza el mismo.");
-                    return;
+                    throw new ExcepcionTratoNoPropiedad("recibe");
                 }
 
                 Trato tratoCreado3 = new Trato(jugadorOfrece, jugadorRecibe, Float.parseFloat(objeto1), propiedad4, contadorTratos);
@@ -1751,14 +1743,12 @@ public class Juego implements Comando{
             case 4:
                 Propiedad propiedad5 = obtenerPropiedad(jugadorOfrece, objeto1);
                 if(propiedad5 == null) {
-                    consolaNormal.imprimir("La propiedad no pertenece al jugador que inicia el trato. No se formaliza el mismo.");
-                    return;
+                    throw new ExcepcionTratoNoPropiedad("inicia");
                 }
 
                 Propiedad propiedad6 = obtenerPropiedad(jugadorRecibe, objeto2);
                 if(propiedad6 == null) {
-                    consolaNormal.imprimir("La propiedad no pertenece al jugador que recibe el trato. No se formaliza el mismo.");
-                    return;
+                    throw new ExcepcionTratoNoPropiedad("recibe");
                 }
 
                 Trato tratoCreado4 = new Trato(jugadorOfrece, jugadorRecibe, propiedad5, propiedad6, Float.parseFloat(objeto3), contadorTratos);
@@ -1769,14 +1759,12 @@ public class Juego implements Comando{
             case 5:
                 Propiedad propiedad7 = obtenerPropiedad(jugadorOfrece, objeto1);
                 if(propiedad7 == null) {
-                    consolaNormal.imprimir("La propiedad no pertenece al jugador que inicia el trato. No se formaliza el mismo.");
-                    return;
+                    throw new ExcepcionTratoNoPropiedad("inicia");
                 }
 
                 Propiedad propiedad8 = obtenerPropiedad(jugadorRecibe, objeto3);
                 if(propiedad8 == null) {
-                    consolaNormal.imprimir("La propiedad no pertenece al jugador que recibe el trato. No se formaliza el mismo.");
-                    return;
+                    throw new ExcepcionTratoNoPropiedad("recibe");
                 }
 
                 Trato tratoCreado5 = new Trato(jugadorOfrece, jugadorRecibe, propiedad7, Float.parseFloat(objeto2), propiedad8, contadorTratos);
