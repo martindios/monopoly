@@ -102,7 +102,7 @@ public abstract class Casilla {
      * Método que devuelve true si el avatar pasado por parámetro se encuentra
      * en la casilla, false si no está.
      */
-    boolean estaAvatar(Avatar avatar) {
+    public boolean estaAvatar(Avatar avatar) {
         return avatares.contains(avatar);
     }
 
@@ -129,7 +129,7 @@ public abstract class Casilla {
     /**
      * Incrementa el contador de veces que la casilla ha sido frecuentada.
      */
-    public void sumarVecesFrecuentada() {
+    public void frecuenciaVisita() {
         this.totalVecesFrecuentada++;
     }
 
