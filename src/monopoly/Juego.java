@@ -46,6 +46,7 @@ public class Juego implements Comando{
     private int contadorHotel;
     private int contadorPiscina;
     private int contadorPistaDeporte;
+    private int contadorTratos;
 
     private int saltoMovimiento; //Variable para controlar el movimiento del avatar en modo avanzado
     private boolean seHaMovido; //Booleano para comprobar si el jugador se ha movido en su turno
@@ -1661,7 +1662,135 @@ public class Juego implements Comando{
         return listaArray.toString();
     }
 
+    /*******************/
+    /*SECCIÓN DE TRATOS*/
+    /*******************/
 
+    public void clasificarTrato(String jugadorOfertado, String objeto1, String objeto2, String objeto3) {
+        Jugador jugadorOfrece = jugadores.get(turno);
+        Jugador jugadorRecibe = null;
+        for(Jugador jugador : jugadores) {
+            if(jugador.getNombre().equals(jugadorOfertado)) {
+                jugadorRecibe = jugador;
+                break;
+            }
+        }
+        if(jugadorRecibe == null) {
+            consolaNormal.imprimir("Jugador no encontrado.");
+            return;
+        }
+        if(jugadorOfrece.equals(jugadorRecibe)) {
+            consolaNormal.imprimir("No puedes hacer tratos contigo mismo.");
+            return;
+        }
 
+        if(objeto3 == null) {
+            //Orden inverso para que se detecten los números (el dinero) antes de que se detecten como String
+            if (objeto1.matches("\\d+\\.\\d+|\\d+") && objeto2.matches("\\S+")) {
+                // Caso 3: cantidad de dinero por propiedad
+                creacionTrato(jugadorOfrece, jugadorRecibe, objeto1, objeto2, null, 3);
+            } else if (objeto1.matches("\\S+") && objeto2.matches("\\d+\\.\\d+|\\d+")) {
+                // Caso 2: propiedad por cantidad de dinero
+                creacionTrato(jugadorOfrece, jugadorRecibe, objeto1, objeto2, null, 2);
+            } else if (objeto1.matches("\\S+") && objeto2.matches("\\S+")) {
+                // Caso 1: propiedad por propiedad
+                creacionTrato(jugadorOfrece, jugadorRecibe, objeto1, objeto2, null, 1);
+            }
+        }
+        else {
+            if(objeto1.matches("\\S+") && objeto2.matches("\\S+") && objeto3.matches("(\\d+\\.\\d+|\\d+)")) {
+                creacionTrato(jugadorOfrece, jugadorRecibe, objeto1, objeto2, objeto3, 4);
+            }
+            else if(objeto1.matches("\\S+") && objeto2.matches("(\\d+\\.\\d+|\\d+)") && objeto3.matches("\\S+")) {
+                creacionTrato(jugadorOfrece, jugadorRecibe, objeto1, objeto2, objeto3, 5);
+            }
+        }
+    }
+
+    private void creacionTrato(Jugador jugadorOfrece, Jugador jugadorRecibe, String objeto1, String objeto2, String objeto3, int trato) {
+        switch (trato) {
+            case 1:
+                Propiedad propiedad1 = obtenerPropiedad(jugadorOfrece, objeto1);
+                Propiedad propiedad2 = obtenerPropiedad(jugadorRecibe, objeto2);
+                if(propiedad1 == null || propiedad2 == null) {
+                    consolaNormal.imprimir("Una de las propiedades no pertenece a un jugador. No se formaliza el trato.");
+                    return;
+                }
+
+                Trato tratoCreado = new Trato(jugadorOfrece, jugadorRecibe, propiedad1, propiedad2, contadorTratos);
+                jugadorRecibe.addTrato(tratoCreado);
+                consolaNormal.imprimir("Trato creado con éxito.");
+                break;
+
+            case 2:
+                Propiedad propiedad3 = obtenerPropiedad(jugadorOfrece, objeto1);
+                if(propiedad3 == null) {
+                    consolaNormal.imprimir("La propiedad no pertenece al jugador que inicia el trato. No se formaliza el mismo.");
+                    return;
+                }
+
+                Trato tratoCreado2 = new Trato(jugadorOfrece, jugadorRecibe, propiedad3, Float.parseFloat(objeto2), contadorTratos);
+                jugadorRecibe.addTrato(tratoCreado2);
+                consolaNormal.imprimir("Trato creado con éxito.");
+                break;
+
+            case 3:
+                Propiedad propiedad4 = obtenerPropiedad(jugadorRecibe, objeto2);
+                if(propiedad4 == null) {
+                    consolaNormal.imprimir("La propiedad no pertenece al jugador que recibe el trato. No se formaliza el mismo.");
+                    return;
+                }
+
+                Trato tratoCreado3 = new Trato(jugadorOfrece, jugadorRecibe, Float.parseFloat(objeto1), propiedad4, contadorTratos);
+                jugadorRecibe.addTrato(tratoCreado3);
+                consolaNormal.imprimir("Trato creado con éxito.");
+                break;
+
+            case 4:
+                Propiedad propiedad5 = obtenerPropiedad(jugadorOfrece, objeto1);
+                if(propiedad5 == null) {
+                    consolaNormal.imprimir("La propiedad no pertenece al jugador que inicia el trato. No se formaliza el mismo.");
+                    return;
+                }
+
+                Propiedad propiedad6 = obtenerPropiedad(jugadorRecibe, objeto2);
+                if(propiedad6 == null) {
+                    consolaNormal.imprimir("La propiedad no pertenece al jugador que recibe el trato. No se formaliza el mismo.");
+                    return;
+                }
+
+                Trato tratoCreado4 = new Trato(jugadorOfrece, jugadorRecibe, propiedad5, propiedad6, Float.parseFloat(objeto3), contadorTratos);
+                jugadorRecibe.addTrato(tratoCreado4);
+                consolaNormal.imprimir("Trato creado con éxito.");
+                break;
+
+            case 5:
+                Propiedad propiedad7 = obtenerPropiedad(jugadorOfrece, objeto1);
+                if(propiedad7 == null) {
+                    consolaNormal.imprimir("La propiedad no pertenece al jugador que inicia el trato. No se formaliza el mismo.");
+                    return;
+                }
+
+                Propiedad propiedad8 = obtenerPropiedad(jugadorRecibe, objeto3);
+                if(propiedad8 == null) {
+                    consolaNormal.imprimir("La propiedad no pertenece al jugador que recibe el trato. No se formaliza el mismo.");
+                    return;
+                }
+
+                Trato tratoCreado5 = new Trato(jugadorOfrece, jugadorRecibe, propiedad7, Float.parseFloat(objeto2), propiedad8, contadorTratos);
+                jugadorRecibe.addTrato(tratoCreado5);
+                consolaNormal.imprimir("Trato creado con éxito.");
+                break;
+        }
+    }
+
+    private Propiedad obtenerPropiedad(Jugador jugador, String propiedad) {
+        for(Propiedad prop : jugador.getPropiedades()) {
+            if(prop.getNombre().equals(propiedad)) {
+                return prop;
+            }
+        }
+        return null;
+    }
 
 }
