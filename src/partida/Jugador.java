@@ -2,6 +2,7 @@ package partida;
 
 import java.util.ArrayList;
 
+import monopoly.Trato;
 import monopoly.ConsolaNormal;
 import monopoly.edificio.*;
 import monopoly.casilla.Casilla;
@@ -28,6 +29,7 @@ public class Jugador{
     private ArrayList<Propiedad> propiedades; //Propiedades que posee el jugador.
     private ArrayList<String> hipotecas;
     private ArrayList<Edificio> edificios; //Propiedades que posee el jugador.
+    private ArrayList<Trato> tratos; //Tratos que ha recibido el jugador.
 
     /*Atributos designados para las estadísticas*/
     private float dineroInvertido;
@@ -83,6 +85,7 @@ public class Jugador{
         this.avatar = new Avatar(tipoAvatar, this, inicio, avCreados);
         // Añadimos o avatar á lista de avatares creados
         avCreados.add(this.avatar);
+        this.tratos = new ArrayList<>();
     }
 
     /**********Getters**********/
@@ -165,6 +168,10 @@ public class Jugador{
 
     public int getNoPuedeTirarDados() {
         return noPuedeTirarDados;
+    }
+
+    public ArrayList<Trato> getTratos() {
+        return tratos;
     }
 
     /**********Setters**********/
@@ -256,6 +263,15 @@ public class Jugador{
 
     public void sumarVecesTiradasDados() {
         this.vecesTiradasDados += 1;
+    }
+
+    //Métodos para añadir o eliminar tratos
+    public void addTrato(Trato trato) {
+        this.tratos.add(trato);
+    }
+
+    public void removeTrato(Trato trato) {
+        this.tratos.remove(trato);
     }
 
     //Método para añadir fortuna a un jugador

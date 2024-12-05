@@ -245,6 +245,26 @@ public class Menu {
                     case "bancarrota":
                         juego.bancarrota(true);
                         break;
+
+                    case "trato":
+                        if(palabrasArray.length == 5 && palabrasArray[3].equals("por")) {
+                            juego.clasificarTrato(palabrasArray[1], palabrasArray[2], palabrasArray[4], null);
+                        }
+                        else if(palabrasArray.length == 6) {
+                            if(palabrasArray[3].equals("por")) {
+                                juego.clasificarTrato(palabrasArray[1], palabrasArray[2], palabrasArray[4], palabrasArray[5]);
+                            }
+                            else if(palabrasArray[4].equals("por")) {
+                                juego.clasificarTrato(palabrasArray[1], palabrasArray[2], palabrasArray[3], palabrasArray[5]);
+                            }
+                            else {
+                                throw new ExcepcionFormatoIncorrecto("trato jugadorOfertado X por Y // trato jugadorOfertado X Y por Z // trato jugadorOfertado X por Y Z");
+                            }
+                        }
+                        else {
+                            throw new ExcepcionFormatoIncorrecto("trato jugadorOfertado X por Y // trato jugadorOfertado X Y por Z // trato jugadorOfertado X por Y Z");
+                        }
+                        break;
                     default:
                         throw new ExcepcionEntradaUsuario("Comando no válido");
                 }
