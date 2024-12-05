@@ -893,23 +893,6 @@ public class Juego implements Comando{
             throw new ExcepcionEdificarNoPropietario();
         }
 
-
-
-        /*        if(!(jugador.getAvatar().getLugar() instanceof Solar)) {
-            throw new ExcepcionEdificarNoEdificable();
-        }
-        if (!this.getDuenho().equals(jugador)) {
-            throw new ExcepcionEdificarNoPropietario();
-        }
-        if (jugador.getFortuna() < this.getValor() * 0.6) {
-            throw new ExcepcionEdificarNoDinero("hotel");
-        }
-        if((this.getGrupo().getNumEdificios(this.getGrupo().getEdificiosGrupo(), Hotel.class) == this.getGrupo().getNumCasillas())) {
-            throw new ExcepcionEdificar("Tienes el número máximo de hoteles construídos en el grupo (" + this.getGrupo().getNumCasillas() + ").");
-        }
-        if((this.getNumEdificios(edificios, Casa.class)) != 4){
-            throw new ExcepcionEdificar("No tienes el mínimo de casas en la casilla para poder edificar un hotel (4 casas).");
-        }*/
         switch (palabra) {
             case "Casa":
                 factor = 0.6f;
