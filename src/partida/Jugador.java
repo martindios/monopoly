@@ -88,6 +88,7 @@ public class Jugador{
                 break;
             case "Coche":
                 this.avatar = new Coche(this, inicio, avCreados);
+                break;
             case "Sombrero":
                 this.avatar = new Sombrero(this, inicio, avCreados);
                 break;

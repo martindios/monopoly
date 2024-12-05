@@ -124,7 +124,7 @@ public abstract class Avatar {
                 if (casilla.getPosicion() == posicionNueva) {
                     casilla.anhadirAvatar(this);
                     this.lugar = casilla;  // Actualiza la casilla actual del avatar
-                    casilla.sumarVecesFrecuentada();
+                    casilla.frecuenciaVisita();
                     consolaNormal.imprimir("El avatar se mueve a la casilla " + casilla.getNombre() + ". Posición: " + casilla.getPosicion());
 
                     /*Comprobaciones de casillas especiales*/
@@ -181,7 +181,7 @@ public abstract class Avatar {
                 if (cas.getNombre().equals(casilla.getNombre())) {
                     casilla.anhadirAvatar(this);
                     this.lugar = casilla;
-                    casilla.sumarVecesFrecuentada();
+                    casilla.frecuenciaVisita();
                     consolaNormal.imprimir("El avatar se mueve a la casilla " + casilla.getNombre() + ". Posición: " + casilla.getPosicion());
                     return ;
                 }
@@ -218,7 +218,7 @@ public abstract class Avatar {
                 if (casilla.getPosicion() == posicionNueva) {
                     casilla.anhadirAvatar(this);
                     this.lugar = casilla;  // Actualiza la casilla actual del avatar
-                    casilla.sumarVecesFrecuentada();
+                    casilla.frecuenciaVisita();
                     consolaNormal.imprimir("El avatar se mueve a la casilla " + casilla.getNombre() + ". Posición: " + casilla.getPosicion());
 
                     /*Comprobaciones de casillas especiales*/
