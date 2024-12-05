@@ -3,10 +3,12 @@ package partida;
 import java.util.ArrayList;
 
 import monopoly.Trato;
+import monopoly.ConsolaNormal;
 import monopoly.edificio.*;
 import monopoly.casilla.Casilla;
 import monopoly.casilla.propiedad.Propiedad;
 import monopoly.casilla.propiedad.Solar;
+import monopoly.excepcion.excepcionCarcel.ExcepcionCarcel;
 import partida.avatar.Avatar;
 
 import static monopoly.Valor.FORTUNA_BANCA;
@@ -38,9 +40,8 @@ public class Jugador{
     private float premiosInversionesOBote;
     private int vecesEnLaCarcel;
     private int vecesTiradasDados;
-
     private int noPuedeTirarDados; //Variable para controlar en movimiento Coche si sale < 4 no puede tirar dados durante los 2 siguientes turnos
-
+    private static final ConsolaNormal consolaNormal = new ConsolaNormal();
 
     /**********Constructores**********/
 
@@ -293,7 +294,7 @@ public class Jugador{
      * @param pos El conjunto de casillas que representa el tablero,
      *            necesaria para localizar la casilla de la cárcel.
      */
-    public void encarcelar(ArrayList<ArrayList<Casilla>> pos) {
+    public void encarcelar(ArrayList<ArrayList<Casilla>> pos) throws ExcepcionCarcel {
         sumarVecesEnLaCarcel(getVecesEnLaCarcel() + 1);
         this.enCarcel = true;
         this.tiradasCarcel = 0;
@@ -304,7 +305,7 @@ public class Jugador{
             for (Casilla casilla : casillas) {
                 if (casilla.getNombre().equalsIgnoreCase("Cárcel")) {
                     casilla.anhadirAvatar(av);
-                    System.out.println("El jugador ha sido encarcelado.");
+                    throw new ExcepcionCarcel("El jugador ha sido encarcelado.");
                 }
             }
         }
@@ -396,9 +397,9 @@ public class Jugador{
 
     public void bancarrota(String motivo, Jugador banca) {
         if (motivo.equals("Alquiler")) {
-            System.out.println("El jugador " + nombre + " se declara en bancarrota por no poder pagar un alquiler de la casilla " + avatar.getLugar().getNombre() + ". Con propietario " +
+            consolaNormal.imprimir("El jugador " + nombre + " se declara en bancarrota por no poder pagar un alquiler de la casilla " + avatar.getLugar().getNombre() + ". Con propietario " +
                     avatar.getLugar().getDuenho().getNombre() + ".");
-            System.out.println("Se transfieren la fortuna y las propiedades");
+            consolaNormal.imprimir("Se transfieren la fortuna y las propiedades");
             Jugador jugBeneficiado = avatar.getLugar().getDuenho();
 
             // Vender todos los edificios del jugador this
@@ -426,8 +427,8 @@ public class Jugador{
             this.fortuna = 0;
         }
         else if(motivo.equals("Banca")) {
-            System.out.println("El jugador " + nombre + " se declara en bancarrota por no poder pagar a la banca.");
-            System.out.println("Se transfieren la fortuna y las propiedades a la banca");
+            consolaNormal.imprimir("El jugador " + nombre + " se declara en bancarrota por no poder pagar a la banca.");
+            consolaNormal.imprimir("Se transfieren la fortuna y las propiedades a la banca");
 
             // Vender todos los edificios del jugador this
             for (Propiedad propiedad : propiedades) {
@@ -450,8 +451,8 @@ public class Jugador{
             banca.sumarFortuna(this.fortuna);
             this.fortuna = 0;
         } else if (motivo.equals("Voluntario")) {
-            System.out.println("El jugador " + nombre + " se ha declarado en bancarrota voluntariamente.");
-            System.out.println("Se transfieren la fortuna y las propiedades a la banca");
+            consolaNormal.imprimir("El jugador " + nombre + " se ha declarado en bancarrota voluntariamente.");
+            consolaNormal.imprimir("Se transfieren la fortuna y las propiedades a la banca");
 
             // Vender todos los edificios del jugador
             // Vender todos los edificios del jugador this
@@ -478,20 +479,20 @@ public class Jugador{
     }
 }
 /**
- * System.out.println("El jugador " + jugActual.getNombre() + " se ha declarado en bancarrota, ¿Está seguro? [s/n].");
+ * consolaNormal.imprimir("El jugador " + jugActual.getNombre() + " se ha declarado en bancarrota, ¿Está seguro? [s/n].");
  *         String respuesta;
  *         do {
- *             respuesta = scanner.next();
+ *             respuesta = consolaNormal.leerPalabra();
  *             if (respuesta.equalsIgnoreCase("s")) {
  *                 bancarrota = true;
- *                 System.out.println("El jugador " + jugActual.getNombre() + " se ha declarado en bancarrota.");
+ *                 consolaNormal.imprimir("El jugador " + jugActual.getNombre() + " se ha declarado en bancarrota.");
  *                 break;
  *             } else if (respuesta.equalsIgnoreCase("n")) {
  *                 bancarrota = false;
- *                 System.out.println("El jugador " + jugActual.getNombre() + " no se ha declarado en bancarrota.");
+ *                 consolaNormal.imprimir("El jugador " + jugActual.getNombre() + " no se ha declarado en bancarrota.");
  *                 return;
  *             } else {
- *                 System.out.println("Respuesta no válida. Introduzca 's' para sí o 'n' para no.");
+ *                 consolaNormal.imprimir("Respuesta no válida. Introduzca 's' para sí o 'n' para no.");
  *             }
  *         }while(!respuesta.equalsIgnoreCase("s") && !respuesta.equalsIgnoreCase("n"));
  */

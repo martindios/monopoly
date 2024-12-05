@@ -29,8 +29,8 @@ public class Especial extends Casilla{
     }
 
     @Override
-    public String infoCasilla() {
-        System.out.println(super.infoCasilla());
+    public String infoCasilla() throws Exception {
+        consolaNormal.imprimir(super.infoCasilla());
         if (Objects.equals(this.getNombre(), "Cárcel")) {
             StringBuilder carcel = new StringBuilder();
             carcel.append("Tipo: Especial,\n");
@@ -61,24 +61,23 @@ public class Especial extends Casilla{
             parking.append("]\n");
             return parking.toString();
         } else {
-            System.out.println("Esta casilla no necesita descripción");
-            return "";
+            throw new Exception("Esta casilla no necesita descripción");
         }
     }
 
-    public void evaluarParking(Jugador jugador) {
+    public void evaluarParking(Jugador jugador) throws Exception {
         if (this.getValor() > 0) {
             //Súmaselle ao xogador o que hai no parking
             jugador.sumarFortuna(this.getValor());
             jugador.sumarPremiosInversionesOBote(this.getValor());
-            System.out.println("El jugador " + jugador.getNombre() + " ha recibido " + this.getValor() + " de la banca, como bote del Parking.");
+            consolaNormal.imprimir("El jugador " + jugador.getNombre() + " ha recibido " + this.getValor() + " de la banca, como bote del Parking.");
             Jugador banca = this.getDuenho();
             //Réstaselle á banca o que hai que pagar
             banca.sumarFortuna(-this.getValor());
             //o valor do parking ponse a 0. este valor é SIMBÓLICO
             this.setValor(0);
         } else {
-            System.out.println("El bote está vacío. No se entrega nada.");
+            throw new Exception("El bote está vacío. No se entrega nada.");
         }
     }
 }

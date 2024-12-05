@@ -1,11 +1,22 @@
-package monopoly;
+package monopoly.carta;
 
-public class Carta {
+
+import monopoly.Baraja;
+import monopoly.ConsolaNormal;
+import monopoly.Tablero;
+import monopoly.excepcion.excepcionCarcel.ExcepcionCarcel;
+import partida.Jugador;
+import java.util.ArrayList;
+
+public abstract class Carta {
 
     /**********Atributos**********/
     private String descripcion;
     private String tipo;
     private int idCarta;
+    public static final ConsolaNormal consolaNormal = new ConsolaNormal();
+
+
 
     /**
      * Constructor de la clase Carta.
@@ -20,6 +31,11 @@ public class Carta {
         this.tipo = tipo;
         this.idCarta = idCarta;
     }
+
+    public Carta() {
+    }
+
+    public abstract void accion(Jugador banca, Jugador jugadorActual, Tablero tablero, ArrayList<Jugador> jugadores, int idCarta) throws ExcepcionCarcel;
 
     /**********Getters**********/
     public String getDescripcion() {

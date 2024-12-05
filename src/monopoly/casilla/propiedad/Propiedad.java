@@ -85,13 +85,12 @@ public abstract class Propiedad extends Casilla {
         return this.getDuenho().equals(jugador);
     }
 
-    public void pagarAlquiler(Jugador jugadorActual, Jugador banca, int tirada) {
+    public void pagarAlquiler(Jugador jugadorActual, Jugador banca, int tirada) throws Exception {
         if (this.getDuenho().equals(banca)) {
             return;
         }
         if (this.isHipotecado()) {
-            System.out.println("La casilla está hipotecada, no se paga alquiler.");
-            return;
+            throw new Exception("La casilla está hipotecada, no se paga alquiler.");
         }
         if (!jugadorActual.equals(this.getDuenho())) {
             float alquiler = calcularAlquiler(jugadorActual, banca, tirada);
@@ -105,20 +104,16 @@ public abstract class Propiedad extends Casilla {
         }
     }
 
-
-
     /*Método usado para comprar una casilla determinada. Parámetros:
      * - Jugador que solicita la compra de la casilla.
      * - Banca  (es el dueño de las casillas no compradas aún).*/
-    public void comprarCasilla(Jugador solicitante, Jugador banca) {
+    public void comprarCasilla(Jugador solicitante, Jugador banca) throws Exception {
         float valorCasilla = this.getValor();
         if(this.getPosicion() != solicitante.getAvatar().getLugar().getPosicion()) {
-            System.out.println("No estás situado en la casilla deseada.");
-            return;
+            throw new Exception("No estás situado en la casilla deseada.");
         }
         if(this.getDuenho() != banca) {
-            System.out.println("La casilla ya pertenece a un jugador.");
-            return;
+            throw new Exception("La casilla ya pertenece a un jugador.");
         }
 
         if (this instanceof Transporte) {
@@ -134,7 +129,7 @@ public abstract class Propiedad extends Casilla {
         this.setDuenho(solicitante);
         solicitante.anhadirPropiedad(this);
 
-        System.out.println("El jugador ha comprado la casilla por " + valorCasilla + ".");
+        consolaNormal.imprimir("El jugador ha comprado la casilla por " + valorCasilla + ".");
     }
 
     /**
@@ -143,8 +138,8 @@ public abstract class Propiedad extends Casilla {
      * @return Una cadena con el tipo, dueño, valor y hipoteca de la casilla.
      */
     @Override
-    public String infoCasilla() {
-        System.out.println(super.infoCasilla());
+    public String infoCasilla() throws Exception {
+        consolaNormal.imprimir(super.infoCasilla());
         return "Tipo: Propiedad,\n" +
                 "dueño: " + this.getDuenho().getNombre() + ",\n" +
                 "valor: " + this.getValor() + ",\n" +

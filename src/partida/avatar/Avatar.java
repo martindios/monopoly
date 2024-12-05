@@ -1,8 +1,10 @@
 package partida.avatar;
 
+import monopoly.ConsolaNormal;
 import monopoly.casilla.Casilla;
 import monopoly.casilla.Especial;
 import monopoly.casilla.propiedad.Solar;
+import monopoly.excepcion.ExcepcionConseguirDinero;
 import partida.Jugador;
 
 import static monopoly.Valor.*;
@@ -20,6 +22,8 @@ public class Avatar {
     private Casilla lugar; //Los avatares se sitúan en casillas del tablero.
     private boolean avanzado;
     private boolean conseguirDinero;
+    private static final ConsolaNormal consolaNormal = new ConsolaNormal();
+
 
     /**********Constructor**********/
 
@@ -112,7 +116,7 @@ public class Avatar {
      * @param tablero El tablero de juego representado como una lista de listas de casillas.
      * @param valorTirada El valor de la tirada de dados que determina el número de posiciones a mover.
      */
-    public void moverBasico(ArrayList<ArrayList<Casilla>> tablero, int valorTirada) {
+    public void moverBasico(ArrayList<ArrayList<Casilla>> tablero, int valorTirada) throws Exception {
         boolean pasaPorSalida = false;
         int max = 40;
         Casilla casillaAntigua = this.lugar;
@@ -129,7 +133,7 @@ public class Avatar {
                     casilla.anhadirAvatar(this);
                     this.lugar = casilla;  // Actualiza la casilla actual del avatar
                     casilla.sumarVecesFrecuentada();
-                    System.out.println("El avatar se mueve a la casilla " + casilla.getNombre() + ". Posición: " + casilla.getPosicion());
+                    consolaNormal.imprimir("El avatar se mueve a la casilla " + casilla.getNombre() + ". Posición: " + casilla.getPosicion());
 
                     /*Comprobaciones de casillas especiales*/
                     if (casilla instanceof Especial especial) {
@@ -150,7 +154,7 @@ public class Avatar {
                         jugador.setVueltas(jugador.getVueltas() + 1);
                         jugador.sumarFortuna(SUMA_VUELTA);
                         jugador.sumarPasarPorCasillaDeSalida(SUMA_VUELTA);
-                        System.out.println("El jugador ha completado una vuelta y recibe " + SUMA_VUELTA);
+                        consolaNormal.imprimir("El jugador ha completado una vuelta y recibe " + SUMA_VUELTA);
                     }
                 }
             }
@@ -170,7 +174,7 @@ public class Avatar {
                 jugador.setVueltas(jugador.getVueltas() + 1);
                 jugador.sumarFortuna(SUMA_VUELTA);
                 jugador.sumarPasarPorCasillaDeSalida(SUMA_VUELTA);
-                System.out.println("El jugador ha completado una vuelta y recibe " + SUMA_VUELTA);
+                consolaNormal.imprimir("El jugador ha completado una vuelta y recibe " + SUMA_VUELTA);
             }
         }
 
@@ -186,7 +190,7 @@ public class Avatar {
                     casilla.anhadirAvatar(this);
                     this.lugar = casilla;
                     casilla.sumarVecesFrecuentada();
-                    System.out.println("El avatar se mueve a la casilla " + casilla.getNombre() + ". Posición: " + casilla.getPosicion());
+                    consolaNormal.imprimir("El avatar se mueve a la casilla " + casilla.getNombre() + ". Posición: " + casilla.getPosicion());
                     return ;
                 }
             }
@@ -199,7 +203,7 @@ public class Avatar {
      * @param tablero El tablero de juego representado como una lista de listas de casillas.
      * @param valorTirada El valor de la tirada de dados que determina el número de posiciones a mover.
      */
-    public void moverAvanzado(ArrayList<ArrayList<Casilla>> tablero, int valorTirada) {
+    public void moverAvanzado(ArrayList<ArrayList<Casilla>> tablero, int valorTirada) throws Exception {
         boolean pasaPorSalidaReves = false, pasaPorSalidaDerecho = false;
         int max = 40;
         Casilla casillaOld = this.lugar;
@@ -223,7 +227,7 @@ public class Avatar {
                     casilla.anhadirAvatar(this);
                     this.lugar = casilla;  // Actualiza la casilla actual del avatar
                     casilla.sumarVecesFrecuentada();
-                    System.out.println("El avatar se mueve a la casilla " + casilla.getNombre() + ". Posición: " + casilla.getPosicion());
+                    consolaNormal.imprimir("El avatar se mueve a la casilla " + casilla.getNombre() + ". Posición: " + casilla.getPosicion());
 
                     /*Comprobaciones de casillas especiales*/
                     if (casilla instanceof Especial especial) {
@@ -244,14 +248,13 @@ public class Avatar {
                         jugador.setVueltas(jugador.getVueltas() + 1);
                         jugador.sumarFortuna(SUMA_VUELTA);
                         jugador.sumarPasarPorCasillaDeSalida(SUMA_VUELTA);
-                        System.out.println("El jugador ha completado una vuelta y recibe " + SUMA_VUELTA);
+                        consolaNormal.imprimir("El jugador ha completado una vuelta y recibe " + SUMA_VUELTA);
                     }
                     if (pasaPorSalidaReves) {
                         jugador.setVueltas(jugador.getVueltas() - 1);
                         if (jugador.getFortuna() < SUMA_VUELTA) {
-                            System.out.println("El jugador no tiene suficiente dinero para pagar la vuelta. " +
+                            throw new ExcepcionConseguirDinero("El jugador no tiene suficiente dinero para pagar la vuelta. " +
                                     "Debe vender edificio, hipotecar propiedades o declarse en bancarrota.");
-                            conseguirDinero = true;
                         }
                     }
                     return;
