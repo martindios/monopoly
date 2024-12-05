@@ -4,6 +4,7 @@ import monopoly.ConsolaNormal;
 import monopoly.casilla.Casilla;
 import monopoly.casilla.Especial;
 import monopoly.casilla.propiedad.Solar;
+import monopoly.excepcion.ExcepcionConseguirDinero;
 import partida.Jugador;
 
 import static monopoly.Valor.*;
@@ -252,9 +253,8 @@ public class Avatar {
                     if (pasaPorSalidaReves) {
                         jugador.setVueltas(jugador.getVueltas() - 1);
                         if (jugador.getFortuna() < SUMA_VUELTA) {
-                            consolaNormal.imprimir("El jugador no tiene suficiente dinero para pagar la vuelta. " +
+                            throw new ExcepcionConseguirDinero("El jugador no tiene suficiente dinero para pagar la vuelta. " +
                                     "Debe vender edificio, hipotecar propiedades o declarse en bancarrota.");
-                            conseguirDinero = true;
                         }
                     }
                     return;

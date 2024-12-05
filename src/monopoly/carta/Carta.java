@@ -4,6 +4,7 @@ package monopoly.carta;
 import monopoly.Baraja;
 import monopoly.ConsolaNormal;
 import monopoly.Tablero;
+import monopoly.excepcion.excepcionCarcel.ExcepcionCarcel;
 import partida.Jugador;
 import java.util.ArrayList;
 
@@ -34,7 +35,7 @@ public abstract class Carta {
     public Carta() {
     }
 
-    public abstract void accion(Jugador banca, Jugador jugadorActual, Tablero tablero, ArrayList<Jugador> jugadores, int idCarta);
+    public abstract void accion(Jugador banca, Jugador jugadorActual, Tablero tablero, ArrayList<Jugador> jugadores, int idCarta) throws ExcepcionCarcel;
 
     /**********Getters**********/
     public String getDescripcion() {

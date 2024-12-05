@@ -85,13 +85,12 @@ public abstract class Propiedad extends Casilla {
         return this.getDuenho().equals(jugador);
     }
 
-    public void pagarAlquiler(Jugador jugadorActual, Jugador banca, int tirada) {
+    public void pagarAlquiler(Jugador jugadorActual, Jugador banca, int tirada) throws Exception {
         if (this.getDuenho().equals(banca)) {
             return;
         }
         if (this.isHipotecado()) {
-            consolaNormal.imprimir("La casilla está hipotecada, no se paga alquiler.");
-            return;
+            throw new Exception("La casilla está hipotecada, no se paga alquiler.");
         }
         if (!jugadorActual.equals(this.getDuenho())) {
             float alquiler = calcularAlquiler(jugadorActual, banca, tirada);
@@ -104,8 +103,6 @@ public abstract class Propiedad extends Casilla {
             this.totalAlquileresPagados += alquiler;
         }
     }
-
-
 
     /*Método usado para comprar una casilla determinada. Parámetros:
      * - Jugador que solicita la compra de la casilla.

@@ -189,7 +189,7 @@ public class Solar extends Propiedad{
         return true;
     }
 
-    public void crearEdificio(String tipoEdificio, Jugador jugador, int contador){
+    public void crearEdificio(String tipoEdificio, Jugador jugador, int contador) throws ExcepcionEdificar {
         Edificio edificio;
         switch(tipoEdificio) {
             case "Casa":
@@ -209,8 +209,7 @@ public class Solar extends Propiedad{
                 edificio = (Edificio) pistaDeporte;
                 break;
             default:
-                consolaNormal.imprimir("Tipo de edificio no válido.");
-                return;
+                throw new ExcepcionEdificar("Tipo de edificio no válido.");
         }
         edificios.add(edificio);
         jugador.getEdificios().add(edificio);

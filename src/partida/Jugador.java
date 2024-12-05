@@ -7,6 +7,7 @@ import monopoly.edificio.*;
 import monopoly.casilla.Casilla;
 import monopoly.casilla.propiedad.Propiedad;
 import monopoly.casilla.propiedad.Solar;
+import monopoly.excepcion.excepcionCarcel.ExcepcionCarcel;
 import partida.avatar.Avatar;
 
 import static monopoly.Valor.FORTUNA_BANCA;
@@ -277,7 +278,7 @@ public class Jugador{
      * @param pos El conjunto de casillas que representa el tablero,
      *            necesaria para localizar la casilla de la cárcel.
      */
-    public void encarcelar(ArrayList<ArrayList<Casilla>> pos) {
+    public void encarcelar(ArrayList<ArrayList<Casilla>> pos) throws ExcepcionCarcel {
         sumarVecesEnLaCarcel(getVecesEnLaCarcel() + 1);
         this.enCarcel = true;
         this.tiradasCarcel = 0;
@@ -288,7 +289,7 @@ public class Jugador{
             for (Casilla casilla : casillas) {
                 if (casilla.getNombre().equalsIgnoreCase("Cárcel")) {
                     casilla.anhadirAvatar(av);
-                    consolaNormal.imprimir("El jugador ha sido encarcelado.");
+                    throw new ExcepcionCarcel("El jugador ha sido encarcelado.");
                 }
             }
         }
