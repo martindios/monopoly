@@ -3,6 +3,7 @@ package monopoly.casilla.propiedad;
 import monopoly.edificio.*;
 import monopoly.Grupo;
 import monopoly.excepcion.excepcionEdificar.ExcepcionEdificar;
+import monopoly.excepcion.excepcionEdificar.ExcepcionEdificarNoDinero;
 import monopoly.excepcion.excepcionEdificar.ExcepcionEdificarNoEdificable;
 import monopoly.excepcion.excepcionEdificar.ExcepcionEdificarNoPropietario;
 import partida.Jugador;
@@ -135,8 +136,8 @@ public class Solar extends Propiedad{
         if(!this.getDuenho().equals(jugador)){
             throw new ExcepcionEdificarNoPropietario();
         }
-        if(jugador.getFortuna() < this.getValor() *0.6) {
-            throw new ExcepcionEdificar("El jugador no tiene dinero suficiente para edificar una casa.");
+        if(jugador.getFortuna() < this.getValor() * 0.6) {
+            throw new ExcepcionEdificarNoDinero("casa");
         }
         if(!(this.getContador() > 2 || this.getGrupo().esDuenhoGrupo(this.getDuenho()))){
             throw new ExcepcionEdificar("El jugador no ha caído en la casilla más de dos veces o no posee el grupo de casillas a la que pertenece dicha casilla.");
@@ -168,16 +169,13 @@ public class Solar extends Propiedad{
             throw new ExcepcionEdificarNoPropietario();
         }
         if (jugador.getFortuna() < this.getValor() * 0.6) {
-            consolaNormal.imprimir("El jugador no tiene dinero suficiente para edificar un hotel.");
-            return false;
+            throw new ExcepcionEdificarNoDinero("hotel");
         }
         if((this.getGrupo().getNumEdificios(this.getGrupo().getEdificiosGrupo(), Hotel.class) == this.getGrupo().getNumCasillas())) {
-            consolaNormal.imprimir("Tienes el número máximo de hoteles construídos en el grupo (" + this.getGrupo().getNumCasillas() + ").");
-            return false;
+            throw new ExcepcionEdificar("Tienes el número máximo de hoteles construídos en el grupo (" + this.getGrupo().getNumCasillas() + ").");
         }
         if((this.getNumEdificios(edificios, Casa.class)) != 4){
-            consolaNormal.imprimir("No tienes el mínimo de casas en la casilla para poder edificar un hotel (4 casas).");
-            return false;
+            throw new ExcepcionEdificar("No tienes el mínimo de casas en la casilla para poder edificar un hotel (4 casas).");
         }
         quitarCasas(4, jugador);
         crearEdificio("Hotel", jugador, contadorHotel);
@@ -193,16 +191,13 @@ public class Solar extends Propiedad{
             throw new ExcepcionEdificarNoPropietario();
         }
         if (jugador.getFortuna() < this.getValor() * 0.4) {
-            consolaNormal.imprimir("El jugador no tiene dinero suficiente para edificar una casa.");
-            return false;
+            throw new ExcepcionEdificarNoDinero("piscina");
         }
         if((this.getGrupo().getNumEdificios(this.getGrupo().getEdificiosGrupo(), Piscina.class) == this.getGrupo().getNumCasillas())) {
-            consolaNormal.imprimir("Tienes el número máximo de piscinas construídas en el grupo (" + this.getGrupo().getNumCasillas() + ").");
-            return false;
+            throw new ExcepcionEdificar("Tienes el número máximo de piscinas construídas en el grupo (" + this.getGrupo().getNumCasillas() + ").");
         }
         if(!((this.getNumEdificios(edificios, Hotel.class) >= 1) && (this.getNumEdificios(edificios, Casa.class) >= 2))){
-            consolaNormal.imprimir("En el solar no se han construido al menos 1 hotel y 2 casas.");
-            return false;
+            throw new ExcepcionEdificar("En el solar no se han construido al menos 1 hotel y 2 casas.");
         }
         crearEdificio("Piscina", jugador, contadorPiscina);
         infoTrasEdificiar();
@@ -217,16 +212,13 @@ public class Solar extends Propiedad{
             throw new ExcepcionEdificarNoPropietario();
         }
         if (jugador.getFortuna() < this.getValor() * 1.25) {
-            consolaNormal.imprimir("El jugador no tiene dinero suficiente para edificar una casa.");
-            return false;
+            throw new ExcepcionEdificarNoDinero("pista de deporte");
         }
         if((this.getGrupo().getNumEdificios(this.getGrupo().getEdificiosGrupo(), PistaDeporte.class) == this.getGrupo().getNumCasillas())) {
-            consolaNormal.imprimir("Tienes el número máximo de pistas de deporte construídas en el grupo (" + this.getGrupo().getNumCasillas() + ").");
-            return false;
+            throw new ExcepcionEdificar("Tienes el número máximo de pistas de deporte construídas en el grupo (" + this.getGrupo().getNumCasillas() + ").");
         }
         if(!(this.getNumEdificios(edificios, Hotel.class) >= 2)){
-            consolaNormal.imprimir("En el solar no se han construido al menos 2 hoteles.");
-            return false;
+            throw new ExcepcionEdificar("En el solar no se han construido al menos 2 hoteles.");
         }
         crearEdificio("PistaDeporte", jugador, contadorPistaDeporte);
         infoTrasEdificiar();
