@@ -141,6 +141,9 @@ public class Menu {
                                 case "edificios":
                                     juego.listarEdificios();
                                     break;
+                                case "tratos":
+                                    juego.listarTratos();
+                                    break;
                                 default:
                                     throw new ExcepcionFormatoIncorrecto("listar [jugadores, avatares, enventa, edificios]");
                             }
@@ -270,6 +273,25 @@ public class Menu {
                             throw new ExcepcionFormatoIncorrecto("trato jugadorOfertado X por Y // trato jugadorOfertado X Y por Z // trato jugadorOfertado X por Y Z");
                         }
                         break;
+
+                    case "aceptar":
+                        if(palabrasArray.length == 2) {
+                            juego.aceptarTrato(palabrasArray[1]);
+                        }
+                        else {
+                            throw new ExcepcionFormatoIncorrecto("aceptar idTrato");
+                        }
+                        break;
+
+                    case "eliminar":
+                        if(palabrasArray.length == 2) {
+                            juego.eliminarTrato(palabrasArray[1]);
+                        }
+                        else {
+                            throw new ExcepcionFormatoIncorrecto("eliminar idTrato");
+                        }
+                        break;
+
                     default:
                         throw new ExcepcionEntradaUsuario("Comando no válido");
                 }

@@ -187,6 +187,10 @@ public class Jugador{
         return tratos;
     }
 
+    public ArrayList<String> getHipotecas() {
+        return hipotecas;
+    }
+
     /**********Setters**********/
 
     public void setFortuna(float fortuna) {
