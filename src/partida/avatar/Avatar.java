@@ -1,6 +1,7 @@
 package partida.avatar;
 
 import monopoly.ConsolaNormal;
+import monopoly.Tablero;
 import monopoly.casilla.Casilla;
 import monopoly.casilla.Especial;
 import monopoly.casilla.propiedad.Solar;
@@ -13,11 +14,11 @@ import java.util.Random;
 
 
 
-public class Avatar {
+public abstract class Avatar {
 
     /**********Atributos**********/
     private String id; //Identificador: una letra generada aleatoriamente.
-    private String tipo; //Sombrero, Esfinge, Pelota, Coche
+    //private String tipo; //Sombrero, Esfinge, Pelota, Coche
     private Jugador jugador; //Un jugador al que pertenece ese avatar.
     private Casilla lugar; //Los avatares se sitúan en casillas del tablero.
     private boolean avanzado;
@@ -27,14 +28,13 @@ public class Avatar {
 
     /**********Constructor**********/
 
-    /*Constructor principal. Requiere éstos parámetros:
+    /*Constructor principal. Requiere estos parámetros:
     * Tipo del avatar, jugador al que pertenece, lugar en el que estará ubicado, y un arraylist con los
     * avatares creados (usado para crear un ID distinto del de los demás avatares).
      */
     //El ArrayList se encarga de almacenar todos los avatares creados. Con esto, creamos la variable id para generar un ID ÚNICO con la función generarID,
     //pasando el ArrayList para que la función evite la repetición
-    public Avatar(String tipo, Jugador jugador, Casilla lugar, ArrayList<Avatar> avCreados) {
-        this.tipo = tipo;
+    public Avatar(Jugador jugador, Casilla lugar, ArrayList<Avatar> avCreados) {
         this.jugador = jugador;
         this.lugar = lugar;
         this.avanzado = false;
@@ -49,11 +49,6 @@ public class Avatar {
     //getter para devolver el id de un jugador
     public String getId() {
         return id;
-    }
-
-    //getter para devolver el tipo de avatar de un jugador
-    public String getTipo() {
-        return tipo;
     }
 
     //getter para devolver el jugador asociado al avatar
@@ -74,16 +69,6 @@ public class Avatar {
         return conseguirDinero;
     }
 
-    public String infoAvatar() {
-        return """
-                {
-                    Id: %s,
-                    Tipo: %s,
-                    Casilla: %s,
-                    Jugador: %s
-                }""".formatted(id, tipo, lugar.getNombre(), jugador.getNombre());
-    }
-
     /**********Setters**********/
 
     public void setLugar(Casilla lugar) {
@@ -96,10 +81,6 @@ public class Avatar {
         this.id = id;
     }
 
-    public void setTipo(String tipo) {
-        this.tipo = tipo;
-    }
-
     public void setAvanzado(boolean avanzado) {
         this.avanzado = avanzado;
     }
@@ -109,6 +90,17 @@ public class Avatar {
     }
 
     /**********Métodos**********/
+
+    public abstract String infoAvatar();
+        /*return """
+                {
+                    Id: %s,
+                    Tipo: %s,
+                    Casilla: %s,
+                    Jugador: %s
+                }""".formatted(id, tipo, lugar.getNombre(), jugador.getNombre()); */
+
+    public abstract void moverJugador(Jugador jugadorActual, int valorTirada, Tablero tablero) throws Exception;
 
     /**
      * Mueve el avatar de manera básica (no avanzada) en el tablero.
@@ -132,7 +124,7 @@ public class Avatar {
                 if (casilla.getPosicion() == posicionNueva) {
                     casilla.anhadirAvatar(this);
                     this.lugar = casilla;  // Actualiza la casilla actual del avatar
-                    casilla.sumarVecesFrecuentada();
+                    casilla.frecuenciaVisita();
                     consolaNormal.imprimir("El avatar se mueve a la casilla " + casilla.getNombre() + ". Posición: " + casilla.getPosicion());
 
                     /*Comprobaciones de casillas especiales*/
@@ -189,7 +181,7 @@ public class Avatar {
                 if (cas.getNombre().equals(casilla.getNombre())) {
                     casilla.anhadirAvatar(this);
                     this.lugar = casilla;
-                    casilla.sumarVecesFrecuentada();
+                    casilla.frecuenciaVisita();
                     consolaNormal.imprimir("El avatar se mueve a la casilla " + casilla.getNombre() + ". Posición: " + casilla.getPosicion());
                     return ;
                 }
@@ -226,7 +218,7 @@ public class Avatar {
                 if (casilla.getPosicion() == posicionNueva) {
                     casilla.anhadirAvatar(this);
                     this.lugar = casilla;  // Actualiza la casilla actual del avatar
-                    casilla.sumarVecesFrecuentada();
+                    casilla.frecuenciaVisita();
                     consolaNormal.imprimir("El avatar se mueve a la casilla " + casilla.getNombre() + ". Posición: " + casilla.getPosicion());
 
                     /*Comprobaciones de casillas especiales*/

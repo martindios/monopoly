@@ -9,7 +9,7 @@ import monopoly.casilla.Casilla;
 import monopoly.casilla.propiedad.Propiedad;
 import monopoly.casilla.propiedad.Solar;
 import monopoly.excepcion.excepcionCarcel.ExcepcionCarcel;
-import partida.avatar.Avatar;
+import partida.avatar.*;
 
 import static monopoly.Valor.FORTUNA_BANCA;
 import static monopoly.Valor.FORTUNA_INICIAL;
@@ -82,7 +82,20 @@ public class Jugador{
         this.propiedades = new ArrayList<>();
         this.hipotecas = new ArrayList<>();
         this.edificios = new ArrayList<>();
-        this.avatar = new Avatar(tipoAvatar, this, inicio, avCreados);
+        switch (tipoAvatar) {
+            case "Pelota":
+                this.avatar = new Pelota(this, inicio, avCreados);
+                break;
+            case "Coche":
+                this.avatar = new Coche(this, inicio, avCreados);
+                break;
+            case "Sombrero":
+                this.avatar = new Sombrero(this, inicio, avCreados);
+                break;
+            case "Esfinge":
+                this.avatar = new Esfinge(this, inicio, avCreados);
+                break;
+        }
         // Añadimos o avatar á lista de avatares creados
         avCreados.add(this.avatar);
         this.tratos = new ArrayList<>();

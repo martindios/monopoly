@@ -11,14 +11,11 @@ import monopoly.casilla.propiedad.Propiedad;
 import monopoly.casilla.propiedad.Servicio;
 import monopoly.casilla.propiedad.Solar;
 import monopoly.casilla.propiedad.Transporte;
-import monopoly.excepcion.ExcepcionBancarrota;
-import monopoly.excepcion.ExcepcionEntidadNoExistente;
+import monopoly.excepcion.*;
 import monopoly.excepcion.excepcionCarcel.ExcepcionCarcel;
 import monopoly.excepcion.excepcionCarcel.ExcepcionCarcelTirarDados;
 import monopoly.excepcion.excepcionCarcel.ExcepcionIrACarcel;
 import monopoly.excepcion.excepcionCarcel.ExcepcionJugadorEnCarcel;
-import monopoly.excepcion.ExcepcionMovimientosAvanzados;
-import monopoly.excepcion.ExcepcionNoHayPropiedadesVenta;
 import monopoly.excepcion.excepcionDados.ExcepcionDados;
 import monopoly.excepcion.excepcionDados.ExcepcionDadosCoche;
 import monopoly.excepcion.excepcionEdificar.ExcepcionEdificar;
@@ -30,6 +27,8 @@ import monopoly.excepcion.excepcionEntradaUsuario.ExcepcionFormatoIncorrecto;
 import partida.avatar.Avatar;
 import partida.Dado;
 import partida.Jugador;
+import partida.avatar.Coche;
+import partida.avatar.Pelota;
 
 import java.util.*;
 
@@ -45,7 +44,7 @@ public class Juego implements Comando{
     private Dado dado2;
     private Jugador banca; //El jugador banca.
     private Baraja barajas;
-    private boolean tirado; //Booleano para comprobar si el jugador que tiene el turno ha tirado o no.
+    private static boolean tirado; //Booleano para comprobar si el jugador que tiene el turno ha tirado o no.
     private boolean solvente; //Booleano para comprobar si el jugador que tiene el turno es solvente, es decir, si ha pagado sus deudas.
     private int maxJugadores = 0;
     private int jugadoresActuales = 0;
@@ -56,10 +55,10 @@ public class Juego implements Comando{
     private int contadorPistaDeporte;
     private int contadorTratos;
 
-    private int saltoMovimiento; //Variable para controlar el movimiento del avatar en modo avanzado
-    private boolean seHaMovido; //Booleano para comprobar si el jugador se ha movido en su turno
+    private static int saltoMovimiento; //Variable para controlar el movimiento del avatar en modo avanzado
+    private static boolean seHaMovido; //Booleano para comprobar si el jugador se ha movido en su turno
     private boolean compraMovimientoCoche;
-    private boolean dadosDobles;
+    private static boolean dadosDobles;
     private static final ConsolaNormal consolaNormal = new ConsolaNormal();
 
     //Instancias la consola en esta clase
@@ -71,13 +70,13 @@ public class Juego implements Comando{
         this.barajas = new Baraja();
         this.turno = 0;
         this.lanzamientos = 0;
-        this.tirado = false;
+        tirado = false;
         this.solvente = true;
         this.dado1 = new Dado();
         this.dado2 = new Dado();
         this.banca = new Jugador();
-        this.saltoMovimiento = 0;
-        this.seHaMovido = false;
+        saltoMovimiento = 0;
+        seHaMovido = false;
         this.compraMovimientoCoche = false;
         this.tablero = new Tablero(banca);
 
@@ -88,7 +87,7 @@ public class Juego implements Comando{
 
     /*Getters*/
 
-    public boolean isDadosDobles() {
+    public static boolean isDadosDobles() {
         return dadosDobles;
     }
 
@@ -96,7 +95,7 @@ public class Juego implements Comando{
         return finalizarPartida;
     }
 
-    public boolean isSeHaMovido() {
+    public static boolean isSeHaMovido() {
         return seHaMovido;
     }
 
@@ -112,28 +111,34 @@ public class Juego implements Comando{
         return turno;
     }
 
-    public boolean isTirado() {
+    public static boolean isTirado() {
         return tirado;
+    }
+
+    public static int getSaltoMovimiento() {
+        return saltoMovimiento;
     }
 
     /*Setters*/
 
 
-    public void setSeHaMovido(boolean seHaMovido) {
-        this.seHaMovido = seHaMovido;
+    public static void setSeHaMovido(boolean seHaMovido) {
+        Juego.seHaMovido = seHaMovido;
     }
 
-    public void setTirado(boolean tirado) {
-        this.tirado = tirado;
+    public static void setTirado(boolean tirado) {
+        Juego.tirado = tirado;
     }
 
-    public void setSaltoMovimiento(int saltoMovimiento) {
-        this.saltoMovimiento = saltoMovimiento;
+    public static void setDadosDobles(boolean dadosDobles) {
+        Juego.dadosDobles = dadosDobles;
     }
 
-    public void setDadosDobles(boolean dadosDobles) {
-        this.dadosDobles = dadosDobles;
+    public static void setSaltoMovimiento(int saltoMovimiento) {
+        Juego.saltoMovimiento = saltoMovimiento;
     }
+
+
 
     /**********Métodos**********/
 
@@ -264,110 +269,15 @@ public class Juego implements Comando{
         if(!tirado) {
             if(avatarActual.isAvanzado()) {
                 avatarActual.setAvanzado(false);
-                consolaNormal.imprimir("A partir de ahora el avatar " + avatarActual.getId() + ", de tipo " + avatarActual.getTipo() + ", se moverá en modo normal.");
+                consolaNormal.imprimir("A partir de ahora el avatar " + avatarActual.getId() + ", de tipo " + avatarActual.getClass().getSimpleName() + ", se moverá en modo normal.");
             }
             else {
                 avatarActual.setAvanzado(true);
-                consolaNormal.imprimir("A partir de ahora el avatar " + avatarActual.getId() + ", de tipo " + avatarActual.getTipo() + ", se moverá en modo avanzado.");
+                consolaNormal.imprimir("A partir de ahora el avatar " + avatarActual.getId() + ", de tipo " + avatarActual.getClass().getSimpleName() + ", se moverá en modo avanzado.");
             }
         }
         else {
             throw new ExcepcionMovimientosAvanzados("El jugador debe esperar al inicio del siguiente turno para volver a cambiar el modo de movimiento.");
-        }
-    }
-
-    /*Método con la lógica del movimiento avanzado Pelota*/
-    public void moverJugadorPelota(int valorTirada) throws Exception {
-        Jugador jugadorActual = jugadores.get(turno);
-        Avatar avatarActual = jugadorActual.getAvatar();
-
-        if (jugadorActual.getEnCarcel()) {
-            throw new ExcepcionJugadorEnCarcel(", no puede avanzar.");
-        }
-
-        if (valorTirada > 4) {
-            avatarActual.moverAvanzado(tablero.getPosiciones(), 5);
-            if (jugadorActual.getEnCarcel()) {
-                saltoMovimiento = 0;
-                return;
-            }
-
-            saltoMovimiento = valorTirada - 5;
-
-        } else {
-            avatarActual.moverAvanzado(tablero.getPosiciones(), -1);
-            if (jugadorActual.getEnCarcel()) {
-                saltoMovimiento = 0;
-                return;
-            }
-
-            saltoMovimiento = -valorTirada + 1;
-        }
-    }
-
-    /*Método con la lógica del movimiento avanzado Coche*/
-    public void moverJugadorCoche(int valorTirada) throws Exception {
-        Jugador jugadorActual = jugadores.get(turno);
-        Avatar avatarActual = jugadorActual.getAvatar();
-
-        if (jugadorActual.getEnCarcel()) {
-            throw new ExcepcionJugadorEnCarcel(", no puede avanzar.");
-        }
-
-        if(valorTirada > 4 && saltoMovimiento > 0) {
-            tirado = false;
-            avatarActual.moverAvanzado(tablero.getPosiciones(), valorTirada);
-            if (jugadorActual.getEnCarcel()) {
-                saltoMovimiento = 0;
-                return;
-            }
-            saltoMovimiento--;
-            if(saltoMovimiento == 0) {
-                tirado = !dadosDobles;
-            }
-        }
-
-        if (valorTirada <= 4) {
-            avatarActual.moverAvanzado(tablero.getPosiciones(), -valorTirada);
-            jugadorActual.setNoPuedeTirarDados(2);
-            saltoMovimiento = 0;
-            tirado = true;
-            if (jugadorActual.getEnCarcel()) {
-                saltoMovimiento = 0;
-                return;
-            }
-        }
-    }
-
-    /*Método para avanzar con el modo avanzado Pelota*/
-    public void avanzar() throws Exception {
-        Jugador jugadorActual = jugadores.get(turno);
-        Avatar avatarActual = jugadorActual.getAvatar();
-        if(saltoMovimiento == 0) {
-            throw new ExcepcionMovimientosAvanzados("No hay ningún movimiento pendiente.");
-        }
-        seHaMovido = true;
-        if(saltoMovimiento > 0) {
-            if(saltoMovimiento == 1) {
-                avatarActual.moverAvanzado(tablero.getPosiciones(), 1);
-                saltoMovimiento = 0;
-            } else {
-                avatarActual.moverAvanzado(tablero.getPosiciones(), 2);
-                if(jugadorActual.getEnCarcel()) {
-                    saltoMovimiento = 0;
-                } else {
-                    saltoMovimiento -= 2;
-                }
-            }
-        } else {
-            if(saltoMovimiento == -1) {
-                avatarActual.moverAvanzado(tablero.getPosiciones(), -1);
-                saltoMovimiento = 0;
-            }
-            else {
-                avatarActual.moverAvanzado(tablero.getPosiciones(), -2);
-                saltoMovimiento += 2;
-            }
         }
     }
 
@@ -677,7 +587,7 @@ public class Juego implements Comando{
             throw new Exception("El jugador no es solvente, no puede lanzar los dados.");
         }
         if (!tirado || dadosDobles) {
-            if (saltoMovimiento != 0 && jugadores.get(turno).getAvatar().getTipo().equals("Pelota")) {
+            if (saltoMovimiento != 0 && jugadores.get(turno).getAvatar().getClass().getSimpleName().equals("Pelota")) {
                 throw new Exception("El jugador está en modo avanzado, no puede lanzar los dados.");
             }
 
@@ -704,7 +614,7 @@ public class Juego implements Comando{
             consolaNormal.imprimir("Dado 2: " + valor2);
 
             //Sin modo avanzado o con pelota
-            if(!avatar.isAvanzado() || avatar.getTipo().equals("Pelota")) {
+            if(!avatar.isAvanzado() || avatar instanceof Pelota) {
                 if (valor1 == valor2) {
                     consolaNormal.imprimir("¡Has sacado dobles!");
                     dadosDobles = true;
@@ -717,7 +627,7 @@ public class Juego implements Comando{
                 } else {
                     dadosDobles = false;
                 }
-            } else if (avatar.getTipo().equals("Coche")){ //Modo avanzado con coche
+            } else if (avatar instanceof Coche){ //Modo avanzado con coche
                 if(lanzamientos >= 4 && (valor1 == valor2)) {
                     consolaNormal.imprimir("Puede lanzar otra vez.");
                     dadosDobles = true;
@@ -732,10 +642,10 @@ public class Juego implements Comando{
 
             seHaMovido = true;
             if (avatar.isAvanzado()) {
-                if(avatar.getTipo().equals("Pelota")){
-                    moverJugadorPelota(valor1 + valor2);
-                } else if (avatar.getTipo().equals("Coche")){
-                    moverJugadorCoche(valor1 + valor2);
+                if(avatar instanceof Pelota pelota){
+                    pelota.moverJugador(jugador, valor1 + valor2, tablero);
+                } else if (avatar instanceof Coche coche){
+                    coche.moverJugador(jugador, valor1 + valor2, tablero);
                 }
             } else avatar.moverBasico(tablero.getPosiciones(), (valor1 + valor2));
 
@@ -1141,9 +1051,9 @@ public class Juego implements Comando{
         consolaNormal.imprimir("El turno le pertenece al jugador " + jugador.getNombre() + ". Con avatar " + jugador.getAvatar().getId() + ".");
         dadosDobles = false;
 
-        if (jugador.getAvatar().getTipo().equals("Coche")) {
+        if (jugador.getAvatar() instanceof Coche) {
             saltoMovimiento = 3;
-        } else if (jugador.getAvatar().getTipo().equals("Pelota")) {
+        } else if (jugador.getAvatar() instanceof Pelota) {
             saltoMovimiento = 0;
         }
     }
@@ -1668,7 +1578,7 @@ public class Juego implements Comando{
     /*SECCIÓN DE TRATOS*/
     /*******************/
 
-    public void clasificarTrato(String jugadorOfertado, String objeto1, String objeto2, String objeto3) {
+    public void clasificarTrato(String jugadorOfertado, String objeto1, String objeto2, String objeto3) throws Exception {
         Jugador jugadorOfrece = jugadores.get(turno);
         Jugador jugadorRecibe = null;
         for(Jugador jugador : jugadores) {
@@ -1678,12 +1588,10 @@ public class Juego implements Comando{
             }
         }
         if(jugadorRecibe == null) {
-            consolaNormal.imprimir("Jugador no encontrado.");
-            return;
+            throw new Exception("Jugador no encontrado.");
         }
         if(jugadorOfrece.equals(jugadorRecibe)) {
-            consolaNormal.imprimir("No puedes hacer tratos contigo mismo.");
-            return;
+            throw new Exception("No puedes hacer tratos contigo mismo.");
         }
 
         if(objeto3 == null) {
@@ -1709,14 +1617,13 @@ public class Juego implements Comando{
         }
     }
 
-    private void creacionTrato(Jugador jugadorOfrece, Jugador jugadorRecibe, String objeto1, String objeto2, String objeto3, int trato) {
+    private void creacionTrato(Jugador jugadorOfrece, Jugador jugadorRecibe, String objeto1, String objeto2, String objeto3, int trato) throws Exception {
         switch (trato) {
             case 1:
                 Propiedad propiedad1 = obtenerPropiedad(jugadorOfrece, objeto1);
                 Propiedad propiedad2 = obtenerPropiedad(jugadorRecibe, objeto2);
                 if(propiedad1 == null || propiedad2 == null) {
-                    consolaNormal.imprimir("Una de las propiedades no pertenece a un jugador. No se formaliza el trato.");
-                    return;
+                    throw new Exception("Una de las propiedades no pertenece a un jugador. No se formaliza el trato.");
                 }
 
                 Trato tratoCreado = new Trato(jugadorOfrece, jugadorRecibe, propiedad1, propiedad2, contadorTratos);
@@ -1727,8 +1634,7 @@ public class Juego implements Comando{
             case 2:
                 Propiedad propiedad3 = obtenerPropiedad(jugadorOfrece, objeto1);
                 if(propiedad3 == null) {
-                    consolaNormal.imprimir("La propiedad no pertenece al jugador que inicia el trato. No se formaliza el mismo.");
-                    return;
+                    throw new ExcepcionTratoNoPropiedad("inicia");
                 }
 
                 Trato tratoCreado2 = new Trato(jugadorOfrece, jugadorRecibe, propiedad3, Float.parseFloat(objeto2), contadorTratos);
@@ -1739,8 +1645,7 @@ public class Juego implements Comando{
             case 3:
                 Propiedad propiedad4 = obtenerPropiedad(jugadorRecibe, objeto2);
                 if(propiedad4 == null) {
-                    consolaNormal.imprimir("La propiedad no pertenece al jugador que recibe el trato. No se formaliza el mismo.");
-                    return;
+                    throw new ExcepcionTratoNoPropiedad("recibe");
                 }
 
                 Trato tratoCreado3 = new Trato(jugadorOfrece, jugadorRecibe, Float.parseFloat(objeto1), propiedad4, contadorTratos);
@@ -1751,14 +1656,12 @@ public class Juego implements Comando{
             case 4:
                 Propiedad propiedad5 = obtenerPropiedad(jugadorOfrece, objeto1);
                 if(propiedad5 == null) {
-                    consolaNormal.imprimir("La propiedad no pertenece al jugador que inicia el trato. No se formaliza el mismo.");
-                    return;
+                    throw new ExcepcionTratoNoPropiedad("inicia");
                 }
 
                 Propiedad propiedad6 = obtenerPropiedad(jugadorRecibe, objeto2);
                 if(propiedad6 == null) {
-                    consolaNormal.imprimir("La propiedad no pertenece al jugador que recibe el trato. No se formaliza el mismo.");
-                    return;
+                    throw new ExcepcionTratoNoPropiedad("recibe");
                 }
 
                 Trato tratoCreado4 = new Trato(jugadorOfrece, jugadorRecibe, propiedad5, propiedad6, Float.parseFloat(objeto3), contadorTratos);
@@ -1769,14 +1672,12 @@ public class Juego implements Comando{
             case 5:
                 Propiedad propiedad7 = obtenerPropiedad(jugadorOfrece, objeto1);
                 if(propiedad7 == null) {
-                    consolaNormal.imprimir("La propiedad no pertenece al jugador que inicia el trato. No se formaliza el mismo.");
-                    return;
+                    throw new ExcepcionTratoNoPropiedad("inicia");
                 }
 
                 Propiedad propiedad8 = obtenerPropiedad(jugadorRecibe, objeto3);
                 if(propiedad8 == null) {
-                    consolaNormal.imprimir("La propiedad no pertenece al jugador que recibe el trato. No se formaliza el mismo.");
-                    return;
+                    throw new ExcepcionTratoNoPropiedad("recibe");
                 }
 
                 Trato tratoCreado5 = new Trato(jugadorOfrece, jugadorRecibe, propiedad7, Float.parseFloat(objeto2), propiedad8, contadorTratos);

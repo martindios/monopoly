@@ -10,6 +10,8 @@ import monopoly.excepcion.excepcionEntradaUsuario.ExcepcionFormatoIncorrecto;
 import monopoly.excepcion.excepcionEntradaUsuario.ExcepcionJugadoresYaRegistrados;
 import monopoly.excepcion.excepcionDados.ExcepcionNoPuedeTirarDados;
 import partida.Jugador;
+import partida.avatar.Coche;
+import partida.avatar.Pelota;
 
 import java.util.ArrayList;
 
@@ -39,7 +41,7 @@ public class Menu {
     /*Método en el que se desarrolla la partida hasta que un jugador es no solvente*/
     public void iniciarPartida() throws Exception {
         //SE DEBERÍA DE QUITAR ESTE IF
-        if (juego.getJugadores().get(juego.getTurno()).getAvatar().getTipo().equals("Coche")) {
+        if (juego.getJugadores().get(juego.getTurno()).getAvatar() instanceof Coche) {
             juego.setSaltoMovimiento(4);
         }
         while(!juego.isFinalizarPartida()) {
@@ -107,7 +109,10 @@ public class Menu {
                         break;
 
                     case "avanzar":
-                        juego.avanzar();
+                        Jugador jugadorActual = jugadores.get(turno);
+                        if(jugadorActual.getAvatar() instanceof Pelota pelota) {
+                            pelota.avanzar(jugadorActual, tablero);
+                        }
                         consolaNormal.imprimir(tablero.toString());
                         juego.evaluacion();
                         juego.VueltasTablero();

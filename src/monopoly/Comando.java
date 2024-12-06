@@ -19,7 +19,6 @@ public interface Comando {
     void lanzarDados(Jugador jugador) throws Exception;
     void evaluacion() throws Exception;
     void VueltasTablero();
-    void avanzar() throws Exception;
     void acabarTurno() throws Exception;
     void listarVenta() throws ExcepcionNoHayPropiedadesVenta;
     void listarJugadores();
@@ -39,7 +38,7 @@ public interface Comando {
     void estadisticas();
     void estadisticasJugador(String jugadorStr) throws ExcepcionEntidadNoExistente;
     void bancarrota(boolean voluntario);
-    void clasificarTrato(String jugadorOfertado, String objeto1, String objeto2, String objeto3);
+    void clasificarTrato(String jugadorOfertado, String objeto1, String objeto2, String objeto3) throws Exception;
 
 
 
