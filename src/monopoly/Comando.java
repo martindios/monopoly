@@ -30,7 +30,7 @@ public interface Comando {
     void descAvatar(String ID) throws ExcepcionEntidadNoExistente;
     void descCasilla(String NombreCasilla) throws Exception;
     void comprar(String nombre) throws Exception;
-    void hipotecar(String nombreCasilla) throws Exception;
+    boolean hipotecar(String nombreCasilla) throws Exception;
     void deshipotecar(String nombreCasilla) throws Exception;
     void edificar(String palabra) throws Exception;
     void modoAvanzado() throws ExcepcionMovimientosAvanzados;

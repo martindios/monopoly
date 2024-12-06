@@ -737,8 +737,6 @@ public class Juego implements Comando{
             }
             case AccionCajaComunidad _ -> {
                 if(seHaMovido || !jugadorActual.getAvatar().isAvanzado()) {
-                    //CAMBIAR
-                    //barajas.evaluarComunidad(banca, jugadorActual, tablero, jugadores, this);
                     barajas.evaluarCajaComunidad(banca, jugadorActual, tablero, jugadores);
                 }
                 if(jugadorActual.getEnCarcel()) {
@@ -1096,7 +1094,7 @@ public class Juego implements Comando{
      *
      * @param nombreCasilla El nombre de la casilla a hipotecar.
      */
-    public void hipotecar(String nombreCasilla) throws Exception {
+    public boolean hipotecar(String nombreCasilla) throws Exception {
         Casilla casilla = tablero.encontrar_casilla(nombreCasilla);
         Jugador jugadorActual = jugadores.get(turno);
 
@@ -1124,6 +1122,7 @@ public class Juego implements Comando{
         propiedad.setHipotecado(true);
         jugadorActual.sumarFortuna(propiedad.getHipoteca());
         banca.sumarFortuna(-propiedad.getHipoteca());
+        return true;
     }
 
     /**
@@ -1169,11 +1168,10 @@ public class Juego implements Comando{
     private void propiedadesHipotecables(Jugador jugadorActual, ArrayList<Propiedad> propiedades) throws Exception {
         for(Propiedad propiedad : jugadorActual.getPropiedades()) {
             if(!propiedad.isHipotecado()) {
-                switch (propiedad) {
-                    case Solar solar when solar.getEdificios().isEmpty() -> propiedades.add(solar);
-                    case Servicio servicio -> propiedades.add(servicio);
-                    case Transporte transporte -> propiedades.add(transporte);
-                    default -> {}
+                if(propiedad instanceof Solar solar && solar.getEdificios().isEmpty()) {
+                    propiedades.add(solar);
+                } else {
+                    propiedades.add(propiedad);
                 }
             }
         }
@@ -1233,15 +1231,15 @@ public class Juego implements Comando{
     public void conseguirDinero(float dineroAConseguir) throws Exception {
         //Declaramos las variables necesarias
         float dineroConseguido = 0;
-        int contadorPropiedades = 0;
+        int contadorPropiedadesHipotecables = 0;
         int contadorEdificios = 0;
-        ArrayList<Propiedad> propiedades = new ArrayList<>();
+        ArrayList<Propiedad> propiedadesHipotecables = new ArrayList<>();
         ArrayList<Edificio> edificiosLista = new ArrayList<>();
         Jugador jugadorActual = jugadores.get(turno);
 
         //Comprobamos si el jugador tiene propiedades hipotecables
-        propiedadesHipotecables(jugadorActual, propiedades);
-        contadorPropiedades = propiedades.size();
+        propiedadesHipotecables(jugadorActual, propiedadesHipotecables);
+        contadorPropiedadesHipotecables = propiedadesHipotecables.size();
 
         //Informamos de los edificios que tiene el jugador
         edificiosVender(jugadorActual, edificiosLista);
@@ -1249,45 +1247,41 @@ public class Juego implements Comando{
 
         consolaNormal.imprimir("El jugador no tiene suficiente dinero para pagar. Debe vender edificios y/o hipotecar propiedades.");
 
-        if (jugadorActual.getEdificios().isEmpty() && contadorPropiedades == 0) {
+        if (edificiosLista.isEmpty() && propiedadesHipotecables.isEmpty()) {
             throw new ExcepcionBancarrota("El jugador no tiene propiedades ni edificios para vender. Se declara en bancarrota.");
         } else {
             consolaNormal.imprimir("El jugador tiene propiedades y/o edificios. ¿Qué desea hipotecar/vender? (propiedades[1]/edificios[2]) ");
             int opcion;
-            do {
-                opcion = consolaNormal.leerInt();
-                if (opcion != 1 && opcion != 2) {
-                    throw new ExcepcionEdificar("Opción no válida. Introduzca 1 para propiedades o 2 para edificios.");
-                }
-            } while (opcion != 1 && opcion != 2);
+            opcion = consolaNormal.leerInt();
+            if (opcion != 1 && opcion != 2) {
+                throw new ExcepcionEdificar("Opción no válida. Introduzca 1 para propiedades o 2 para edificios.");
+            }
             if (opcion == 1) { //Hipotecar propiedades
                 consolaNormal.imprimir("Propiedades hipotecables:");
-                for(Propiedad propiedad : propiedades) {
+                for(Propiedad propiedad : propiedadesHipotecables) {
                     consolaNormal.imprimir(propiedad.getNombre());
                 }
-                if(contadorPropiedades != 0) {
-                    dineroConseguido = 0;
-                    while((dineroConseguido < dineroAConseguir)) {
-                        if(contadorPropiedades == 0) {
-                            break;
-                        }
-
-                        Propiedad propiedadHipotecar = null;
-
-                        while(propiedadHipotecar == null) {
-                            consolaNormal.imprimir("Introduce el nombre de la propiedad que quieres hipotecar:");
-                            String nombrePropiedad = consolaNormal.leerPalabra();
-                            //Pasamos el jugAct para el array de props y el nombre de la propiedad.
-                            propiedadHipotecar = buscarHipotecable(jugadorActual, nombrePropiedad);
-                        }
-
-                        contadorPropiedades--;
-                        dineroConseguido += propiedadHipotecar.getHipoteca();
-                        hipotecar(propiedadHipotecar.getNombre());
+                dineroConseguido = 0;
+                while((dineroConseguido < dineroAConseguir)) {
+                    if (contadorPropiedadesHipotecables == 0) {
+                        break;
                     }
-                } else {
-                    throw new ExcepcionEdificar("El jugador no tiene propiedades sin edificar. Debe vender los edificios antes de hipotecar una propiedad.");
+
+                    Propiedad propiedadHipotecar = null;
+
+                    while (propiedadHipotecar == null) {
+                        consolaNormal.imprimir("Introduce el nombre de la propiedad que quieres hipotecar:");
+                        String nombrePropiedad = consolaNormal.leerPalabra();
+                        //Pasamos el jugAct para el array de props y el nombre de la propiedad.
+                        propiedadHipotecar = (Propiedad) tablero.encontrar_casilla(nombrePropiedad);
+                    }
+
+                    if(hipotecar(propiedadHipotecar.getNombre())){
+                        contadorPropiedadesHipotecables--;
+                        dineroConseguido += propiedadHipotecar.getHipoteca();
+                    }
                 }
+
             } else {
                 dineroConseguido = 0;
                 consolaNormal.imprimir("Edificios construidos:");
@@ -1342,8 +1336,8 @@ public class Juego implements Comando{
                             }
 
                             if (solar.getEdificios().isEmpty() && !solar.isHipotecado() && solar.getNombre().equals(nombreCasilla)) {
-                                propiedades.add((Propiedad) solar);
-                                contadorPropiedades++;
+                                propiedadesHipotecables.add((Propiedad) solar);
+                                contadorPropiedadesHipotecables++;
                             }
                         }
                     }
@@ -1351,7 +1345,7 @@ public class Juego implements Comando{
                     throw new ExcepcionEdificar("El jugador no tiene edificios para vender.");
                 }
             }
-            evaluarRecoleccionDinero(jugadorActual, contadorPropiedades, contadorEdificios, dineroAConseguir, dineroConseguido);
+            evaluarRecoleccionDinero(jugadorActual, contadorPropiedadesHipotecables, contadorEdificios, dineroAConseguir, dineroConseguido);
         }
     }
 
