@@ -1,4 +1,4 @@
-package monopoly.excepcion;
+package monopoly.excepcion.excepcionConseguirDinero;
 
 public class ExcepcionConseguirDinero extends Exception {
     public ExcepcionConseguirDinero(String message) {

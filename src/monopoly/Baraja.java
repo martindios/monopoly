@@ -2,6 +2,7 @@ package monopoly;
 
 import monopoly.casilla.Casilla;
 import monopoly.excepcion.excepcionCarcel.ExcepcionCarcel;
+import monopoly.excepcion.excepcionConseguirDinero.ExcepcionConseguirDineroCaja;
 import partida.Jugador;
 import monopoly.carta.Carta;
 import monopoly.carta.CartaCajaComunidad;
@@ -90,7 +91,7 @@ public class Baraja {
     }
 
 
-    public void evaluarCajaComunidad(Jugador banca, Jugador jugadorActual, Tablero tablero, ArrayList<Jugador> jugadores) throws ExcepcionCarcel {
+    public void evaluarCajaComunidad(Jugador banca, Jugador jugadorActual, Tablero tablero, ArrayList<Jugador> jugadores) throws ExcepcionCarcel, ExcepcionConseguirDineroCaja {
 
         barajar(barajaCajaComunidad);
 

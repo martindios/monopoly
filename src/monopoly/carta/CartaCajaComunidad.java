@@ -3,6 +3,8 @@ package monopoly.carta;
 import monopoly.Tablero;
 import monopoly.casilla.Casilla;
 import monopoly.excepcion.excepcionCarcel.ExcepcionCarcel;
+import monopoly.excepcion.excepcionConseguirDinero.ExcepcionConseguirDinero;
+import monopoly.excepcion.excepcionConseguirDinero.ExcepcionConseguirDineroCaja;
 import partida.Jugador;
 
 import java.util.ArrayList;
@@ -17,7 +19,7 @@ public class CartaCajaComunidad extends Carta{
     }
 
     @Override
-    public void accion(Jugador banca, Jugador jugadorActual, Tablero tablero, ArrayList<Jugador> jugadores, int idCarta) throws ExcepcionCarcel {
+    public void accion(Jugador banca, Jugador jugadorActual, Tablero tablero, ArrayList<Jugador> jugadores, int idCarta) throws ExcepcionCarcel, ExcepcionConseguirDineroCaja {
         Casilla bote;
         int dinero;
 
@@ -30,7 +32,7 @@ public class CartaCajaComunidad extends Carta{
                     jugadorActual.sumarGastos(dinero);
                 } else {
                     float restante = dinero - jugadorActual.getFortuna();
-                    //menu.conseguirDinero(restante); //CAMBIAR ESTO
+                    throw new ExcepcionConseguirDineroCaja(restante);
                 }
                 break;
             case 2: /*Ve a la Cárcel*/
@@ -55,7 +57,7 @@ public class CartaCajaComunidad extends Carta{
                     jugadorActual.sumarGastos(dinero);
                 } else {
                     float restante = dinero - jugadorActual.getFortuna();
-                    //menu.conseguirDinero(restante); //CAMBIAR ESTO
+                    throw new ExcepcionConseguirDineroCaja(restante);
                 }
                 break;
             case 6: /*200000€ pagar a cada jugador*/
@@ -68,7 +70,7 @@ public class CartaCajaComunidad extends Carta{
                     jugadorActual.sumarGastos(gastoTotal);
                 } else {
                     float restante = gastoTotal - jugadorActual.getFortuna();
-                    //menu.conseguirDinero(restante); //CAMBIAR ESTO
+                    throw new ExcepcionConseguirDineroCaja(restante);
                 }
                 break;
         }

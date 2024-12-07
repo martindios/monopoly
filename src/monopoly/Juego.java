@@ -1,49 +1,33 @@
 package monopoly;
 
-import monopoly.carta.CartaCajaComunidad;
-import monopoly.carta.CartaSuerte;
 import monopoly.edificio.*;
-import monopoly.casilla.Casilla;
-import monopoly.casilla.Impuesto;
-import monopoly.casilla.accion.AccionCajaComunidad;
-import monopoly.casilla.accion.AccionSuerte;
-import monopoly.casilla.propiedad.Propiedad;
-import monopoly.casilla.propiedad.Servicio;
-import monopoly.casilla.propiedad.Solar;
-import monopoly.casilla.propiedad.Transporte;
+import monopoly.casilla.*;
+import monopoly.casilla.accion.*;
+import monopoly.casilla.propiedad.*;
 import monopoly.excepcion.*;
-import monopoly.excepcion.excepcionCarcel.ExcepcionCarcel;
-import monopoly.excepcion.excepcionCarcel.ExcepcionCarcelTirarDados;
-import monopoly.excepcion.excepcionCarcel.ExcepcionIrACarcel;
-import monopoly.excepcion.excepcionCarcel.ExcepcionJugadorEnCarcel;
-import monopoly.excepcion.excepcionDados.ExcepcionDados;
-import monopoly.excepcion.excepcionDados.ExcepcionDadosCoche;
-import monopoly.excepcion.excepcionEdificar.ExcepcionEdificar;
-import monopoly.excepcion.excepcionEdificar.ExcepcionEdificarNoDinero;
-import monopoly.excepcion.excepcionEdificar.ExcepcionEdificarNoEdificable;
-import monopoly.excepcion.excepcionEdificar.ExcepcionEdificarNoPropietario;
-import monopoly.excepcion.excepcionEntradaUsuario.ExcepcionEntradaUsuario;
-import monopoly.excepcion.excepcionEntradaUsuario.ExcepcionFormatoIncorrecto;
+import monopoly.excepcion.excepcionCarcel.*;
+import monopoly.excepcion.excepcionDados.*;
+import monopoly.excepcion.excepcionEdificar.*;
+import monopoly.excepcion.excepcionEntradaUsuario.*;
 import partida.avatar.Avatar;
 import partida.Dado;
 import partida.Jugador;
-import partida.avatar.Coche;
-import partida.avatar.Pelota;
+import partida.avatar.*;
 
 import java.util.*;
 
 public class Juego implements Comando{
 
     /**********Atributos**********/
-    private ArrayList<Jugador> jugadores; //Jugadores de la partida.
-    private ArrayList<Avatar> avatares; //Avatares en la partida.
-    private int turno = 0; //Índice correspondiente a la posición en el arrayList del jugador (y el avatar) que tienen el turno
+    private final ArrayList<Jugador> jugadores; //Jugadores de la partida.
+    private final ArrayList<Avatar> avatares; //Avatares en la partida.
+    private int turno; //Índice correspondiente a la posición en el arrayList del jugador (y el avatar) que tienen el turno
     private int lanzamientos; //Variable para contar el número de lanzamientos de un jugador en un turno.
-    private Tablero tablero; //Tablero en el que se juega.
-    private Dado dado1; //Dos dados para lanzar y avanzar casillas.
-    private Dado dado2;
-    private Jugador banca; //El jugador banca.
-    private Baraja barajas;
+    private final Tablero tablero; //Tablero en el que se juega.
+    private final Dado dado1; //Dos dados para lanzar y avanzar casillas.
+    private final Dado dado2;
+    private final Jugador banca; //El jugador banca.
+    private final Baraja barajas;
     private static boolean tirado; //Booleano para comprobar si el jugador que tiene el turno ha tirado o no.
     private boolean solvente; //Booleano para comprobar si el jugador que tiene el turno es solvente, es decir, si ha pagado sus deudas.
     private int maxJugadores = 0;
@@ -1185,26 +1169,8 @@ public class Juego implements Comando{
     private void edificiosVender(Jugador jugadorActual, ArrayList<Edificio> edificiosLista) throws Exception {
         edificiosLista.addAll(jugadorActual.getEdificios());
         if(edificiosLista.isEmpty()) {
-            throw new Exception("El jugador " + jugadorActual.getNombre() + " no tiene edificios");
+            consolaNormal.imprimir("El jugador " + jugadorActual.getNombre() + " no tiene edificios");
         }
-    }
-
-    private Propiedad buscarHipotecable(Jugador JugadorActual, String nombrePropiedad) throws Exception {
-        for(Propiedad propiedad : JugadorActual.getPropiedades()) {
-            if(propiedad.getNombre().equals(nombrePropiedad) && !propiedad.isHipotecado()) {
-                return propiedad;
-            }
-        }
-        throw new Exception("Propiedad no válida.");
-    }
-
-    private Edificio buscarEdificio(Jugador jugadorActual, String idEdificio) throws Exception {
-        for (Edificio edificio : jugadorActual.getEdificios()) {
-            if (edificio.getIdEdificio().equals(idEdificio)) {
-                return edificio;
-            }
-        }
-        throw new Exception("Edificio no válido.");
     }
 
     private void evaluarRecoleccionDinero(Jugador jugadorActual, int contadorPropiedades, int contadorEdificios, float dineroAConseguir, float dineroConseguido) throws Exception {
@@ -1233,31 +1199,32 @@ public class Juego implements Comando{
     public void conseguirDinero(float dineroAConseguir) throws Exception {
         //Declaramos las variables necesarias
         float dineroConseguido = 0;
-        int contadorPropiedadesHipotecables = 0;
-        int contadorEdificios = 0;
-        ArrayList<Propiedad> propiedadesHipotecables = new ArrayList<>();
-        ArrayList<Edificio> edificiosLista = new ArrayList<>();
         Jugador jugadorActual = jugadores.get(turno);
+        ArrayList<Propiedad> propiedadesHipotecables = new ArrayList<>();
+        ArrayList<Edificio> edificiosLista = new ArrayList<>(jugadorActual.getEdificios());
+
+        int contadorEdificios = edificiosLista.size();
 
         //Comprobamos si el jugador tiene propiedades hipotecables
         propiedadesHipotecables(jugadorActual, propiedadesHipotecables);
-        contadorPropiedadesHipotecables = propiedadesHipotecables.size();
-
-        //Informamos de los edificios que tiene el jugador
-        edificiosVender(jugadorActual, edificiosLista);
-        contadorEdificios = edificiosLista.size();
+        int contadorPropiedadesHipotecables = propiedadesHipotecables.size();
 
         consolaNormal.imprimir("El jugador no tiene suficiente dinero para pagar. Debe vender edificios y/o hipotecar propiedades.");
+        consolaNormal.imprimir("El jugador tiene " + propiedadesHipotecables.size() +
+                " propiedades hipotecables y " + edificiosLista.size() + "edificios en total.");
 
-        if (edificiosLista.isEmpty() && propiedadesHipotecables.isEmpty()) {
+        if (propiedadesHipotecables.isEmpty()) { //Se comprueba únicamente propiedades porque si no tiene propiedades no tiene edificios
             throw new ExcepcionBancarrota("El jugador no tiene propiedades ni edificios para vender. Se declara en bancarrota.");
         } else {
             consolaNormal.imprimir("El jugador tiene propiedades y/o edificios. ¿Qué desea hipotecar/vender? (propiedades[1]/edificios[2]) ");
             int opcion;
-            opcion = consolaNormal.leerInt();
-            if (opcion != 1 && opcion != 2) {
-                throw new ExcepcionEdificar("Opción no válida. Introduzca 1 para propiedades o 2 para edificios.");
-            }
+            do {
+                opcion = consolaNormal.leerInt();
+                if (opcion != 1 && opcion != 2) {
+                    consolaNormal.imprimir("Opción no válida. Introduzca 1 para propiedades o 2 para edificios.");
+                }
+            } while (opcion != 1 && opcion != 2);
+
             if (opcion == 1) { //Hipotecar propiedades
                 consolaNormal.imprimir("Propiedades hipotecables:");
                 for(Propiedad propiedad : propiedadesHipotecables) {
@@ -1274,7 +1241,6 @@ public class Juego implements Comando{
                     while (propiedadHipotecar == null) {
                         consolaNormal.imprimir("Introduce el nombre de la propiedad que quieres hipotecar:");
                         String nombrePropiedad = consolaNormal.leerPalabra();
-                        //Pasamos el jugAct para el array de props y el nombre de la propiedad.
                         propiedadHipotecar = (Propiedad) tablero.encontrar_casilla(nombrePropiedad);
                     }
 
