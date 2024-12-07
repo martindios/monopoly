@@ -737,6 +737,8 @@ public class Juego implements Comando{
             }
             case AccionCajaComunidad _ -> {
                 if(seHaMovido || !jugadorActual.getAvatar().isAvanzado()) {
+                    //CAMBIAR
+                    //barajas.evaluarComunidad(banca, jugadorActual, tablero, jugadores, this);
                     barajas.evaluarCajaComunidad(banca, jugadorActual, tablero, jugadores);
                 }
                 if(jugadorActual.getEnCarcel()) {
@@ -1094,7 +1096,7 @@ public class Juego implements Comando{
      *
      * @param nombreCasilla El nombre de la casilla a hipotecar.
      */
-    public boolean hipotecar(String nombreCasilla) throws Exception {
+    public void hipotecar(String nombreCasilla) throws Exception {
         Casilla casilla = tablero.encontrar_casilla(nombreCasilla);
         Jugador jugadorActual = jugadores.get(turno);
 
@@ -1122,7 +1124,7 @@ public class Juego implements Comando{
         propiedad.setHipotecado(true);
         jugadorActual.sumarFortuna(propiedad.getHipoteca());
         banca.sumarFortuna(-propiedad.getHipoteca());
-        return true;
+        jugadorActual.getHipotecas().add(propiedad.getNombre());
     }
 
     /**
@@ -1163,15 +1165,17 @@ public class Juego implements Comando{
         jugadorActual.sumarGastos(precioDeshipotecar);
         banca.sumarFortuna(precioDeshipotecar);
         propiedad.setHipotecado(false);
+        jugadorActual.getHipotecas().remove(propiedad.getNombre());
     }
 
     private void propiedadesHipotecables(Jugador jugadorActual, ArrayList<Propiedad> propiedades) throws Exception {
         for(Propiedad propiedad : jugadorActual.getPropiedades()) {
             if(!propiedad.isHipotecado()) {
-                if(propiedad instanceof Solar solar && solar.getEdificios().isEmpty()) {
-                    propiedades.add(solar);
-                } else {
-                    propiedades.add(propiedad);
+                switch (propiedad) {
+                    case Solar solar when solar.getEdificios().isEmpty() -> propiedades.add(solar);
+                    case Servicio servicio -> propiedades.add(servicio);
+                    case Transporte transporte -> propiedades.add(transporte);
+                    default -> {}
                 }
             }
         }
@@ -1231,15 +1235,15 @@ public class Juego implements Comando{
     public void conseguirDinero(float dineroAConseguir) throws Exception {
         //Declaramos las variables necesarias
         float dineroConseguido = 0;
-        int contadorPropiedadesHipotecables = 0;
+        int contadorPropiedades = 0;
         int contadorEdificios = 0;
-        ArrayList<Propiedad> propiedadesHipotecables = new ArrayList<>();
+        ArrayList<Propiedad> propiedades = new ArrayList<>();
         ArrayList<Edificio> edificiosLista = new ArrayList<>();
         Jugador jugadorActual = jugadores.get(turno);
 
         //Comprobamos si el jugador tiene propiedades hipotecables
-        propiedadesHipotecables(jugadorActual, propiedadesHipotecables);
-        contadorPropiedadesHipotecables = propiedadesHipotecables.size();
+        propiedadesHipotecables(jugadorActual, propiedades);
+        contadorPropiedades = propiedades.size();
 
         //Informamos de los edificios que tiene el jugador
         edificiosVender(jugadorActual, edificiosLista);
@@ -1247,41 +1251,45 @@ public class Juego implements Comando{
 
         consolaNormal.imprimir("El jugador no tiene suficiente dinero para pagar. Debe vender edificios y/o hipotecar propiedades.");
 
-        if (edificiosLista.isEmpty() && propiedadesHipotecables.isEmpty()) {
+        if (jugadorActual.getEdificios().isEmpty() && contadorPropiedades == 0) {
             throw new ExcepcionBancarrota("El jugador no tiene propiedades ni edificios para vender. Se declara en bancarrota.");
         } else {
             consolaNormal.imprimir("El jugador tiene propiedades y/o edificios. ¿Qué desea hipotecar/vender? (propiedades[1]/edificios[2]) ");
             int opcion;
-            opcion = consolaNormal.leerInt();
-            if (opcion != 1 && opcion != 2) {
-                throw new ExcepcionEdificar("Opción no válida. Introduzca 1 para propiedades o 2 para edificios.");
-            }
+            do {
+                opcion = consolaNormal.leerInt();
+                if (opcion != 1 && opcion != 2) {
+                    throw new ExcepcionEdificar("Opción no válida. Introduzca 1 para propiedades o 2 para edificios.");
+                }
+            } while (opcion != 1 && opcion != 2);
             if (opcion == 1) { //Hipotecar propiedades
                 consolaNormal.imprimir("Propiedades hipotecables:");
-                for(Propiedad propiedad : propiedadesHipotecables) {
+                for(Propiedad propiedad : propiedades) {
                     consolaNormal.imprimir(propiedad.getNombre());
                 }
-                dineroConseguido = 0;
-                while((dineroConseguido < dineroAConseguir)) {
-                    if (contadorPropiedadesHipotecables == 0) {
-                        break;
-                    }
+                if(contadorPropiedades != 0) {
+                    dineroConseguido = 0;
+                    while((dineroConseguido < dineroAConseguir)) {
+                        if(contadorPropiedades == 0) {
+                            break;
+                        }
 
-                    Propiedad propiedadHipotecar = null;
+                        Propiedad propiedadHipotecar = null;
 
-                    while (propiedadHipotecar == null) {
-                        consolaNormal.imprimir("Introduce el nombre de la propiedad que quieres hipotecar:");
-                        String nombrePropiedad = consolaNormal.leerPalabra();
-                        //Pasamos el jugAct para el array de props y el nombre de la propiedad.
-                        propiedadHipotecar = (Propiedad) tablero.encontrar_casilla(nombrePropiedad);
-                    }
+                        while(propiedadHipotecar == null) {
+                            consolaNormal.imprimir("Introduce el nombre de la propiedad que quieres hipotecar:");
+                            String nombrePropiedad = consolaNormal.leerPalabra();
+                            //Pasamos el jugAct para el array de props y el nombre de la propiedad.
+                            propiedadHipotecar = buscarHipotecable(jugadorActual, nombrePropiedad);
+                        }
 
-                    if(hipotecar(propiedadHipotecar.getNombre())){
-                        contadorPropiedadesHipotecables--;
+                        contadorPropiedades--;
                         dineroConseguido += propiedadHipotecar.getHipoteca();
+                        hipotecar(propiedadHipotecar.getNombre());
                     }
+                } else {
+                    throw new ExcepcionEdificar("El jugador no tiene propiedades sin edificar. Debe vender los edificios antes de hipotecar una propiedad.");
                 }
-
             } else {
                 dineroConseguido = 0;
                 consolaNormal.imprimir("Edificios construidos:");
@@ -1336,8 +1344,8 @@ public class Juego implements Comando{
                             }
 
                             if (solar.getEdificios().isEmpty() && !solar.isHipotecado() && solar.getNombre().equals(nombreCasilla)) {
-                                propiedadesHipotecables.add((Propiedad) solar);
-                                contadorPropiedadesHipotecables++;
+                                propiedades.add((Propiedad) solar);
+                                contadorPropiedades++;
                             }
                         }
                     }
@@ -1345,7 +1353,7 @@ public class Juego implements Comando{
                     throw new ExcepcionEdificar("El jugador no tiene edificios para vender.");
                 }
             }
-            evaluarRecoleccionDinero(jugadorActual, contadorPropiedadesHipotecables, contadorEdificios, dineroAConseguir, dineroConseguido);
+            evaluarRecoleccionDinero(jugadorActual, contadorPropiedades, contadorEdificios, dineroAConseguir, dineroConseguido);
         }
     }
 
@@ -1623,6 +1631,7 @@ public class Juego implements Comando{
                 Trato tratoCreado = new Trato(jugadorOfrece, jugadorRecibe, propiedad1, propiedad2, contadorTratos);
                 jugadorRecibe.addTrato(tratoCreado);
                 consolaNormal.imprimir("Trato creado con éxito.");
+                contadorTratos++;
                 break;
 
             case 2:
@@ -1634,6 +1643,7 @@ public class Juego implements Comando{
                 Trato tratoCreado2 = new Trato(jugadorOfrece, jugadorRecibe, propiedad3, Float.parseFloat(objeto2), contadorTratos);
                 jugadorRecibe.addTrato(tratoCreado2);
                 consolaNormal.imprimir("Trato creado con éxito.");
+                contadorTratos++;
                 break;
 
             case 3:
@@ -1645,6 +1655,7 @@ public class Juego implements Comando{
                 Trato tratoCreado3 = new Trato(jugadorOfrece, jugadorRecibe, Float.parseFloat(objeto1), propiedad4, contadorTratos);
                 jugadorRecibe.addTrato(tratoCreado3);
                 consolaNormal.imprimir("Trato creado con éxito.");
+                contadorTratos++;
                 break;
 
             case 4:
@@ -1661,6 +1672,7 @@ public class Juego implements Comando{
                 Trato tratoCreado4 = new Trato(jugadorOfrece, jugadorRecibe, propiedad5, propiedad6, Float.parseFloat(objeto3), contadorTratos);
                 jugadorRecibe.addTrato(tratoCreado4);
                 consolaNormal.imprimir("Trato creado con éxito.");
+                contadorTratos++;
                 break;
 
             case 5:
@@ -1677,6 +1689,7 @@ public class Juego implements Comando{
                 Trato tratoCreado5 = new Trato(jugadorOfrece, jugadorRecibe, propiedad7, Float.parseFloat(objeto2), propiedad8, contadorTratos);
                 jugadorRecibe.addTrato(tratoCreado5);
                 consolaNormal.imprimir("Trato creado con éxito.");
+                contadorTratos++;
                 break;
         }
     }
@@ -1688,6 +1701,207 @@ public class Juego implements Comando{
             }
         }
         return null;
+    }
+
+    private void traspasoPropiedad(Propiedad propiedad, Jugador jugadorBeneficiado) {
+        Jugador jugadorAnterior = propiedad.getDuenho();
+        propiedad.setDuenho(jugadorBeneficiado);
+
+        jugadorAnterior.getPropiedades().remove(propiedad);
+        jugadorBeneficiado.getPropiedades().add(propiedad);
+
+        if(propiedad.isHipotecado()) {
+            jugadorAnterior.getHipotecas().remove(propiedad.getNombre());
+            jugadorBeneficiado.getHipotecas().add(propiedad.getNombre());
+        }
+
+        if(propiedad instanceof Solar solar) {
+            for(Edificio edificio : solar.getEdificios()) {
+                jugadorAnterior.getEdificios().remove(edificio);
+                jugadorBeneficiado.getEdificios().add(edificio);
+                edificio.setPropietario(jugadorBeneficiado);
+            }
+        }
+    }
+
+    private void valorarAceptarTrato(Trato trato) {
+        Jugador jugadorOfrece = trato.getJugadorPropone();
+        Jugador jugadorRecibe = trato.getJugadorRecibe();
+        Propiedad propiedad1 = trato.getPropiedad1();
+        Propiedad propiedad2 = trato.getPropiedad2();
+        float dinero = trato.getDinero();
+
+        switch (trato.getNumTrato()) {
+            case 1:
+                if (aceptarPropiedadHipotecada(propiedad1)) {
+                    return;
+                }
+
+                traspasoPropiedad(propiedad1, jugadorRecibe);
+                traspasoPropiedad(propiedad2, jugadorOfrece);
+                consolaNormal.imprimir("El trato " + trato.getIdTrato() + " ha sido realizado entre " + jugadorOfrece.getNombre() + " y " + jugadorRecibe.getNombre() +
+                        ". Se intercambiaron " + propiedad1.getNombre() + " por " + propiedad2.getNombre() + ".");
+                //Una vez aceptado, se elimina el trato de la lista de tratos del jugador que lo propuso
+                jugadorRecibe.getTratos().remove(trato);
+                break;
+
+            case 2:
+                if (jugadorRecibe.getFortuna() < dinero) {
+                    consolaNormal.imprimir("No tienes suficiente dinero para aceptar el trato.");
+                    return;
+                }
+
+                if (aceptarPropiedadHipotecada(propiedad1)) {
+                    return;
+                }
+
+                traspasoPropiedad(propiedad1, jugadorRecibe);
+                jugadorRecibe.sumarFortuna(-dinero);
+                jugadorOfrece.sumarFortuna(dinero);
+                jugadorRecibe.sumarGastos(dinero);
+                consolaNormal.imprimir("El trato " + trato.getIdTrato() + " ha sido realizado entre " + jugadorOfrece.getNombre() + " y " + jugadorRecibe.getNombre() +
+                        ". Se intercambiaron " + propiedad1.getNombre() + " por " + dinero + "€.");
+                jugadorRecibe.getTratos().remove(trato);
+                break;
+
+            case 3:
+                if (jugadorOfrece.getFortuna() < dinero) {
+                    consolaNormal.imprimir("El jugador que ofreció el trato no tiene el dinero suficiente para formalizarlo actualmente.");
+                    return;
+                }
+
+                traspasoPropiedad(propiedad1, jugadorOfrece);
+                jugadorRecibe.sumarFortuna(dinero);
+                jugadorOfrece.sumarFortuna(-dinero);
+                jugadorOfrece.sumarGastos(dinero);
+                consolaNormal.imprimir("El trato " + trato.getIdTrato() + " ha sido realizado entre " + jugadorOfrece.getNombre() + " y " + jugadorRecibe.getNombre() +
+                        ". Se intercambiaron " + dinero + "€ por " + propiedad1.getNombre() + ".");
+                jugadorRecibe.getTratos().remove(trato);
+                break;
+
+            case 4:
+                if (aceptarPropiedadHipotecada(propiedad1)) {
+                    return;
+                }
+                if (jugadorRecibe.getFortuna() < dinero) {
+                    consolaNormal.imprimir("No tienes suficiente dinero para aceptar el trato.");
+                    return;
+                }
+
+                traspasoPropiedad(propiedad1, jugadorRecibe);
+                traspasoPropiedad(propiedad2, jugadorOfrece);
+                jugadorOfrece.sumarFortuna(dinero);
+                jugadorRecibe.sumarFortuna(-dinero);
+                jugadorRecibe.sumarGastos(dinero);
+                consolaNormal.imprimir("El trato " + trato.getIdTrato() + " ha sido realizado entre " + jugadorOfrece.getNombre() + " y " + jugadorRecibe.getNombre() +
+                        ". Se intercambiaron " + propiedad1.getNombre() + " por " + propiedad2.getNombre() + " y " + dinero + "€.");
+                jugadorRecibe.getTratos().remove(trato);
+                break;
+
+            case 5:
+                if (aceptarPropiedadHipotecada(propiedad1)) {
+                    return;
+                }
+                if (jugadorOfrece.getFortuna() < dinero) {
+                    consolaNormal.imprimir("El jugador que ofreció el trato no tiene el dinero suficiente para formalizarlo actualmente.");
+                    return;
+                }
+
+                traspasoPropiedad(propiedad1, jugadorRecibe);
+                traspasoPropiedad(propiedad2, jugadorOfrece);
+                jugadorOfrece.sumarFortuna(-dinero);
+                jugadorRecibe.sumarFortuna(dinero);
+                jugadorOfrece.sumarGastos(dinero);
+                consolaNormal.imprimir("El trato " + trato.getIdTrato() + " ha sido realizado entre " + jugadorOfrece.getNombre() + " y " + jugadorRecibe.getNombre() +
+                        ". Se intercambiaron " + propiedad1.getNombre() + " y " + dinero + "€ por " + propiedad2.getNombre() + ".");
+                jugadorRecibe.getTratos().remove(trato);
+                break;
+        }
+    }
+
+    private boolean aceptarPropiedadHipotecada(Propiedad propiedad) {
+        if (propiedad.isHipotecado()) {
+            consolaNormal.imprimir("La propiedad " + propiedad.getNombre() + " está hipotecada, ¿Quieres aceptar el trato igualmente? (s/n)");
+            String respuesta = consolaNormal.leerPalabra();
+            return respuesta.equals("n");
+        }
+        return false;
+    }
+
+    public void aceptarTrato(String idTrato) {
+        Jugador jugadorActual = jugadores.get(turno);
+        Trato tratoDeseado = null;
+        for(Trato trato : jugadorActual.getTratos()) {
+            if(idTrato.equals(trato.getIdTrato())) {
+                tratoDeseado = trato;
+                break;
+            }
+        }
+        if(tratoDeseado == null) {
+            consolaNormal.imprimir("Trato no encontrado.");
+            return;
+        }
+
+        valorarAceptarTrato(tratoDeseado);
+    }
+
+    public void listarTratos() {
+        Jugador jugadorActual = jugadores.get(turno);
+        StringBuilder str = new StringBuilder();
+        str.append("[\n");
+        if (jugadorActual.getTratos().isEmpty()) {
+            str.append("No hay tratos disponibles\n");
+        } else {
+            for (Trato trato : jugadorActual.getTratos()) {
+                str.append("{\n");
+                str.append("\tid: ").append(trato.getIdTrato()).append(",\n");
+                str.append("\tjugadorPropone: ").append(trato.getJugadorPropone().getNombre()).append(",\n");
+                str.append("\ttrato: cambiar (");
+                switch (trato.getNumTrato()) {
+                    case 1:
+                        str.append(trato.getPropiedad1().getNombre()).append(", ").append(trato.getPropiedad2().getNombre());
+                        break;
+                    case 2:
+                        str.append(trato.getPropiedad1().getNombre()).append(", ").append(trato.getDinero()).append("€");
+                        break;
+                    case 3:
+                        str.append(trato.getDinero()).append("€, ").append(trato.getPropiedad1().getNombre());
+                        break;
+                    case 4:
+                        str.append(trato.getPropiedad1().getNombre()).append(" por ").append(trato.getPropiedad2().getNombre()).append(", ").append(trato.getDinero()).append("€");
+                        break;
+                    case 5:
+                        str.append(trato.getPropiedad1().getNombre()).append(", ").append(trato.getDinero()).append("€ por ").append(trato.getPropiedad2().getNombre());
+                        break;
+                }
+                str.append(")\n");
+                str.append("},\n");
+            }
+            if (str.length() > 2) {
+                str.setLength(str.length() - 2); // Remove the last comma
+            }
+        }
+        str.append("\n]");
+        consolaNormal.imprimirStrBuilder(str);
+    }
+
+    public void eliminarTrato(String idTrato) {
+        Jugador jugadorActual = jugadores.get(turno);
+        Trato tratoAEliminar = null;
+
+        for(Trato trato : jugadorActual.getTratos()) {
+            if(idTrato.equals(trato.getIdTrato())) {
+                tratoAEliminar = trato;
+                break;
+            }
+        }
+        if(tratoAEliminar == null) {
+            consolaNormal.imprimir("Trato no encontrado.");
+            return;
+        }
+
+        jugadorActual.getTratos().remove(tratoAEliminar);
+        consolaNormal.imprimir("Trato eliminado con éxito.");
     }
 
 }

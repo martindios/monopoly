@@ -67,6 +67,37 @@ public class Trato {
         this.propiedad2 = propiedad2;
     }
 
+    /************Getters**********/
+    public String getIdTrato() {
+        return idTrato;
+    }
+
+    public int getNumTrato() {
+        return numTrato;
+    }
+
+    public Jugador getJugadorPropone() {
+        return jugadorPropone;
+    }
+
+    public Jugador getJugadorRecibe() {
+        return jugadorRecibe;
+    }
+
+    public float getDinero() {
+        return dinero;
+    }
+
+    public Propiedad getPropiedad1() {
+        return propiedad1;
+    }
+
+    public Propiedad getPropiedad2() {
+        return propiedad2;
+    }
+
+    /**************Métodos**********/
+
     private String generarIdTrato(int numero){
         return "Trato-".concat(String.valueOf(numero));
     }
