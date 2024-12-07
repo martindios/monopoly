@@ -1,7 +1,5 @@
 package monopoly.carta;
 
-
-import monopoly.Baraja;
 import monopoly.ConsolaNormal;
 import monopoly.Tablero;
 import monopoly.excepcion.excepcionCarcel.ExcepcionCarcel;

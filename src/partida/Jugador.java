@@ -2,6 +2,7 @@ package partida;
 
 import java.util.ArrayList;
 
+import monopoly.Juego;
 import monopoly.Trato;
 import monopoly.ConsolaNormal;
 import monopoly.edificio.*;
@@ -17,12 +18,12 @@ import static monopoly.Valor.FORTUNA_INICIAL;
 public class Jugador{
 
     /**********Atributos**********/
-    private String nombre; //Nombre del jugador
+    private final String nombre; //Nombre del jugador
     private Avatar avatar; //Avatar que tiene en la partida.
     private float fortuna; //Dinero que posee.
     private float gastos; //Gastos realizados a lo largo del juego.
     private boolean enCarcel; //Será true si el jugador está en la carcel
-    private int tiradasCarcel; //Cuando está en la carcel, contará las tiradas sin éxito que ha hecho allí para intentar salir (se usa para limitar el numero de intentos).
+    private int tiradasCarcel; //Cuando está en la carcel, contará las tiradas sin éxito que ha hecho allí para intentar salir (se usa para limitar el número de intentos).
     private int vueltas; //Cuenta las vueltas dadas al tablero.
     private int numTransportes; //Cuenta la cantidad de transportes que tiene el jugador
     private int numServicios; //Cuenta la cantidad de servicios que tiene el jugador
@@ -193,22 +194,6 @@ public class Jugador{
 
     /**********Setters**********/
 
-    public void setFortuna(float fortuna) {
-        if (fortuna < 0) {
-            this.fortuna = 0;
-        } else {
-            this.fortuna = fortuna;
-        }
-    }
-
-    public void setGastos(float gastos) {
-        if (gastos < 0) {
-            this.gastos = 0;
-        } else {
-            this.gastos = gastos;
-        }
-    }
-
     public void setEnCarcel(boolean enCarcel) {
         this.enCarcel = enCarcel;
     }
@@ -243,11 +228,6 @@ public class Jugador{
     //Método para añadir una propiedad al jugador. Como parámetro, la casilla a añadir.
     public void anhadirPropiedad(Propiedad casilla) {
         propiedades.add(casilla);
-    }
-
-    //Método para eliminar una propiedad del arraylist de propiedades de jugador.
-    public void eliminarPropiedad(Propiedad casilla) {
-        propiedades.remove(casilla);
     }
 
     public void sumarTasasEImpuestos(float valor) {
@@ -285,10 +265,6 @@ public class Jugador{
     //Métodos para añadir o eliminar tratos
     public void addTrato(Trato trato) {
         this.tratos.add(trato);
-    }
-
-    public void removeTrato(Trato trato) {
-        this.tratos.remove(trato);
     }
 
     //Método para añadir fortuna a un jugador
@@ -329,50 +305,6 @@ public class Jugador{
     }
 
     /**
-     * Metodo que convierte una lista de elementos en una representación de cadena.
-     * Si la lista contiene cadenas, se devuelven como una lista de cadenas.
-     * Si la lista contiene objetos de tipo Casilla, se devuelven sus nombres.
-     * Si la lista contiene objetos de tipo Edificios, se devuelven sus id's.
-     *
-     * @param array La lista de elementos a convertir en cadena. Puede contener
-     *              objetos de tipo String o Casilla.
-     * @return Una representación de cadena de la lista, con los elementos
-     * separados por comas y encerrados entre corchetes. Si la lista está
-     * vacía, se devuelve un guion ("-").
-     */
-    private String listaArray(ArrayList<?> array) {
-        StringBuilder listaArray = new StringBuilder();
-
-        if (!array.isEmpty()) {
-            Object firstElement = array.getFirst();
-
-            if (firstElement instanceof String) {
-                listaArray.append("[").append((String) firstElement);
-            } else if (firstElement instanceof Casilla) {
-                listaArray.append("[").append(((Casilla) firstElement).getNombre());
-            } else if (firstElement instanceof Edificio) {
-                listaArray.append("[").append(((Edificio) firstElement).getIdEdificio());
-            }
-
-            for (int i = 1; i < array.size(); ++i) {
-                Object element = array.get(i);
-                if (element instanceof String) {
-                    listaArray.append(", ").append((String) element);
-                } else if (element instanceof Casilla) {
-                    listaArray.append(", ").append(((Casilla) element).getNombre());
-                } else if (element instanceof Edificio) {
-                    listaArray.append(", ").append(((Edificio) element).getIdEdificio());
-                }
-            }
-
-            listaArray.append("]");
-        } else {
-            listaArray = new StringBuilder("-");
-        }
-        return listaArray.toString();
-    }
-
-    /**
      * Método que devuelve una representación en cadena de la información del jugador.
      * Incluye el nombre, el avatar, la fortuna y las listas de propiedades, hipotecas
      * y edificios del jugador
@@ -386,9 +318,9 @@ public class Jugador{
      * - Lista de edificios del jugador
      */
     public String info() {
-        String listaPropiedades = listaArray(propiedades);
-        String listaHipotecas = listaArray(hipotecas);
-        String listaEdificios = listaArray(edificios);
+        String listaPropiedades = Juego.listaArray(propiedades);
+        String listaHipotecas = Juego.listaArray(hipotecas);
+        String listaEdificios = Juego.listaArray(edificios);
 
         return """
                 {
@@ -413,103 +345,85 @@ public class Jugador{
     }
 
     public void bancarrota(String motivo, Jugador banca) {
-        if (motivo.equals("Alquiler")) {
-            consolaNormal.imprimir("El jugador " + nombre + " se declara en bancarrota por no poder pagar un alquiler de la casilla " + avatar.getLugar().getNombre() + ". Con propietario " +
-                    avatar.getLugar().getDuenho().getNombre() + ".");
-            consolaNormal.imprimir("Se transfieren la fortuna y las propiedades");
-            Jugador jugBeneficiado = avatar.getLugar().getDuenho();
+        switch (motivo) {
+            case "Alquiler" -> {
+                consolaNormal.imprimir("El jugador " + nombre + " se declara en bancarrota por no poder pagar un alquiler de la casilla " + avatar.getLugar().getNombre() + ". Con propietario " +
+                        avatar.getLugar().getDuenho().getNombre() + ".");
+                consolaNormal.imprimir("Se transfieren la fortuna y las propiedades");
+                Jugador jugBeneficiado = avatar.getLugar().getDuenho();
 
-            // Vender todos los edificios del jugador this
-            for (Propiedad propiedad : propiedades) {
-                if(propiedad instanceof Solar) {
-                    Solar solar = (Solar) propiedad;
-                    solar.venderEdificios(Casa.class, solar.getNumEdificios(solar.getEdificios(), Casa.class));
-                    solar.venderEdificios(Hotel.class, solar.getNumEdificios(solar.getEdificios(), Hotel.class));
-                    solar.venderEdificios(Piscina.class, solar.getNumEdificios(solar.getEdificios(), Piscina.class));
-                    solar.venderEdificios(Piscina.class, solar.getNumEdificios(solar.getEdificios(), PistaDeporte.class));
+                // Vender todos los edificios del jugador this
+                for (Propiedad propiedad : propiedades) {
+                    if (propiedad instanceof Solar solar) {
+                        solar.venderEdificios(Casa.class, solar.getNumEdificios(solar.getEdificios(), Casa.class));
+                        solar.venderEdificios(Hotel.class, solar.getNumEdificios(solar.getEdificios(), Hotel.class));
+                        solar.venderEdificios(Piscina.class, solar.getNumEdificios(solar.getEdificios(), Piscina.class));
+                        solar.venderEdificios(Piscina.class, solar.getNumEdificios(solar.getEdificios(), PistaDeporte.class));
+                    }
                 }
-            }
 
-            // Transferir todas las propiedades al jugador beneficiado
-            for (Propiedad propiedad : propiedades) {
-                propiedad.setHipotecado(false);
-                propiedad.setContador(0);
-                propiedad.setDuenho(jugBeneficiado);
-                jugBeneficiado.anhadirPropiedad(propiedad);
-            }
-            propiedades.clear();
-
-            // Transferir la fortuna del jugador this al jugador beneficiado
-            jugBeneficiado.sumarFortuna(this.fortuna);
-            this.fortuna = 0;
-        }
-        else if(motivo.equals("Banca")) {
-            consolaNormal.imprimir("El jugador " + nombre + " se declara en bancarrota por no poder pagar a la banca.");
-            consolaNormal.imprimir("Se transfieren la fortuna y las propiedades a la banca");
-
-            // Vender todos los edificios del jugador this
-            for (Propiedad propiedad : propiedades) {
-                if(propiedad instanceof Solar) {
-                    Solar solar = (Solar) propiedad;
-                    solar.venderEdificios(Casa.class, solar.getNumEdificios(solar.getEdificios(), Casa.class));
-                    solar.venderEdificios(Hotel.class, solar.getNumEdificios(solar.getEdificios(), Hotel.class));
-                    solar.venderEdificios(Piscina.class, solar.getNumEdificios(solar.getEdificios(), Piscina.class));
-                    solar.venderEdificios(Piscina.class, solar.getNumEdificios(solar.getEdificios(), PistaDeporte.class));
+                // Transferir todas las propiedades al jugador beneficiado
+                for (Propiedad propiedad : propiedades) {
+                    propiedad.setHipotecado(false);
+                    propiedad.setContador(0);
+                    propiedad.setDuenho(jugBeneficiado);
+                    jugBeneficiado.anhadirPropiedad(propiedad);
                 }
+                propiedades.clear();
+
+                // Transferir la fortuna del jugador this al jugador beneficiado
+                jugBeneficiado.sumarFortuna(this.fortuna);
+                this.fortuna = 0;
             }
+            case "Banca" -> {
+                consolaNormal.imprimir("El jugador " + nombre + " se declara en bancarrota por no poder pagar a la banca.");
+                consolaNormal.imprimir("Se transfieren la fortuna y las propiedades a la banca");
 
-            // Transferir todas las propiedades a la banca
-            for (Propiedad propiedad : propiedades) {
-                propiedad.setDuenho(banca);
-            }
-            propiedades.clear();
-
-            // Transferir la fortuna del jugador this a la banca
-            banca.sumarFortuna(this.fortuna);
-            this.fortuna = 0;
-        } else if (motivo.equals("Voluntario")) {
-            consolaNormal.imprimir("El jugador " + nombre + " se ha declarado en bancarrota voluntariamente.");
-            consolaNormal.imprimir("Se transfieren la fortuna y las propiedades a la banca");
-
-            // Vender todos los edificios del jugador
-            // Vender todos los edificios del jugador this
-            for (Propiedad propiedad : propiedades) {
-                if(propiedad instanceof Solar) {
-                    Solar solar = (Solar) propiedad;
-                    solar.venderEdificios(Casa.class, solar.getNumEdificios(solar.getEdificios(), Casa.class));
-                    solar.venderEdificios(Hotel.class, solar.getNumEdificios(solar.getEdificios(), Hotel.class));
-                    solar.venderEdificios(Piscina.class, solar.getNumEdificios(solar.getEdificios(), Piscina.class));
-                    solar.venderEdificios(PistaDeporte.class, solar.getNumEdificios(solar.getEdificios(), PistaDeporte.class));
+                // Vender todos los edificios del jugador this
+                for (Propiedad propiedad : propiedades) {
+                    if (propiedad instanceof Solar solar) {
+                        solar.venderEdificios(Casa.class, solar.getNumEdificios(solar.getEdificios(), Casa.class));
+                        solar.venderEdificios(Hotel.class, solar.getNumEdificios(solar.getEdificios(), Hotel.class));
+                        solar.venderEdificios(Piscina.class, solar.getNumEdificios(solar.getEdificios(), Piscina.class));
+                        solar.venderEdificios(Piscina.class, solar.getNumEdificios(solar.getEdificios(), PistaDeporte.class));
+                    }
                 }
-            }
 
-            // Transferir todas las propiedades a la banca
-            for (Propiedad propiedad : propiedades) {
-                propiedad.setDuenho(banca);
-            }
-            propiedades.clear();
+                // Transferir todas las propiedades a la banca
+                for (Propiedad propiedad : propiedades) {
+                    propiedad.setDuenho(banca);
+                }
+                propiedades.clear();
 
-            // Transferir la fortuna del jugador this a la banca
-            banca.sumarFortuna(this.fortuna);
-            this.fortuna = 0;
+                // Transferir la fortuna del jugador this a la banca
+                banca.sumarFortuna(this.fortuna);
+                this.fortuna = 0;
+            }
+            case "Voluntario" -> {
+                consolaNormal.imprimir("El jugador " + nombre + " se ha declarado en bancarrota voluntariamente.");
+                consolaNormal.imprimir("Se transfieren la fortuna y las propiedades a la banca");
+
+                // Vender todos los edificios del jugador
+                // Vender todos los edificios del jugador this
+                for (Propiedad propiedad : propiedades) {
+                    if (propiedad instanceof Solar solar) {
+                        solar.venderEdificios(Casa.class, solar.getNumEdificios(solar.getEdificios(), Casa.class));
+                        solar.venderEdificios(Hotel.class, solar.getNumEdificios(solar.getEdificios(), Hotel.class));
+                        solar.venderEdificios(Piscina.class, solar.getNumEdificios(solar.getEdificios(), Piscina.class));
+                        solar.venderEdificios(PistaDeporte.class, solar.getNumEdificios(solar.getEdificios(), PistaDeporte.class));
+                    }
+                }
+
+                // Transferir todas las propiedades a la banca
+                for (Propiedad propiedad : propiedades) {
+                    propiedad.setDuenho(banca);
+                }
+                propiedades.clear();
+
+                // Transferir la fortuna del jugador this a la banca
+                banca.sumarFortuna(this.fortuna);
+                this.fortuna = 0;
+            }
         }
     }
 }
-/**
- * consolaNormal.imprimir("El jugador " + jugActual.getNombre() + " se ha declarado en bancarrota, ¿Está seguro? [s/n].");
- *         String respuesta;
- *         do {
- *             respuesta = consolaNormal.leerPalabra();
- *             if (respuesta.equalsIgnoreCase("s")) {
- *                 bancarrota = true;
- *                 consolaNormal.imprimir("El jugador " + jugActual.getNombre() + " se ha declarado en bancarrota.");
- *                 break;
- *             } else if (respuesta.equalsIgnoreCase("n")) {
- *                 bancarrota = false;
- *                 consolaNormal.imprimir("El jugador " + jugActual.getNombre() + " no se ha declarado en bancarrota.");
- *                 return;
- *             } else {
- *                 consolaNormal.imprimir("Respuesta no válida. Introduzca 's' para sí o 'n' para no.");
- *             }
- *         }while(!respuesta.equalsIgnoreCase("s") && !respuesta.equalsIgnoreCase("n"));
- */

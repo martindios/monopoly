@@ -20,9 +20,9 @@ import static monopoly.Valor.*;
 public class Tablero {
 
     /**********Atributos**********/
-    private ArrayList<ArrayList<Casilla>> posiciones; //Posiciones del tablero: se define como un arraylist de arraylists de casillas (uno por cada lado del tablero).
-    private HashMap<String, Grupo> grupos; //Grupos del tablero, almacenados como un HashMap con clave String (será el color del grupo).
-    private Jugador banca; //Un jugador que será la banca.
+    private final ArrayList<ArrayList<Casilla>> posiciones; //Posiciones del tablero: se define como un arraylist de arraylists de casillas (uno por cada lado del tablero).
+    private final HashMap<String, Grupo> grupos; //Grupos del tablero, almacenados como un HashMap con clave String (será el color del grupo).
+    private final Jugador banca; //Un jugador que será la banca.
 
     /**********Constructor**********/
     /**
@@ -459,7 +459,7 @@ public class Tablero {
      * Genera una cadena que representa los avatares presentes en una casilla.
      *
      * @param casilla La casilla de la que se desea obtener los avatares.
-     * @return Una cadena que contiene los IDs de los avatares presentes en la casilla,
+     * @return Una cadena que contiene los ID de los avatares presentes en la casilla,
      *         separados por el carácter '&'.
      */
     private String imprimirAvatares(Casilla casilla) {

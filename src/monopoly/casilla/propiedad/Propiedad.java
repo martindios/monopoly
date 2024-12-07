@@ -6,7 +6,7 @@ import partida.Jugador;
 public abstract class Propiedad extends Casilla {
 
     /**********Atributos**********/
-    private float hipoteca; //Valor otorgado por hipotecar una casilla
+    private final float hipoteca; //Valor otorgado por hipotecar una casilla
     private boolean hipotecado; //Indica si la casilla está hipotecada o no
     private float totalAlquileresPagados;
     private int contador; //Contador de veces que el dueño ha caído en la casilla
@@ -40,17 +40,8 @@ public abstract class Propiedad extends Casilla {
 
     /**********Setters**********/
 
-    public void setHipoteca(float hipoteca) {
-        if(hipoteca < 0) this.hipoteca = 0;
-        else this.hipoteca = hipoteca;
-    }
-
     public void setHipotecado(boolean hipotecado) {
         this.hipotecado = hipotecado;
-    }
-
-    public void setTotalAlquileresPagados(float totalAlquileresPagados) {
-        this.totalAlquileresPagados = totalAlquileresPagados;
     }
 
     public void setContador(int contador) {
@@ -129,13 +120,13 @@ public abstract class Propiedad extends Casilla {
         this.setDuenho(solicitante);
         solicitante.anhadirPropiedad(this);
 
-        consolaNormal.imprimir("El jugador ha comprado la casilla por " + valorCasilla + ".");
+        consolaNormal.imprimir("El jugador " + solicitante.getNombre() + " ha comprado la casilla " + this.getNombre() + " por " + valorCasilla + ".");
     }
 
     /**
      * Proporciona información detallada sobre la casilla.
      *
-     * @return Una cadena con el tipo, dueño, valor y hipoteca de la casilla.
+     * @return Una cadena con el tipo, dueño, valor e hipoteca de la casilla.
      */
     @Override
     public String infoCasilla() throws Exception {
