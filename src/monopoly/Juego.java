@@ -1584,7 +1584,7 @@ public class Juego implements Comando{
             }
         }
         if(jugadorRecibe == null) {
-            throw new Exception("Jugador no encontrado.");
+            throw new ExcepcionEntidadNoExistente("jugador");
         }
         if(jugadorOfrece.equals(jugadorRecibe)) {
             throw new Exception("No puedes hacer tratos contigo mismo.");
@@ -1718,7 +1718,7 @@ public class Juego implements Comando{
         }
     }
 
-    private void valorarAceptarTrato(Trato trato) {
+    private void valorarAceptarTrato(Trato trato) throws Exception {
         Jugador jugadorOfrece = trato.getJugadorPropone();
         Jugador jugadorRecibe = trato.getJugadorRecibe();
         Propiedad propiedad1 = trato.getPropiedad1();
@@ -1741,8 +1741,7 @@ public class Juego implements Comando{
 
             case 2:
                 if (jugadorRecibe.getFortuna() < dinero) {
-                    consolaNormal.imprimir("No tienes suficiente dinero para aceptar el trato.");
-                    return;
+                    throw new Exception("No tienes suficiente dinero para aceptar el trato.");
                 }
 
                 if (aceptarPropiedadHipotecada(propiedad1)) {
@@ -1760,8 +1759,7 @@ public class Juego implements Comando{
 
             case 3:
                 if (jugadorOfrece.getFortuna() < dinero) {
-                    consolaNormal.imprimir("El jugador que ofreció el trato no tiene el dinero suficiente para formalizarlo actualmente.");
-                    return;
+                    throw new Exception("El jugador que ofreció el trato no tiene el dinero suficiente para formalizarlo actualmente.");
                 }
 
                 traspasoPropiedad(propiedad1, jugadorOfrece);
@@ -1778,8 +1776,7 @@ public class Juego implements Comando{
                     return;
                 }
                 if (jugadorRecibe.getFortuna() < dinero) {
-                    consolaNormal.imprimir("No tienes suficiente dinero para aceptar el trato.");
-                    return;
+                    throw new Exception("No tienes suficiente dinero para aceptar el trato.");
                 }
 
                 traspasoPropiedad(propiedad1, jugadorRecibe);
@@ -1822,7 +1819,7 @@ public class Juego implements Comando{
         return false;
     }
 
-    public void aceptarTrato(String idTrato) {
+    public void aceptarTrato(String idTrato) throws Exception {
         Jugador jugadorActual = jugadores.get(turno);
         Trato tratoDeseado = null;
         for(Trato trato : jugadorActual.getTratos()) {
@@ -1832,8 +1829,7 @@ public class Juego implements Comando{
             }
         }
         if(tratoDeseado == null) {
-            consolaNormal.imprimir("Trato no encontrado.");
-            return;
+            throw new ExcepcionEntidadNoExistente("trato");
         }
 
         valorarAceptarTrato(tratoDeseado);
@@ -1879,7 +1875,7 @@ public class Juego implements Comando{
         consolaNormal.imprimirStrBuilder(str);
     }
 
-    public void eliminarTrato(String idTrato) {
+    public void eliminarTrato(String idTrato) throws ExcepcionEntidadNoExistente {
         Jugador jugadorActual = jugadores.get(turno);
         Trato tratoAEliminar = null;
 
@@ -1890,8 +1886,7 @@ public class Juego implements Comando{
             }
         }
         if(tratoAEliminar == null) {
-            consolaNormal.imprimir("Trato no encontrado.");
-            return;
+            throw new ExcepcionEntidadNoExistente("Trato no encontrado.");
         }
 
         jugadorActual.getTratos().remove(tratoAEliminar);
