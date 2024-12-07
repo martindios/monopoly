@@ -39,7 +39,7 @@ public interface Comando {
     void estadisticasJugador(String jugadorStr) throws ExcepcionEntidadNoExistente;
     void bancarrota(boolean voluntario);
     void clasificarTrato(String jugadorOfertado, String objeto1, String objeto2, String objeto3) throws Exception;
-
-
-
+    void aceptarTrato(String idTrato);
+    void listarTratos();
+    void eliminarTrato(String idTrato);
 }

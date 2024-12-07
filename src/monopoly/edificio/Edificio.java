@@ -41,6 +41,10 @@ public class Edificio {
         this.valor = valor;
     }
 
+    public void setPropietario(Jugador propietario) {
+        this.propietario = propietario;
+    }
+
     /**********Métodos**********/
 
     public String infoEdificio() {
