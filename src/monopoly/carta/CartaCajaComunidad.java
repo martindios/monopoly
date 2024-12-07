@@ -25,8 +25,9 @@ public class CartaCajaComunidad extends Carta{
             case 1: /*Paga 500000*/
                 dinero = 500000;
                 if (jugadorActual.getFortuna() >= dinero) {
-                    banca.sumarFortuna(-dinero);
-                    jugadorActual.sumarFortuna(dinero);
+                    banca.sumarFortuna(dinero);
+                    jugadorActual.sumarFortuna(-dinero);
+                    jugadorActual.sumarGastos(dinero);
                 } else {
                     float restante = dinero - jugadorActual.getFortuna();
                     //menu.conseguirDinero(restante); //CAMBIAR ESTO
