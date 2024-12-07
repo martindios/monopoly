@@ -5,7 +5,7 @@ import monopoly.Tablero;
 import monopoly.casilla.Casilla;
 import monopoly.casilla.Especial;
 import monopoly.casilla.propiedad.Solar;
-import monopoly.excepcion.ExcepcionConseguirDinero;
+import monopoly.excepcion.excepcionConseguirDinero.ExcepcionConseguirDinero;
 import partida.Jugador;
 
 import static monopoly.Valor.*;

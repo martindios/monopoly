@@ -1,14 +1,10 @@
 package monopoly;
 
-import monopoly.excepcion.ExcepcionBancarrota;
-import monopoly.excepcion.ExcepcionConseguirDinero;
-import monopoly.excepcion.excepcionCarcel.ExcepcionCarcelTirarDados;
-import monopoly.excepcion.excepcionCarcel.ExcepcionIrACarcel;
-import monopoly.excepcion.excepcionDados.ExcepcionDadosCoche;
-import monopoly.excepcion.excepcionEntradaUsuario.ExcepcionEntradaUsuario;
-import monopoly.excepcion.excepcionEntradaUsuario.ExcepcionFormatoIncorrecto;
-import monopoly.excepcion.excepcionEntradaUsuario.ExcepcionJugadoresYaRegistrados;
-import monopoly.excepcion.excepcionDados.ExcepcionNoPuedeTirarDados;
+import monopoly.excepcion.*;
+import monopoly.excepcion.excepcionCarcel.*;
+import monopoly.excepcion.excepcionConseguirDinero.*;
+import monopoly.excepcion.excepcionDados.*;
+import monopoly.excepcion.excepcionEntradaUsuario.*;
 import partida.Jugador;
 import partida.avatar.Coche;
 import partida.avatar.Pelota;
@@ -42,10 +38,10 @@ public class Menu {
     public void iniciarPartida() throws Exception {
         //SE DEBERÍA DE QUITAR ESTE IF
         if (juego.getJugadores().get(juego.getTurno()).getAvatar() instanceof Coche) {
-            juego.setSaltoMovimiento(4);
+            Juego.setSaltoMovimiento(4);
         }
         while(!juego.isFinalizarPartida()) {
-            juego.setSeHaMovido(false);
+            Juego.setSeHaMovido(false);
             consolaNormal.imprimirSinSalto("Introduce el comando: ");
             String comando = consolaNormal.leer();
             analizarComando(comando);
@@ -75,7 +71,7 @@ public class Menu {
                         break;
 
                     case "lanzar":
-                        if(juego.isTirado()) {
+                        if(Juego.isTirado()) {
                             throw new ExcepcionEntradaUsuario("Ya has lanzado los dados este turno.");
                         }
 
@@ -104,7 +100,7 @@ public class Menu {
                             throw new ExcepcionFormatoIncorrecto("lanzar dados o lanzar dados (núm primer dado) (núm segundo dado)");
                         }
                         if (jugadores.get(turno).getEnCarcel()) {
-                            juego.setDadosDobles(false);
+                            Juego.setDadosDobles(false);
                         }
                         break;
 
@@ -297,27 +293,32 @@ public class Menu {
                 }
             }
         } catch (Exception e) {
-            if(e instanceof ExcepcionNoPuedeTirarDados) {
-                jugadores.get(turno).setNoPuedeTirarDados(jugadores.get(turno).getNoPuedeTirarDados() - 1);
-                juego.setTirado(true);
-                juego.acabarTurno();
-            } else if (e instanceof ExcepcionDadosCoche) {
-                juego.setDadosDobles(false);
-            }
-            else if (e instanceof ExcepcionIrACarcel) {
-                juego.getJugadores().get(turno).encarcelar(tablero.getPosiciones());
-                juego.setDadosDobles(false);
-                juego.acabarTurno();
-            } else if (e instanceof ExcepcionBancarrota) {
-                juego.bancarrota(false);
-            } else if (e instanceof ExcepcionCarcelTirarDados) {
-                juego.setDadosDobles(false);
-                jugadores.get(turno).setTiradasCarcel(jugadores.get(turno).getTiradasCarcel() + 1);
-                juego.acabarTurno();
-            } else if (e instanceof ExcepcionConseguirDinero) {
-                jugadores.get(turno).getAvatar().setConseguirDinero(true);
-            }
             consolaNormal.imprimir(e.getMessage());
+            switch (e) {
+                case ExcepcionNoPuedeTirarDados _ -> {
+                    jugadores.get(turno).setNoPuedeTirarDados(jugadores.get(turno).getNoPuedeTirarDados() - 1);
+                    Juego.setTirado(true);
+                    juego.acabarTurno();
+                }
+                case ExcepcionDadosCoche _ -> Juego.setDadosDobles(false);
+                case ExcepcionIrACarcel _ -> {
+                    juego.getJugadores().get(turno).encarcelar(tablero.getPosiciones());
+                    Juego.setDadosDobles(false);
+                    juego.acabarTurno();
+                }
+                case ExcepcionBancarrota _ -> juego.bancarrota(false);
+                case ExcepcionCarcelTirarDados _ -> {
+                    Juego.setDadosDobles(false);
+                    jugadores.get(turno).setTiradasCarcel(jugadores.get(turno).getTiradasCarcel() + 1);
+                    juego.acabarTurno();
+                }
+                case ExcepcionConseguirDinero _ ->
+                        jugadores.get(turno).getAvatar().setConseguirDinero(true);
+                case ExcepcionConseguirDineroCaja excepcionConseguirDineroCaja ->
+                        juego.conseguirDinero(excepcionConseguirDineroCaja.getRestante());
+                default -> {
+                }
+            }
         }
     }
 }
