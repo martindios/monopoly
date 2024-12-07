@@ -10,11 +10,11 @@ import java.util.ArrayList;
 public class Grupo {
 
     /**********Atributos**********/
-    private ArrayList<Solar> miembros; //Casillas miembros del grupo.
-    private String colorGrupo; //Color del grupo
-    private String nombreGrupo; //Nombre del grupo
-    private int numCasillas; //Número de casillas del grupo.
-    private ArrayList<Edificio> edificiosGrupo;
+    private final ArrayList<Solar> miembros; //Casillas miembros del grupo.
+    private final String colorGrupo; //Color del grupo
+    private final String nombreGrupo; //Nombre del grupo
+    private final int numCasillas; //Número de casillas del grupo.
+    private final ArrayList<Edificio> edificiosGrupo;
 
     /**********Constructores**********/
 
@@ -25,7 +25,7 @@ public class Grupo {
         this.numCasillas = 2;
         this.colorGrupo = colorGrupo;
         this.nombreGrupo = nombreGrupo;
-        this.miembros = new ArrayList<Solar>();
+        this.miembros = new ArrayList<>();
         this.edificiosGrupo = new ArrayList<>();
         anhadirCasilla(cas1);
         anhadirCasilla(cas2);
@@ -38,7 +38,7 @@ public class Grupo {
         this.numCasillas = 3;
         this.colorGrupo = colorGrupo;
         this.nombreGrupo = nombreGrupo;
-        this.miembros = new ArrayList<Solar>();
+        this.miembros = new ArrayList<>();
         this.edificiosGrupo = new ArrayList<>();
         anhadirCasilla(cas1);
         anhadirCasilla(cas2);
@@ -46,11 +46,6 @@ public class Grupo {
     }
 
     /**********Getters**********/
-
-    //getter para devolver los miembros que pertenecen a un grupo
-    public ArrayList<Solar> getMiembros() {
-        return miembros;
-    }
 
     //getter para devolver el color correspondiente a un grupo
     public String getColorGrupo() {

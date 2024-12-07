@@ -320,7 +320,7 @@ public class Juego implements Comando{
 
         for(ArrayList<Casilla> fila : tablero.getPosiciones()) {
             for(Casilla casilla : fila) {
-                if(casilla instanceof Solar solar || casilla instanceof Transporte || casilla instanceof Servicio
+                if(casilla instanceof Solar || casilla instanceof Transporte || casilla instanceof Servicio
                         && casilla.getDuenho().equals(banca)) {
                     hayPropiedadesEnVenta = true;
                     Propiedad propiedad = (Propiedad) casilla;
@@ -675,7 +675,6 @@ public class Juego implements Comando{
 
     /**
      * Método para evaluar si el jugador es solvente en la casilla en la que cae.
-     *
      * Este método comprueba la solvencia del jugador actual en la casilla correspondiente.
      * Si el jugador no es solvente, la partida se finalizará. Si es solvente y la casilla
      * requiere el pago (Solar, Servicios o Transporte), se calcula el alquiler correspondiente.
@@ -772,7 +771,7 @@ public class Juego implements Comando{
     /**********************/
 
     public void edificar(String palabra) throws Exception {
-        float factor = 1;
+        float factor;
         Jugador jugador = jugadores.get(turno);
         Casilla casilla = jugador.getAvatar().getLugar();
 
@@ -1166,13 +1165,6 @@ public class Juego implements Comando{
         }
     }
 
-    private void edificiosVender(Jugador jugadorActual, ArrayList<Edificio> edificiosLista) throws Exception {
-        edificiosLista.addAll(jugadorActual.getEdificios());
-        if(edificiosLista.isEmpty()) {
-            consolaNormal.imprimir("El jugador " + jugadorActual.getNombre() + " no tiene edificios");
-        }
-    }
-
     private void evaluarRecoleccionDinero(Jugador jugadorActual, int contadorPropiedades, int contadorEdificios, float dineroAConseguir, float dineroConseguido) throws Exception {
         if(dineroConseguido > dineroAConseguir) {
             consolaNormal.imprimir("El jugador ha conseguido suficiente dinero para pagar. Se ha vuelto solvente.");
@@ -1198,7 +1190,7 @@ public class Juego implements Comando{
      *debe declararse en bancarrota*/
     public void conseguirDinero(float dineroAConseguir) throws Exception {
         //Declaramos las variables necesarias
-        float dineroConseguido = 0;
+        float dineroConseguido;
         Jugador jugadorActual = jugadores.get(turno);
         ArrayList<Propiedad> propiedadesHipotecables = new ArrayList<>();
         ArrayList<Edificio> edificiosLista = new ArrayList<>(jugadorActual.getEdificios());
@@ -1282,7 +1274,7 @@ public class Juego implements Comando{
 
                         consolaNormal.imprimir("Introduce el tipo de edificio que quieres vender: ");
                         String tipo = consolaNormal.leerPalabra();
-                        float valor = 0;
+                        float valor;
                         switch (tipo) {
                             case "Casa", "Hotel" -> valor = casilla.getValor() * 0.6f;
                             case "Piscina" -> valor = casilla.getValor() * 0.4f;
@@ -1304,7 +1296,7 @@ public class Juego implements Comando{
                             }
 
                             if (solar.getEdificios().isEmpty() && !solar.isHipotecado() && solar.getNombre().equals(nombreCasilla)) {
-                                propiedadesHipotecables.add((Propiedad) solar);
+                                propiedadesHipotecables.add(solar);
                                 contadorPropiedadesHipotecables++;
                             }
                         }
@@ -1343,8 +1335,6 @@ public class Juego implements Comando{
         lanzamientos  = 0;
         tirado = false;
         solvente = true;
-        jugActual = null;
-        avActual = null;
     }
 
     /**************************************************/
@@ -1397,11 +1387,6 @@ public class Juego implements Comando{
                 tirado = false;
             } else {
                 consolaNormal.imprimir("El jugador no tiene suficiente dinero para pagar la fianza.");
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException e) {
-                    Thread.currentThread().interrupt();
-                }
                 conseguirDinero(fianza - jugActual.getFortuna());
                 if(jugActual.getTiradasCarcel() < 3) {
                     solvente = true;
@@ -1417,11 +1402,6 @@ public class Juego implements Comando{
             tirado = false;
         } else {
             consolaNormal.imprimir("El jugador no tiene suficiente dinero para pagar la fianza ni puede tirar los dados.");
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
-            }
             conseguirDinero(fianza - jugActual.getFortuna());
             if(jugActual.getTiradasCarcel() < 3) {
                 solvente = true;

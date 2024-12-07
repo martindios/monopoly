@@ -3,7 +3,6 @@ package monopoly.carta;
 import monopoly.Tablero;
 import monopoly.casilla.Casilla;
 import monopoly.excepcion.excepcionCarcel.ExcepcionCarcel;
-import monopoly.excepcion.excepcionConseguirDinero.ExcepcionConseguirDinero;
 import monopoly.excepcion.excepcionConseguirDinero.ExcepcionConseguirDineroCaja;
 import partida.Jugador;
 

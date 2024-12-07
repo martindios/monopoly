@@ -13,9 +13,9 @@ import java.lang.String;
 public abstract class Casilla {
 
     /**********Atributos**********/
-    private String nombre; //Nombre de la casilla
+    private final String nombre; //Nombre de la casilla
     private float valor; //Valor de esa casilla (en la mayoría será valor de compra, en la casilla parking se usará como el bote).
-    private int posicion; //Posición que ocupa la casilla en el tablero (entero entre 1 y 40).
+    private final int posicion; //Posición que ocupa la casilla en el tablero (entero entre 1 y 40).
     private Jugador duenho; //Dueño de la casilla (por defecto sería la banca).
     private float impuesto; //Cantidad a pagar por caer en la casilla: el alquiler en solares/servicios/transportes o impuestos.
     private float impuestoInicial;

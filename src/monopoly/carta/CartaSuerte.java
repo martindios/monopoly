@@ -1,10 +1,8 @@
 package monopoly.carta;
 
 import monopoly.Tablero;
-import monopoly.casilla.Casilla;
 import monopoly.excepcion.excepcionCarcel.ExcepcionCarcel;
 import partida.Jugador;
-import monopoly.Baraja;
 
 import java.util.ArrayList;
 

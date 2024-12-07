@@ -4,13 +4,13 @@ import monopoly.casilla.propiedad.Propiedad;
 import partida.Jugador;
 
 public class Trato {
-    private String idTrato;
-    private int numTrato;
-    private Jugador jugadorPropone;
-    private Jugador jugadorRecibe;
-    private float dinero;
-    private Propiedad propiedad1;
-    private Propiedad propiedad2;
+    private final String idTrato;
+    private final int numTrato;
+    private final Jugador jugadorPropone;
+    private final Jugador jugadorRecibe;
+    private final float dinero;
+    private final Propiedad propiedad1;
+    private final Propiedad propiedad2;
 
     //Cambiar <propiedad_1> por <propiedad_2>
     public Trato(Jugador jugadorPropone, Jugador jugadorRecibe, Propiedad propiedad1, Propiedad propiedad2, int numero) {

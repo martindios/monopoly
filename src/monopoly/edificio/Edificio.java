@@ -6,7 +6,7 @@ import partida.Jugador;
 public class Edificio {
 
     /**********Atributos**********/
-    private String idEdificio; //Variable para almacenar el id del edificio, servirá como nombre.
+    private final String idEdificio; //Variable para almacenar el id del edificio, servirá como nombre.
     private float valor; //Valor del edificio (valor de compra).
     private Solar casilla; //Casilla en la que está construído el edificio
     private Jugador propietario; //Almacenamos el propietario del edificio

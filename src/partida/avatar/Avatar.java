@@ -19,7 +19,7 @@ public abstract class Avatar {
     /**********Atributos**********/
     private String id; //Identificador: una letra generada aleatoriamente.
     //private String tipo; //Sombrero, Esfinge, Pelota, Coche
-    private Jugador jugador; //Un jugador al que pertenece ese avatar.
+    private final Jugador jugador; //Un jugador al que pertenece ese avatar.
     private Casilla lugar; //Los avatares se sitúan en casillas del tablero.
     private boolean avanzado;
     private boolean conseguirDinero;
@@ -263,7 +263,7 @@ public abstract class Avatar {
     private void generarId(ArrayList<Avatar> avCreados) {
         Random random = new Random();
         int numeroAleatorio = random.nextInt(26) + 65;  // Genera un número entre 65 y 90
-        String idCreado = String.valueOf((char) numeroAleatorio);;  // Convierte el número a su valor de String correspondiente
+        String idCreado = String.valueOf((char) numeroAleatorio);  // Convierte el número a su valor de String correspondiente
 
         //Recorre la lista de avatares para comprobar si el id ya existe. Si existe, se llama recursivamente a la función para que cree uno nuevo
         for(Avatar avatar : avCreados){
