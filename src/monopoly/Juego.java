@@ -1167,7 +1167,7 @@ public class Juego implements Comando{
             }
         }
         if(propiedades.isEmpty()) {
-            throw new Exception("El jugador " + jugadorActual.getNombre() + " no tiene propiedades hipotecables");
+            consolaNormal.imprimir("El jugador " + jugadorActual.getNombre() + " no tiene propiedades hipotecables");
         }
     }
 
@@ -1586,7 +1586,7 @@ public class Juego implements Comando{
      * @param objeto2 El segundo objeto del trato (puede ser una propiedad o una cantidad de dinero).
      * @param objeto3 El tercer objeto del trato (opcional, puede ser una cantidad de dinero).
      * @param trato El tipo de trato a crear (1: propiedad por propiedad, 2: propiedad por dinero, 3: dinero por propiedad, 4: propiedad por propiedad y dinero, 5: propiedad y dinero por propiedad).
-     * @throws Exception Si ocurre un error durante la creación del trato.
+     * @throws Exception por si ocurre un error durante la creación del trato.
      */
     private void creacionTrato(Jugador jugadorOfrece, Jugador jugadorRecibe, String objeto1, String objeto2, String objeto3, int trato) throws Exception {
         //Hacemos un switch para los diferentes tipos de tratos
@@ -1613,7 +1613,7 @@ public class Juego implements Comando{
                     throw new ExcepcionTratoNoPropiedad("inicia");
                 }
 
-                //No comprobamos el dinero ya que en algún momento se puede conseguir
+                //No comprobamos el dinero, ya que en algún momento se puede conseguir
                 Trato tratoCreado2 = new Trato(jugadorOfrece, jugadorRecibe, propiedad3, Float.parseFloat(objeto2), contadorTratos);
                 jugadorRecibe.addTrato(tratoCreado2);
                 consolaNormal.imprimir("Trato creado con éxito.");

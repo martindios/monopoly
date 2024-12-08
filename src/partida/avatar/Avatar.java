@@ -32,8 +32,6 @@ public abstract class Avatar {
     * Tipo del avatar, jugador al que pertenece, lugar en el que estará ubicado, y un arraylist con los
     * avatares creados (usado para crear un ID distinto del de los demás avatares).
      */
-    //El ArrayList se encarga de almacenar todos los avatares creados. Con esto, creamos la variable id para generar un ID ÚNICO con la función generarID,
-    //pasando el ArrayList para que la función evite la repetición
     public Avatar(Jugador jugador, Casilla lugar, ArrayList<Avatar> avCreados) {
         this.jugador = jugador;
         this.lugar = lugar;
