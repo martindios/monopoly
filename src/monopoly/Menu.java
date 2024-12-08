@@ -36,10 +36,6 @@ public class Menu {
 
     /*Método en el que se desarrolla la partida hasta que un jugador es no solvente*/
     public void iniciarPartida() throws Exception {
-        //SE DEBERÍA DE QUITAR ESTE IF
-        if (juego.getJugadores().get(juego.getTurno()).getAvatar() instanceof Coche) {
-            Juego.setSaltoMovimiento(4);
-        }
         while(!juego.isFinalizarPartida()) {
             Juego.setSeHaMovido(false);
             consolaNormal.imprimirSinSalto("Introduce el comando: ");

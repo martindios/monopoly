@@ -256,12 +256,15 @@ public class Juego implements Comando{
                 consolaNormal.imprimir("A partir de ahora el avatar " + avatarActual.getId() + ", de tipo " + avatarActual.getClass().getSimpleName() + ", se moverá en modo normal.");
             }
             else {
+                if (jugadores.get(turno).getAvatar() instanceof Coche) {
+                    Juego.setSaltoMovimiento(4);
+                }
                 avatarActual.setAvanzado(true);
                 consolaNormal.imprimir("A partir de ahora el avatar " + avatarActual.getId() + ", de tipo " + avatarActual.getClass().getSimpleName() + ", se moverá en modo avanzado.");
             }
         }
         else {
-            throw new ExcepcionMovimientosAvanzados("El jugador debe esperar al inicio del siguiente turno para volver a cambiar el modo de movimiento.");
+            throw new ExcepcionMovimientosAvanzados("El jugador debe esperar al inicio del siguiente turno para cambiar el modo de movimiento. En este turno ya ha tirado.");
         }
     }
 
@@ -1037,6 +1040,8 @@ public class Juego implements Comando{
         } else if (jugador.getAvatar() instanceof Pelota) {
             saltoMovimiento = 0;
         }
+        //Una vez actualizados los atributos para comenzar el turno de otro jugador, se imprimen los tratos del jugador que recibe el turno
+        listarTratos();
     }
 
     /**
@@ -1520,6 +1525,17 @@ public class Juego implements Comando{
     /*SECCIÓN DE TRATOS*/
     /*******************/
 
+
+    /**
+     * Clasifica el trato entre dos jugadores basado en los objetos ofrecidos.
+     *
+     * @param jugadorOfertado El nombre del jugador al que se le ofrece el trato.
+     * @param objeto1 El primer objeto del trato (puede ser una propiedad o una cantidad de dinero).
+     * @param objeto2 El segundo objeto del trato (puede ser una propiedad o una cantidad de dinero).
+     * @param objeto3 El tercer objeto del trato (opcional, puede ser una cantidad de dinero).
+     * @throws Exception Si el jugador ofertado no existe, si el jugador que ofrece es el mismo que el jugador ofertado,
+     *                   o si los objetos del trato no son válidos.
+     */
     public void clasificarTrato(String jugadorOfertado, String objeto1, String objeto2, String objeto3) throws Exception {
         Jugador jugadorOfrece = jugadores.get(turno);
         Jugador jugadorRecibe = null;
@@ -1538,6 +1554,7 @@ public class Juego implements Comando{
 
         if(objeto3 == null) {
             //Orden inverso para que se detecten los números (el dinero) antes de que se detecten como String
+            //La expresión regular \\d+\\.\\d+|\\d+ detecta números decimales y enteros y \\S+ detecta cualquier cadena de caracteres
             if (objeto1.matches("\\d+\\.\\d+|\\d+") && objeto2.matches("\\S+")) {
                 // Caso 3: cantidad de dinero por propiedad
                 creacionTrato(jugadorOfrece, jugadorRecibe, objeto1, objeto2, null, 3);
@@ -1559,18 +1576,33 @@ public class Juego implements Comando{
         }
     }
 
+    /**
+     * Crea un trato entre dos jugadores basado en los objetos ofrecidos.
+     *
+     * @param jugadorOfrece El jugador que ofrece el trato.
+     * @param jugadorRecibe El jugador que recibe el trato.
+     * @param objeto1 El primer objeto del trato (puede ser una propiedad o una cantidad de dinero).
+     * @param objeto2 El segundo objeto del trato (puede ser una propiedad o una cantidad de dinero).
+     * @param objeto3 El tercer objeto del trato (opcional, puede ser una cantidad de dinero).
+     * @param trato El tipo de trato a crear (1: propiedad por propiedad, 2: propiedad por dinero, 3: dinero por propiedad, 4: propiedad por propiedad y dinero, 5: propiedad y dinero por propiedad).
+     * @throws Exception Si ocurre un error durante la creación del trato.
+     */
     private void creacionTrato(Jugador jugadorOfrece, Jugador jugadorRecibe, String objeto1, String objeto2, String objeto3, int trato) throws Exception {
+        //Hacemos un switch para los diferentes tipos de tratos
         switch (trato) {
             case 1:
+                //Obtenemos las propiedades a intercambiar
                 Propiedad propiedad1 = obtenerPropiedad(jugadorOfrece, objeto1);
                 Propiedad propiedad2 = obtenerPropiedad(jugadorRecibe, objeto2);
                 if(propiedad1 == null || propiedad2 == null) {
                     throw new Exception("Una de las propiedades no pertenece a un jugador. No se formaliza el trato.");
                 }
 
+                //Creamos el trato y lo añadimos a la lista de tratos del jugador que lo recibe
                 Trato tratoCreado = new Trato(jugadorOfrece, jugadorRecibe, propiedad1, propiedad2, contadorTratos);
                 jugadorRecibe.addTrato(tratoCreado);
                 consolaNormal.imprimir("Trato creado con éxito.");
+                //Incrementamos el contador de tratos para formar el ID
                 contadorTratos++;
                 break;
 
@@ -1580,6 +1612,7 @@ public class Juego implements Comando{
                     throw new ExcepcionTratoNoPropiedad("inicia");
                 }
 
+                //No comprobamos el dinero ya que en algún momento se puede conseguir
                 Trato tratoCreado2 = new Trato(jugadorOfrece, jugadorRecibe, propiedad3, Float.parseFloat(objeto2), contadorTratos);
                 jugadorRecibe.addTrato(tratoCreado2);
                 consolaNormal.imprimir("Trato creado con éxito.");
@@ -1587,6 +1620,7 @@ public class Juego implements Comando{
                 break;
 
             case 3:
+                //Ídem 2, pero con el dinero en el primer objeto
                 Propiedad propiedad4 = obtenerPropiedad(jugadorRecibe, objeto2);
                 if(propiedad4 == null) {
                     throw new ExcepcionTratoNoPropiedad("recibe");
@@ -1599,6 +1633,7 @@ public class Juego implements Comando{
                 break;
 
             case 4:
+                //Obtenemos las propiedades y comprobamos que se consiguieron correctamente
                 Propiedad propiedad5 = obtenerPropiedad(jugadorOfrece, objeto1);
                 if(propiedad5 == null) {
                     throw new ExcepcionTratoNoPropiedad("inicia");
@@ -1609,6 +1644,7 @@ public class Juego implements Comando{
                     throw new ExcepcionTratoNoPropiedad("recibe");
                 }
 
+                //Creamos el trato sin comprobar el dinero porque podemos llegar a conseguirlo
                 Trato tratoCreado4 = new Trato(jugadorOfrece, jugadorRecibe, propiedad5, propiedad6, Float.parseFloat(objeto3), contadorTratos);
                 jugadorRecibe.addTrato(tratoCreado4);
                 consolaNormal.imprimir("Trato creado con éxito.");
@@ -1616,6 +1652,7 @@ public class Juego implements Comando{
                 break;
 
             case 5:
+                //Ídem 4 pero cambiando el dinero de persona
                 Propiedad propiedad7 = obtenerPropiedad(jugadorOfrece, objeto1);
                 if(propiedad7 == null) {
                     throw new ExcepcionTratoNoPropiedad("inicia");
@@ -1634,6 +1671,13 @@ public class Juego implements Comando{
         }
     }
 
+    /**
+     * Obtiene una propiedad específica de un jugador.
+     *
+     * @param jugador El jugador que posee la propiedad.
+     * @param propiedad El nombre de la propiedad a obtener.
+     * @return La propiedad si se encuentra, de lo contrario null.
+     */
     private Propiedad obtenerPropiedad(Jugador jugador, String propiedad) {
         for(Propiedad prop : jugador.getPropiedades()) {
             if(prop.getNombre().equals(propiedad)) {
@@ -1643,18 +1687,28 @@ public class Juego implements Comando{
         return null;
     }
 
+    /**
+     * Transfiere la propiedad especificada al jugador beneficiado.
+     *
+     * @param propiedad La propiedad que se va a transferir.
+     * @param jugadorBeneficiado El jugador que recibirá la propiedad.
+     */
     private void traspasoPropiedad(Propiedad propiedad, Jugador jugadorBeneficiado) {
         Jugador jugadorAnterior = propiedad.getDuenho();
+        //Cambiamos el dueño de la propiedad
         propiedad.setDuenho(jugadorBeneficiado);
 
+        //Actualizamos los arrays de propiedades
         jugadorAnterior.getPropiedades().remove(propiedad);
         jugadorBeneficiado.getPropiedades().add(propiedad);
 
+        //Actualizamos las hipotecas
         if(propiedad.isHipotecado()) {
             jugadorAnterior.getHipotecas().remove(propiedad.getNombre());
             jugadorBeneficiado.getHipotecas().add(propiedad.getNombre());
         }
 
+        //Si es un solar, cambiamos el dueño de los edificios
         if(propiedad instanceof Solar solar) {
             for(Edificio edificio : solar.getEdificios()) {
                 jugadorAnterior.getEdificios().remove(edificio);
@@ -1664,6 +1718,12 @@ public class Juego implements Comando{
         }
     }
 
+    /**
+     * Método que se llama cuando un jugador quiere aceptar un trato.
+     *
+     * @param trato El trato que se va a aceptar.
+     * @throws Exception Si ocurre un error durante la aceptación del trato.
+     */
     private void valorarAceptarTrato(Trato trato) throws Exception {
         Jugador jugadorOfrece = trato.getJugadorPropone();
         Jugador jugadorRecibe = trato.getJugadorRecibe();
@@ -1671,29 +1731,37 @@ public class Juego implements Comando{
         Propiedad propiedad2 = trato.getPropiedad2();
         float dinero = trato.getDinero();
 
+        //Clasificamos según el trato que sea
         switch (trato.getNumTrato()) {
             case 1:
+                //Preguntamos, en caso de que estea hipotecada, si quiere aceptarla
                 if (aceptarPropiedadHipotecada(propiedad1)) {
                     return;
                 }
 
+                //Si consigue la propiedad, se la traspasamos
                 traspasoPropiedad(propiedad1, jugadorRecibe);
                 traspasoPropiedad(propiedad2, jugadorOfrece);
                 consolaNormal.imprimir("El trato " + trato.getIdTrato() + " ha sido realizado entre " + jugadorOfrece.getNombre() + " y " + jugadorRecibe.getNombre() +
                         ". Se intercambiaron " + propiedad1.getNombre() + " por " + propiedad2.getNombre() + ".");
                 //Una vez aceptado, se elimina el trato de la lista de tratos del jugador que lo propuso
                 jugadorRecibe.getTratos().remove(trato);
+                comprobarTratosRestantes(jugadorRecibe, propiedad2);
+                comprobarTratosRestantes(jugadorOfrece, propiedad1);
                 break;
 
             case 2:
+                //Comprobamos que en el momento de querer aceptar el trato, tenga dinero suficiente
                 if (jugadorRecibe.getFortuna() < dinero) {
                     throw new Exception("No tienes suficiente dinero para aceptar el trato.");
                 }
 
+                //Preguntamos, en caso de que estea hipotecada, si quiere aceptarla
                 if (aceptarPropiedadHipotecada(propiedad1)) {
                     return;
                 }
 
+                //La traspasamos y actualiazamos las fortunas y gastos
                 traspasoPropiedad(propiedad1, jugadorRecibe);
                 jugadorRecibe.sumarFortuna(-dinero);
                 jugadorOfrece.sumarFortuna(dinero);
@@ -1701,13 +1769,17 @@ public class Juego implements Comando{
                 consolaNormal.imprimir("El trato " + trato.getIdTrato() + " ha sido realizado entre " + jugadorOfrece.getNombre() + " y " + jugadorRecibe.getNombre() +
                         ". Se intercambiaron " + propiedad1.getNombre() + " por " + dinero + "€.");
                 jugadorRecibe.getTratos().remove(trato);
+                comprobarTratosRestantes(jugadorRecibe, propiedad2);
+                comprobarTratosRestantes(jugadorOfrece, propiedad1);
                 break;
 
             case 3:
+                //Comprobamos que en el momento de querer aceptar el trato, tenga dinero suficiente
                 if (jugadorOfrece.getFortuna() < dinero) {
                     throw new Exception("El jugador que ofreció el trato no tiene el dinero suficiente para formalizarlo actualmente.");
                 }
 
+                //Traspasamos la propiedad y actualizamos las fortunas y gastos
                 traspasoPropiedad(propiedad1, jugadorOfrece);
                 jugadorRecibe.sumarFortuna(dinero);
                 jugadorOfrece.sumarFortuna(-dinero);
@@ -1715,16 +1787,21 @@ public class Juego implements Comando{
                 consolaNormal.imprimir("El trato " + trato.getIdTrato() + " ha sido realizado entre " + jugadorOfrece.getNombre() + " y " + jugadorRecibe.getNombre() +
                         ". Se intercambiaron " + dinero + "€ por " + propiedad1.getNombre() + ".");
                 jugadorRecibe.getTratos().remove(trato);
+                comprobarTratosRestantes(jugadorRecibe, propiedad2);
+                comprobarTratosRestantes(jugadorOfrece, propiedad1);
                 break;
 
             case 4:
+                //Preguntamos, en caso de que estea hipotecada, si quiere aceptarla
                 if (aceptarPropiedadHipotecada(propiedad1)) {
                     return;
                 }
+                //Comprobamos que en el momento de querer aceptar el trato, tenga dinero suficiente
                 if (jugadorRecibe.getFortuna() < dinero) {
                     throw new Exception("No tienes suficiente dinero para aceptar el trato.");
                 }
 
+                //Traspasamos las propiedades y actualizamos las fortunas y gastos
                 traspasoPropiedad(propiedad1, jugadorRecibe);
                 traspasoPropiedad(propiedad2, jugadorOfrece);
                 jugadorOfrece.sumarFortuna(dinero);
@@ -1733,9 +1810,12 @@ public class Juego implements Comando{
                 consolaNormal.imprimir("El trato " + trato.getIdTrato() + " ha sido realizado entre " + jugadorOfrece.getNombre() + " y " + jugadorRecibe.getNombre() +
                         ". Se intercambiaron " + propiedad1.getNombre() + " por " + propiedad2.getNombre() + " y " + dinero + "€.");
                 jugadorRecibe.getTratos().remove(trato);
+                comprobarTratosRestantes(jugadorRecibe, propiedad2);
+                comprobarTratosRestantes(jugadorOfrece, propiedad1);
                 break;
 
             case 5:
+                //Preguntamos, en caso de que estea hipotecada, si quiere aceptarla y luego comprobamos el dinero
                 if (aceptarPropiedadHipotecada(propiedad1)) {
                     return;
                 }
@@ -1744,6 +1824,7 @@ public class Juego implements Comando{
                     return;
                 }
 
+                //Traspasamos las propiedades y actualizamos las fortunas y gastos
                 traspasoPropiedad(propiedad1, jugadorRecibe);
                 traspasoPropiedad(propiedad2, jugadorOfrece);
                 jugadorOfrece.sumarFortuna(-dinero);
@@ -1752,23 +1833,41 @@ public class Juego implements Comando{
                 consolaNormal.imprimir("El trato " + trato.getIdTrato() + " ha sido realizado entre " + jugadorOfrece.getNombre() + " y " + jugadorRecibe.getNombre() +
                         ". Se intercambiaron " + propiedad1.getNombre() + " y " + dinero + "€ por " + propiedad2.getNombre() + ".");
                 jugadorRecibe.getTratos().remove(trato);
+                comprobarTratosRestantes(jugadorRecibe, propiedad2);
+                comprobarTratosRestantes(jugadorOfrece, propiedad1);
                 break;
         }
     }
 
+    /**
+     * Verifica si el jugador desea aceptar una propiedad hipotecada.
+     *
+     * @param propiedad La propiedad que se va a verificar.
+     * @return true si el jugador acepta la propiedad hipotecada, false en caso contrario.
+     */
     private boolean aceptarPropiedadHipotecada(Propiedad propiedad) {
+        //Si la propiedad está hipotecada, preguntamos si quiere aceptarla
         if (propiedad.isHipotecado()) {
             consolaNormal.imprimir("La propiedad " + propiedad.getNombre() + " está hipotecada, ¿Quieres aceptar el trato igualmente? (s/n)");
             String respuesta = consolaNormal.leerPalabra();
+            //Si la respuesta es n, no se acepta el trato, ya que devuelve un True, que entra en un "break"
             return respuesta.equals("n");
         }
         return false;
     }
 
+    /**
+     * Método que permite a un jugador aceptar un trato.
+     *
+     * @param idTrato El identificador del trato que se va a aceptar.
+     * @throws Exception Si ocurre un error durante la aceptación del trato.
+     */
     public void aceptarTrato(String idTrato) throws Exception {
         Jugador jugadorActual = jugadores.get(turno);
         Trato tratoDeseado = null;
+        //Buscamos el trato que quiere aceptar en la lista de tratos recibidos
         for(Trato trato : jugadorActual.getTratos()) {
+            //Si existe, lo igualamos al objeto tratoDeseado y salimos del bucle
             if(idTrato.equals(trato.getIdTrato())) {
                 tratoDeseado = trato;
                 break;
@@ -1781,6 +1880,10 @@ public class Juego implements Comando{
         valorarAceptarTrato(tratoDeseado);
     }
 
+    /**
+     * Método que lista todos los tratos pendientes de los jugadores.
+     * Imprime los detalles de cada trato en la consola.
+     */
     public void listarTratos() {
         Jugador jugadorActual = jugadores.get(turno);
         StringBuilder str = new StringBuilder();
@@ -1788,11 +1891,13 @@ public class Juego implements Comando{
         if (jugadorActual.getTratos().isEmpty()) {
             str.append("No hay tratos disponibles\n");
         } else {
+            //Para cada trato, se imprime su ID, el jugador que lo propone y los detalles del trato
             for (Trato trato : jugadorActual.getTratos()) {
                 str.append("{\n");
                 str.append("\tid: ").append(trato.getIdTrato()).append(",\n");
                 str.append("\tjugadorPropone: ").append(trato.getJugadorPropone().getNombre()).append(",\n");
                 str.append("\ttrato: cambiar (");
+                //Los detalles dependen del tipo de trato que sea
                 switch (trato.getNumTrato()) {
                     case 1:
                         str.append(trato.getPropiedad1().getNombre()).append(", ").append(trato.getPropiedad2().getNombre());
@@ -1814,17 +1919,25 @@ public class Juego implements Comando{
                 str.append("},\n");
             }
             if (str.length() > 2) {
-                str.setLength(str.length() - 2); // Remove the last comma
+                //Eliminar la última coma
+                str.setLength(str.length() - 2);
             }
         }
         str.append("\n]");
         consolaNormal.imprimirStrBuilder(str);
     }
 
+    /**
+     * Método que permite eliminar un trato específico.
+     *
+     * @param idTrato El identificador del trato que se va a eliminar.
+     * @throws ExcepcionEntidadNoExistente Si el trato no existe.
+     */
     public void eliminarTrato(String idTrato) throws ExcepcionEntidadNoExistente {
         Jugador jugadorActual = jugadores.get(turno);
         Trato tratoAEliminar = null;
 
+        //Buscamos el trato a eliminar en la lista de tratos del jugadorS
         for(Trato trato : jugadorActual.getTratos()) {
             if(idTrato.equals(trato.getIdTrato())) {
                 tratoAEliminar = trato;
@@ -1837,6 +1950,36 @@ public class Juego implements Comando{
 
         jugadorActual.getTratos().remove(tratoAEliminar);
         consolaNormal.imprimir("Trato eliminado con éxito.");
+    }
+
+    /**
+     * Método que comprueba en todos los jugadores si tienen algún trato con la propiedad que ya fue intercambiada.
+     *
+     * @param jugador El jugador que intercambió la propiedad.
+     * @param propiedadIntercambiada La propiedad que fue intercambiada.
+     */
+    public void comprobarTratosRestantes(Jugador jugador, Propiedad propiedadIntercambiada) {
+        for (Jugador j : jugadores) {
+
+            //Creamos una lista de todos los tratos que se van a eliminar
+            List<Trato> tratosAEliminar = new ArrayList<>();
+
+            //Recorremos el arraylist de tratos del jugador correspondiente
+            for (Trato trato : j.getTratos()) {
+
+                /* Si la propiedad está presente en algúntrato*/
+                if ((trato.getPropiedad1().equals(propiedadIntercambiada) && trato.getJugadorPropone().equals(jugador)) ||
+                        (trato.getPropiedad2().equals(propiedadIntercambiada) && trato.getJugadorRecibe().equals(jugador))) {
+                    tratosAEliminar.add(trato);
+                }
+            }
+
+            j.getTratos().removeAll(tratosAEliminar);
+
+            for (Trato trato : tratosAEliminar) {
+                consolaNormal.imprimir("El trato " + trato.getIdTrato() + " ha sido eliminado ya que " + propiedadIntercambiada.getNombre() + " ya fue intercambiado/a.");
+            }
+        }
     }
 
 }
