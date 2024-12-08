@@ -14,7 +14,6 @@ import java.util.InputMismatchException;
 
 public class Baraja {
     /**********Atributos**********/
-    //private final ArrayList<Carta> baraja;
     private final ArrayList<CartaSuerte> barajaSuerte;
     private final ArrayList<CartaCajaComunidad> barajaCajaComunidad;
     private final CartaSuerte cartaSuerte = new CartaSuerte();
@@ -30,33 +29,33 @@ public class Baraja {
         this.barajaCajaComunidad = new ArrayList<>();
 
         barajaSuerte.add(new CartaSuerte("Ve al Transportes1 y coge un avión. " +
-                "Si pasas por la casilla de Salida, cobra la cantidad habitual.", "Suerte", 1));
+                "Si pasas por la casilla de Salida, cobra la cantidad habitual.", 1));
 
         barajaSuerte.add(new CartaSuerte("Decides hacer un viaje de placer. " +
-                "Avanza hasta Solar15 directamente, sin pasar por la casilla de Salida y sin cobrar la cantidad habitual.", "Suerte", 2));
+                "Avanza hasta Solar15 directamente, sin pasar por la casilla de Salida y sin cobrar la cantidad habitual.", 2));
 
-        barajaSuerte.add(new CartaSuerte("Vendes tu billete de avión para Solar17 en una subasta por Internet. Cobra 500000€.", "Suerte", 3));
+        barajaSuerte.add(new CartaSuerte("Vendes tu billete de avión para Solar17 en una subasta por Internet. Cobra 500000€.", 3));
 
-        barajaSuerte.add(new CartaSuerte("Ve a Solar3. Si pasas por la casilla de Salida, cobra la cantidad habitual.", "Suerte", 4));
+        barajaSuerte.add(new CartaSuerte("Ve a Solar3. Si pasas por la casilla de Salida, cobra la cantidad habitual.", 4));
 
         barajaSuerte.add(new CartaSuerte("Los acreedores te persiguen por impago. Ve a la Cárcel. Ve directamente sin pasar por la casilla de Salida " +
-                "y sin cobrar la cantidad habitual.", "Suerte", 5));
+                "y sin cobrar la cantidad habitual.", 5));
 
-        barajaSuerte.add(new CartaSuerte("¡Has ganado el bote de la lotería! Recibe 1000000€.", "Suerte", 6));
+        barajaSuerte.add(new CartaSuerte("¡Has ganado el bote de la lotería! Recibe 1000000€.", 6));
 
 
-        barajaCajaComunidad.add(new CartaCajaComunidad("Paga 500000€ por un fin de semana en un balneario de 5 estrellas.", "Comunidad", 1));
+        barajaCajaComunidad.add(new CartaCajaComunidad("Paga 500000€ por un fin de semana en un balneario de 5 estrellas.", 1));
 
         barajaCajaComunidad.add(new CartaCajaComunidad("Te investigan por fraude de identidad. Ve a la Cárcel. Ve directamente sin pasar por la casilla de Salida y" +
-                "sin cobrar la cantidad habitual.", "Comunidad", 2));
+                "sin cobrar la cantidad habitual.", 2));
 
-        barajaCajaComunidad.add(new CartaCajaComunidad("Colócate en la casilla de Salida. Cobra la cantidad habitual.", "Comunidad", 3));
+        barajaCajaComunidad.add(new CartaCajaComunidad("Colócate en la casilla de Salida. Cobra la cantidad habitual.", 3));
 
-        barajaCajaComunidad.add(new CartaCajaComunidad("Tu compañía de Internet obtiene beneficios. Recibe 2000000€.", "Comunidad", 4));
+        barajaCajaComunidad.add(new CartaCajaComunidad("Tu compañía de Internet obtiene beneficios. Recibe 2000000€.", 4));
 
-        barajaCajaComunidad.add(new CartaCajaComunidad("Paga 1000000€ por invitar a todos tus amigos a un viaje a Solar14.", "Comunidad", 5));
+        barajaCajaComunidad.add(new CartaCajaComunidad("Paga 1000000€ por invitar a todos tus amigos a un viaje a Solar14.", 5));
 
-        barajaCajaComunidad.add(new CartaCajaComunidad("Alquilas a tus compañeros una villa en Solar7 durante una semana. Paga 200000€ a cada jugador.", "Comunidad", 6));
+        barajaCajaComunidad.add(new CartaCajaComunidad("Alquilas a tus compañeros una villa en Solar7 durante una semana. Paga 200000€ a cada jugador.", 6));
 
     }
 

@@ -8,14 +8,17 @@ import java.util.ArrayList;
 
 
 public class CartaSuerte extends Carta{
+
+    /**********Constructores**********/
     public CartaSuerte() {
         super();
     }
 
-    public CartaSuerte(String descripcion, String tipo, int idCarta){
-        super(descripcion, tipo, idCarta);
+    public CartaSuerte(String descripcion, int idCarta){
+        super(descripcion, idCarta);
     }
 
+    /**********Método**********/
     @Override
     public void accion(Jugador banca, Jugador jugadorActual, Tablero tablero, ArrayList<Jugador> jugadores, int idCarta) throws ExcepcionCarcel {
         int dinero;

@@ -17,9 +17,12 @@ import static monopoly.Valor.FORTUNA_INICIAL;
 //El bucle lo tiene el menu
 
 public class Menu {
+
+    /**********Atributos**********/
     Juego juego;
     private static final ConsolaNormal consolaNormal = new ConsolaNormal();
 
+    /**********Constructor**********/
     public Menu() throws Exception {
         try{
             this.juego = new Juego();
@@ -30,7 +33,6 @@ public class Menu {
                 throw new RuntimeException(e);
             }
         }
-
         iniciarPartida();
     }
 
