@@ -36,6 +36,7 @@ public class Menu {
         iniciarPartida();
     }
 
+    /**********Métodos**********/
     /*Método en el que se desarrolla la partida hasta que un jugador es no solvente*/
     public void iniciarPartida() throws Exception {
         while(!juego.isFinalizarPartida()) {
