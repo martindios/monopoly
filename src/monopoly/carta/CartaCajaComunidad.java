@@ -33,6 +33,7 @@ public class CartaCajaComunidad extends Carta{
                     float restante = dinero - jugadorActual.getFortuna();
                     throw new ExcepcionConseguirDineroCaja(restante);
                 }
+                consolaNormal.imprimir("El jugador " + jugadorActual.getNombre() + " ha pagado " + dinero + ".");
                 break;
             case 2: /*Ve a la Cárcel*/
                 jugadorActual.encarcelar(tablero.getPosiciones());
@@ -58,6 +59,7 @@ public class CartaCajaComunidad extends Carta{
                     float restante = dinero - jugadorActual.getFortuna();
                     throw new ExcepcionConseguirDineroCaja(restante);
                 }
+                consolaNormal.imprimir("El jugador " + jugadorActual.getNombre() + " ha pagado " + dinero + ".");
                 break;
             case 6: /*200000€ pagar a cada jugador*/
                 float gastoTotal = 200000 * jugadores.size();
@@ -71,6 +73,8 @@ public class CartaCajaComunidad extends Carta{
                     float restante = gastoTotal - jugadorActual.getFortuna();
                     throw new ExcepcionConseguirDineroCaja(restante);
                 }
+                consolaNormal.imprimir("El jugador " + jugadorActual.getNombre() + " ha pagado " + gastoTotal +
+                        "en total.");
                 break;
         }
     }

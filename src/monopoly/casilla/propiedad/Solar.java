@@ -3,9 +3,6 @@ package monopoly.casilla.propiedad;
 import monopoly.edificio.*;
 import monopoly.Grupo;
 import monopoly.excepcion.excepcionEdificar.ExcepcionEdificar;
-import monopoly.excepcion.excepcionEdificar.ExcepcionEdificarNoDinero;
-import monopoly.excepcion.excepcionEdificar.ExcepcionEdificarNoEdificable;
-import monopoly.excepcion.excepcionEdificar.ExcepcionEdificarNoPropietario;
 import partida.Jugador;
 
 import java.util.ArrayList;
@@ -25,7 +22,7 @@ public class Solar extends Propiedad{
         super(nombre, posicion, valor, duenho);
         this.setImpuesto(valor * 0.1f);
         this.setImpuestoInicial(this.getImpuesto());
-        this.edificios = new ArrayList<Edificio>();
+        this.edificios = new ArrayList<>();
     }
 
     /**********Getters**********/
@@ -40,10 +37,6 @@ public class Solar extends Propiedad{
     }
 
     /**********Setters**********/
-
-    public void setEdificios(ArrayList<Edificio> edificios) {
-        this.edificios = edificios;
-    }
 
     public void setGrupo(Grupo grupo) {
         this.grupo = grupo;
@@ -80,7 +73,7 @@ public class Solar extends Propiedad{
 
     @Override
     public float calcularAlquiler(Jugador jugadorActual, Jugador banca, int tirada) {
-        float alquiler = 0;
+        float alquiler;
         Jugador duenhoSolar = this.getDuenho();
         if (this.getGrupo().esDuenhoGrupo(duenhoSolar)) { // Comprobar si el dueño del solar es dueño de todo el grupo de color
             alquiler = 2 * this.getImpuesto();
@@ -148,7 +141,7 @@ public class Solar extends Propiedad{
             }
         }
         crearEdificio("Casa", jugador, contadorCasa);
-        infoTrasEdificiar();
+        consolaNormal.imprimir(infoTrasEdificiar());
         return true;
     }
 
@@ -161,7 +154,7 @@ public class Solar extends Propiedad{
         }
         quitarCasas(4, jugador);
         crearEdificio("Hotel", jugador, contadorHotel);
-        infoTrasEdificiar();
+        consolaNormal.imprimir(infoTrasEdificiar());
         return true;
     }
 
@@ -173,7 +166,7 @@ public class Solar extends Propiedad{
             throw new ExcepcionEdificar("En el solar no se han construido al menos 1 hotel y 2 casas.");
         }
         crearEdificio("Piscina", jugador, contadorPiscina);
-        infoTrasEdificiar();
+        consolaNormal.imprimir(infoTrasEdificiar());
         return true;
     }
 
@@ -185,32 +178,18 @@ public class Solar extends Propiedad{
             throw new ExcepcionEdificar("En el solar no se han construido al menos 2 hoteles.");
         }
         crearEdificio("PistaDeporte", jugador, contadorPistaDeporte);
-        infoTrasEdificiar();
+        consolaNormal.imprimir(infoTrasEdificiar());
         return true;
     }
 
     public void crearEdificio(String tipoEdificio, Jugador jugador, int contador) throws ExcepcionEdificar {
-        Edificio edificio;
-        switch(tipoEdificio) {
-            case "Casa":
-                Casa casa = new Casa(this, contador);
-                edificio = (Edificio) casa;
-                break;
-            case "Hotel":
-                Hotel hotel = new Hotel(this, contador);
-                edificio = (Edificio) hotel;
-                break;
-            case "Piscina":
-                Piscina piscina = new Piscina(this, contador);
-                edificio = (Edificio) piscina;
-                break;
-            case "PistaDeporte":
-                PistaDeporte pistaDeporte = new PistaDeporte(this, contador);
-                edificio = (Edificio) pistaDeporte;
-                break;
-            default:
-                throw new ExcepcionEdificar("Tipo de edificio no válido.");
-        }
+        Edificio edificio = switch (tipoEdificio) {
+            case "Casa" -> new Casa(this, contador);
+            case "Hotel" -> new Hotel(this, contador);
+            case "Piscina" -> new Piscina(this, contador);
+            case "PistaDeporte" -> new PistaDeporte(this, contador);
+            default -> throw new ExcepcionEdificar("Tipo de edificio no válido.");
+        };
         edificios.add(edificio);
         jugador.getEdificios().add(edificio);
         this.getGrupo().getEdificiosGrupo().add(edificio);
@@ -230,8 +209,8 @@ public class Solar extends Propiedad{
             }
         }
         int tamano = edificiosBorrar.size();
-        for (int i = 0; i < tamano; i++) {
-            edificios.remove(edificiosBorrar.get(i));
+        for (Edificio edificio : edificiosBorrar) {
+            edificios.remove(edificio);
         }
         for (int i = 0; i < tamano; i++) {
             jugador.getEdificios().remove(edificiosBorrar.get(i));

@@ -433,6 +433,7 @@ public class Juego implements Comando{
                     consolaNormal.imprimirSinSalto(", ");
                 }
             }
+            consolaNormal.imprimir("");
         }
     }
 

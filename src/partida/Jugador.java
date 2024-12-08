@@ -60,7 +60,6 @@ public class Jugador{
      */
     public Jugador(String nombre, String tipoAvatar, Casilla inicio, ArrayList<Avatar> avCreados) {
         this.nombre = nombre;
-        //Como temos que crear aquí o avatar, usamos o constructor del con args: Tipo do avatar, Xogador que o ten, Casilla de inicio e o array de avatares para nn repetilo
         this.fortuna = FORTUNA_INICIAL;
         this.gastos = 0;
         this.enCarcel = false;
@@ -83,6 +82,7 @@ public class Jugador{
         this.propiedades = new ArrayList<>();
         this.hipotecas = new ArrayList<>();
         this.edificios = new ArrayList<>();
+        /*Creamos aquí el avatar, por lo que usamos el constructor con sus respectivos argumentos*/
         switch (tipoAvatar) {
             case "Pelota":
                 this.avatar = new Pelota(this, inicio, avCreados);
@@ -345,22 +345,21 @@ public class Jugador{
     }
 
     public void bancarrota(String motivo, Jugador banca) {
+        // Vender todos los edificios del jugador this
+        for (Propiedad propiedad : propiedades) {
+            if (propiedad instanceof Solar solar) {
+                solar.venderEdificios(Casa.class, solar.getNumEdificios(solar.getEdificios(), Casa.class));
+                solar.venderEdificios(Hotel.class, solar.getNumEdificios(solar.getEdificios(), Hotel.class));
+                solar.venderEdificios(Piscina.class, solar.getNumEdificios(solar.getEdificios(), Piscina.class));
+                solar.venderEdificios(PistaDeporte.class, solar.getNumEdificios(solar.getEdificios(), PistaDeporte.class));
+            }
+        }
         switch (motivo) {
             case "Alquiler" -> {
                 consolaNormal.imprimir("El jugador " + nombre + " se declara en bancarrota por no poder pagar un alquiler de la casilla " + avatar.getLugar().getNombre() + ". Con propietario " +
                         avatar.getLugar().getDuenho().getNombre() + ".");
                 consolaNormal.imprimir("Se transfieren la fortuna y las propiedades");
                 Jugador jugBeneficiado = avatar.getLugar().getDuenho();
-
-                // Vender todos los edificios del jugador this
-                for (Propiedad propiedad : propiedades) {
-                    if (propiedad instanceof Solar solar) {
-                        solar.venderEdificios(Casa.class, solar.getNumEdificios(solar.getEdificios(), Casa.class));
-                        solar.venderEdificios(Hotel.class, solar.getNumEdificios(solar.getEdificios(), Hotel.class));
-                        solar.venderEdificios(Piscina.class, solar.getNumEdificios(solar.getEdificios(), Piscina.class));
-                        solar.venderEdificios(Piscina.class, solar.getNumEdificios(solar.getEdificios(), PistaDeporte.class));
-                    }
-                }
 
                 // Transferir todas las propiedades al jugador beneficiado
                 for (Propiedad propiedad : propiedades) {
@@ -379,16 +378,6 @@ public class Jugador{
                 consolaNormal.imprimir("El jugador " + nombre + " se declara en bancarrota por no poder pagar a la banca.");
                 consolaNormal.imprimir("Se transfieren la fortuna y las propiedades a la banca");
 
-                // Vender todos los edificios del jugador this
-                for (Propiedad propiedad : propiedades) {
-                    if (propiedad instanceof Solar solar) {
-                        solar.venderEdificios(Casa.class, solar.getNumEdificios(solar.getEdificios(), Casa.class));
-                        solar.venderEdificios(Hotel.class, solar.getNumEdificios(solar.getEdificios(), Hotel.class));
-                        solar.venderEdificios(Piscina.class, solar.getNumEdificios(solar.getEdificios(), Piscina.class));
-                        solar.venderEdificios(Piscina.class, solar.getNumEdificios(solar.getEdificios(), PistaDeporte.class));
-                    }
-                }
-
                 // Transferir todas las propiedades a la banca
                 for (Propiedad propiedad : propiedades) {
                     propiedad.setDuenho(banca);
@@ -402,17 +391,6 @@ public class Jugador{
             case "Voluntario" -> {
                 consolaNormal.imprimir("El jugador " + nombre + " se ha declarado en bancarrota voluntariamente.");
                 consolaNormal.imprimir("Se transfieren la fortuna y las propiedades a la banca");
-
-                // Vender todos los edificios del jugador
-                // Vender todos los edificios del jugador this
-                for (Propiedad propiedad : propiedades) {
-                    if (propiedad instanceof Solar solar) {
-                        solar.venderEdificios(Casa.class, solar.getNumEdificios(solar.getEdificios(), Casa.class));
-                        solar.venderEdificios(Hotel.class, solar.getNumEdificios(solar.getEdificios(), Hotel.class));
-                        solar.venderEdificios(Piscina.class, solar.getNumEdificios(solar.getEdificios(), Piscina.class));
-                        solar.venderEdificios(PistaDeporte.class, solar.getNumEdificios(solar.getEdificios(), PistaDeporte.class));
-                    }
-                }
 
                 // Transferir todas las propiedades a la banca
                 for (Propiedad propiedad : propiedades) {
