@@ -191,16 +191,16 @@ public class Juego implements Comando{
                                 darAltaJugador(palabrasArray[2], palabrasArray[3]);
                                 jugadoresActuales++;
                             } else {
-                                throw new ExcepcionEntradaUsuario("El avatar introducido no está disponible [Coche, Esfinge, Sombrero, Pelota]");
+                                consolaNormal.imprimir("El avatar introducido no está disponible [Coche, Esfinge, Sombrero, Pelota]");
                             }
                         } else {
-                            throw new ExcepcionEntradaUsuario("Jugador ya existente");
+                            consolaNormal.imprimir("Jugador ya existente");
                         }
                     } else {
-                        throw new ExcepcionFormatoIncorrecto("crear jugador nombre tipoAvatar");
+                        consolaNormal.imprimir("crear jugador nombre tipoAvatar");
                     }
                 } else {
-                    throw new ExcepcionEntradaUsuario("Debe primero crear los jugadores para poder jugar");
+                    consolaNormal.imprimir("Debe primero crear los jugadores para poder jugar");
                 }
             }
         }
