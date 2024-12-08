@@ -4,6 +4,8 @@ import monopoly.casilla.propiedad.Propiedad;
 import partida.Jugador;
 
 public class Trato {
+
+    /**********Atributos**********/
     private final String idTrato;
     private final int numTrato;
     private final Jugador jugadorPropone;
@@ -12,6 +14,7 @@ public class Trato {
     private final Propiedad propiedad1;
     private final Propiedad propiedad2;
 
+    /**********Constructores**********/
     //Cambiar <propiedad_1> por <propiedad_2>
     public Trato(Jugador jugadorPropone, Jugador jugadorRecibe, Propiedad propiedad1, Propiedad propiedad2, int numero) {
         this.idTrato = generarIdTrato(numero);
@@ -96,8 +99,7 @@ public class Trato {
         return propiedad2;
     }
 
-    /**************Métodos**********/
-
+    /**************Método**********/
     private String generarIdTrato(int numero){
         return "Trato-".concat(String.valueOf(numero));
     }

@@ -18,17 +18,6 @@ public class Valor {
     public static final String YELLOW = "\u001B[33m";
     public static final String BLUE = "\u001B[34m";
     public static final String PURPLE = "\u001B[35m";
-    public static final String CYAN = "\u001B[36m";
     public static final String WHITE = "\u001B[37m";
-
-    /*Valores iniciales de los grupos*/
-    public static final float VALINICIALG1 = 600000;
-    public static final float VALINICIALG2 = 520000;
-    public static final float VALINICIALG3 = 676000;
-    public static final float VALINICIALG4 = 878800;
-    public static final float VALINICIALG5 = 1142440;
-    public static final float VALINICIALG6 = 1485172;
-    public static final float VALINICIALG7 = 1930723.6f;
-    public static final float VALINICIALG8 = 3764911.02f;
 
 }

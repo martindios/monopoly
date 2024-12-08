@@ -9,14 +9,17 @@ import partida.Jugador;
 import java.util.ArrayList;
 
 public class CartaCajaComunidad extends Carta{
+
+    /**********Constructores**********/
     public CartaCajaComunidad() {
         super();
     }
 
-    public CartaCajaComunidad(String descripcion, String tipo, int idCarta){
-        super(descripcion, tipo, idCarta);
+    public CartaCajaComunidad(String descripcion, int idCarta){
+        super(descripcion, idCarta);
     }
 
+    /**********Método**********/
     @Override
     public void accion(Jugador banca, Jugador jugadorActual, Tablero tablero, ArrayList<Jugador> jugadores, int idCarta) throws ExcepcionCarcel, ExcepcionConseguirDineroCaja {
         Casilla bote;

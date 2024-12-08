@@ -11,30 +11,24 @@ public abstract class Carta {
 
     /**********Atributos**********/
     private String descripcion;
-    private String tipo;
     private int idCarta;
     public static final ConsolaNormal consolaNormal = new ConsolaNormal();
 
-
-
+    /**********Constructores**********/
     /**
      * Constructor de la clase Carta.
-     * Inicializa una carta con una descripción, tipo y un identificador.
+     * Inicializa una carta con una descripción y un identificador.
      *
      * @param descripcion La descripción de la carta.
-     * @param tipo El tipo de carta [Suerte, Comunidad].
      * @param idCarta El identificador de la carta.
      */
-    public Carta(String descripcion, String tipo, int idCarta) {
+    public Carta(String descripcion, int idCarta) {
         this.descripcion = descripcion;
-        this.tipo = tipo;
         this.idCarta = idCarta;
     }
 
     public Carta() {
     }
-
-    public abstract void accion(Jugador banca, Jugador jugadorActual, Tablero tablero, ArrayList<Jugador> jugadores, int idCarta) throws ExcepcionCarcel, ExcepcionConseguirDineroCaja;
 
     /**********Getters**********/
     public String getDescripcion() {
@@ -45,7 +39,7 @@ public abstract class Carta {
         return idCarta;
     }
 
-    public String getTipo() {
-        return tipo;
-    }
+    /**********Método**********/
+    public abstract void accion(Jugador banca, Jugador jugadorActual, Tablero tablero, ArrayList<Jugador> jugadores,
+                                int idCarta) throws ExcepcionCarcel, ExcepcionConseguirDineroCaja;
 }
