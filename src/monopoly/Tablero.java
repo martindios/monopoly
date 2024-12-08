@@ -32,7 +32,7 @@ public class Tablero {
     public Tablero(Jugador banca) {
         this.banca = banca;
         this.posiciones = new ArrayList<>(4);
-        this.grupos = new HashMap<String, Grupo>(8);
+        this.grupos = new HashMap<>(8);
         this.generarCasillas();
     }
 
@@ -236,7 +236,13 @@ public class Tablero {
      */
     @Override
     public String toString() {
-        String tablero = """
+        //Norte (con la última casilla el inicio del este)
+        //posiciones.get(2).get(1).getGrupo().getColorGrupo() + posiciones.get(2).get(1).getNombre() + RESET,
+        //Este y oeste simultáneo
+        //Sur (con la primera casilla inicio oeste)
+
+        // Formatear el tablero con las casillas
+        return """
                     %s
                     │%12s│%21s│%12s│%21s│%21s│%12s│%21s│%21s│%12s│%21s│%12s│
                     │%12s│%12s│%12s│%12s│%12s│%12s│%12s│%12s│%12s│%12s│%12s│
@@ -416,9 +422,6 @@ public class Tablero {
                 "─".repeat(144)
 
         );
-
-        // Formatear el tablero con las casillas
-        return tablero;
     }
 
     /**
