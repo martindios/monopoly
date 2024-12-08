@@ -1968,9 +1968,16 @@ public class Juego implements Comando{
             //Recorremos el arraylist de tratos del jugador correspondiente
             for (Trato trato : j.getTratos()) {
 
-                /* Si la propiedad está presente en algúntrato*/
-                if ((trato.getPropiedad1().equals(propiedadIntercambiada) && trato.getJugadorPropone().equals(jugador)) ||
-                        (trato.getPropiedad2().equals(propiedadIntercambiada) && trato.getJugadorRecibe().equals(jugador))) {
+                /* Si la propiedad está presente en algún trato */
+                //Tratos 1,4,5 tienen ambas propiedades
+                if ((trato.getNumTrato() == 1 || trato.getNumTrato() == 4 || trato.getNumTrato() == 5) &&
+                        (trato.getPropiedad1().equals(propiedadIntercambiada) || trato.getPropiedad2().equals(propiedadIntercambiada))) {
+                    tratosAEliminar.add(trato);
+                    //Trato 2 solo tiene una propiedad, la propiedad1
+                } else if (trato.getNumTrato() == 2 && trato.getPropiedad1().equals(propiedadIntercambiada)) {
+                    tratosAEliminar.add(trato);
+                    //Trato 3 solo tiene la propiedad2
+                } else if (trato.getNumTrato() == 3 && trato.getPropiedad2().equals(propiedadIntercambiada)) {
                     tratosAEliminar.add(trato);
                 }
             }
@@ -1978,7 +1985,8 @@ public class Juego implements Comando{
             j.getTratos().removeAll(tratosAEliminar);
 
             for (Trato trato : tratosAEliminar) {
-                consolaNormal.imprimir("El trato " + trato.getIdTrato() + " ha sido eliminado ya que " + propiedadIntercambiada.getNombre() + " ya fue intercambiado/a.");
+                consolaNormal.imprimir("El trato " + trato.getIdTrato() + ", recibido por el jugador " + j.getNombre() + ", ha sido eliminado ya que "
+                        + propiedadIntercambiada.getNombre() + " ya fue intercambiado/a.");
             }
         }
     }
