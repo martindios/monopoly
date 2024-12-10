@@ -1156,19 +1156,54 @@ public class Juego implements Comando{
         jugadorActual.getHipotecas().remove(propiedad.getNombre());
     }
 
-    private void propiedadesHipotecables(Jugador jugadorActual, ArrayList<Propiedad> propiedades) throws Exception {
+    private void propiedadesHipotecables(Jugador jugadorActual, ArrayList<Propiedad> propiedades) {
         for(Propiedad propiedad : jugadorActual.getPropiedades()) {
             if(!propiedad.isHipotecado()) {
-                if(propiedad instanceof Solar solar && solar.getEdificios().isEmpty()) {
-                    propiedades.add(solar);
-                } else {
-                    propiedades.add(propiedad);
+                switch (propiedad) {
+                    case Solar solar when solar.getEdificios().isEmpty() -> propiedades.add(solar);
+                    case Servicio servicio -> propiedades.add(servicio);
+                    case Transporte transporte -> propiedades.add(transporte);
+                    default -> {}
                 }
             }
         }
         if(propiedades.isEmpty()) {
             consolaNormal.imprimir("El jugador " + jugadorActual.getNombre() + " no tiene propiedades hipotecables");
         }
+    }
+
+    private void edificiosVender(Jugador jugadorActual, ArrayList<Edificio> edificiosLista) {
+        edificiosLista.addAll(jugadorActual.getEdificios());
+        if(edificiosLista.isEmpty()) {
+            consolaNormal.imprimir("El jugador " + jugadorActual.getNombre() + " no tiene edificios");
+        }
+    }
+
+    private Propiedad buscarHipotecable(Jugador JugadorActual, String nombrePropiedad) {
+        for(Propiedad propiedad : JugadorActual.getPropiedades()) {
+            if(propiedad.getNombre().equals(nombrePropiedad) && !propiedad.isHipotecado()) {
+                if(propiedad instanceof Solar solar) {
+                    if(solar.getEdificios().isEmpty()) {
+                        return propiedad;
+                    } else {
+                        return null;
+                    }
+                }
+                return propiedad;
+            }
+        }
+        consolaNormal.imprimir("Propiedad no válida.");
+        return null;
+    }
+
+    private Edificio buscarEdificio(Jugador jugadorActual, String idEdificio) {
+        for (Edificio edificio : jugadorActual.getEdificios()) {
+            if (edificio.getIdEdificio().equals(idEdificio)) {
+                return edificio;
+            }
+        }
+        consolaNormal.imprimir("Edificio no válido.");
+        return null;
     }
 
     private void evaluarRecoleccionDinero(Jugador jugadorActual, int contadorPropiedades, int contadorEdificios, float dineroAConseguir, float dineroConseguido) throws Exception {
@@ -1196,58 +1231,63 @@ public class Juego implements Comando{
      *debe declararse en bancarrota*/
     public void conseguirDinero(float dineroAConseguir) throws Exception {
         //Declaramos las variables necesarias
-        float dineroConseguido;
+        float dineroConseguido = 0;
+        int contadorPropiedades = 0;
+        int contadorEdificios = 0;
+        ArrayList<Propiedad> propiedades = new ArrayList<>();
+        ArrayList<Edificio> edificiosLista = new ArrayList<>();
         Jugador jugadorActual = jugadores.get(turno);
-        ArrayList<Propiedad> propiedadesHipotecables = new ArrayList<>();
-        ArrayList<Edificio> edificiosLista = new ArrayList<>(jugadorActual.getEdificios());
-
-        int contadorEdificios = edificiosLista.size();
 
         //Comprobamos si el jugador tiene propiedades hipotecables
-        propiedadesHipotecables(jugadorActual, propiedadesHipotecables);
-        int contadorPropiedadesHipotecables = propiedadesHipotecables.size();
+        propiedadesHipotecables(jugadorActual, propiedades);
+        contadorPropiedades = propiedades.size();
 
+        //Informamos de los edificios que tiene el jugador
+        edificiosVender(jugadorActual, edificiosLista);
+        contadorEdificios = edificiosLista.size();
+
+        Scanner scanner = new Scanner(System.in);
         consolaNormal.imprimir("El jugador no tiene suficiente dinero para pagar. Debe vender edificios y/o hipotecar propiedades.");
-        consolaNormal.imprimir("El jugador tiene " + propiedadesHipotecables.size() +
-                " propiedades hipotecables y " + edificiosLista.size() + "edificios en total.");
 
-        if (propiedadesHipotecables.isEmpty()) { //Se comprueba únicamente propiedades porque si no tiene propiedades no tiene edificios
+        if (jugadorActual.getEdificios().isEmpty() && contadorPropiedades == 0) {
             throw new ExcepcionBancarrota("El jugador no tiene propiedades ni edificios para vender. Se declara en bancarrota.");
         } else {
-            consolaNormal.imprimir("El jugador tiene propiedades y/o edificios. ¿Qué desea hipotecar/vender? (propiedades[1]/edificios[2]) ");
+            System.out.println("El jugador tiene propiedades y/o edificios. ¿Qué desea hipotecar/vender? (propiedades[1]/edificios[2]) ");
             int opcion;
             do {
-                opcion = consolaNormal.leerInt();
+                opcion = scanner.nextInt();
                 if (opcion != 1 && opcion != 2) {
-                    consolaNormal.imprimir("Opción no válida. Introduzca 1 para propiedades o 2 para edificios.");
+                    System.out.println("Opción no válida. Introduzca 1 para propiedades o 2 para edificios.");
                 }
             } while (opcion != 1 && opcion != 2);
-
             if (opcion == 1) { //Hipotecar propiedades
                 consolaNormal.imprimir("Propiedades hipotecables:");
-                for(Propiedad propiedad : propiedadesHipotecables) {
+                for(Propiedad propiedad : propiedades) {
                     consolaNormal.imprimir(propiedad.getNombre());
                 }
-                dineroConseguido = 0;
-                while((dineroConseguido < dineroAConseguir)) {
-                    if (contadorPropiedadesHipotecables == 0) {
-                        break;
-                    }
+                if(contadorPropiedades != 0) {
+                    dineroConseguido = 0;
+                    while((dineroConseguido < dineroAConseguir)) {
+                        if(contadorPropiedades == 0) {
+                            break;
+                        }
 
-                    Propiedad propiedadHipotecar = null;
+                        Propiedad propiedadHipotecar = null;
 
-                    while (propiedadHipotecar == null) {
-                        consolaNormal.imprimir("Introduce el nombre de la propiedad que quieres hipotecar:");
-                        String nombrePropiedad = consolaNormal.leerPalabra();
-                        propiedadHipotecar = (Propiedad) tablero.encontrar_casilla(nombrePropiedad);
-                    }
+                        while(propiedadHipotecar == null) {
+                            System.out.println("Introduce el nombre de la propiedad que quieres hipotecar:");
+                            String nombrePropiedad = scanner.next();
+                            //Pasamos el jugAct para el array de props y el nombre de la propiedad.
+                            propiedadHipotecar = buscarHipotecable(jugadorActual, nombrePropiedad);
+                        }
 
-                    if(hipotecar(propiedadHipotecar.getNombre())){
-                        contadorPropiedadesHipotecables--;
+                        contadorPropiedades--;
                         dineroConseguido += propiedadHipotecar.getHipoteca();
+                        hipotecar(propiedadHipotecar.getNombre());
                     }
+                } else {
+                    System.out.println("El jugador no tiene propiedades sin edificar. Debe vender los edificios antes de hipotecar una propiedad.");
                 }
-
             } else {
                 dineroConseguido = 0;
                 consolaNormal.imprimir("Edificios construidos:");
@@ -1265,53 +1305,95 @@ public class Juego implements Comando{
                         if(contadorEdificios == 0) {
                             break;
                         }
-
-                        consolaNormal.imprimir("Introduce la casilla de la que quieres vender un edificio: ");
-                        String nombreCasilla = consolaNormal.leerPalabra();
-                        Casilla casilla = tablero.encontrar_casilla(nombreCasilla);
+                        //FACER QUE A CASILLA, EDIFICIO E CANTIDAD DE EDIFICIOS SEAN CORRECTOS (FACER BUCLE PARA QUE COMPROBE HASTA INTRODUCIR UN CORRECTO)
+                        System.out.println("Introduce la casilla de la que quieres vender un edificio: ");
+                        String nombreCasilla;
+                        Casilla casilla;
                         Solar solar = null;
                         int tamanho = 0;
-                        //Con la segunda condición nos aseguramos de que; si introduce un Solar que no es del jugador, a pesar de encontrarlo y ser instancia de Solar,
-                        //el dueño no coincidirá, condición que tiene que ser verdadera para que pueda vender.
-                        if (casilla instanceof Solar && casilla.getDuenho().equals(jugadorActual)) {
-                            solar = (Solar) casilla;
-                            tamanho = solar.getEdificios().size();
-                        }
 
-                        consolaNormal.imprimir("Introduce el tipo de edificio que quieres vender: ");
-                        String tipo = consolaNormal.leerPalabra();
-                        float valor;
-                        switch (tipo) {
-                            case "Casa", "Hotel" -> valor = casilla.getValor() * 0.6f;
-                            case "Piscina" -> valor = casilla.getValor() * 0.4f;
-                            case "PistaDeporte" -> valor = casilla.getValor() * 1.25f;
-                            default -> valor = 0;
-                        }
+                        do {
+                            nombreCasilla = scanner.next();
+                            casilla = tablero.encontrar_casilla(nombreCasilla);
+                            if (casilla instanceof Solar solar1 && casilla.getDuenho().equals(jugadorActual) && !solar1.getEdificios().isEmpty() && !solar1.isHipotecado()) {
+                                solar = (Solar) casilla;
+                                tamanho = solar.getEdificios().size();
+                            } else {
+                                System.out.println("Casilla no válida o no es propietario. Introduce una casilla válida:");
+                            }
+                        } while (solar == null);
 
-                        consolaNormal.imprimir("Introduce la cantidad de edificios que quieres vender: ");
-                        String cantidadStr = consolaNormal.leerPalabra();
+                        System.out.println("Introduce el tipo de edificio que quieres vender: ");
+                        String tipo;
+                        float valor = 0;
+                        boolean tipoValido = false;
+
+                        do {
+                            tipo = scanner.next();
+                            switch (tipo) {
+                                case "Casa" -> {
+                                    valor = casilla.getValor() * 0.6f;
+                                    tipoValido = solar.getEdificios().stream().anyMatch(e -> e instanceof Casa);
+                                }
+                                case "Hotel" -> {
+                                    valor = casilla.getValor() * 0.6f;
+                                    tipoValido = solar.getEdificios().stream().anyMatch(e -> e instanceof Hotel);
+                                }
+                                case "Piscina" -> {
+                                    valor = casilla.getValor() * 0.4f;
+                                    tipoValido = solar.getEdificios().stream().anyMatch(e -> e instanceof Piscina);
+                                }
+                                case "PistaDeporte" -> {
+                                    valor = casilla.getValor() * 1.25f;
+                                    tipoValido = solar.getEdificios().stream().anyMatch(e -> e instanceof PistaDeporte);
+                                }
+                                default -> System.out.println("Tipo de edificio no válido. Introduce un tipo válido:");
+                            }
+                            if (!tipoValido) {
+                                System.out.println("No hay edificios de ese tipo en la casilla. Introduce un tipo válido:");
+                            }
+                        } while (!tipoValido);
+
+                        System.out.println("Introduce la cantidad de edificios que quieres vender: ");
+                        String cantidadStr;
+                        int cantidad;
+                        long count = 0;
+
+                        do {
+                            cantidadStr = scanner.next();
+                            cantidad = Integer.parseInt(cantidadStr);
+                            String finalTipo = tipo;
+                            count = solar.getEdificios().stream().filter(e -> {
+                                switch (finalTipo) {
+                                    case "Casa" -> { return e instanceof Casa; }
+                                    case "Hotel" -> { return e instanceof Hotel; }
+                                    case "Piscina" -> { return e instanceof Piscina; }
+                                    case "PistaDeporte" -> { return e instanceof PistaDeporte; }
+                                    default -> { return false; }
+                                }
+                            }).count();
+                            if (cantidad > count) {
+                                System.out.println("No hay suficientes edificios de ese tipo. Hay " + count + ". Introduce una cantidad válida:");
+                            }
+                        } while (cantidad > count);
 
                         ventaEdificio(tipo, nombreCasilla, cantidadStr);
 
-                        if(solar != null) {
-                            //Si vendió los edificios, el tamaño anterior menos la cantidad de edificios que vendió es igual al tamaño actual. Entonces entra.
-                            //Si no los vendió, el tamaño no será igual, no entra. Da igual que el nombre la casilla esté bien o no.
-                            if(tamanho - Integer.parseInt(cantidadStr) == solar.getEdificios().size()) {
-                                dineroConseguido += valor / 2;
-                                contadorEdificios -= Integer.parseInt(cantidadStr);
-                            }
+                        if (tamanho - cantidad == solar.getEdificios().size()) {
+                            dineroConseguido += valor / 2;
+                            contadorEdificios -= cantidad;
+                        }
 
-                            if (solar.getEdificios().isEmpty() && !solar.isHipotecado() && solar.getNombre().equals(nombreCasilla)) {
-                                propiedadesHipotecables.add(solar);
-                                contadorPropiedadesHipotecables++;
-                            }
+                        if (solar.getEdificios().isEmpty() && !solar.isHipotecado() && solar.getNombre().equals(nombreCasilla)) {
+                            propiedades.add((Propiedad) solar);
+                            contadorPropiedades++;
                         }
                     }
                 } else {
                     throw new ExcepcionEdificar("El jugador no tiene edificios para vender.");
                 }
             }
-            evaluarRecoleccionDinero(jugadorActual, contadorPropiedadesHipotecables, contadorEdificios, dineroAConseguir, dineroConseguido);
+            evaluarRecoleccionDinero(jugadorActual, contadorPropiedades, contadorEdificios, dineroAConseguir, dineroConseguido);
         }
     }
 
